@@ -156,7 +156,7 @@
       width: 100%;
       max-width: 620px;
       margin: auto;
-      padding: 0 16px calc(144px + env(safe-area-inset-bottom, 0px))
+      padding: 0 16px calc(40px + env(safe-area-inset-bottom, 0px))
     }
 
     .header {
@@ -166,6 +166,8 @@
       gap: 12px;
       padding: 20px 0 16px
     }
+
+    .header-actions { display:flex; align-items:center; gap:8px; flex:none; }
 
     .header h1 {
       font-size: 22px;
@@ -675,95 +677,6 @@
       background: var(--soft)
     }
 
-    .timer-dock {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 25;
-      background: var(--bg);
-      border-top: 1px solid var(--line);
-      padding: 12px 16px max(12px, env(safe-area-inset-bottom, 0px))
-    }
-
-    .timer {
-      max-width: 588px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px
-    }
-
-    .timer-info {
-      min-width: 120px;
-      min-height: 64px;
-      border: 0;
-      padding: 0;
-      background: transparent;
-      text-align: left
-    }
-
-    .timer-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      border: 0;
-      background: transparent;
-      padding: 0;
-      min-height: 26px;
-      font-size: 14px;
-      color: var(--muted)
-    }
-
-    .timer-label>.icon {
-      width: 16px;
-      height: 16px
-    }
-
-    .timer-digits {
-      display: block;
-      font-size: 36px;
-      font-weight: 500;
-      line-height: 1.15;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -1.2px
-    }
-
-    .timer-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: none
-    }
-
-    .timer-actions .icon-button {
-      width: 54px;
-      min-width: 54px;
-      height: 54px;
-      min-height: 54px
-    }
-
-    .timer-actions #timer-start span {
-      display: none
-    }
-
-    .timer-progress {
-      max-width: 588px;
-      height: 2px;
-      background: var(--line);
-      margin: 10px auto 0;
-      overflow: hidden;
-      border-radius: 9px
-    }
-
-    .timer-progress span {
-      display: block;
-      background: var(--ink);
-      height: 100%;
-      width: 100%
-    }
-
 .timer-mode button {
       min-width: 0;
       min-height: 48px;
@@ -868,10 +781,6 @@
     .switch input:focus-visible+span {
       outline: 2px solid var(--ink);
       outline-offset: 3px
-    }
-
-    .keyboard-open .timer-dock {
-      display: none
     }
 
     dialog {
@@ -1118,7 +1027,7 @@
 
     .toast {
       position: fixed;
-      bottom: calc(130px + env(safe-area-inset-bottom, 0px));
+      bottom: calc(18px + env(safe-area-inset-bottom, 0px));
       left: 50%;
       transform: translateX(-50%);
       z-index: 120;
@@ -1183,18 +1092,6 @@
         padding: 18px 12px
       }
 
-      .timer-dock {
-        padding-left: 12px;
-        padding-right: 12px
-      }
-
-      .timer-actions {
-        gap: 6px
-      }
-
-      .timer-digits {
-        font-size: 34px
-      }
     }
 
     @media(min-width:700px) {
@@ -1241,9 +1138,8 @@
 
     @media print {
 
-      .header>button,
+      .header-actions,
       .week-nav,
-      .timer-dock,
       dialog,
       .toast,
       .session-actions,
@@ -1918,11 +1814,6 @@
       font-size: 16px
     }
 
-    .timer-label .icon {
-      width: 17px;
-      height: 17px
-    }
-
     @keyframes sheet-in {
       from {
         transform: translateY(100%)
@@ -2028,7 +1919,7 @@
     .editor-section-label { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-top:24px; }
     .editor-section-label h3 { font-size:16px; font-weight:550; }
     .editor-section-label span { color:var(--muted); font-size:12px; }
-    .number-ticker { display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; min-width:0; min-height:50px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; margin-top:7px; background:var(--soft); font-size:18px; font-variant-numeric:tabular-nums; }
+    .number-ticker { display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; min-width:0; min-height:50px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; margin-top:7px; background:var(--soft); font-size:16px; font-variant-numeric:tabular-nums; }
     .number-ticker .icon { width:17px; height:17px; }
     .form-grid .number-ticker { font-size:16px; padding:10px 8px; }
     .number-ticker>span { overflow-wrap:anywhere; }
@@ -2161,6 +2052,42 @@
     #editor-exercises.sort-compact [data-sort-id]>.superset-heading { gap:6px; }
     #editor-exercises.sort-compact { padding-bottom:4px; }
     @media(max-width:350px) { #editor-exercises.sort-compact .sort-summary-text { gap:7px; font-size:13px; } .editor-footer-secondary>.button { padding-left:8px; padding-right:8px; font-size:14px; } }
+    /* Expanded and minimized views of an active rest share the same timer. */
+    .complete-set { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+    .rest-sheet .dialog-body { padding-left:20px; padding-right:20px; }
+    .rest-readout { padding:14px 0 26px; text-align:center; }
+    .timer-digits { display:block; font-size:68px; line-height:1.15; font-weight:550; font-variant-numeric:tabular-nums; letter-spacing:-2px; }
+    .timer-digits.is-long { font-size:54px; }
+    .timer-progress { display:block; height:4px; background:var(--soft); overflow:hidden; border-radius:4px; }
+    .timer-progress>span { display:block; height:100%; width:100%; background:var(--ink); }
+    .rest-controls { display:flex; gap:10px; margin:22px 0 10px; }
+    .rest-controls>.button { flex:1; min-width:0; padding-left:10px; padding-right:10px; }
+    .rest-controls .icon { width:21px; height:21px; }
+    .rest-mini { position:fixed; z-index:25; left:0; right:0; bottom:0; width:100%; max-width:620px; margin:0 auto; border:1px solid var(--line); border-bottom:0; border-radius:22px 22px 0 0; background:var(--bg); color:var(--ink); }
+    #rest-expand { display:block; width:100%; min-height:76px; border:0; border-radius:inherit; padding:12px 20px max(14px,env(safe-area-inset-bottom,0px)); background:transparent; text-align:left; }
+    #rest-expand:hover { background:var(--soft); }
+    #rest-expand:focus-visible { outline-offset:-4px; }
+    .rest-mini-readout { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .rest-mini-title { font-size:14px; font-weight:500; color:var(--muted); }
+    .rest-mini-digits { font-size:30px; line-height:1.2; font-weight:550; font-variant-numeric:tabular-nums; letter-spacing:-.8px; }
+    .rest-mini .timer-progress { height:3px; margin-top:10px; }
+    body.rest-minimized .shell { padding-bottom:calc(var(--rest-mini-height,90px) + 24px); }
+    body.rest-minimized .toast { bottom:calc(var(--rest-mini-height,90px) + 12px); }
+    .import-preview { border-color:var(--line); }
+    .import-summary { list-style:none; margin:16px 0 4px; padding:0; }
+    .import-summary>li { display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
+    .import-summary>li:first-child { padding-top:0; border-top:0; }
+    .import-summary>li>.icon { width:22px; height:22px; margin-top:2px; }
+    .import-summary>li>div { flex:1; min-width:0; }
+    .import-summary strong { font-size:15px; font-weight:550; }
+    .import-summary p { margin-top:3px; font-size:13px; color:var(--muted); }
+    @media(max-width:350px) {
+      .rest-sheet .dialog-body { padding-left:16px; padding-right:16px; }
+      .timer-digits { font-size:62px; }
+      .timer-digits.is-long { font-size:46px; }
+      #rest-expand { padding-left:16px; padding-right:16px; }
+    }
+    @media print { .rest-mini { display:none!important; } body.rest-minimized .shell { padding-bottom:0; } }
   </style>
 </head>
 
@@ -2171,8 +2098,11 @@
       <div class="profile">
         <div class="avatar" id="profile-avatar" aria-hidden="true"><i data-icon="profile"></i></div>
         <h1 id="profile-name">Sem nome</h1>
-      </div><button class="icon-button" id="menu-open" aria-label="Abrir configurações" title="Configurações"><i
-          data-icon="settings"></i></button>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="icon-button" id="theme-toggle" aria-label="Ativar tema escuro" title="Ativar tema escuro"><i data-icon="moon"></i></button>
+        <button type="button" class="icon-button" id="menu-open" aria-label="Abrir configurações" title="Configurações"><i data-icon="settings"></i></button>
+      </div>
     </header>
     <main>
       <section class="weekly-overview" id="weekly-overview" aria-label="Acompanhamento da semana" aria-live="polite"></section>
@@ -2181,17 +2111,28 @@
       <section class="training" id="workout" role="tabpanel" tabindex="0" aria-label="Treino selecionado"></section>
     </main>
   </div>
-  <aside class="timer-dock" aria-label="Cronômetro de descanso">
-    <div class="timer" id="timer"><button class="timer-info" id="timer-expand" aria-label="Ajustar descanso"
-        aria-haspopup="dialog"><span class="timer-label">Descanso<i data-icon="menu"></i></span><span
-          class="timer-digits" id="timer-display" role="timer" aria-label="Tempo de descanso">01:30</span></button><span
-        class="sr-only" id="timer-status">Pronto para começar</span>
-      <div class="timer-actions"><button class="button icon-button primary" id="timer-start"
-          aria-label="Iniciar descanso"><i data-icon="play"></i></button><button class="button icon-button"
-          id="timer-reset" aria-label="Limpar cronômetro" title="Limpar cronômetro"><i data-icon="reset"></i></button>
-      </div>
+  <dialog id="rest-dialog" class="value-dialog rest-sheet" aria-labelledby="rest-title">
+    <div class="dialog-header">
+      <h2 id="rest-title" tabindex="-1" autofocus>Descanso</h2>
+      <button type="button" class="icon-button" id="rest-minimize" aria-label="Minimizar descanso"><i data-icon="chevron"></i></button>
     </div>
-    <div class="timer-progress" aria-hidden="true"><span id="timer-progress"></span></div>
+    <div class="dialog-body">
+      <div class="rest-readout">
+        <span class="timer-digits" id="timer-display" role="timer" aria-label="Tempo restante de descanso">01:30</span>
+      </div>
+      <div class="timer-progress" aria-hidden="true"><span id="timer-progress"></span></div>
+      <div class="rest-controls">
+        <button type="button" class="button" id="timer-start" aria-label="Pausar descanso"><i data-icon="pause"></i><span>Pausar</span></button>
+        <button type="button" class="button" id="timer-reset" aria-label="Reiniciar descanso"><i data-icon="reset"></i><span>Reiniciar</span></button>
+      </div>
+      <button type="button" class="button primary full" id="rest-done">Continuar treino</button>
+    </div>
+  </dialog>
+  <aside class="rest-mini" id="rest-mini" aria-label="Descanso" hidden>
+    <button type="button" id="rest-expand" aria-label="Expandir descanso" aria-haspopup="dialog" aria-controls="rest-dialog">
+      <span class="rest-mini-readout"><span class="rest-mini-title">Descanso</span><span class="rest-mini-digits" id="rest-mini-display" role="timer" aria-label="Tempo restante de descanso">01:30</span></span>
+      <span class="timer-progress" aria-hidden="true"><span id="rest-mini-progress"></span></span>
+    </button>
   </aside>
   <dialog id="menu-dialog" aria-labelledby="menu-title">
     <div class="dialog-header">
@@ -2199,16 +2140,15 @@
           data-icon="close"></i></button>
     </div>
     <div class="dialog-body">
-      <div class="menu-list"><button class="button" id="profile-open"><i data-icon="profile"></i>Editar perfil</button><button class="button" id="editor-open"><i data-icon="reminder"></i>Editar treinos</button><button class="button" id="history-open"><i
+      <div class="menu-list"><button class="button" id="profile-open"><i data-icon="profile"></i>Perfil</button><button class="button" id="editor-open"><i data-icon="reminder"></i>Treinos</button><button type="button" class="button" id="rest-settings-open" aria-haspopup="dialog" aria-controls="timer-dialog"><i data-icon="timer"></i>Descanso</button><button class="button" id="history-open"><i
             data-icon="history"></i>Histórico</button><button class="button" id="backup-open"><i
-            data-icon="download"></i>Backup</button><button class="button" id="theme-toggle"><i
-            data-icon="moon"></i>Tema escuro</button></div>
+            data-icon="download"></i>Backup</button></div>
       <div class="date-wrap"><span id="session-date-label">Data do treino</span><button type="button" id="session-date" class="selection-field" aria-labelledby="session-date-label session-date" aria-haspopup="dialog" aria-controls="date-dialog"></button></div>
     </div>
   </dialog>
   <dialog id="timer-dialog" aria-labelledby="timer-title">
     <div class="dialog-header">
-      <h2 id="timer-title">Descanso</h2><button class="icon-button" data-close="timer-dialog"
+      <h2 id="timer-title">Ajustar descanso</h2><button class="icon-button" data-close="timer-dialog"
         aria-label="Fechar ajustes do descanso"><i data-icon="close"></i></button>
     </div>
     <div class="dialog-body">
@@ -2220,8 +2160,6 @@
             max="100" step="10" value="80"><output id="sound-volume-value" for="sound-volume">80%</output></div><button
           class="button sound-test" id="sound-test"><i data-icon="volume"></i>Testar som</button>
       </div>
-      <div class="setting-row"><span>Iniciar ao marcar uma série</span><label class="switch"><input id="auto-rest"
-            type="checkbox" aria-label="Iniciar descanso ao marcar uma série"><span></span></label></div>
     </div>
   </dialog>
   <dialog id="history-dialog" aria-labelledby="history-title">
@@ -2360,7 +2298,6 @@
     </div>
   </dialog>
   <div class="toast" id="toast" role="status" hidden></div>
-  <div class="sr-only" id="timer-announcement" role="status" aria-live="polite"></div>
   <noscript><section class="shell"><p>Ative o JavaScript no navegador para configurar seus treinos.</p></section></noscript>
   <script id="workout-plan" type="application/json">[]</script>
   <script>
@@ -2382,8 +2319,8 @@
     "body": "<path d=\"M6.00449 12.5V12M18.0045 12.5V12M12.0045 12.5V12M7.00449 12.5C7.00449 11.9477 6.55677 11.5 6.00449 11.5C5.4522 11.5 5.00449 11.9477 5.00449 12.5C5.00449 13.0523 5.4522 13.5 6.00449 13.5C6.55677 13.5 7.00449 13.0523 7.00449 12.5ZM19.0045 12.5C19.0045 11.9477 18.5568 11.5 18.0045 11.5C17.4522 11.5 17.0045 11.9477 17.0045 12.5C17.0045 13.0523 17.4522 13.5 18.0045 13.5C18.5568 13.5 19.0045 13.0523 19.0045 12.5ZM13.0045 12.5C13.0045 11.9477 12.5568 11.5 12.0045 11.5C11.4522 11.5 11.0045 11.9477 11.0045 12.5C11.0045 13.0523 11.4522 13.5 12.0045 13.5C12.5568 13.5 13.0045 13.0523 13.0045 12.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"
   },
   "timer": {
-    "name": "Timer01Icon",
-    "body": "<path d=\"M11.0809 13.152L8 7L13.4196 11.2796C14.1901 11.888 14.1941 13.0472 13.4277 13.6607C12.6614 14.2743 11.5189 14.0266 11.0809 13.152Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M5 4.82C3.14864 6.63902 2 9.17385 2 11.9776C2 17.5129 6.47715 22.0001 12 22.0001C17.5228 22.0001 22 17.5129 22 11.9776C22 7.1242 18.5581 3.07656 13.9872 2.15288C13.1512 1.98394 12.7332 1.89947 12.3666 2.20022C12 2.50097 12 2.98714 12 3.95949V4.96175\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"
+    "name": "StopWatchIcon",
+    "body": "<path d=\"M18.0104 7.48959L19.5 6M20.5 13.5C20.5 18.1944 16.6944 22 12 22C7.30558 22 3.5 18.1944 3.5 13.5C3.5 8.80558 7.30558 5 12 5C16.6944 5 20.5 8.80558 20.5 13.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.5 2H9.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M12 13.5L15.5 10\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"
   },
   "history": {
     "name": "HistoryIcon",
@@ -2859,7 +2796,8 @@
       }
       function applyTheme() {
         const dark = preferences.theme === 'dark'; document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-        $('theme-toggle').innerHTML = icon(dark ? 'sun' : 'moon') + `<span>${dark ? 'Tema claro' : 'Tema escuro'}</span>`;
+        $('theme-toggle').innerHTML = icon(dark ? 'sun' : 'moon');
+        $('theme-toggle').title = dark ? 'Ativar tema claro' : 'Ativar tema escuro';
         $('theme-toggle').setAttribute('aria-label', dark ? 'Ativar tema claro' : 'Ativar tema escuro');
         document.querySelector('meta[name="theme-color"]').content = dark ? '#000000' : '#ffffff';
       }
@@ -2922,7 +2860,7 @@
       }
       function renderWorkout() {
         const w = currentWorkout();
-        document.querySelector('.timer-dock').hidden = !PLAN.length;
+        syncRestContext();
         $('workout').setAttribute('aria-labelledby', 'workout-title');
         if (!w) {
           $('session-date').disabled = true; $('session-date').closest('.date-wrap').hidden = true;
@@ -2938,7 +2876,7 @@
           <details class="disclosure notes" ${s.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="${strength ? 'Anote algo sobre o treino.' : 'Anote como foi a corrida.'}">${esc(s.notes)}</textarea></details>
           <div class="session-actions"><button class="button primary" id="finish-workout">${locked ? 'Próximo treino' : 'Concluir treino'}</button></div>`;
         if (locked) $('exercise-list').querySelectorAll('button,input').forEach(el => el.disabled = true);
-        updateProgress(); updateSaveStatus();
+        updateProgress(); updateSaveStatus(); timerUI();
       }
       function updateProgress() {
         const s = currentSession(); if (!s || !$('workout-progress')) return;
@@ -2996,7 +2934,7 @@
           const s = ensureSession(); s.logs[el.dataset.ex].sets[+el.dataset.set].done = el.checked;
           if (el.checked) D.repeatNext(s, el.dataset.ex, +el.dataset.set);
           el.closest('tr').classList.toggle('completed', el.checked); changed(); refreshSetValues(el.dataset.ex);
-          if (el.checked && preferences.autoRest && roundComplete(s, el.dataset.ex, +el.dataset.set)) restartTimer(true);
+          if (el.checked && roundComplete(s, el.dataset.ex, +el.dataset.set)) startRest(el);
         } else if (el.matches('[data-stage]')) {
           ensureSession().logs[el.dataset.stage].done = el.checked;
           el.closest('article').classList.toggle('is-done', el.checked); changed();
@@ -3725,7 +3663,7 @@
       function renderProfile() {
         const profile = store.profile || DEFAULT_PROFILE;
         $('profile-name').textContent = profile.name || 'Sem nome'; paintAvatar($('profile-avatar'), profile);
-        $('profile-open').innerHTML = icon('profile') + `<span>${store.profile ? 'Editar perfil' : 'Configurar perfil'}</span>`;
+        $('profile-open').innerHTML = icon('profile') + '<span>Perfil</span>';
       }
       function renderProfileDraft() {
         if (!profileDraft) return;
@@ -3847,7 +3785,7 @@
         const session = { ...D.clone(draft), date: effectiveDate(draft), cardio, done: true, updatedAt: Math.max(Date.now(), draft.updatedAt + 1) };
         store.sessions[session.key] = session; delete store.drafts[session.key];
         const reset = D.markCycleComplete(store, session, PLAN), saved = writeStore();
-        $('finish-dialog').close(); restartTimer(false);
+        $('finish-dialog').close(); syncRestContext();
         goToNext(); renderNav(); renderWorkout();
         $('workout').scrollIntoView({ block: 'start' }); $('workout').querySelector('h2').focus({ preventScroll: true });
         toast(saved ? (reset ? 'Treino salvo. Sequência reiniciada.' : 'Treino concluído e salvo no histórico. Próximo treino aberto.') : 'Treino concluído nesta aba. Exporte um backup antes de fechar.');
@@ -3934,13 +3872,35 @@
       }
       $('export-backup').addEventListener('click', downloadBackup);
       $('import-backup').addEventListener('click', () => { $('import-file').value = ''; $('import-file').click(); });
+      function renderImportPreview(data) {
+        const result = D.merge(store, data), rows = [];
+        const row = (symbol, title, detail = '') => rows.push(`<li>${icon(symbol)}<div><strong>${esc(title)}</strong>${detail ? `<p>${esc(detail)}</p>` : ''}</div></li>`);
+        // Legacy backups can carry the plan only inside workout snapshots.
+        const snapshots = [...Object.values(data.sessions), ...Object.values(data.drafts).filter(s => !s.archived)];
+        const plan = data.plan ?? (snapshots.length ? [...new Map(snapshots.map(s => [s.workout.id, s.workout])).values()] : null);
+        if (plan !== null) {
+          const kept = data.plan !== null && JSON.stringify(result.data.plan) !== JSON.stringify(data.plan);
+          row('reminder', plan.length ? `${plan.length} ${plan.length === 1 ? 'treino na ficha' : 'treinos na ficha'}` : 'Ficha sem treinos', kept ? 'A ficha deste navegador é mais recente e será mantida.' : '');
+        }
+        if (data.profile) {
+          const kept = JSON.stringify(result.data.profile) !== JSON.stringify(data.profile);
+          row('profile', 'Perfil', data.profile.name + (kept ? ' · O perfil deste navegador é mais recente e será mantido.' : ''));
+        }
+        const records = Object.keys(data.sessions).length;
+        if (records) {
+          const changes = [result.added ? `${result.added} ${result.added === 1 ? 'novo' : 'novos'}` : '', result.updated ? `${result.updated} ${result.updated === 1 ? 'atualização' : 'atualizações'}` : '', result.kept ? `${result.kept} já ${result.kept === 1 ? 'presente ou mais antigo' : 'presentes ou mais antigos'}` : ''].filter(Boolean).join(' · ');
+          row('history', `${records} ${records === 1 ? 'treino concluído no histórico' : 'treinos concluídos no histórico'}`, changes);
+        }
+        const drafts = Object.values(data.drafts).filter(s => !s.archived).length;
+        if (drafts) row('dumbbell', `${drafts} ${drafts === 1 ? 'treino em andamento' : 'treinos em andamento'}`);
+        $('import-preview').innerHTML = `<strong>Conteúdo do backup</strong>${rows.length ? `<ul class="import-summary">${rows.join('')}</ul>` : '<p>Este backup não contém treinos, histórico ou perfil.</p>'}<button type="button" class="button primary" id="confirm-import">Importar backup</button>`;
+      }
       $('import-file').addEventListener('change', async e => {
         const file = e.target.files?.[0]; if (!file) return; pendingImport = null; $('import-preview').hidden = true; $('import-error').hidden = true;
         try {
           if (file.size > 5 * 1024 * 1024) throw new Error('O backup deve ter até 5 MB.');
           pendingImport = D.validate(JSON.parse(await file.text()));
-          const result = D.merge(store, pendingImport);
-          $('import-preview').innerHTML = `<strong>${Object.keys(pendingImport.sessions).length} registros encontrados.</strong><p>${result.added} novos · ${result.updated} atualizações · ${result.kept} já presentes ou mais antigos.</p><p>O backup também recupera treinos em andamento, a ficha editada e o ciclo. As versões mais recentes dos mesmos registros serão mantidas.</p><button class="button primary" id="confirm-import">Importar backup</button>`;
+          renderImportPreview(pendingImport);
           $('import-preview').hidden = false;
         } catch (error) { $('import-error').textContent = error instanceof SyntaxError ? 'O arquivo não contém um JSON válido. Escolha um backup exportado por este treino.' : error.message; $('import-error').hidden = false; }
       });
@@ -3948,16 +3908,17 @@
         if (!e.target.closest('#confirm-import') || !pendingImport) return;
         if (!validInputs()) { toast('Feche o backup e corrija o valor destacado no treino.'); return; }
         const merged = D.merge(store, pendingImport); store = merged.data; const saved = writeStore(); pendingImport = null; $('import-preview').hidden = true; goToNext(); renderNav(); renderWorkout();
-        $('backup-dialog').close(); toast(saved ? `${merged.added + merged.updated} registros importados. Histórico salvo.` : 'Backup carregado nesta aba. O navegador não permitiu salvá-lo.');
+        $('backup-dialog').close(); toast(saved ? 'Backup importado.' : 'Backup carregado nesta aba. O navegador não permitiu salvá-lo.');
       });
       // Timer uses wall-clock time, so delayed rendering does not accumulate drift.
-      let timer = { mode: 'countdown', duration: 90000, elapsed: 0, startedAt: null, finished: false };
+      let timer = { mode: 'countdown', duration: 90000, elapsed: 0, startedAt: null, finished: false, workoutKey: null };
       try {
         const t = JSON.parse(localStorage.getItem(TIMER_KEY) || 'null');
         if (t && Number.isFinite(t.duration) && t.duration >= 1000 && t.duration <= 7200000) {
           timer.duration = Math.round(t.duration / 1000) * 1000;
-          if (t.mode === 'countdown' && Number.isFinite(t.elapsed) && t.elapsed >= 0 && (t.startedAt === null || (Number.isFinite(t.startedAt) && t.startedAt <= Date.now()))) {
-            timer.elapsed = Math.min(t.elapsed, timer.duration); timer.startedAt = t.startedAt; timer.finished = !!t.finished;
+          if (t.mode === 'countdown' && typeof t.workoutKey === 'string' && t.workoutKey.length < 200 && Number.isFinite(t.elapsed) && t.elapsed >= 0 && (t.startedAt === null || (Number.isFinite(t.startedAt) && t.startedAt <= Date.now()))) {
+            const used = t.elapsed + (t.startedAt === null ? 0 : Math.max(0, Date.now() - t.startedAt));
+            if (!t.finished && used < timer.duration) { timer.elapsed = t.elapsed; timer.startedAt = t.startedAt; timer.workoutKey = t.workoutKey; }
           }
         }
       } catch { }
@@ -4003,28 +3964,85 @@
 
       function persistTimer() { try { localStorage.setItem(TIMER_KEY, JSON.stringify(timer)); } catch { } }
       const elapsed = () => timer.elapsed + (timer.startedAt === null ? 0 : Math.max(0, Date.now() - timer.startedAt));
+      const restAvailable = () => currentWorkout()?.kind === 'strength' && !isReadOnly();
+      const restScope = () => restAvailable() ? `${store.cycle.number}:${currentWorkout().id}` : null;
+      const restOwner = () => PLAN.find(w => w.kind === 'strength' && `${store.cycle.number}:${w.id}` === timer.workoutKey && !store.cycle.completed[w.id]);
+      let restTrigger = null;
+      function renderRestMini() {
+        const minimized = !!timer.workoutKey && !$('rest-dialog').open;
+        $('rest-mini').hidden = !minimized; document.body.classList.toggle('rest-minimized', minimized);
+      }
+      new ResizeObserver(() => {
+        document.body.style.setProperty('--rest-mini-height', $('rest-mini').getBoundingClientRect().height + 'px');
+      }).observe($('rest-mini'));
+      function endRest(playSound = false) {
+        stopSound(); timer.elapsed = 0; timer.startedAt = null; timer.finished = false; timer.workoutKey = null; persistTimer();
+        renderRestMini();
+        // General settings remain available even when a short rest finishes.
+        if ($('rest-dialog').open) $('rest-dialog').close();
+        if (playSound) beep();
+      }
+      function syncRestContext() {
+        // Browsing does not stop a rest. Completing or removing its source workout does.
+        if (timer.workoutKey && !restOwner()) endRest();
+      }
       function timeText(ms) { const seconds = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(seconds / 3600), m = Math.floor(seconds / 60) % 60, s = seconds % 60; return `${h ? String(h).padStart(2, '0') + ':' : ''}${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; }
       function timerUI() {
-        let current = elapsed();
-        if (timer.startedAt !== null && current >= timer.duration) { timer.elapsed = timer.duration; timer.startedAt = null; timer.finished = true; persistTimer(); beep(); $('timer-announcement').textContent = 'Descanso concluído.'; toast('Descanso concluído.'); current = timer.duration; }
-        const remaining = Math.max(0, timer.duration - current);
-        $('timer-display').textContent = timeText(remaining);
-        $('timer-display').style.fontSize = remaining >= 3600000 ? '32px' : '';
-        $('timer-progress').style.width = 100 * (1 - Math.min(1, current / timer.duration)) + '%';
-        const running = timer.startedAt !== null;
-        $('timer-status').textContent = running ? 'Descanso em andamento' : timer.finished ? 'Descanso concluído' : timer.elapsed ? 'Pausado' : 'Pronto para começar';
-        const label = running ? 'Pausar' : timer.finished ? 'Recomeçar' : timer.elapsed ? 'Continuar' : 'Iniciar';
+        syncRestContext();
+        const current = elapsed();
+        if (timer.workoutKey && current >= timer.duration) { endRest(true); return; }
+        const remaining = Math.max(0, timer.duration - current), display = timeText(remaining), running = timer.startedAt !== null;
+        for (const id of ['timer-display', 'rest-mini-display']) if ($(id).textContent !== display) $(id).textContent = display;
+        $('timer-display').classList.toggle('is-long', remaining >= 3600000);
+        const progress = 100 * (1 - Math.min(1, current / timer.duration)) + '%';
+        $('timer-progress').style.width = progress; $('rest-mini-progress').style.width = progress;
+        const label = running ? 'Pausar' : 'Retomar';
         if ($('timer-start').dataset.label !== label) { $('timer-start').innerHTML = icon(running ? 'pause' : 'play') + `<span>${label}</span>`; $('timer-start').dataset.label = label; $('timer-start').setAttribute('aria-label', label + ' descanso'); }
         if ($('rest-duration').dataset.duration !== String(timer.duration)) {
           $('rest-duration').dataset.duration = String(timer.duration);
           $('rest-duration').innerHTML = `<span>${esc(C.durationText(timer.duration / 1000))}</span>${icon('chevron')}`;
         }
+        renderRestMini();
       }
-      function restartTimer(start = false) { stopSound(); timer.elapsed = 0; timer.startedAt = start ? Date.now() : null; timer.finished = false; if (start) initAudio(); persistTimer(); timerUI(); }
+      function resetRest(running = timer.startedAt !== null) {
+        if (!timer.workoutKey) return;
+        stopSound(); timer.elapsed = 0; timer.startedAt = running ? Date.now() : null; timer.finished = false;
+        persistTimer(); timerUI();
+      }
+      function openRest(trigger) {
+        if (!timer.workoutKey) return;
+        if (elapsed() >= timer.duration) { timerUI(); return; }
+        restTrigger = trigger; openDialog('rest-dialog'); timerUI();
+      }
+      function startRest(trigger) {
+        if (!restAvailable()) return;
+        stopSound(); timer.elapsed = 0; timer.startedAt = Date.now(); timer.finished = false; timer.workoutKey = restScope();
+        persistTimer(); initAudio(); openRest(trigger);
+      }
+      function minimizeRest() { if ($('rest-dialog').open) $('rest-dialog').close(); renderRestMini(); }
+      $('rest-minimize').addEventListener('click', minimizeRest);
+      $('rest-expand').addEventListener('click', () => openRest($('rest-expand')));
       $('timer-start').addEventListener('click', () => {
-        initAudio(); if (timer.startedAt !== null) { timer.elapsed = elapsed(); timer.startedAt = null; } else { if (timer.finished) { timer.elapsed = 0; timer.finished = false; } timer.startedAt = Date.now(); } persistTimer(); timerUI();
+        if (!timer.workoutKey) return;
+        if (elapsed() >= timer.duration) { timerUI(); return; }
+        initAudio(); stopSound();
+        if (timer.startedAt !== null) { timer.elapsed = elapsed(); timer.startedAt = null; }
+        else timer.startedAt = Date.now();
+        persistTimer(); timerUI();
       });
-      $('timer-reset').addEventListener('click', () => restartTimer(false));
+      $('timer-reset').addEventListener('click', () => resetRest());
+      $('rest-done').addEventListener('click', () => endRest());
+      $('rest-settings-open').addEventListener('click', () => { timerUI(); $('timer-dialog').showModal(); });
+      $('rest-dialog').addEventListener('close', () => {
+        if ($('rest-dialog').open) return;
+        renderRestMini(); const trigger = restTrigger; restTrigger = null;
+        if (!document.querySelector('dialog[open]') && trigger?.isConnected && !trigger.closest('[hidden]')) trigger.focus({ preventScroll: true });
+      });
+      $('rest-dialog').addEventListener('click', e => {
+        if (e.target !== $('rest-dialog')) return;
+        const bounds = e.target.getBoundingClientRect();
+        if (e.clientX < bounds.left || e.clientX > bounds.right || e.clientY < bounds.top || e.clientY > bounds.bottom) minimizeRest();
+      });
       $('rest-duration').addEventListener('click', () => {
         const seconds = timer.duration / 1000;
         openTicker('Duração do descanso', 'Contagem regressiva', [
@@ -4033,7 +4051,10 @@
         ], values => {
           const duration = (values[0] * 60 + values[1]) * 1000;
           if (duration < 1000 || duration > 7200000) return 'Escolha uma duração de 1 segundo a 120 minutos.';
-          if (duration !== timer.duration) { timer.duration = duration; restartTimer(false); }
+          if (duration !== timer.duration) {
+            timer.duration = duration;
+            if (timer.workoutKey) resetRest(); else { persistTimer(); timerUI(); }
+          }
           return null;
         }, $('rest-duration'));
       });
@@ -4058,9 +4079,6 @@
         const played = await beep(true);
         if (!played) toast('Não foi possível tocar o som. Toque em Testar som novamente.');
       });
-      $('auto-rest').checked = !!preferences.autoRest;
-      $('auto-rest').addEventListener('change', e => { preferences.autoRest = e.target.checked; savePreferences(); });
-      $('timer-expand').addEventListener('click', () => openDialog('timer-dialog'));
       document.addEventListener('focusin', e => { document.body.classList.toggle('keyboard-open', e.target.matches('textarea,input[type=text]')); });
       document.addEventListener('focusout', () => setTimeout(() => document.body.classList.toggle('keyboard-open', !!document.activeElement?.matches('textarea,input[type=text]')), 0));
       let renderedCalendarDate = localDate();
