@@ -1306,10 +1306,12 @@
       color: var(--muted)
     }
 
-    .history-stage .stage-status {
-      font-size: 14px;
-      color: var(--muted)
-    }
+    .record-check { display:inline-grid; place-items:center; width:24px; height:24px; border:1px solid var(--line); border-radius:7px; background:var(--bg); color:var(--muted); vertical-align:middle; flex:none; }
+    .record-check>.icon { width:16px; height:16px; opacity:0; }
+    .record-check.is-done { background:var(--ink); color:var(--inverse); border-color:var(--ink); }
+    .record-check.is-done>.icon { opacity:1; }
+    .record-check.is-partial>.icon { display:none; }
+    .record-check.is-partial::after { content:''; width:12px; height:2px; border-radius:1px; background:var(--ink); }
 
     .history-notes-label {
       font-size: 14px;
@@ -1930,19 +1932,19 @@
     .editor-superset .editor-exercise-head { min-height:32px; }
     .superset { border:1px solid var(--line); border-radius:20px; padding:16px; margin:22px 0; }
     .superset-label { font-size:13px; font-weight:550; color:var(--muted); margin-bottom:16px; }
-    .interval-heading { display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:8px; }
+    .interval-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+    .interval-heading>div { flex:1; min-width:0; }
     .interval-heading .superset-label { margin:0; color:var(--ink); font-size:15px; }
-    .interval-count { color:var(--muted); font-size:13px; white-space:nowrap; }
+    .interval-count { display:block; color:var(--muted); font-size:13px; margin-top:4px; }
     .interval-hint { font-size:13px; color:var(--muted); margin:0 0 14px; overflow-wrap:anywhere; }
-    .interval-round { border-top:1px solid var(--line); }
-    .interval-round>summary { display:flex; align-items:center; gap:10px; min-height:52px; cursor:pointer; list-style:none; font-size:14px; font-weight:550; }
-    .interval-round>summary::-webkit-details-marker { display:none; }
-    .interval-round>summary>span:first-child { flex:1; }
-    .interval-round>summary>.icon { width:16px; height:16px; transition:transform .15s; }
-    .interval-round[open]>summary>.icon { transform:rotate(180deg); }
-    .interval-round-status { color:var(--muted); font-size:12px; font-weight:400; }
-    .superset .interval-round .exercise { padding-top:12px; padding-bottom:14px; margin:0; }
-    .superset .interval-round .exercise+.exercise { padding-top:14px; margin:0; }
+    .interval-stage { padding:14px 0; border-top:1px solid var(--line); }
+    .interval-stage h4 { font-size:16px; font-weight:550; line-height:1.35; overflow-wrap:anywhere; }
+    .interval-stage .cardio-spec { font-size:14px; }
+    .interval-block.is-done { background:var(--soft); }
+    .interval-block .complete-set { flex:none; }
+    .interval-block input:indeterminate+.check-box { position:relative; }
+    .interval-block input:indeterminate+.check-box>.icon { opacity:0; }
+    .interval-block input:indeterminate+.check-box::after { content:''; width:16px; height:2px; border-radius:1px; background:var(--ink); position:absolute; }
     .interval-repeat { margin:12px 0 4px; }
     .speed-mode { display:flex; flex-wrap:wrap; }
     .speed-mode button { flex:1 1 auto; min-width:max-content; padding:8px; font-size:13px; white-space:nowrap; overflow-wrap:normal; }
@@ -2424,12 +2426,28 @@
       function previous(sessions, date, day, exerciseId, excludeKey = null, unit = null) {
         return Object.values(sessions).filter(s => s.done && s.key !== excludeKey && s.day === day && s.date <= date && (!unit || s.workout.exercises.find(ex => ex.id === exerciseId)?.unit === unit) && hasExerciseData(s.logs[exerciseId])).sort((a, b) => b.date.localeCompare(a.date) || b.updatedAt - a.updatedAt)[0] || null;
       }
+      function intervalProgress(session, group) {
+        const total = group.exerciseIds.length * group.repeats;
+        const done = group.exerciseIds.reduce((sum, id) => {
+          const log = session.logs[id];
+          return sum + (log.rounds ? log.rounds.filter(Boolean).length : log.done ? group.repeats : 0);
+        }, 0);
+        return { done, total, complete: done === total };
+      }
       function progress(session) {
         let done = 0, total = 0;
+        const countedGroups = new Set();
         for (const ex of session.workout.exercises) {
           const log = session.logs[ex.id];
+          const group = cardioGroup(session.workout, ex.id);
+          if (group) {
+            if (!countedGroups.has(group.id)) {
+              countedGroups.add(group.id); total++;
+              done += Number(intervalProgress(session, group).complete);
+            }
+            continue;
+          }
           if (ex.sets) { total += ex.sets; done += log.sets.filter(s => s.done).length; }
-          else if (log.rounds) { total += log.rounds.length; done += log.rounds.filter(Boolean).length; }
           else { total++; done += Number(log.done); }
         }
         return { done, total };
@@ -2467,7 +2485,14 @@
       }
       function normalizeCycle(data, plan = data.plan) {
         const ids = plan === null ? days : plan.map(w => w.id);
-        for (const id of Object.keys(data.cycle.completed)) if (!ids.includes(id)) delete data.cycle.completed[id];
+        let cleared = false;
+        for (const [id, recordKey] of Object.entries(data.cycle.completed)) {
+          const session = data.sessions[recordKey];
+          if (!ids.includes(id) || !session?.done || session.day !== id || session.cycleNumber !== data.cycle.number) {
+            delete data.cycle.completed[id]; cleared = true;
+          }
+        }
+        if (cleared) data.cycle.updatedAt = Math.max(Date.now(), data.cycle.updatedAt + 1);
         const reset = ids.length > 0 && ids.every(id => data.cycle.completed[id]);
         if (reset) { data.cycle.number++; data.cycle.completed = {}; }
         return reset;
@@ -2612,7 +2637,7 @@
         for (const id of Object.keys(result.sessions)) delete result.drafts[id];
         return { data: result, added, updated, kept };
       }
-      return { APP, weekdays, shortDays, empty, key, uid, validDate, createSession, previous, progress, isComplete, parseNumber, repeatNext, adaptSession, normalizeCycle, markCycleComplete, validate, merge, clone };
+      return { APP, weekdays, shortDays, empty, key, uid, validDate, createSession, previous, intervalProgress, progress, isComplete, parseNumber, repeatNext, adaptSession, normalizeCycle, markCycleComplete, validate, merge, clone };
     })();
 
     const TrainingConfig = (() => {
@@ -2755,7 +2780,7 @@
       }
       const currentDraft = () => Object.values(store.drafts).filter(s => !s.archived && s.day === selectedDay && s.cycleNumber === store.cycle.number).sort((a, b) => b.updatedAt - a.updatedAt)[0] || null;
       const currentRecord = () => store.sessions[viewingRecord || store.cycle.completed[selectedDay]] || null;
-      const isReadOnly = () => !!currentRecord() || !!store.cycle.completed[selectedDay];
+      const isReadOnly = () => !!currentRecord();
       const key = () => currentRecord()?.key || currentDraft()?.key || '';
       const currentWorkout = () => currentRecord()?.workout || currentDraft()?.workout || PLAN.find(w => w.id === selectedDay);
       const currentSession = () => currentRecord() || refreshDraftDate(currentDraft()) || (currentWorkout() ? D.createSession(currentWorkout(), selectedDate, store.cycle.number) : null);
@@ -2806,7 +2831,7 @@
       }
       function updateSaveStatus() {
         const el = $('save-status'); if (!el) return;
-        const label = isReadOnly() ? 'Concluído' : currentDraft() ? 'Progresso salvo' : 'Não iniciado';
+        const label = isReadOnly() ? 'Salvo' : currentDraft() ? 'Progresso salvo' : 'Não iniciado';
         el.innerHTML = (storageOkay ? '' : icon('info')) + (storageOkay ? label : 'Sem salvar');
         el.classList.toggle('error', !storageOkay);
       }
@@ -2863,21 +2888,23 @@
         <td><button type="button" class="set-input" data-field="load" data-index="${i}" data-ex="${ex.id}" data-value="${set.load ?? ''}" aria-haspopup="dialog" aria-controls="value-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, kg total: ${esc(number(set.load))}">${esc(number(set.load))}</button></td>
         <td><button type="button" class="set-input" data-field="value" data-index="${i}" data-ex="${ex.id}" data-value="${set.value ?? ''}" aria-haspopup="dialog" aria-controls="value-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, ${ex.unit === 's' ? 'segundos' : 'repetições'}: ${esc(number(set.value))}">${esc(number(set.value))}</button></td>
         <td><label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="Concluir ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></td></tr>`).join('')}</tbody></table>
-      ${prev ? `<details class="exercise-extra"><summary>Treino anterior ${icon('chevron')}</summary><p class="previous-date">${esc(displayDate(prev.date, true))} · ${D.isComplete(prev) ? 'concluído' : 'parcial'}</p><ul class="previous-list">${old.map((set, i) => `<li><span>Série ${i + 1}</span><span>${esc(previousLabel(set, ex.unit))}${ex.unit === 'reps' ? ' reps' : ''}</span></li>`).join('')}</ul><p class="previous-date">kg total</p><button class="button full" data-copy="${esc(ex.id)}" aria-label="Usar valores anteriores de ${esc(ex.name)} nas séries vazias">${icon('copy')}Repetir valores</button></details>` : ''}
+      ${prev ? `<details class="exercise-extra"><summary>Treino anterior ${icon('chevron')}</summary><p class="previous-date">${esc(displayDate(prev.date, true))}</p><ul class="previous-list">${old.map((set, i) => `<li><span>Série ${i + 1}</span><span>${esc(previousLabel(set, ex.unit))}${ex.unit === 'reps' ? ' reps' : ''}</span></li>`).join('')}</ul><p class="previous-date">kg total</p><button class="button full" data-copy="${esc(ex.id)}" aria-label="Usar valores anteriores de ${esc(ex.name)} nas séries vazias">${icon('copy')}Repetir valores</button></details>` : ''}
     </article>`;
       }
-      function renderCardio(ex, index, session, round = null) {
-        const done = round === null ? session.logs[ex.id].done : session.logs[ex.id].rounds[round];
-        return `<article class="exercise cardio-stage ${done ? 'is-done' : ''}"><div class="stage-main"><h3>${esc(ex.name)}</h3><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div><label class="complete-set"><input type="checkbox" data-stage="${ex.id}" ${round === null ? '' : `data-round="${round}"`} aria-label="Concluir etapa ${esc(ex.name)}${round === null ? '' : ', volta ' + (round + 1)}" ${done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></article>`;
+      function renderCardio(ex, index, session) {
+        const done = session.logs[ex.id].done;
+        return `<article class="exercise cardio-stage ${done ? 'is-done' : ''}"><div class="stage-main"><h3>${esc(ex.name)}</h3><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div><label class="complete-set"><input type="checkbox" data-stage="${ex.id}" aria-label="Concluir etapa ${esc(ex.name)}" ${done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></article>`;
+      }
+      function completionMark(done, partial = false) {
+        return `<span class="record-check ${done ? 'is-done' : partial ? 'is-partial' : ''}" role="img" aria-label="${done ? 'Realizado' : partial ? 'Parcialmente realizado' : 'Não realizado'}">${icon('check')}</span>`;
       }
       function renderExerciseBlocks(workout, render, history = false, session = null) {
         return TrainingConfig.blocks(workout).map(block => {
           if (block.group && workout.kind === 'cardio') {
-            const repeats = block.group.repeats;
-            const counts = Array.from({ length: repeats }, (_, i) => block.exercises.filter(ex => session?.logs[ex.id].rounds?.[i]).length);
-            const firstPending = counts.findIndex(n => n < block.exercises.length);
-            const rounds = counts.map((done, i) => `<details class="interval-round" data-interval-round="${i}" data-interval-group="${block.id}" ${!history && i === firstPending ? 'open' : ''}><summary><span>Volta ${i + 1}</span><span class="interval-round-status">${done === block.exercises.length ? 'Concluída' : `${done}/${block.exercises.length} etapas`}</span>${icon('chevron')}</summary>${block.exercises.map(ex => render(ex, workout.exercises.indexOf(ex), i)).join('')}</details>`).join('');
-            return `<section class="${history ? 'history-superset' : 'superset'} interval-block" aria-label="Intervalado de ${repeats} ${repeats === 1 ? 'volta' : 'voltas'}"><div class="interval-heading"><h3 class="superset-label">Intervalado</h3><span class="interval-count">${repeats} ${repeats === 1 ? 'volta' : 'voltas'}</span></div><p class="interval-hint">${block.exercises.map(ex => esc(ex.name)).join(' → ')}</p>${rounds}</section>`;
+            const repeats = block.group.repeats, p = D.intervalProgress(session, block.group);
+            const label = `Intervalado de ${repeats} ${repeats === 1 ? 'volta' : 'voltas'}`;
+            const stages = block.exercises.map(ex => `<div class="interval-stage"><h4>${esc(ex.name)}</h4><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div>`).join('');
+            return `<section class="${history ? 'history-superset' : 'superset'} interval-block ${p.complete ? 'is-done' : ''}" aria-label="${label}"><div class="interval-heading"><div><h3 class="superset-label">Intervalado</h3><span class="interval-count">${repeats} ${repeats === 1 ? 'volta' : 'voltas'}</span></div>${history ? completionMark(p.complete, p.done > 0) : `<label class="complete-set"><input type="checkbox" data-interval="${block.id}" aria-label="Concluir bloco: ${label.toLocaleLowerCase('pt-BR')}" ${p.complete ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</div><p class="interval-hint">${repeats === 1 ? 'Faça a sequência abaixo uma vez.' : `Repita a sequência abaixo ${repeats} vezes.`}</p>${stages}</section>`;
           }
           const content = block.exercises.map(ex => render(ex, workout.exercises.indexOf(ex))).join('');
           return block.group ? `<section class="${history ? 'history-superset' : 'superset'}" aria-label="${esc(block.name)}"><h3 class="superset-label">${esc(block.name)}</h3>${content}</section>` : content;
@@ -2895,7 +2922,7 @@
         selectedDate = effectiveDate(s);
         $('workout').innerHTML = `${choices.length > 1 ? `<div class="workout-switcher" role="group" aria-label="Treinos de ${esc(D.weekdays[selectedWeekday - 1])}">${choices.map(item => `<button class="button" data-workout-choice="${item.id}" aria-pressed="${item.id === selectedDay}">${esc(item.title)}</button>`).join('')}</div>` : ''}
           <div class="workout-heading"><div class="session-meta">${icon(strength ? 'dumbbell' : 'run')}<span>${strength ? 'Força' : 'Corrida'} · ${esc(displayDate(selectedDate))}</span></div><h2 id="workout-title" tabindex="-1">${esc(w.title)}</h2><div class="progress-label"><span id="progress-label"></span><span class="save-status" id="save-status" role="status"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div></div>
-          <div id="exercise-list">${renderExerciseBlocks(w, (ex, i, round) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s, round), false, s)}</div>
+          <div id="exercise-list">${renderExerciseBlocks(w, (ex, i) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s), false, s)}</div>
           <p class="form-error" id="entry-error" role="alert" hidden></p>
           <details class="disclosure notes" ${s.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="${strength ? 'Anote algo sobre o treino.' : 'Anote como foi a corrida.'}">${esc(s.notes)}</textarea></details>
           <div class="session-actions"><button class="button primary" id="finish-workout">${locked ? 'Próximo treino' : 'Concluir treino'}</button></div>`;
@@ -2908,10 +2935,11 @@
         $('progress-fill').style.width = (p.total ? 100 * p.done / p.total : 0) + '%';
         $('workout-progress').setAttribute('aria-valuenow', p.done); $('workout-progress').setAttribute('aria-valuemin', '0'); $('workout-progress').setAttribute('aria-valuemax', p.total);
         $('progress-label').textContent = `${p.done}/${p.total} ${unit}`;
-        $('exercise-list').querySelectorAll('[data-interval-round]').forEach(el => {
-          const group = s.workout.groups.find(g => g.id === el.dataset.intervalGroup), round = +el.dataset.intervalRound;
-          const done = group.exerciseIds.filter(id => s.logs[id].rounds[round]).length;
-          el.querySelector('.interval-round-status').textContent = done === group.exerciseIds.length ? 'Concluída' : `${done}/${group.exerciseIds.length} etapas`;
+        $('exercise-list').querySelectorAll('[data-interval]').forEach(el => {
+          const group = s.workout.groups.find(g => g.id === el.dataset.interval), progress = D.intervalProgress(s, group);
+          el.checked = progress.complete; el.indeterminate = progress.done > 0 && !progress.complete;
+          const block = el.closest('.interval-block');
+          block.classList.toggle('is-done', progress.complete);
         });
         $('finish-workout').hidden = false; $('finish-workout').textContent = locked ? 'Próximo treino' : 'Concluir treino';
       }
@@ -2962,10 +2990,16 @@
           if (el.checked) D.repeatNext(s, el.dataset.ex, +el.dataset.set);
           el.closest('tr').classList.toggle('completed', el.checked); changed(); refreshSetValues(el.dataset.ex);
           if (el.checked && roundComplete(s, el.dataset.ex, +el.dataset.set)) startRest(el);
+        } else if (el.matches('[data-interval]')) {
+          const session = ensureSession(), group = session.workout.groups.find(g => g.id === el.dataset.interval);
+          if (!group) return;
+          for (const id of group.exerciseIds) {
+            // Preserve the existing backup format while checking the whole block at once.
+            session.logs[id] = { done: el.checked, rounds: Array(group.repeats).fill(el.checked) };
+          }
+          changed();
         } else if (el.matches('[data-stage]')) {
-          const log = ensureSession().logs[el.dataset.stage];
-          if (el.hasAttribute('data-round')) { log.rounds[+el.dataset.round] = el.checked; log.done = log.rounds.every(Boolean); }
-          else log.done = el.checked;
+          const log = ensureSession().logs[el.dataset.stage]; log.done = el.checked;
           el.closest('article').classList.toggle('is-done', el.checked); changed();
         }
       });
@@ -2985,10 +3019,10 @@
         }
       });
       $('theme-toggle').addEventListener('click', () => { preferences.theme = preferences.theme === 'dark' ? 'light' : 'dark'; applyTheme(); savePreferences(); });
-      function historyExercise(ex, log, round = null) {
-        if (!log.sets) return `<div class="history-stage"><div><h4>${esc(ex.name)}</h4><p>${ex.meta.map(esc).join(' · ')}</p></div><span class="stage-status">${(round === null ? log.done : log.rounds[round]) ? 'Feita' : 'Pendente'}</span></div>`;
+      function historyExercise(ex, log) {
+        if (!log.sets) return `<div class="history-stage"><div><h4>${esc(ex.name)}</h4><p>${ex.meta.map(esc).join(' · ')}</p></div>${completionMark(log.done)}</div>`;
         const unit = 'kg total';
-        return `<section class="history-ex"><h4>${esc(ex.name)}</h4><table class="history-sets" aria-label="Registro de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col">${unit}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col">Status</th></tr></thead><tbody>${log.sets.map((set, i) => `<tr class="${set.done ? 'record-done' : ''}"><td>${i + 1}</td><td>${esc(number(set.load))}</td><td>${esc(number(set.value))}</td><td>${set.done ? 'Feita' : 'Pendente'}</td></tr>`).join('')}</tbody></table></section>`;
+        return `<section class="history-ex"><h4>${esc(ex.name)}</h4><table class="history-sets" aria-label="Registro de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col">${unit}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col"><span class="sr-only">Feita</span></th></tr></thead><tbody>${log.sets.map((set, i) => `<tr class="${set.done ? 'record-done' : ''}"><td>${i + 1}</td><td>${esc(number(set.load))}</td><td>${esc(number(set.value))}</td><td>${completionMark(set.done)}</td></tr>`).join('')}</tbody></table></section>`;
       }
       let historyMonth = selectedDate.slice(0, 7), historyDate = selectedDate, monthPickerYear = +historyMonth.slice(0, 4);
       const monthNames = Array.from({ length: 12 }, (_, i) => new Date(2026, i, 1, 12).toLocaleDateString('pt-BR', { month: 'long' }));
@@ -3055,7 +3089,7 @@
         const dayRecords = byDate.get(historyDate) || [];
         $('history-list').innerHTML = dayRecords.length ? dayRecords.map(s => {
           const p = D.progress(s);
-          return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${cardioTotals(s)}${renderExerciseBlocks(s.workout, (ex, i, round) => historyExercise(ex, s.logs[ex.id], round), true, s)}${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button class="button" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
+          return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${cardioTotals(s)}${renderExerciseBlocks(s.workout, ex => historyExercise(ex, s.logs[ex.id]), true, s)}${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button class="button" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
         }).join('') : '<p class="calendar-empty">Nenhum treino nesta data.</p>';
       }
       $('history-open').addEventListener('click', () => {
@@ -3125,6 +3159,7 @@
           for (const id of keys) {
             if (next.sessions[id]) { delete next.sessions[id]; removed++; }
           }
+          D.normalizeCycle(next, next.plan === null ? PLAN : next.plan);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
           store = next;
           storageOkay = true;
@@ -3134,7 +3169,10 @@
           toast('Não foi possível apagar os registros. Nenhum registro foi removido desta aba.');
           return;
         }
-        if (viewingRecord && !store.sessions[viewingRecord]) goToNext();
+        if (viewingRecord && !store.sessions[viewingRecord]) {
+          viewingRecord = null;
+          if (!PLAN.some(w => w.id === selectedDay)) goToNext();
+        }
         renderNav(); renderWorkout(); renderHistory(); storageNotice();
         toast(removed ? (recordKey ? 'Registro excluído.' : 'Histórico apagado.') : 'Nenhum registro para apagar.');
       }
@@ -3853,7 +3891,7 @@
         $('finish-dialog').close(); syncRestContext();
         goToNext(); renderNav(); renderWorkout();
         $('workout').scrollIntoView({ block: 'start' }); $('workout').querySelector('h2').focus({ preventScroll: true });
-        toast(saved ? (reset ? 'Treino salvo. Sequência reiniciada.' : 'Treino concluído e salvo no histórico. Próximo treino aberto.') : 'Treino concluído nesta aba. Exporte um backup antes de fechar.');
+        toast(saved ? (reset ? 'Treino salvo. Sequência reiniciada.' : 'Treino salvo no histórico. Próximo treino aberto.') : 'Treino registrado nesta aba. Exporte um backup antes de fechar.');
       });
       $('finish-dialog').addEventListener('close', () => { if (!$('finish-dialog').open) { finishTarget = null; finishMetrics = null; finishDate = null; } });
 
