@@ -350,20 +350,6 @@
       border-radius: 9px
     }
 
-    .session-done {
-      font-size: 14px;
-      margin-top: 10px;
-      font-weight: 550;
-      display: flex;
-      align-items: center;
-      gap: 6px
-    }
-
-    .session-done .icon {
-      width: 18px;
-      height: 18px
-    }
-
     .exercise {
       border: 1px solid var(--line);
       border-radius: 22px;
@@ -850,38 +836,6 @@
 
     .menu-list .button:hover {
       background: var(--soft)
-    }
-
-    .date-wrap {
-      margin: 18px 0 4px;
-      padding-top: 20px;
-      border-top: 1px solid var(--line)
-    }
-
-    .date-wrap label {
-      display: block;
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 8px
-    }
-
-    .date-wrap input {
-      display: block;
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      min-height: 52px;
-      padding: 12px;
-      background: var(--soft);
-      color: var(--ink);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      font-size: 16px;
-      appearance: none
-    }
-
-    .date-wrap input::-webkit-date-and-time-value {
-      text-align: left
     }
 
     .backup-actions {
@@ -1882,12 +1836,19 @@
     .complete-set input:disabled { cursor:default; }
     @media(max-width:350px) { .editor-exercise { padding:10px; } .form-grid { gap:8px; } .set-count { gap:4px; } .set-count .button { min-width:34px; } }
     @media print { #edit-workout, .cycle-label, .record-banner { display:none!important; } }
-    .weekly-overview { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:8px 0 14px; }
-    .weekly-overview>div>strong { display:block; font-size:15px; font-weight:550; }
-    .weekly-range { font-size:13px; color:var(--muted); }
-    .weekly-overview>p { text-align:right; display:flex; flex-direction:column; }
-    .weekly-overview>p>strong { font-size:24px; line-height:1.15; font-weight:550; }
-    .weekly-overview>p>span { font-size:12px; color:var(--muted); }
+    .week-panel { border:1px solid var(--line); border-radius:20px; margin:8px 0 24px; padding:16px 12px 10px; }
+    .weekly-overview { display:grid; gap:14px; padding:0 4px 16px; }
+    .weekly-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .weekly-heading>div>strong { display:block; font-size:16px; font-weight:600; }
+    .weekly-range { display:block; margin-top:3px; font-size:12px; color:var(--muted); }
+    .weekly-count { text-align:right; flex:none; }
+    .weekly-count>strong { display:block; font-size:27px; line-height:1.2; font-weight:600; font-variant-numeric:tabular-nums; }
+    .weekly-count>strong>span { color:var(--muted); font-size:19px; font-weight:400; }
+    .weekly-count>span { display:block; margin-top:3px; font-size:12px; color:var(--muted); }
+    .weekly-progress { height:4px; border-radius:4px; overflow:hidden; background:var(--soft); }
+    .weekly-progress>span { display:block; height:100%; background:var(--ink); }
+    .weekly-extra { font-size:12px; color:var(--muted); }
+    .week-panel .week-nav { position:static; border:0; border-top:1px solid var(--line); margin:0; padding:10px 0 0; background:transparent; }
     .week-nav { grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; }
     .day { height:76px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:14px; }
     .day-number { font-size:15px; font-variant-numeric:tabular-nums; font-weight:400; }
@@ -1941,7 +1902,7 @@
     .sorting-exercises { user-select:none; -webkit-user-select:none; cursor:grabbing; }
     .drag-preview { position:fixed; z-index:5; padding:12px 16px; border:1px solid var(--line); border-radius:14px; background:var(--ink); color:var(--inverse); box-shadow:0 10px 35px rgb(0 0 0 / .25); pointer-events:none; font-size:15px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
     @media(max-width:350px) { .number-ticker { padding:10px 8px; font-size:16px; } .weekly-overview { gap:10px; } .managed-workout-main { gap:8px; } .editor-section-label { gap:8px; } }
-    @media print { .weekly-overview, .workout-switcher { display:none!important; } }
+    @media print { .week-panel, .workout-switcher { display:none!important; } }
     /* Shared in-file controls, including every date and option selector. */
     :root { --danger:#a34f4b; --danger-soft:#fbefed; --danger-line:#eed3cf; }
     :root[data-theme=dark] { --danger:#e4a39d; --danger-soft:#382827; --danger-line:#63413d; }
@@ -1958,8 +1919,6 @@
     .selection-option[aria-selected=true] { background:var(--soft); border-color:var(--line); font-weight:550; }
     .selection-option:hover { background:var(--soft); }
     .selection-option>.icon { width:20px; height:20px; flex:none; }
-    .date-wrap { display:block; }
-    #session-date { margin-top:8px; }
     .calendar-weekdays { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); margin:16px 0 6px; text-align:center; color:var(--muted); font-size:12px; }
     #date-calendar .calendar-day { min-height:44px; }
     #date-calendar .calendar-day[aria-current=date]:not([aria-pressed=true]) { box-shadow:inset 0 0 0 1px var(--line); }
@@ -1971,6 +1930,22 @@
     .editor-superset .editor-exercise-head { min-height:32px; }
     .superset { border:1px solid var(--line); border-radius:20px; padding:16px; margin:22px 0; }
     .superset-label { font-size:13px; font-weight:550; color:var(--muted); margin-bottom:16px; }
+    .interval-heading { display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:8px; }
+    .interval-heading .superset-label { margin:0; color:var(--ink); font-size:15px; }
+    .interval-count { color:var(--muted); font-size:13px; white-space:nowrap; }
+    .interval-hint { font-size:13px; color:var(--muted); margin:0 0 14px; overflow-wrap:anywhere; }
+    .interval-round { border-top:1px solid var(--line); }
+    .interval-round>summary { display:flex; align-items:center; gap:10px; min-height:52px; cursor:pointer; list-style:none; font-size:14px; font-weight:550; }
+    .interval-round>summary::-webkit-details-marker { display:none; }
+    .interval-round>summary>span:first-child { flex:1; }
+    .interval-round>summary>.icon { width:16px; height:16px; transition:transform .15s; }
+    .interval-round[open]>summary>.icon { transform:rotate(180deg); }
+    .interval-round-status { color:var(--muted); font-size:12px; font-weight:400; }
+    .superset .interval-round .exercise { padding-top:12px; padding-bottom:14px; margin:0; }
+    .superset .interval-round .exercise+.exercise { padding-top:14px; margin:0; }
+    .interval-repeat { margin:12px 0 4px; }
+    .speed-mode { display:flex; flex-wrap:wrap; }
+    .speed-mode button { flex:1 1 auto; min-width:max-content; padding:8px; font-size:13px; white-space:nowrap; overflow-wrap:normal; }
     .superset .exercise { margin:0; border:0; border-radius:0; padding-left:0; padding-right:0; }
     .superset .exercise+.exercise { margin-top:20px; padding-top:20px; border-top:1px solid var(--line); }
     .history-superset { padding-top:18px; }
@@ -2014,6 +1989,7 @@
     .profile-photo-actions .button { min-height:44px; padding:8px 12px; font-size:14px; }
     #finish-cardio .form-field { margin-top:10px; }
     #finish-cardio .number-ticker { font-size:16px; }
+    .finish-date-field { margin-top:20px; }
     #ticker-dialog:has(.ticker-columns>div:nth-child(3)) .ticker-columns { gap:6px; }
     #ticker-dialog:has(.ticker-columns>div:nth-child(3)) .picker-unit { font-size:13px; }
     #profile-dialog .session-actions { margin-top:24px; }
@@ -2056,6 +2032,8 @@
     .complete-set { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
     .rest-sheet .dialog-body { padding-left:20px; padding-right:20px; }
     .rest-readout { padding:14px 0 26px; text-align:center; }
+    .rest-adjustments { display:flex; justify-content:center; gap:12px; margin-top:18px; }
+    .rest-adjustments .button { min-width:96px; min-height:44px; font-size:15px; font-variant-numeric:tabular-nums; }
     .timer-digits { display:block; font-size:68px; line-height:1.15; font-weight:550; font-variant-numeric:tabular-nums; letter-spacing:-2px; }
     .timer-digits.is-long { font-size:54px; }
     .timer-progress { display:block; height:4px; background:var(--soft); overflow:hidden; border-radius:4px; }
@@ -2105,8 +2083,10 @@
       </div>
     </header>
     <main>
-      <section class="weekly-overview" id="weekly-overview" aria-label="Acompanhamento da semana" aria-live="polite"></section>
-      <nav class="week-nav" id="week-nav" role="tablist" aria-label="Treinos da semana"></nav>
+      <section class="week-panel" aria-label="Acompanhamento da semana">
+        <div class="weekly-overview" id="weekly-overview" aria-live="polite"></div>
+        <nav class="week-nav" id="week-nav" role="tablist" aria-label="Treinos da semana"></nav>
+      </section>
       <div class="storage-alert" id="storage-alert" role="alert" hidden></div>
       <section class="training" id="workout" role="tabpanel" tabindex="0" aria-label="Treino selecionado"></section>
     </main>
@@ -2119,6 +2099,10 @@
     <div class="dialog-body">
       <div class="rest-readout">
         <span class="timer-digits" id="timer-display" role="timer" aria-label="Tempo restante de descanso">01:30</span>
+        <div class="rest-adjustments" role="group" aria-label="Ajustar o descanso atual">
+          <button type="button" class="button" id="rest-minus" aria-label="Retirar 30 segundos do descanso atual">− 30 s</button>
+          <button type="button" class="button" id="rest-plus" aria-label="Adicionar 30 segundos ao descanso atual">+ 30 s</button>
+        </div>
       </div>
       <div class="timer-progress" aria-hidden="true"><span id="timer-progress"></span></div>
       <div class="rest-controls">
@@ -2143,7 +2127,6 @@
       <div class="menu-list"><button class="button" id="profile-open"><i data-icon="profile"></i>Perfil</button><button class="button" id="editor-open"><i data-icon="reminder"></i>Treinos</button><button type="button" class="button" id="rest-settings-open" aria-haspopup="dialog" aria-controls="timer-dialog"><i data-icon="timer"></i>Descanso</button><button class="button" id="history-open"><i
             data-icon="history"></i>Histórico</button><button class="button" id="backup-open"><i
             data-icon="download"></i>Backup</button></div>
-      <div class="date-wrap"><span id="session-date-label">Data do treino</span><button type="button" id="session-date" class="selection-field" aria-labelledby="session-date-label session-date" aria-haspopup="dialog" aria-controls="date-dialog"></button></div>
     </div>
   </dialog>
   <dialog id="timer-dialog" aria-labelledby="timer-title">
@@ -2277,6 +2260,7 @@
     <form id="finish-form" class="dialog-body" novalidate>
       <p id="finish-summary"></p>
       <p id="finish-progress" class="form-hint"></p>
+      <div class="form-field finish-date-field"><span id="finish-date-label">Data do treino</span><button type="button" class="selection-field" id="finish-date" aria-labelledby="finish-date-label finish-date" aria-haspopup="dialog" aria-controls="date-dialog"></button></div>
       <fieldset id="finish-cardio" class="cardio-fields" hidden>
         <legend>Totais da corrida</legend>
         <div class="form-field"><span id="cardio-duration-label">Tempo total</span><button type="button" class="number-ticker" id="cardio-duration" aria-labelledby="cardio-duration-label cardio-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
@@ -2413,7 +2397,7 @@
       const weekdays = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
       const shortDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
       const clone = value => JSON.parse(JSON.stringify(value));
-      const empty = () => ({ app: APP, schema: 5, profile: null, profileUpdatedAt: 0, sessions: {}, drafts: {}, plan: null, planUpdatedAt: 0, cycle: { number: 1, completed: {}, updatedAt: 0 } });
+      const empty = () => ({ app: APP, schema: 6, profile: null, profileUpdatedAt: 0, sessions: {}, drafts: {}, plan: null, planUpdatedAt: 0, cycle: { number: 1, completed: {}, updatedAt: 0 } });
       const validDate = text => {
         if (typeof text !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(text)) return false;
         const d = new Date(text + 'T12:00:00Z');
@@ -2422,13 +2406,20 @@
       const key = (date, day) => date + '_' + day;
       const uid = () => globalThis.crypto?.randomUUID?.() || Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
       const blankSet = () => ({ load: null, value: null, done: false, auto: { load: false, value: false } });
+      const cardioGroup = (workout, id) => workout.kind === 'cardio' ? workout.groups?.find(g => g.exerciseIds.includes(id)) : null;
+      function stageLog(workout, id, previous = null) {
+        const group = cardioGroup(workout, id);
+        if (!group) return { done: previous?.done === true };
+        const rounds = Array.from({ length: group.repeats || 1 }, (_, i) => previous?.rounds ? previous.rounds[i] === true : previous?.done === true);
+        return { done: rounds.every(Boolean), rounds };
+      }
       function createSession(workout, date, cycleNumber = 1) {
         const logs = {};
-        for (const ex of workout.exercises) logs[ex.id] = ex.sets ? { sets: Array.from({ length: ex.sets }, blankSet) } : { done: false };
+        for (const ex of workout.exercises) logs[ex.id] = ex.sets ? { sets: Array.from({ length: ex.sets }, blankSet) } : stageLog(workout, ex.id);
         return { key: key(date, workout.id) + '_' + uid(), date, dateMode: 'auto', archived: false, day: workout.id, cycleNumber, workout: clone(workout), logs, notes: '', cardio: null, done: false, updatedAt: Date.now() };
       }
       function hasExerciseData(log) {
-        return !!log && (log.sets ? log.sets.some(s => s.load !== null || s.value !== null || s.done) : log.done);
+        return !!log && (log.sets ? log.sets.some(s => s.load !== null || s.value !== null || s.done) : log.done || log.rounds?.some(Boolean));
       }
       function previous(sessions, date, day, exerciseId, excludeKey = null, unit = null) {
         return Object.values(sessions).filter(s => s.done && s.key !== excludeKey && s.day === day && s.date <= date && (!unit || s.workout.exercises.find(ex => ex.id === exerciseId)?.unit === unit) && hasExerciseData(s.logs[exerciseId])).sort((a, b) => b.date.localeCompare(a.date) || b.updatedAt - a.updatedAt)[0] || null;
@@ -2438,6 +2429,7 @@
         for (const ex of session.workout.exercises) {
           const log = session.logs[ex.id];
           if (ex.sets) { total += ex.sets; done += log.sets.filter(s => s.done).length; }
+          else if (log.rounds) { total += log.rounds.length; done += log.rounds.filter(Boolean).length; }
           else { total++; done += Number(log.done); }
         }
         return { done, total };
@@ -2452,10 +2444,10 @@
       }
       function repeatNext(session, exerciseId, index) {
         const sets = session.logs[exerciseId]?.sets, from = sets?.[index], next = sets?.[index + 1];
-        if (!from || !next || next.done || from.load === null || from.value === null) return;
+        if (!from?.done || !next || next.done) return;
         next.auto ||= { load: false, value: false };
         for (const field of ['load', 'value']) {
-          if (next[field] === null || next.auto[field]) { next[field] = from[field]; next.auto[field] = true; }
+          if (next[field] === null || next.auto[field]) { next[field] = from[field]; next.auto[field] = from[field] !== null; }
         }
       }
       function adaptSession(session, workout) {
@@ -2469,7 +2461,7 @@
             if (before.unit !== ex.unit) { kept.value = null; kept.done = false; kept.auto.value = false; }
             return kept;
           });
-          else if (!ex.sets && !old.sets) next.logs[ex.id] = clone(old);
+          else if (!ex.sets && !old.sets) next.logs[ex.id] = stageLog(workout, ex.id, old);
         }
         return { ...session, workout: next.workout, logs: next.logs, updatedAt: Math.max(Date.now(), session.updatedAt + 1) };
       }
@@ -2511,7 +2503,7 @@
                 if (!(t.min === null && t.max === null) && (!Number.isInteger(t.min) || !Number.isInteger(t.max) || t.min < 1 || t.max < t.min || t.max > 10000)) bad();
                 clean.target = { min: t.min, max: t.max };
               } else {
-                if (!Number.isInteger(t.repeats) || t.repeats < 1 || t.repeats > 100 || !Number.isInteger(t.durationSeconds) || !Number.isInteger(t.durationMaxSeconds) || t.durationSeconds < 1 || t.durationMaxSeconds < t.durationSeconds || t.durationMaxSeconds > 86400 || !Number.isFinite(t.speedKmh) || t.speedKmh < .1 || t.speedKmh > 60 || !['speed', 'pace'].includes(t.mode)) bad();
+                if (!Number.isInteger(t.repeats) || t.repeats < 1 || t.repeats > 100 || !Number.isInteger(t.durationSeconds) || !Number.isInteger(t.durationMaxSeconds) || t.durationSeconds < 1 || t.durationMaxSeconds < t.durationSeconds || t.durationMaxSeconds > 86400 || !Number.isFinite(t.speedKmh) || t.speedKmh < .1 || t.speedKmh > 60 || !['speed', 'pace', 'rest'].includes(t.mode)) bad();
                 if (t.useRange !== undefined && typeof t.useRange !== 'boolean') bad();
                 clean.target = { repeats: t.repeats, durationSeconds: t.durationSeconds, durationMaxSeconds: t.durationMaxSeconds, speedKmh: t.speedKmh, mode: t.mode };
               }
@@ -2521,9 +2513,14 @@
           const groups = [], grouped = new Set(), groupIds = new Set();
           if (w.groups !== undefined && (!Array.isArray(w.groups) || w.groups.length > 15)) bad();
           for (const group of w.groups || []) {
-            if (w.kind !== 'strength' || !obj(group) || !safeId(group.id) || seen.has(group.id) || groupIds.has(group.id) || !Array.isArray(group.exerciseIds) || group.exerciseIds.length < 2 || group.exerciseIds.length > 3) bad();
+            if (!obj(group) || !safeId(group.id) || seen.has(group.id) || groupIds.has(group.id) || !Array.isArray(group.exerciseIds) || group.exerciseIds.length < 2 || group.exerciseIds.length > (w.kind === 'cardio' ? 30 : 3)) bad();
             for (const id of group.exerciseIds) { if (!seen.has(id) || grouped.has(id)) bad(); grouped.add(id); }
-            groupIds.add(group.id); groups.push({ id: group.id, exerciseIds: [...group.exerciseIds] });
+            const clean = { id: group.id, exerciseIds: [...group.exerciseIds] };
+            if (w.kind === 'cardio') {
+              if (!Number.isInteger(group.repeats) || group.repeats < 1 || group.repeats > 100) bad();
+              clean.repeats = group.repeats;
+            }
+            groupIds.add(group.id); groups.push(clean);
           }
           return { id: w.id, weekday, day: weekdays[weekday - 1], shortDay: shortDays[weekday - 1], title: w.title, short: w.short, subtitle: '', kind: w.kind, exercises, groups };
         };
@@ -2544,7 +2541,9 @@
               }) };
             } else {
               if (typeof log.done !== 'boolean') bad();
-              logs[ex.id] = { done: log.done };
+              const group = cardioGroup(w, ex.id);
+              if (group && (!Array.isArray(log.rounds) || log.rounds.length !== group.repeats || !log.rounds.every(v => typeof v === 'boolean'))) bad();
+              logs[ex.id] = stageLog(w, ex.id, log);
             }
           }
           let cardio = null;
@@ -2555,7 +2554,7 @@
           if (!legacy && (!Number.isSafeInteger(s.cycleNumber) || s.cycleNumber < 1)) bad();
           return { key: id, date: s.date, dateMode: s.dateMode === 'manual' ? 'manual' : 'auto', archived: s.archived === true, day: s.day, cycleNumber: legacy ? 1 : s.cycleNumber, workout: w, logs, notes: s.notes, cardio, done: s.done, updatedAt: s.updatedAt };
         };
-        if (!obj(raw) || raw.app !== APP || ![1, 2, 3, 4, 5].includes(raw.schema) || !obj(raw.sessions) || Object.keys(raw.sessions).length > 10000) bad();
+        if (!obj(raw) || raw.app !== APP || ![1, 2, 3, 4, 5, 6].includes(raw.schema) || !obj(raw.sessions) || Object.keys(raw.sessions).length > 10000) bad();
         const result = empty();
         if (raw.profile != null) {
           if (!obj(raw.profile) || !str(raw.profile.name, 100) || !raw.profile.name.trim() || !(raw.profile.avatar === null || (str(raw.profile.avatar, 1500000) && /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(raw.profile.avatar))) || !stamp(raw.profileUpdatedAt)) bad();
@@ -2597,6 +2596,7 @@
       }
       function merge(current, incoming) {
         const result = clone(current); let added = 0, updated = 0, kept = 0;
+        result.schema = 6;
         for (const field of ['sessions', 'drafts']) for (const [id, s] of Object.entries(incoming[field])) {
           if (!result[field][id]) { result[field][id] = clone(s); if (field === 'sessions') added++; }
           else if (s.updatedAt > result[field][id].updatedAt) { result[field][id] = clone(s); if (field === 'sessions') updated++; }
@@ -2644,7 +2644,7 @@
         } else {
           let duration = durationText(t.durationSeconds);
           if (t.durationSeconds !== t.durationMaxSeconds) duration = t.durationSeconds % 60 === 0 && t.durationMaxSeconds % 60 === 0 ? `${t.durationSeconds / 60}–${t.durationMaxSeconds / 60} min` : `${durationText(t.durationSeconds)} – ${durationText(t.durationMaxSeconds)}`;
-          ex.meta = [`${t.repeats > 1 ? t.repeats + ' × ' : ''}${duration}`, t.mode === 'pace' ? `${paceText(t.speedKmh)} min/km` : `${valueText(t.speedKmh)} km/h`];
+          ex.meta = [`${t.repeats > 1 ? t.repeats + ' × ' : ''}${duration}`, t.mode === 'rest' ? 'Descanso' : t.mode === 'pace' ? `${paceText(t.speedKmh)} min/km` : `${valueText(t.speedKmh)} km/h`];
         }
         return ex;
       }
@@ -2654,7 +2654,7 @@
         w.exercises.forEach(ex => { ex.target = targetFor(ex, w.kind); syncMeta(ex, w.kind); });
         return w;
       }
-      const groupName = group => group.exerciseIds.length === 3 ? 'Triset' : 'Biset';
+      const groupName = (group, kind = 'strength') => kind === 'cardio' ? 'Intervalado' : group.exerciseIds.length === 3 ? 'Triset' : 'Biset';
       function blocks(workout) {
         const consumed = new Set(), result = [];
         for (const ex of workout.exercises) {
@@ -2662,12 +2662,18 @@
           const group = (workout.groups || []).find(g => g.exerciseIds.includes(ex.id));
           const exercises = group ? group.exerciseIds.map(id => workout.exercises.find(e => e.id === id)).filter(Boolean) : [ex];
           exercises.forEach(e => consumed.add(e.id));
-          result.push({ id: group?.id || ex.id, name: group ? groupName(group) : ex.name, group, exercises });
+          result.push({ id: group?.id || ex.id, name: group ? groupName(group, workout.kind) : ex.name, group, exercises });
         }
         return result;
       }
       function cleanGroups(workout) {
-        workout.groups = (workout.groups || []).map(g => ({ ...g, exerciseIds: g.exerciseIds.filter(id => workout.exercises.some(ex => ex.id === id)) })).filter(g => g.exerciseIds.length > 1);
+        workout.groups = (workout.groups || []).map(g => ({ ...g, exerciseIds: g.exerciseIds.filter(id => workout.exercises.some(ex => ex.id === id)) })).filter(g => {
+          if (g.exerciseIds.length > 1) return true;
+          if (workout.kind === 'cardio' && g.exerciseIds.length === 1) {
+            const ex = workout.exercises.find(ex => ex.id === g.exerciseIds[0]); ex.target.repeats = g.repeats; syncMeta(ex, workout.kind);
+          }
+          return false;
+        });
       }
       return { targetFor, syncMeta, durationText, paceText, valueText, activeWorkout, blocks, groupName, cleanGroups };
     })();
@@ -2765,7 +2771,17 @@
         selectedDay = next?.id || null; selectedWeekday = next?.weekday || selectedWeekday;
         selectedDate = effectiveDate(currentDraft());
       }
-      goToNext();
+      function goToToday() {
+        syncPlan(); viewingRecord = null;
+        selectedWeekday = (new Date().getDay() + 6) % 7 + 1;
+        const choices = PLAN.filter(w => w.weekday === selectedWeekday);
+        const records = Object.values(store.sessions).filter(s => s.done && s.date === localDate()).sort((a, b) => b.updatedAt - a.updatedAt);
+        const next = choices.find(w => !store.cycle.completed[w.id] && !records.some(s => s.day === w.id)) || choices[0];
+        selectedDay = next?.id || null;
+        viewingRecord = records.find(s => s.day === selectedDay)?.key || null;
+        selectedDate = effectiveDate(currentRecord() || currentDraft());
+      }
+      goToToday();
       function toast(message) { $('toast').textContent = message; $('toast').hidden = false; clearTimeout(toastTimeout); toastTimeout = setTimeout(() => $('toast').hidden = true, 4200); }
       function savePreferences() { try { localStorage.setItem(PREF_KEY, JSON.stringify(preferences)); } catch { } }
       function storageNotice() {
@@ -2812,10 +2828,11 @@
       }
       function updateDayChecks() {
         const dates = weekDates(), sessions = Object.values(store.sessions).filter(s => s.done && s.date >= dates[0] && s.date <= dates[6]);
-        $('weekly-overview').innerHTML = `<div><strong>Esta semana</strong><span class="weekly-range">${esc(displayDate(dates[0]))} – ${esc(displayDate(dates[6]))}</span></div><p><strong>${sessions.length}</strong><span>${sessions.length === 1 ? 'treino concluído' : 'treinos concluídos'}</span></p>`;
+        const completed = new Set(sessions.map(s => s.day)), total = PLAN.length, done = PLAN.filter(w => completed.has(w.id)).length, extra = sessions.length - done;
+        $('weekly-overview').innerHTML = `<div class="weekly-heading"><div><strong>Esta semana</strong><span class="weekly-range">${esc(displayDate(dates[0]))} – ${esc(displayDate(dates[6]))}</span></div><p class="weekly-count" aria-label="${done} de ${total} treinos programados concluídos nesta semana"><strong>${done} <span>/ ${total}</span></strong><span>treinos concluídos</span></p></div><div class="weekly-progress" role="progressbar" aria-label="Treinos programados concluídos na semana" aria-valuemin="0" aria-valuemax="${total || 1}" aria-valuenow="${done}" aria-valuetext="${total ? done + ' de ' + total + ' treinos' : 'Nenhum treino programado'}"><span style="width:${total ? done / total * 100 : 0}%"></span></div>${extra ? `<p class="weekly-extra">+ ${extra} ${extra === 1 ? 'treino extra registrado' : 'treinos extras registrados'} na semana</p>` : ''}`;
         $('week-nav').querySelectorAll('[data-weekday]').forEach(el => {
           const weekday = +el.dataset.weekday, date = dates[weekday - 1], workouts = PLAN.filter(w => w.weekday === weekday);
-          const count = workouts.filter(w => !!store.cycle.completed[w.id]).length, complete = workouts.length > 0 && count === workouts.length;
+          const count = workouts.filter(w => completed.has(w.id)).length, complete = workouts.length > 0 && count === workouts.length;
           el.dataset.complete = String(complete);
           el.setAttribute('aria-label', `${D.weekdays[weekday - 1]}, ${displayDate(date)}, ${workouts.length ? count + ' de ' + workouts.length + ' treinos concluídos' : 'sem treino programado'}`);
           el.querySelector('.day-number').textContent = Number(date.slice(-2));
@@ -2849,11 +2866,19 @@
       ${prev ? `<details class="exercise-extra"><summary>Treino anterior ${icon('chevron')}</summary><p class="previous-date">${esc(displayDate(prev.date, true))} · ${D.isComplete(prev) ? 'concluído' : 'parcial'}</p><ul class="previous-list">${old.map((set, i) => `<li><span>Série ${i + 1}</span><span>${esc(previousLabel(set, ex.unit))}${ex.unit === 'reps' ? ' reps' : ''}</span></li>`).join('')}</ul><p class="previous-date">kg total</p><button class="button full" data-copy="${esc(ex.id)}" aria-label="Usar valores anteriores de ${esc(ex.name)} nas séries vazias">${icon('copy')}Repetir valores</button></details>` : ''}
     </article>`;
       }
-      function renderCardio(ex, index, session) {
-        return `<article class="exercise cardio-stage ${session.logs[ex.id].done ? 'is-done' : ''}"><div class="stage-main"><h3>${esc(ex.name)}</h3><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div><label class="complete-set"><input type="checkbox" data-stage="${ex.id}" aria-label="Concluir etapa ${esc(ex.name)}" ${session.logs[ex.id].done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></article>`;
+      function renderCardio(ex, index, session, round = null) {
+        const done = round === null ? session.logs[ex.id].done : session.logs[ex.id].rounds[round];
+        return `<article class="exercise cardio-stage ${done ? 'is-done' : ''}"><div class="stage-main"><h3>${esc(ex.name)}</h3><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div><label class="complete-set"><input type="checkbox" data-stage="${ex.id}" ${round === null ? '' : `data-round="${round}"`} aria-label="Concluir etapa ${esc(ex.name)}${round === null ? '' : ', volta ' + (round + 1)}" ${done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></article>`;
       }
-      function renderExerciseBlocks(workout, render, history = false) {
+      function renderExerciseBlocks(workout, render, history = false, session = null) {
         return TrainingConfig.blocks(workout).map(block => {
+          if (block.group && workout.kind === 'cardio') {
+            const repeats = block.group.repeats;
+            const counts = Array.from({ length: repeats }, (_, i) => block.exercises.filter(ex => session?.logs[ex.id].rounds?.[i]).length);
+            const firstPending = counts.findIndex(n => n < block.exercises.length);
+            const rounds = counts.map((done, i) => `<details class="interval-round" data-interval-round="${i}" data-interval-group="${block.id}" ${!history && i === firstPending ? 'open' : ''}><summary><span>Volta ${i + 1}</span><span class="interval-round-status">${done === block.exercises.length ? 'Concluída' : `${done}/${block.exercises.length} etapas`}</span>${icon('chevron')}</summary>${block.exercises.map(ex => render(ex, workout.exercises.indexOf(ex), i)).join('')}</details>`).join('');
+            return `<section class="${history ? 'history-superset' : 'superset'} interval-block" aria-label="Intervalado de ${repeats} ${repeats === 1 ? 'volta' : 'voltas'}"><div class="interval-heading"><h3 class="superset-label">Intervalado</h3><span class="interval-count">${repeats} ${repeats === 1 ? 'volta' : 'voltas'}</span></div><p class="interval-hint">${block.exercises.map(ex => esc(ex.name)).join(' → ')}</p>${rounds}</section>`;
+          }
           const content = block.exercises.map(ex => render(ex, workout.exercises.indexOf(ex))).join('');
           return block.group ? `<section class="${history ? 'history-superset' : 'superset'}" aria-label="${esc(block.name)}"><h3 class="superset-label">${esc(block.name)}</h3>${content}</section>` : content;
         }).join('');
@@ -2863,15 +2888,14 @@
         syncRestContext();
         $('workout').setAttribute('aria-labelledby', 'workout-title');
         if (!w) {
-          $('session-date').disabled = true; $('session-date').closest('.date-wrap').hidden = true;
           $('workout').innerHTML = `<div class="empty-workout">${icon(PLAN.length ? 'calendar' : 'reminder')}<h2 id="workout-title" tabindex="-1">${PLAN.length ? esc(D.weekdays[selectedWeekday - 1]) : 'Monte sua ficha'}</h2><p>${PLAN.length ? 'Nenhum treino cadastrado para este dia.' : 'Organize seus treinos de força e corrida ao longo da semana.'}</p><div class="empty-actions"><button type="button" class="button primary" data-setup-workout>${PLAN.length ? 'Novo treino' : 'Criar primeiro treino'}</button>${!store.profile ? '<button type="button" class="button" data-setup-profile>Configurar perfil</button>' : ''}</div></div>`;
           return;
         }
         const s = currentSession(), strength = w.kind === 'strength', locked = isReadOnly(), choices = PLAN.filter(item => item.weekday === selectedWeekday);
-        selectedDate = effectiveDate(s); $('session-date').value = selectedDate; $('session-date').innerHTML = `<span>${esc(displayDate(selectedDate, true))}</span>${icon('chevron')}`; $('session-date').disabled = locked; $('session-date').closest('.date-wrap').hidden = locked;
+        selectedDate = effectiveDate(s);
         $('workout').innerHTML = `${choices.length > 1 ? `<div class="workout-switcher" role="group" aria-label="Treinos de ${esc(D.weekdays[selectedWeekday - 1])}">${choices.map(item => `<button class="button" data-workout-choice="${item.id}" aria-pressed="${item.id === selectedDay}">${esc(item.title)}</button>`).join('')}</div>` : ''}
-          <div class="workout-heading"><div class="session-meta">${icon(strength ? 'dumbbell' : 'run')}<span>${strength ? 'Força' : 'Corrida'} · ${esc(displayDate(selectedDate))}</span></div><h2 id="workout-title" tabindex="-1">${esc(w.title)}</h2><div class="progress-label"><span id="progress-label"></span><span class="save-status" id="save-status" role="status"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div><p class="session-done" id="session-done" hidden></p></div>
-          <div id="exercise-list">${renderExerciseBlocks(w, (ex, i) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s))}</div>
+          <div class="workout-heading"><div class="session-meta">${icon(strength ? 'dumbbell' : 'run')}<span>${strength ? 'Força' : 'Corrida'} · ${esc(displayDate(selectedDate))}</span></div><h2 id="workout-title" tabindex="-1">${esc(w.title)}</h2><div class="progress-label"><span id="progress-label"></span><span class="save-status" id="save-status" role="status"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div></div>
+          <div id="exercise-list">${renderExerciseBlocks(w, (ex, i, round) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s, round), false, s)}</div>
           <p class="form-error" id="entry-error" role="alert" hidden></p>
           <details class="disclosure notes" ${s.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="${strength ? 'Anote algo sobre o treino.' : 'Anote como foi a corrida.'}">${esc(s.notes)}</textarea></details>
           <div class="session-actions"><button class="button primary" id="finish-workout">${locked ? 'Próximo treino' : 'Concluir treino'}</button></div>`;
@@ -2884,8 +2908,11 @@
         $('progress-fill').style.width = (p.total ? 100 * p.done / p.total : 0) + '%';
         $('workout-progress').setAttribute('aria-valuenow', p.done); $('workout-progress').setAttribute('aria-valuemin', '0'); $('workout-progress').setAttribute('aria-valuemax', p.total);
         $('progress-label').textContent = `${p.done}/${p.total} ${unit}`;
-        $('session-done').hidden = locked || p.done !== p.total;
-        $('session-done').textContent = 'Tudo marcado. Confirme a conclusão abaixo.';
+        $('exercise-list').querySelectorAll('[data-interval-round]').forEach(el => {
+          const group = s.workout.groups.find(g => g.id === el.dataset.intervalGroup), round = +el.dataset.intervalRound;
+          const done = group.exerciseIds.filter(id => s.logs[id].rounds[round]).length;
+          el.querySelector('.interval-round-status').textContent = done === group.exerciseIds.length ? 'Concluída' : `${done}/${group.exerciseIds.length} etapas`;
+        });
         $('finish-workout').hidden = false; $('finish-workout').textContent = locked ? 'Próximo treino' : 'Concluir treino';
       }
       function validInputs() {
@@ -2936,7 +2963,9 @@
           el.closest('tr').classList.toggle('completed', el.checked); changed(); refreshSetValues(el.dataset.ex);
           if (el.checked && roundComplete(s, el.dataset.ex, +el.dataset.set)) startRest(el);
         } else if (el.matches('[data-stage]')) {
-          ensureSession().logs[el.dataset.stage].done = el.checked;
+          const log = ensureSession().logs[el.dataset.stage];
+          if (el.hasAttribute('data-round')) { log.rounds[+el.dataset.round] = el.checked; log.done = log.rounds.every(Boolean); }
+          else log.done = el.checked;
           el.closest('article').classList.toggle('is-done', el.checked); changed();
         }
       });
@@ -2956,8 +2985,8 @@
         }
       });
       $('theme-toggle').addEventListener('click', () => { preferences.theme = preferences.theme === 'dark' ? 'light' : 'dark'; applyTheme(); savePreferences(); });
-      function historyExercise(ex, log) {
-        if (!log.sets) return `<div class="history-stage"><div><h4>${esc(ex.name)}</h4><p>${ex.meta.map(esc).join(' · ')}</p></div><span class="stage-status">${log.done ? 'Feita' : 'Pendente'}</span></div>`;
+      function historyExercise(ex, log, round = null) {
+        if (!log.sets) return `<div class="history-stage"><div><h4>${esc(ex.name)}</h4><p>${ex.meta.map(esc).join(' · ')}</p></div><span class="stage-status">${(round === null ? log.done : log.rounds[round]) ? 'Feita' : 'Pendente'}</span></div>`;
         const unit = 'kg total';
         return `<section class="history-ex"><h4>${esc(ex.name)}</h4><table class="history-sets" aria-label="Registro de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col">${unit}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col">Status</th></tr></thead><tbody>${log.sets.map((set, i) => `<tr class="${set.done ? 'record-done' : ''}"><td>${i + 1}</td><td>${esc(number(set.load))}</td><td>${esc(number(set.value))}</td><td>${set.done ? 'Feita' : 'Pendente'}</td></tr>`).join('')}</tbody></table></section>`;
       }
@@ -3026,7 +3055,7 @@
         const dayRecords = byDate.get(historyDate) || [];
         $('history-list').innerHTML = dayRecords.length ? dayRecords.map(s => {
           const p = D.progress(s);
-          return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${cardioTotals(s)}${renderExerciseBlocks(s.workout, ex => historyExercise(ex, s.logs[ex.id]), true)}${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button class="button" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
+          return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${cardioTotals(s)}${renderExerciseBlocks(s.workout, (ex, i, round) => historyExercise(ex, s.logs[ex.id], round), true, s)}${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button class="button" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
         }).join('') : '<p class="calendar-empty">Nenhum treino nesta data.</p>';
       }
       $('history-open').addEventListener('click', () => {
@@ -3216,12 +3245,10 @@
         $('date-month-picker').hidden = !open; $('date-calendar').hidden = open;
         $('date-month-toggle').setAttribute('aria-expanded', String(open));
       }
-      $('session-date').addEventListener('click', () => {
-        if (!currentWorkout() || isReadOnly() || !validInputs()) return;
-        selectedDate = effectiveDate(currentDraft());
-        datePicker = { date: selectedDate, month: selectedDate.slice(0, 7), year: Number(selectedDate.slice(0, 4)), mode: currentDraft()?.dateMode || 'auto' };
+      function openDatePicker(date, mode, trigger, apply) {
+        datePicker = { date, month: date.slice(0, 7), year: Number(date.slice(0, 4)), mode, trigger, apply };
         toggleDateMonths(false); renderDatePicker(); $('date-dialog').showModal(); renderDatePicker(true);
-      });
+      }
       function moveDateMonth(delta) {
         const date = new Date(datePicker.month + '-01T12:00:00'); date.setMonth(date.getMonth() + delta);
         const month = dateKey(date).slice(0, 7); if (month < '2000-01' || month > '2100-12') return;
@@ -3255,11 +3282,10 @@
         datePicker.date = localDate(); datePicker.month = datePicker.date.slice(0, 7); datePicker.year = Number(datePicker.date.slice(0, 4)); datePicker.mode = 'auto'; toggleDateMonths(false); renderDatePicker(true);
       });
       $('date-apply').addEventListener('click', () => {
-        if (!datePicker || isReadOnly() || !currentWorkout()) return;
-        const draft = ensureSession(); draft.dateMode = datePicker.mode; draft.date = datePicker.date; selectedDate = draft.date;
-        changed(); renderWorkout(); $('date-dialog').close();
+        if (!datePicker || !D.validDate(datePicker.date)) return;
+        datePicker.apply(datePicker.date, datePicker.mode); $('date-dialog').close();
       });
-      $('date-dialog').addEventListener('close', () => { datePicker = null; $('session-date').focus({ preventScroll: true }); });
+      $('date-dialog').addEventListener('close', () => { if ($('date-dialog').open) return; const trigger = datePicker?.trigger; datePicker = null; if (trigger?.isConnected) trigger.focus({ preventScroll: true }); });
 
       const C = TrainingConfig;
       let editorDraft = null, editorIsNew = false;
@@ -3310,18 +3336,19 @@
         const strength = editorDraft.kind === 'strength';
         $('editor-exercises-label').textContent = strength ? 'Exercícios' : 'Etapas';
         $('editor-add').textContent = strength ? 'Adicionar exercício' : 'Adicionar etapa';
-        $('editor-groups').hidden = !strength;
+        $('editor-groups').hidden = false;
+        $('editor-groups').textContent = strength ? 'Superséries' : 'Juntar etapas';
         function card(ex, grouped) {
           const t = ex.target, i = editorDraft.exercises.indexOf(ex);
           return `<section class="editor-exercise" data-editor-ex="${ex.id}" ${grouped ? '' : `data-sort-id="${ex.id}"`}>
             <div class="editor-exercise-head">${grouped ? '' : dragHandle(ex.name)}<h3>${strength ? 'Exercício' : 'Etapa'} ${i + 1}</h3></div>
             <label class="form-field">Nome ${strength ? 'do exercício' : 'da etapa'}<input data-edit="name" value="${esc(ex.name)}" maxlength="200" required autocomplete="off"></label>
             ${strength ? `${pickerField('Séries', 'sets', ex.sets)}<div class="form-grid">${pickerField('Reps mínimas', 'min', t.min ?? '—')}${pickerField('Reps máximas', 'max', t.max ?? '—')}</div>`
-              : `${pickerField('Repetições da etapa', 'repeats', t.repeats)}<div class="form-grid">${pickerField('Tempo mínimo', 'duration', C.durationText(t.durationSeconds))}${pickerField('Tempo máximo', 'duration-max', C.durationText(t.durationMaxSeconds))}</div><div class="speed-mode" role="group" aria-label="Intensidade da etapa"><button type="button" data-speed-mode="speed" aria-pressed="${t.mode === 'speed'}">Velocidade</button><button type="button" data-speed-mode="pace" aria-pressed="${t.mode === 'pace'}">Pace</button></div>${pickerField(t.mode === 'pace' ? 'Pace (min/km)' : 'Velocidade (km/h)', t.mode === 'pace' ? 'pace' : 'speed', t.mode === 'pace' ? C.paceText(t.speedKmh) : C.valueText(t.speedKmh))}`}
+              : `${grouped ? '' : pickerField('Repetições da etapa', 'repeats', t.repeats)}<div class="form-grid">${pickerField('Tempo mínimo', 'duration', C.durationText(t.durationSeconds))}${pickerField('Tempo máximo', 'duration-max', C.durationText(t.durationMaxSeconds))}</div><div class="speed-mode" role="group" aria-label="Tipo de intensidade da etapa"><button type="button" data-speed-mode="speed" aria-pressed="${t.mode === 'speed'}">Velocidade</button><button type="button" data-speed-mode="pace" aria-pressed="${t.mode === 'pace'}">Pace</button><button type="button" data-speed-mode="rest" aria-pressed="${t.mode === 'rest'}">Descanso</button></div>${t.mode === 'rest' ? '<p class="form-hint">Pausa sem deslocamento.</p>' : pickerField(t.mode === 'pace' ? 'Pace (min/km)' : 'Velocidade (km/h)', t.mode === 'pace' ? 'pace' : 'speed', t.mode === 'pace' ? C.paceText(t.speedKmh) : C.valueText(t.speedKmh))}`}
             <button class="button danger secondary editor-remove" type="button" data-remove-ex>${icon('trash')}Remover ${strength ? 'exercício' : 'etapa'}</button></section>`;
         }
         $('editor-exercises').innerHTML = C.blocks(editorDraft).map(block => block.group
-          ? `<section class="editor-superset" data-sort-id="${block.id}"><div class="superset-heading">${dragHandle(block.name)}<h3>${esc(block.name)}</h3><button type="button" class="button compact" data-separate-group="${block.id}">Separar</button></div>${block.exercises.map(ex => card(ex, true)).join('')}</section>`
+          ? `<section class="editor-superset" data-sort-id="${block.id}"><div class="superset-heading">${dragHandle(block.name)}<h3>${esc(block.name)}</h3><button type="button" class="button compact" data-separate-group="${block.id}">Separar</button></div>${strength ? '' : `<div class="form-field interval-repeat"><span>Voltas do intervalado</span><button type="button" class="number-ticker" data-group-repeats="${block.id}" aria-label="Voltas do intervalado: ${block.group.repeats}" aria-haspopup="dialog" aria-controls="ticker-dialog"><span>${block.group.repeats}</span>${icon('chevron')}</button><p class="form-hint">Repita as etapas abaixo, nesta ordem, a cada volta.</p></div>`}${block.exercises.map(ex => card(ex, true)).join('')}</section>`
           : card(block.exercises[0], false)).join('');
         $('editor-add').disabled = editorDraft.exercises.length >= 30;
         decorateSortOverview();
@@ -3366,9 +3393,20 @@
       });
       $('editor-exercises').addEventListener('click', e => {
         const separate = e.target.closest('[data-separate-group]'); if (separate) { separateGroup(separate.dataset.separateGroup); return; }
+        const repeat = e.target.closest('[data-group-repeats]');
+        if (repeat) {
+          const group = editorDraft?.groups.find(g => g.id === repeat.dataset.groupRepeats); if (!group) return;
+          openTicker('Voltas do intervalado', 'Uma volta inclui todas as etapas do bloco.', [{ label: 'Voltas', values: numericRange(1, 100), value: group.repeats }], values => {
+            if (!editorDraft?.groups.includes(group)) return 'O intervalado foi alterado. Feche este seletor e tente novamente.';
+            group.repeats = values[0]; renderEditor(group.id, '[data-group-repeats]');
+            if (ticker) ticker.trigger = $('editor-exercises').querySelector(`[data-group-repeats="${group.id}"]`);
+            return null;
+          }, repeat);
+          return;
+        }
         const button = e.target.closest('button'), ex = editorDraft?.exercises.find(x => x.id === button?.closest('[data-editor-ex]')?.dataset.editorEx); if (!ex) return;
         if (button.hasAttribute('data-config-number')) configNumber(ex, button.dataset.configNumber, button);
-        if (button.hasAttribute('data-speed-mode')) { ex.target.mode = button.dataset.speedMode; renderEditor(ex.id, `[data-speed-mode="${ex.target.mode}"]`); }
+        if (button.hasAttribute('data-speed-mode')) { ex.target.mode = button.dataset.speedMode; C.syncMeta(ex, editorDraft.kind); renderEditor(ex.id, `[data-speed-mode="${ex.target.mode}"]`); }
         if (button.hasAttribute('data-remove-ex')) { editorDraft.exercises.splice(editorDraft.exercises.indexOf(ex), 1); C.cleanGroups(editorDraft); renderEditor(); $('editor-add').focus({ preventScroll: true }); }
       });
       $('editor-add').addEventListener('click', () => { if (editorDraft && editorDraft.exercises.length < 30) { const ex = freshExercise(editorDraft.kind); editorDraft.exercises.push(ex); renderEditor(ex.id, '[data-edit="name"]'); $('editor-exercises').lastElementChild.scrollIntoView({ block: 'center' }); } });
@@ -3417,31 +3455,44 @@
       let groupSelection = new Set();
       function renderGroups() {
         if (!editorDraft) return;
+        const cardio = editorDraft.kind === 'cardio', limit = cardio ? 30 : 3, fallback = cardio ? 'Nova etapa' : 'Novo exercício';
         const assigned = new Set((editorDraft.groups || []).flatMap(g => g.exerciseIds));
         const available = editorDraft.exercises.filter(ex => !assigned.has(ex.id));
         groupSelection = new Set([...groupSelection].filter(id => available.some(ex => ex.id === id)));
-        $('existing-groups').innerHTML = (editorDraft.groups || []).map(g => `<section class="group-summary"><div><h3>${C.groupName(g)}</h3><p>${g.exerciseIds.map(id => esc(editorDraft.exercises.find(ex => ex.id === id)?.name || 'Novo exercício')).join(' + ')}</p></div><button type="button" class="button compact" data-separate-group="${g.id}">Separar</button></section>`).join('');
-        $('groups-hint').textContent = available.length > 1 ? 'Selecione 2 exercícios para um biset ou 3 para um triset.' : 'Adicione mais exercícios ao treino ou separe um grupo para criar outra supersérie.';
-        $('group-choices').innerHTML = available.map(ex => `<label class="group-choice"><input type="checkbox" value="${ex.id}" ${groupSelection.has(ex.id) ? 'checked' : ''} ${groupSelection.size === 3 && !groupSelection.has(ex.id) ? 'disabled' : ''}><span class="check-box">${icon('check')}</span><span>${esc(ex.name || 'Novo exercício')}</span></label>`).join('');
+        $('groups-title').textContent = cardio ? 'Juntar etapas' : 'Superséries';
+        $('group-choices').setAttribute('aria-label', cardio ? 'Etapas para o intervalado' : 'Exercícios para agrupar');
+        $('existing-groups').innerHTML = (editorDraft.groups || []).map(g => `<section class="group-summary"><div><h3>${C.groupName(g, editorDraft.kind)}${cardio ? ` · ${g.repeats} ${g.repeats === 1 ? 'volta' : 'voltas'}` : ''}</h3><p>${g.exerciseIds.map(id => esc(editorDraft.exercises.find(ex => ex.id === id)?.name || fallback)).join(cardio ? ' → ' : ' + ')}</p></div><button type="button" class="button compact" data-separate-group="${g.id}">Separar</button></section>`).join('');
+        $('groups-hint').textContent = cardio
+          ? (available.length > 1 ? 'Selecione duas ou mais etapas, como corrida e descanso. Elas serão alternadas na ordem do treino. Ajuste as voltas no bloco.' : 'Adicione mais etapas ou separe um bloco para criar outro intervalado.')
+          : (available.length > 1 ? 'Selecione 2 exercícios para um biset ou 3 para um triset.' : 'Adicione mais exercícios ao treino ou separe um grupo para criar outra supersérie.');
+        $('group-choices').innerHTML = available.map(ex => `<label class="group-choice"><input type="checkbox" value="${ex.id}" ${groupSelection.has(ex.id) ? 'checked' : ''} ${groupSelection.size === limit && !groupSelection.has(ex.id) ? 'disabled' : ''}><span class="check-box">${icon('check')}</span><span>${esc(ex.name || fallback)}</span></label>`).join('');
         $('group-create').disabled = groupSelection.size < 2;
-        $('group-create').textContent = 'Criar supersérie';
+        $('group-create').textContent = cardio ? 'Criar intervalado' : 'Criar supersérie';
       }
       function separateGroup(id) {
         if (!editorDraft) return;
+        const group = editorDraft.groups?.find(g => g.id === id);
+        if (group && editorDraft.kind === 'cardio') group.exerciseIds.forEach(id => {
+          const ex = editorDraft.exercises.find(ex => ex.id === id); ex.target.repeats = group.repeats; C.syncMeta(ex, 'cardio');
+        });
         editorDraft.groups = (editorDraft.groups || []).filter(g => g.id !== id); renderEditor(); renderGroups();
       }
       $('editor-groups').addEventListener('click', () => { if (!editorDraft) return; groupSelection.clear(); renderGroups(); $('groups-dialog').showModal(); });
       $('groups-dialog').addEventListener('close', () => { $('editor-groups').focus({ preventScroll: true }); });
       $('group-choices').addEventListener('change', e => {
         if (!e.target.matches('input')) return;
-        if (e.target.checked && groupSelection.size < 3) groupSelection.add(e.target.value); else groupSelection.delete(e.target.value);
+        if (e.target.checked && groupSelection.size < (editorDraft?.kind === 'cardio' ? 30 : 3)) groupSelection.add(e.target.value); else groupSelection.delete(e.target.value);
         const id = e.target.value; renderGroups(); $('group-choices').querySelector(`input[value="${id}"]`)?.focus({ preventScroll: true });
       });
       $('existing-groups').addEventListener('click', e => { const b = e.target.closest('[data-separate-group]'); if (b) { separateGroup(b.dataset.separateGroup); $('groups-dialog').close(); } });
       $('group-create').addEventListener('click', () => {
-        if (!editorDraft || groupSelection.size < 2 || groupSelection.size > 3) return;
+        if (!editorDraft || groupSelection.size < 2 || groupSelection.size > (editorDraft.kind === 'cardio' ? 30 : 3)) return;
         const ids = editorDraft.exercises.filter(ex => groupSelection.has(ex.id)).map(ex => ex.id);
         const group = { id: 'group-' + D.uid(), exerciseIds: ids };
+        if (editorDraft.kind === 'cardio') {
+          group.repeats = Math.max(...editorDraft.exercises.filter(ex => groupSelection.has(ex.id)).map(ex => ex.target.repeats));
+          editorDraft.exercises.filter(ex => groupSelection.has(ex.id)).forEach(ex => { ex.target.repeats = 1; C.syncMeta(ex, 'cardio'); });
+        }
         (editorDraft.groups ||= []).push(group); editorDraft.exercises = C.blocks(editorDraft).flatMap(b => b.exercises);
         groupSelection.clear(); renderGroups(); renderEditor(); $('groups-dialog').close();
       });
@@ -3721,7 +3772,19 @@
       });
       $('profile-dialog').addEventListener('close', () => { if (!$('profile-dialog').open) { profileUpload++; profileDraft = null; profileBusy = false; const returnTo = profileReturnTo; profileReturnTo = null; if (returnTo) openDialog(returnTo); else ($('workout').querySelector('[data-setup-profile]') || $('menu-open')).focus({ preventScroll: true }); } });
 
-      let finishTarget = null, finishMetrics = null;
+      let finishTarget = null, finishMetrics = null, finishDate = null;
+      function renderFinishDate() {
+        const label = `${finishDate === localDate() ? 'Hoje' : D.shortDays[(new Date(finishDate + 'T12:00:00').getDay() + 6) % 7]} · ${displayDate(finishDate, true)}`;
+        setSelectionField('finish-date', finishDate, label);
+      }
+      $('finish-date').addEventListener('click', () => {
+        if (!finishTarget || !finishDate) return;
+        const target = finishTarget;
+        openDatePicker(finishDate, finishDate === localDate() ? 'auto' : 'manual', $('finish-date'), date => {
+          if (finishTarget !== target || !$('finish-dialog').open) return;
+          finishDate = date; renderFinishDate(); $('finish-date').removeAttribute('aria-invalid'); $('finish-error').hidden = true;
+        });
+      });
       function cardioTotals(session) {
         if (!session.cardio) return '';
         return `<dl class="cardio-totals"><div><dt>Tempo total</dt><dd>${esc(totalDuration(session.cardio.durationSeconds))}</dd></div><div><dt>Distância total</dt><dd>${esc(number(session.cardio.distanceKm))} km</dd></div></dl>`;
@@ -3738,7 +3801,8 @@
         if (isReadOnly()) { goToNext(); renderNav(); renderWorkout(); return; }
         const session = ensureSession(), p = D.progress(session), cardio = session.workout.kind === 'cardio';
         finishTarget = session.key; finishMetrics = D.clone(session.cardio || { durationSeconds: null, distanceKm: null });
-        $('finish-summary').textContent = `${session.workout.title} · ${displayDate(session.date, true)}`;
+        finishDate = effectiveDate(session); renderFinishDate();
+        $('finish-summary').textContent = session.workout.title;
         $('finish-progress').textContent = `${p.done} de ${p.total} ${cardio ? 'etapas marcadas' : 'séries marcadas'}. ` + (p.done < p.total ? 'As partes não marcadas ficarão como não realizadas no registro. ' : '') + 'O treino entra no histórico ao confirmar.';
         $('finish-cardio').hidden = !cardio; renderFinishMetrics();
         $('finish-error').hidden = true;
@@ -3776,13 +3840,14 @@
         e.preventDefault();
         const draft = store.drafts[finishTarget];
         if (!draft || draft.done || draft.cycleNumber !== store.cycle.number || store.cycle.completed[draft.day]) return;
+        if (!D.validDate(finishDate)) { finishError('Selecione a data em que o treino foi realizado.', $('finish-date')); return; }
         let cardio = null;
         if (draft.workout.kind === 'cardio') {
           if (!finishMetrics?.durationSeconds) { finishError('Selecione o tempo total da corrida.', $('cardio-duration')); return; }
           if (!finishMetrics?.distanceKm) { finishError('Selecione a distância total percorrida.', $('cardio-distance')); return; }
           cardio = D.clone(finishMetrics);
         }
-        const session = { ...D.clone(draft), date: effectiveDate(draft), cardio, done: true, updatedAt: Math.max(Date.now(), draft.updatedAt + 1) };
+        const session = { ...D.clone(draft), date: finishDate, dateMode: finishDate === localDate() ? 'auto' : 'manual', cardio, done: true, updatedAt: Math.max(Date.now(), draft.updatedAt + 1) };
         store.sessions[session.key] = session; delete store.drafts[session.key];
         const reset = D.markCycleComplete(store, session, PLAN), saved = writeStore();
         $('finish-dialog').close(); syncRestContext();
@@ -3790,7 +3855,7 @@
         $('workout').scrollIntoView({ block: 'start' }); $('workout').querySelector('h2').focus({ preventScroll: true });
         toast(saved ? (reset ? 'Treino salvo. Sequência reiniciada.' : 'Treino concluído e salvo no histórico. Próximo treino aberto.') : 'Treino concluído nesta aba. Exporte um backup antes de fechar.');
       });
-      $('finish-dialog').addEventListener('close', () => { if (!$('finish-dialog').open) { finishTarget = null; finishMetrics = null; } });
+      $('finish-dialog').addEventListener('close', () => { if (!$('finish-dialog').open) { finishTarget = null; finishMetrics = null; finishDate = null; } });
 
       let picker = null;
       function updateWheelSelection(index) {
@@ -3839,7 +3904,6 @@
         const { exercise, setIndex, field, trigger } = picker, session = ensureSession();
         const set = session.logs[exercise.id].sets[setIndex];
         set[field] = value; set.auto[field] = false;
-        D.repeatNext(session, exercise.id, setIndex);
         changed(); refreshSetValues(exercise.id);
         $('value-dialog').close(); trigger.focus({ preventScroll: true });
       }
@@ -3911,14 +3975,15 @@
         $('backup-dialog').close(); toast(saved ? 'Backup importado.' : 'Backup carregado nesta aba. O navegador não permitiu salvá-lo.');
       });
       // Timer uses wall-clock time, so delayed rendering does not accumulate drift.
-      let timer = { mode: 'countdown', duration: 90000, elapsed: 0, startedAt: null, finished: false, workoutKey: null };
+      let timer = { mode: 'countdown', duration: 90000, adjustment: 0, elapsed: 0, startedAt: null, finished: false, workoutKey: null };
       try {
         const t = JSON.parse(localStorage.getItem(TIMER_KEY) || 'null');
         if (t && Number.isFinite(t.duration) && t.duration >= 1000 && t.duration <= 7200000) {
           timer.duration = Math.round(t.duration / 1000) * 1000;
           if (t.mode === 'countdown' && typeof t.workoutKey === 'string' && t.workoutKey.length < 200 && Number.isFinite(t.elapsed) && t.elapsed >= 0 && (t.startedAt === null || (Number.isFinite(t.startedAt) && t.startedAt <= Date.now()))) {
+            const adjustment = Number.isFinite(t.adjustment) ? t.adjustment : 0, duration = timer.duration + adjustment;
             const used = t.elapsed + (t.startedAt === null ? 0 : Math.max(0, Date.now() - t.startedAt));
-            if (!t.finished && used < timer.duration) { timer.elapsed = t.elapsed; timer.startedAt = t.startedAt; timer.workoutKey = t.workoutKey; }
+            if (!t.finished && duration > 0 && duration <= 7200000 && used < duration) { timer.adjustment = adjustment; timer.elapsed = t.elapsed; timer.startedAt = t.startedAt; timer.workoutKey = t.workoutKey; }
           }
         }
       } catch { }
@@ -3964,6 +4029,7 @@
 
       function persistTimer() { try { localStorage.setItem(TIMER_KEY, JSON.stringify(timer)); } catch { } }
       const elapsed = () => timer.elapsed + (timer.startedAt === null ? 0 : Math.max(0, Date.now() - timer.startedAt));
+      const restDuration = () => timer.duration + timer.adjustment;
       const restAvailable = () => currentWorkout()?.kind === 'strength' && !isReadOnly();
       const restScope = () => restAvailable() ? `${store.cycle.number}:${currentWorkout().id}` : null;
       const restOwner = () => PLAN.find(w => w.kind === 'strength' && `${store.cycle.number}:${w.id}` === timer.workoutKey && !store.cycle.completed[w.id]);
@@ -3976,7 +4042,7 @@
         document.body.style.setProperty('--rest-mini-height', $('rest-mini').getBoundingClientRect().height + 'px');
       }).observe($('rest-mini'));
       function endRest(playSound = false) {
-        stopSound(); timer.elapsed = 0; timer.startedAt = null; timer.finished = false; timer.workoutKey = null; persistTimer();
+        stopSound(); timer.elapsed = 0; timer.startedAt = null; timer.finished = false; timer.workoutKey = null; timer.adjustment = 0; persistTimer();
         renderRestMini();
         // General settings remain available even when a short rest finishes.
         if ($('rest-dialog').open) $('rest-dialog').close();
@@ -3989,13 +4055,15 @@
       function timeText(ms) { const seconds = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(seconds / 3600), m = Math.floor(seconds / 60) % 60, s = seconds % 60; return `${h ? String(h).padStart(2, '0') + ':' : ''}${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; }
       function timerUI() {
         syncRestContext();
-        const current = elapsed();
-        if (timer.workoutKey && current >= timer.duration) { endRest(true); return; }
-        const remaining = Math.max(0, timer.duration - current), display = timeText(remaining), running = timer.startedAt !== null;
+        const current = elapsed(), duration = restDuration();
+        if (timer.workoutKey && current >= duration) { endRest(true); return; }
+        const remaining = Math.max(0, duration - current), display = timeText(remaining), running = timer.startedAt !== null;
         for (const id of ['timer-display', 'rest-mini-display']) if ($(id).textContent !== display) $(id).textContent = display;
         $('timer-display').classList.toggle('is-long', remaining >= 3600000);
-        const progress = 100 * (1 - Math.min(1, current / timer.duration)) + '%';
+        const progress = 100 * (1 - Math.min(1, current / duration)) + '%';
         $('timer-progress').style.width = progress; $('rest-mini-progress').style.width = progress;
+        $('rest-minus').disabled = !timer.workoutKey;
+        $('rest-plus').disabled = !timer.workoutKey || duration >= 7200000;
         const label = running ? 'Pausar' : 'Retomar';
         if ($('timer-start').dataset.label !== label) { $('timer-start').innerHTML = icon(running ? 'pause' : 'play') + `<span>${label}</span>`; $('timer-start').dataset.label = label; $('timer-start').setAttribute('aria-label', label + ' descanso'); }
         if ($('rest-duration').dataset.duration !== String(timer.duration)) {
@@ -4006,17 +4074,17 @@
       }
       function resetRest(running = timer.startedAt !== null) {
         if (!timer.workoutKey) return;
-        stopSound(); timer.elapsed = 0; timer.startedAt = running ? Date.now() : null; timer.finished = false;
+        stopSound(); timer.elapsed = 0; timer.startedAt = running ? Date.now() : null; timer.finished = false; timer.adjustment = 0;
         persistTimer(); timerUI();
       }
       function openRest(trigger) {
         if (!timer.workoutKey) return;
-        if (elapsed() >= timer.duration) { timerUI(); return; }
+        if (elapsed() >= restDuration()) { timerUI(); return; }
         restTrigger = trigger; openDialog('rest-dialog'); timerUI();
       }
       function startRest(trigger) {
         if (!restAvailable()) return;
-        stopSound(); timer.elapsed = 0; timer.startedAt = Date.now(); timer.finished = false; timer.workoutKey = restScope();
+        stopSound(); timer.elapsed = 0; timer.startedAt = Date.now(); timer.finished = false; timer.workoutKey = restScope(); timer.adjustment = 0;
         persistTimer(); initAudio(); openRest(trigger);
       }
       function minimizeRest() { if ($('rest-dialog').open) $('rest-dialog').close(); renderRestMini(); }
@@ -4024,13 +4092,24 @@
       $('rest-expand').addEventListener('click', () => openRest($('rest-expand')));
       $('timer-start').addEventListener('click', () => {
         if (!timer.workoutKey) return;
-        if (elapsed() >= timer.duration) { timerUI(); return; }
+        if (elapsed() >= restDuration()) { timerUI(); return; }
         initAudio(); stopSound();
         if (timer.startedAt !== null) { timer.elapsed = elapsed(); timer.startedAt = null; }
         else timer.startedAt = Date.now();
         persistTimer(); timerUI();
       });
       $('timer-reset').addEventListener('click', () => resetRest());
+      function adjustRest(seconds) {
+        if (!timer.workoutKey) return;
+        const current = elapsed();
+        if (current >= restDuration()) { timerUI(); return; }
+        const duration = Math.min(7200000, restDuration() + seconds * 1000);
+        if (duration <= current) { endRest(true); return; }
+        timer.adjustment = duration - timer.duration;
+        persistTimer(); timerUI();
+      }
+      $('rest-minus').addEventListener('click', () => adjustRest(-30));
+      $('rest-plus').addEventListener('click', () => adjustRest(30));
       $('rest-done').addEventListener('click', () => endRest());
       $('rest-settings-open').addEventListener('click', () => { timerUI(); $('timer-dialog').showModal(); });
       $('rest-dialog').addEventListener('close', () => {
@@ -4088,8 +4167,6 @@
         const w = currentWorkout();
         if (w && !isReadOnly()) {
           selectedDate = effectiveDate(refreshDraftDate(currentDraft()));
-          $('session-date').value = selectedDate;
-          $('session-date').innerHTML = `<span>${esc(displayDate(selectedDate, true))}</span>${icon('chevron')}`;
           const caption = $('workout').querySelector('.session-meta span');
           if (caption) caption.textContent = `${w.kind === 'strength' ? 'Força' : 'Corrida'} · ${displayDate(selectedDate)}`;
         }
