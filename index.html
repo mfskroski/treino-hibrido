@@ -2906,7 +2906,7 @@
       <tbody>${log.sets.map((set, i) => `<tr class="set-row ${set.done ? 'completed' : ''}"><td>${i + 1}</td>
         <td><button type="button" class="set-input" data-field="load" data-index="${i}" data-ex="${ex.id}" data-value="${set.load ?? ''}" aria-haspopup="dialog" aria-controls="numeric-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, kg total: ${esc(number(set.load))}">${esc(number(set.load))}</button></td>
         <td><button type="button" class="set-input" data-field="value" data-index="${i}" data-ex="${ex.id}" data-value="${set.value ?? ''}" aria-haspopup="dialog" aria-controls="value-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, ${ex.unit === 's' ? 'segundos' : 'repetições'}: ${esc(number(set.value))}">${esc(number(set.value))}</button></td>
-        <td>${ex.unit === 's' ? `<button type="button" class="icon-button set-timer" data-exercise-timer="${ex.id}" data-index="${i}" aria-label="${set.done ? 'Desmarcar' : 'Temporizador de'} ${esc(ex.name)}, série ${i + 1}" aria-pressed="${set.done}" aria-haspopup="dialog" aria-controls="rest-dialog">${icon('timer')}</button>` : `<label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="Concluir ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</td></tr>`).join('')}</tbody></table>
+        <td>${ex.unit === 's' ? `<button type="button" class="icon-button secondary set-timer" data-exercise-timer="${ex.id}" data-index="${i}" aria-label="${set.done ? 'Desmarcar' : 'Iniciar'} ${esc(ex.name)}, série ${i + 1}" aria-pressed="${set.done}" aria-haspopup="${set.done ? 'false' : 'dialog'}" aria-controls="rest-dialog">${icon(set.done ? 'check' : 'play')}</button>` : `<label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="Concluir ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</td></tr>`).join('')}</tbody></table>
       ${prev ? `<details class="exercise-extra"><summary>Treino anterior ${icon('chevron')}</summary><p class="previous-date">${esc(displayDate(prev.date, true))}</p><ul class="previous-list">${old.map((set, i) => `<li><span>Série ${i + 1}</span><span>${esc(previousLabel(set, ex.unit))}${ex.unit === 'reps' ? ' reps' : ''}</span></li>`).join('')}</ul><p class="previous-date">kg total</p><button class="button full" data-copy="${esc(ex.id)}" aria-label="Usar valores anteriores de ${esc(ex.name)} nas séries vazias">${icon('copy')}Repetir valores</button></details>` : ''}
     </article>`;
       }
@@ -2965,7 +2965,9 @@
           const done = !!s.logs[exercise.id]?.sets[index]?.done;
           button.disabled = locked;
           button.setAttribute('aria-pressed', String(done));
-          button.setAttribute('aria-label', `${done ? 'Desmarcar' : 'Temporizador de'} ${exercise.name}, série ${index + 1}`);
+          button.setAttribute('aria-label', `${done ? 'Desmarcar' : 'Iniciar'} ${exercise.name}, série ${index + 1}`);
+          button.setAttribute('aria-haspopup', done ? 'false' : 'dialog');
+          button.innerHTML = icon(done ? 'check' : 'play');
           button.closest('tr').classList.toggle('completed', done);
         });
         $('finish-workout').hidden = false; $('finish-workout').textContent = locked ? 'Próximo treino' : 'Concluir treino';
@@ -4278,7 +4280,7 @@
         $('rest-adjustments').hidden = !!exercise;
         $('exercise-timer-cancel').hidden = !exercise;
         $('rest-done').textContent = exercise ? 'Concluir série' : 'Continuar treino';
-        $('rest-done').disabled = !!exercise && !timer.finished;
+        $('rest-done').disabled = false;
         for (const id of ['timer-display', 'rest-mini-display']) if ($(id).textContent !== display) $(id).textContent = display;
         for (const id of ['timer-display', 'rest-mini-display']) $(id).setAttribute('aria-label', 'Tempo restante de ' + (exercise ? 'exercício' : 'descanso'));
         $('timer-display').classList.toggle('is-long', remaining >= 3600000);
@@ -4327,7 +4329,7 @@
       }
       function completeTimedSet() {
         const owner = exerciseTimerOwner(), target = timer.exercise;
-        if (!owner || !timer.finished) return;
+        if (!owner) return;
         const { session, exercise, set } = owner;
         set.value = target.duration / 1000; set.auto.value = false; set.done = true;
         D.repeatNext(session, exercise.id, target.setIndex);
