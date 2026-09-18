@@ -659,10 +659,6 @@
       white-space: nowrap
     }
 
-    .cardio-stage.is-done {
-      background: var(--soft)
-    }
-
 .timer-mode button {
       min-width: 0;
       min-height: 48px;
@@ -1754,6 +1750,11 @@
       animation: sheet-in .24s cubic-bezier(.2, .8, .2, 1)
     }
 
+    #numeric-dialog {
+      bottom: var(--numeric-viewport-bottom, 0px);
+      max-height: calc(var(--numeric-viewport-height, 100dvh) - 12px)
+    }
+
     .value-dialog .dialog-header {
       padding-top: 20px
     }
@@ -1936,10 +1937,10 @@
     .interval-heading>div { flex:1; min-width:0; }
     .interval-heading .superset-label { margin:0; color:var(--ink); font-size:15px; }
     .interval-count { display:block; color:var(--muted); font-size:13px; margin-top:4px; }
-    .interval-stage { padding:14px 0; border-top:1px solid var(--line); }
-    .interval-stage h4 { font-size:16px; font-weight:550; line-height:1.35; overflow-wrap:anywhere; }
-    .interval-stage .cardio-spec { font-size:14px; }
-    .superset.interval-block.is-done { background:var(--soft); }
+    .interval-stage { padding:12px 0; border-top:1px solid var(--line); }
+    .interval-stage:last-child { padding-bottom:0; }
+    .interval-stage h4 { margin:0; font-size:16px; font-weight:550; line-height:1.35; overflow-wrap:anywhere; }
+    .interval-stage .cardio-spec { margin-top:4px; font-size:14px; }
     .interval-block .complete-set { flex:none; }
     .interval-block input:indeterminate+.check-box { position:relative; }
     .interval-block input:indeterminate+.check-box>.icon { opacity:0; }
@@ -2220,7 +2221,7 @@
     </div>
   </dialog>
   <dialog id="numeric-dialog" class="value-dialog" aria-labelledby="numeric-title">
-    <div class="dialog-header"><h2 id="numeric-title">Carga</h2><button type="button" class="icon-button" data-close="numeric-dialog" aria-label="Cancelar edição"><i data-icon="close"></i></button></div>
+    <div class="dialog-header"><h2 id="numeric-title" tabindex="-1" autofocus>Carga</h2><button type="button" class="icon-button" data-close="numeric-dialog" aria-label="Cancelar edição"><i data-icon="close"></i></button></div>
     <form id="numeric-form" class="dialog-body" novalidate>
       <p class="picker-exercise" id="numeric-exercise"></p>
       <div class="speed-mode" id="numeric-units" role="group" aria-label="Unidade de distância" hidden><button type="button" data-distance-unit="m" aria-label="Metros" aria-pressed="false">m</button><button type="button" data-distance-unit="km" aria-label="Quilômetros" aria-pressed="true">km</button></div>
@@ -3218,6 +3219,16 @@
 
       let numericPicker = null;
       const numericText = value => value == null ? '' : value.toLocaleString('pt-BR', { useGrouping: false, maximumFractionDigits: 3 });
+      function fitNumericDialog() {
+        const dialog = $('numeric-dialog'), viewport = window.visualViewport;
+        if (!dialog.open || !viewport) return;
+        // Keep the sheet inside the visible area when the mobile keyboard opens.
+        dialog.style.setProperty('--numeric-viewport-height', `${viewport.height}px`);
+        dialog.style.setProperty('--numeric-viewport-bottom', `${Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)}px`);
+      }
+      window.visualViewport?.addEventListener('resize', fitNumericDialog);
+      window.visualViewport?.addEventListener('scroll', fitNumericDialog);
+      window.addEventListener('resize', fitNumericDialog);
       function numericError(message) {
         $('numeric-error').textContent = message; $('numeric-error').hidden = false;
         $('numeric-input').setAttribute('aria-invalid', 'true'); $('numeric-input').focus({ preventScroll: true });
@@ -3250,7 +3261,8 @@
         $('numeric-input').removeAttribute('aria-invalid'); $('numeric-error').hidden = true;
         numericControls();
         // A distance entry keeps its unsaved workout confirmation underneath.
-        $('numeric-dialog').showModal(); $('numeric-input').focus({ preventScroll: true }); $('numeric-input').select();
+        // Focus the heading; the keyboard opens only when the user taps the field.
+        $('numeric-dialog').showModal(); fitNumericDialog(); $('numeric-dialog').scrollTop = 0;
       }
       function applyNumericValue(value) {
         if (!numericPicker) return;
@@ -3471,7 +3483,7 @@
         $('editor-exercises-label').textContent = strength ? 'Exercícios' : 'Etapas';
         $('editor-add').textContent = strength ? 'Adicionar exercício' : 'Adicionar etapa';
         $('editor-groups').hidden = false;
-        $('editor-groups').textContent = strength ? 'Superséries' : 'Juntar etapas';
+        $('editor-groups').textContent = strength ? 'Superséries' : 'Intervalado';
         function card(ex, grouped) {
           const t = ex.target, i = editorDraft.exercises.indexOf(ex);
           return `<section class="editor-exercise" data-editor-ex="${ex.id}" ${grouped ? '' : `data-sort-id="${ex.id}"`}>
@@ -3600,7 +3612,7 @@
         const assigned = new Set((editorDraft.groups || []).flatMap(g => g.exerciseIds));
         const available = editorDraft.exercises.filter(ex => !assigned.has(ex.id));
         groupSelection = new Set([...groupSelection].filter(id => available.some(ex => ex.id === id)));
-        $('groups-title').textContent = cardio ? 'Juntar etapas' : 'Superséries';
+        $('groups-title').textContent = cardio ? 'Intervalado' : 'Superséries';
         $('group-choices').setAttribute('aria-label', cardio ? 'Etapas para o intervalado' : 'Exercícios para agrupar');
         $('existing-groups').innerHTML = (editorDraft.groups || []).map(g => `<section class="group-summary"><div><h3>${C.groupName(g, editorDraft.kind)}${cardio ? ` · ${g.repeats} ${g.repeats === 1 ? 'volta' : 'voltas'}` : ''}</h3><p>${g.exerciseIds.map(id => esc(editorDraft.exercises.find(ex => ex.id === id)?.name || fallback)).join(' - ')}</p></div><button type="button" class="button compact" data-separate-group="${g.id}">Separar</button></section>`).join('');
         $('groups-empty').hidden = available.length > 1;
