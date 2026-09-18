@@ -1936,11 +1936,10 @@
     .interval-heading>div { flex:1; min-width:0; }
     .interval-heading .superset-label { margin:0; color:var(--ink); font-size:15px; }
     .interval-count { display:block; color:var(--muted); font-size:13px; margin-top:4px; }
-    .interval-hint { font-size:13px; color:var(--muted); margin:0 0 14px; overflow-wrap:anywhere; }
     .interval-stage { padding:14px 0; border-top:1px solid var(--line); }
     .interval-stage h4 { font-size:16px; font-weight:550; line-height:1.35; overflow-wrap:anywhere; }
     .interval-stage .cardio-spec { font-size:14px; }
-    .interval-block.is-done { background:var(--soft); }
+    .superset.interval-block.is-done { background:var(--soft); }
     .interval-block .complete-set { flex:none; }
     .interval-block input:indeterminate+.check-box { position:relative; }
     .interval-block input:indeterminate+.check-box>.icon { opacity:0; }
@@ -2038,6 +2037,14 @@
     .rest-adjustments .button { min-width:96px; min-height:44px; font-size:15px; font-variant-numeric:tabular-nums; }
     .timer-digits { display:block; font-size:68px; line-height:1.15; font-weight:550; font-variant-numeric:tabular-nums; letter-spacing:-2px; }
     .timer-digits.is-long { font-size:54px; }
+    .timer-context { text-align:center; margin-bottom:12px; overflow-wrap:anywhere; }
+    .set-timer { width:46px; min-width:46px; height:50px; padding:11px; }
+    .set-timer[aria-pressed=true] { background:var(--ink); color:var(--inverse); border-color:var(--ink); }
+    .timer-actions { display:grid; gap:12px; }
+    .numeric-field { margin:20px 0; }
+    .numeric-field input { text-align:center; font-size:32px; font-weight:550; font-variant-numeric:tabular-nums; min-height:68px; }
+    .numeric-adjustments { display:flex; gap:12px; margin:0 0 18px; }
+    .numeric-adjustments .button { flex:1; min-width:0; }
     .timer-progress { display:block; height:4px; background:var(--soft); overflow:hidden; border-radius:4px; }
     .timer-progress>span { display:block; height:100%; width:100%; background:var(--ink); }
     .rest-controls { display:flex; gap:10px; margin:22px 0 10px; }
@@ -2048,7 +2055,7 @@
     #rest-expand:hover { background:var(--soft); }
     #rest-expand:focus-visible { outline-offset:-4px; }
     .rest-mini-readout { display:flex; align-items:center; justify-content:space-between; gap:16px; }
-    .rest-mini-title { font-size:14px; font-weight:500; color:var(--muted); }
+    .rest-mini-title { font-size:14px; font-weight:500; color:var(--muted); overflow-wrap:anywhere; min-width:0; }
     .rest-mini-digits { font-size:30px; line-height:1.2; font-weight:550; font-variant-numeric:tabular-nums; letter-spacing:-.8px; }
     .rest-mini .timer-progress { height:3px; margin-top:10px; }
     body.rest-minimized .shell { padding-bottom:calc(var(--rest-mini-height,90px) + 24px); }
@@ -2099,9 +2106,11 @@
       <button type="button" class="icon-button" id="rest-minimize" aria-label="Minimizar descanso"><i data-icon="chevron"></i></button>
     </div>
     <div class="dialog-body">
+      <p class="picker-exercise timer-context" id="exercise-timer-context" hidden></p>
+      <div class="form-field" id="exercise-timer-duration-field" hidden><span id="exercise-timer-duration-label">Duração</span><button type="button" class="number-ticker" id="exercise-timer-duration" aria-labelledby="exercise-timer-duration-label exercise-timer-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
       <div class="rest-readout">
         <span class="timer-digits" id="timer-display" role="timer" aria-label="Tempo restante de descanso">01:30</span>
-        <div class="rest-adjustments" role="group" aria-label="Ajustar o descanso atual">
+        <div class="rest-adjustments" id="rest-adjustments" role="group" aria-label="Ajustar o descanso atual">
           <button type="button" class="button" id="rest-minus" aria-label="Retirar 30 segundos do descanso atual">− 30 s</button>
           <button type="button" class="button" id="rest-plus" aria-label="Adicionar 30 segundos ao descanso atual">+ 30 s</button>
         </div>
@@ -2111,7 +2120,10 @@
         <button type="button" class="button" id="timer-start" aria-label="Pausar descanso"><i data-icon="pause"></i><span>Pausar</span></button>
         <button type="button" class="button" id="timer-reset" aria-label="Reiniciar descanso"><i data-icon="reset"></i><span>Reiniciar</span></button>
       </div>
-      <button type="button" class="button primary full" id="rest-done">Continuar treino</button>
+      <div class="timer-actions">
+        <button type="button" class="button primary full" id="rest-done">Continuar treino</button>
+        <button type="button" class="button full" id="exercise-timer-cancel" hidden>Cancelar</button>
+      </div>
     </div>
   </dialog>
   <aside class="rest-mini" id="rest-mini" aria-label="Descanso" hidden>
@@ -2126,22 +2138,22 @@
           data-icon="close"></i></button>
     </div>
     <div class="dialog-body">
-      <div class="menu-list"><button class="button" id="profile-open"><i data-icon="profile"></i>Perfil</button><button class="button" id="editor-open"><i data-icon="reminder"></i>Treinos</button><button type="button" class="button" id="rest-settings-open" aria-haspopup="dialog" aria-controls="timer-dialog"><i data-icon="timer"></i>Descanso</button><button class="button" id="history-open"><i
+      <div class="menu-list"><button class="button" id="profile-open"><i data-icon="profile"></i>Perfil</button><button class="button" id="editor-open"><i data-icon="reminder"></i>Treinos</button><button type="button" class="button" id="rest-settings-open" aria-haspopup="dialog" aria-controls="timer-dialog"><i data-icon="timer"></i>Temporizador</button><button class="button" id="history-open"><i
             data-icon="history"></i>Histórico</button><button class="button" id="backup-open"><i
             data-icon="download"></i>Backup</button></div>
     </div>
   </dialog>
   <dialog id="timer-dialog" aria-labelledby="timer-title">
     <div class="dialog-header">
-      <h2 id="timer-title">Ajustar descanso</h2><button class="icon-button" data-close="timer-dialog"
-        aria-label="Fechar ajustes do descanso"><i data-icon="close"></i></button>
+      <h2 id="timer-title">Temporizador</h2><button class="icon-button" data-close="timer-dialog"
+        aria-label="Fechar temporizador"><i data-icon="close"></i></button>
     </div>
     <div class="dialog-body">
-      <div class="form-field rest-duration-field"><span id="rest-duration-label">Duração</span><button type="button" class="number-ticker" id="rest-duration" aria-labelledby="rest-duration-label rest-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
+      <div class="form-field rest-duration-field"><span id="rest-duration-label">Duração de descanso</span><button type="button" class="number-ticker" id="rest-duration" aria-labelledby="rest-duration-label rest-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
       <div class="setting-row"><span>Som ao terminar</span><button class="icon-button" id="sound-toggle"
           aria-label="Ativar som do timer" aria-pressed="false"><i data-icon="volume-off"></i></button></div>
       <div class="sound-controls" id="sound-controls" hidden>
-        <div class="sound-volume"><label for="sound-volume">Volume</label><input id="sound-volume" type="range" min="10"
+        <div class="sound-volume"><label for="sound-volume">Volume</label><input id="sound-volume" type="range" min="0"
             max="100" step="10" value="80"><output id="sound-volume-value" for="sound-volume">80%</output></div><button
           class="button sound-test" id="sound-test"><i data-icon="volume"></i>Testar som</button>
       </div>
@@ -2182,7 +2194,6 @@
         aria-label="Fechar backup"><i data-icon="close"></i></button>
     </div>
     <div class="dialog-body">
-      <p>Exporte ou importe seus treinos, registros e perfil.</p>
       <div class="backup-actions"><button class="button full" id="export-backup"><i data-icon="download"></i>Exportar
           backup</button><button class="button full" id="import-backup"><i data-icon="upload"></i>Importar
           backup</button><input id="import-file" type="file" accept=".json,application/json" hidden></div>
@@ -2204,12 +2215,23 @@
           <div class="value-wheel" id="value-wheel" role="listbox" tabindex="0" aria-label="Selecionar valor"></div>
         </div>
       </div>
-      <div class="picker-actions"><button class="button" id="picker-clear">Limpar</button><button class="button primary"
+      <div class="picker-actions"><button type="button" class="button" id="picker-cancel" data-close="value-dialog">Cancelar</button><button class="button primary"
           id="picker-apply">Aplicar</button></div>
     </div>
   </dialog>
+  <dialog id="numeric-dialog" class="value-dialog" aria-labelledby="numeric-title">
+    <div class="dialog-header"><h2 id="numeric-title">Carga</h2><button type="button" class="icon-button" data-close="numeric-dialog" aria-label="Cancelar edição"><i data-icon="close"></i></button></div>
+    <form id="numeric-form" class="dialog-body" novalidate>
+      <p class="picker-exercise" id="numeric-exercise"></p>
+      <div class="speed-mode" id="numeric-units" role="group" aria-label="Unidade de distância" hidden><button type="button" data-distance-unit="m" aria-label="Metros" aria-pressed="false">m</button><button type="button" data-distance-unit="km" aria-label="Quilômetros" aria-pressed="true">km</button></div>
+      <label class="form-field numeric-field"><span id="numeric-label">Carga (kg total)</span><input id="numeric-input" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" spellcheck="false" maxlength="16" aria-describedby="numeric-error"></label>
+      <div class="numeric-adjustments" id="numeric-adjustments"><button type="button" class="button" id="numeric-minus" aria-label="Diminuir carga em 0,5 kg">− 0,5 kg</button><button type="button" class="button" id="numeric-plus" aria-label="Aumentar carga em 0,5 kg">+ 0,5 kg</button></div>
+      <p class="form-error" id="numeric-error" role="alert" hidden></p>
+      <div class="picker-actions"><button type="button" class="button" id="numeric-cancel" data-close="numeric-dialog">Cancelar</button><button type="submit" class="button primary" id="numeric-apply">Aplicar</button></div>
+    </form>
+  </dialog>
   <dialog id="manager-dialog" aria-labelledby="manager-title">
-    <div class="dialog-header"><h2 id="manager-title">Editar treinos</h2><button class="icon-button" data-close="manager-dialog" aria-label="Fechar edição de treinos"><i data-icon="close"></i></button></div>
+    <div class="dialog-header"><h2 id="manager-title">Treinos</h2><button class="icon-button" data-close="manager-dialog" aria-label="Fechar treinos"><i data-icon="close"></i></button></div>
     <div class="dialog-body"><div id="managed-workouts"></div><button class="button primary full" id="new-workout">Novo treino</button></div>
   </dialog>
   <dialog id="editor-dialog" aria-labelledby="editor-title">
@@ -2244,10 +2266,10 @@
   </dialog>
   <dialog id="groups-dialog" aria-labelledby="groups-title">
     <div class="dialog-header"><h2 id="groups-title">Superséries</h2><button type="button" class="icon-button" data-close="groups-dialog" aria-label="Cancelar"><i data-icon="close"></i></button></div>
-    <div class="dialog-body"><div id="existing-groups"></div><p class="form-hint" id="groups-hint">Selecione 2 exercícios para um biset ou 3 para um triset.</p><div id="group-choices" role="group" aria-label="Exercícios para agrupar"></div><button type="button" class="button primary full" id="group-create" disabled>Criar supersérie</button><button type="button" class="button full" data-close="groups-dialog">Cancelar</button></div>
+    <div class="dialog-body"><div id="existing-groups"></div><p class="form-hint" id="groups-empty" hidden></p><div id="group-choices" role="group" aria-label="Exercícios para agrupar"></div><button type="button" class="button primary full" id="group-create" disabled>Criar supersérie</button><button type="button" class="button full" data-close="groups-dialog">Cancelar</button></div>
   </dialog>
   <dialog id="profile-dialog" aria-labelledby="profile-title">
-    <div class="dialog-header"><h2 id="profile-title">Editar perfil</h2><button type="button" class="icon-button" data-close="profile-dialog" aria-label="Cancelar edição do perfil"><i data-icon="close"></i></button></div>
+    <div class="dialog-header"><h2 id="profile-title">Perfil</h2><button type="button" class="icon-button" data-close="profile-dialog" aria-label="Fechar perfil"><i data-icon="close"></i></button></div>
     <form id="profile-form" class="dialog-body" novalidate>
       <div class="profile-photo-editor"><div class="avatar profile-preview" id="profile-preview"></div><div class="profile-photo-actions"><button type="button" class="button" id="profile-upload-photo">Alterar foto</button><button type="button" class="button danger secondary" id="profile-remove-photo">Remover foto</button></div></div>
       <input type="file" id="profile-file" accept="image/*" hidden>
@@ -2266,7 +2288,7 @@
       <fieldset id="finish-cardio" class="cardio-fields" hidden>
         <legend>Totais da corrida</legend>
         <div class="form-field"><span id="cardio-duration-label">Tempo total</span><button type="button" class="number-ticker" id="cardio-duration" aria-labelledby="cardio-duration-label cardio-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
-        <div class="form-field"><span id="cardio-distance-label">Distância total</span><button type="button" class="number-ticker" id="cardio-distance" aria-labelledby="cardio-distance-label cardio-distance" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
+        <div class="form-field"><span id="cardio-distance-label">Distância total</span><button type="button" class="number-ticker" id="cardio-distance" aria-labelledby="cardio-distance-label cardio-distance" aria-haspopup="dialog" aria-controls="numeric-dialog"></button></div>
       </fieldset>
       <p class="form-error" id="finish-error" role="alert" hidden></p>
       <div class="session-actions"><button type="submit" class="button primary" id="finish-confirm">Confirmar conclusão</button><button type="button" class="button" data-close="finish-dialog">Continuar treino</button></div>
@@ -2645,13 +2667,16 @@
       const durationText = seconds => seconds % 60 === 0 ? `${seconds / 60} min` : seconds < 60 ? `${seconds} s` : `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')} min`;
       const paceText = speed => { const seconds = Math.round(3600 / speed); return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`; };
       function targetFor(ex, kind) {
-        if (kind === 'strength' && ex.unit === 's') return { min: null, max: null };
         if (ex.target) {
           const t = TrainingData.clone(ex.target);
           delete t.perSide; delete t.useRange; return t;
         }
         if (kind === 'strength') {
           const values = ex.meta.slice(1).join(' ').match(/(\d+)(?:\s*[–-]\s*(\d+))?/);
+          if (ex.unit === 's') {
+            const multiplier = /\bmin\b/i.test(ex.meta.slice(1).join(' ')) ? 60 : 1;
+            return { min: values ? Number(values[1]) * multiplier : null, max: values ? Number(values[2] || values[1]) * multiplier : null };
+          }
           return { min: Number(values?.[1] || 8), max: Number(values?.[2] || values?.[1] || 12) };
         }
         const text = ex.meta[0] || '', repeats = text.match(/^(\d+)\s*[×x]\s*/i);
@@ -2663,9 +2688,8 @@
       function syncMeta(ex, kind) {
         const t = ex.target;
         if (kind === 'strength') {
-          ex.unit = 'reps';
           const range = t.min === t.max ? t.min : `${t.min}–${t.max}`;
-          ex.meta = [`${ex.sets} ${ex.sets === 1 ? 'série' : 'séries'}`, ...(t.min == null ? [] : [`${range} reps`])];
+          ex.meta = [`${ex.sets} ${ex.sets === 1 ? 'série' : 'séries'}`, ...(t.min == null ? [] : [ex.unit === 's' ? (t.min === t.max ? durationText(t.min) : `${range} s`) : `${range} reps`])];
         } else {
           let duration = durationText(t.durationSeconds);
           if (t.durationSeconds !== t.durationMaxSeconds) duration = t.durationSeconds % 60 === 0 && t.durationMaxSeconds % 60 === 0 ? `${t.durationSeconds / 60}–${t.durationMaxSeconds / 60} min` : `${durationText(t.durationSeconds)} – ${durationText(t.durationMaxSeconds)}`;
@@ -2759,16 +2783,10 @@
           }
         }
         PLAN = (store.plan === null ? DEFAULT_PLAN : store.plan).map(TrainingConfig.activeWorkout).sort((a, b) => a.weekday - b.weekday);
-        // Retain old timed entries in the backup; never reinterpret seconds as repetitions.
+        // Preserve units and in-progress sets when normalizing older plans.
         for (const draft of Object.values(store.drafts)) {
           if (draft.archived || draft.cycleNumber !== store.cycle.number) continue;
-          const normalized = TrainingConfig.activeWorkout(draft.workout);
-          if (draft.workout.exercises.some(ex => ex.sets && ex.unit === 's')) {
-            draft.archived = true; draft.updatedAt = Math.max(Date.now(), draft.updatedAt + 1);
-            const migrated = D.adaptSession(draft, normalized);
-            migrated.key = D.createSession(normalized, draft.date, draft.cycleNumber).key;
-            migrated.archived = false; store.drafts[migrated.key] = migrated;
-          } else draft.workout = normalized;
+          draft.workout = TrainingConfig.activeWorkout(draft.workout);
         }
       }
       const effectiveDate = session => session && (session.done || session.dateMode === 'manual') ? session.date : localDate();
@@ -2847,7 +2865,6 @@
         return Array.from({ length: 7 }, (_, i) => { const d = new Date(start); d.setDate(d.getDate() + i); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; });
       }
       function renderNav() {
-        const w = currentWorkout(); if (w) selectedWeekday = w.weekday;
         $('week-nav').innerHTML = D.shortDays.map((day, i) => `<button class="day" id="tab-weekday-${i + 1}" role="tab" aria-controls="workout" aria-selected="${i + 1 === selectedWeekday}" tabindex="${i + 1 === selectedWeekday ? 0 : -1}" data-weekday="${i + 1}"><span>${esc(day)}</span><span class="day-number"></span><span class="day-check"></span></button>`).join('');
         updateDayChecks();
       }
@@ -2866,6 +2883,7 @@
         });
       }
       function chooseWeekday(weekday) {
+        if (weekday === (new Date().getDay() + 6) % 7 + 1) { goToToday(); renderNav(); renderWorkout(); return; }
         viewingRecord = null; selectedWeekday = weekday;
         const choices = PLAN.filter(w => w.weekday === weekday);
         const next = choices.find(w => !store.cycle.completed[w.id]) || choices[0];
@@ -2883,11 +2901,11 @@
         const loadHeader = 'kg total';
         return `<article class="exercise" data-exercise="${esc(ex.id)}">
       <div class="exercise-header"><h3>${esc(ex.name)}</h3><p class="target">${ex.meta.map(esc).join(' · ')}</p></div>
-      <table class="sets" aria-label="Séries de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col" title="kg total">${loadHeader}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col"><span class="sr-only">Feita</span></th></tr></thead>
+      <table class="sets" aria-label="Séries de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col" title="kg total">${loadHeader}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col"><span class="sr-only">${ex.unit === 's' ? 'Temporizador' : 'Feita'}</span></th></tr></thead>
       <tbody>${log.sets.map((set, i) => `<tr class="set-row ${set.done ? 'completed' : ''}"><td>${i + 1}</td>
-        <td><button type="button" class="set-input" data-field="load" data-index="${i}" data-ex="${ex.id}" data-value="${set.load ?? ''}" aria-haspopup="dialog" aria-controls="value-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, kg total: ${esc(number(set.load))}">${esc(number(set.load))}</button></td>
+        <td><button type="button" class="set-input" data-field="load" data-index="${i}" data-ex="${ex.id}" data-value="${set.load ?? ''}" aria-haspopup="dialog" aria-controls="numeric-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, kg total: ${esc(number(set.load))}">${esc(number(set.load))}</button></td>
         <td><button type="button" class="set-input" data-field="value" data-index="${i}" data-ex="${ex.id}" data-value="${set.value ?? ''}" aria-haspopup="dialog" aria-controls="value-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, ${ex.unit === 's' ? 'segundos' : 'repetições'}: ${esc(number(set.value))}">${esc(number(set.value))}</button></td>
-        <td><label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="Concluir ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></td></tr>`).join('')}</tbody></table>
+        <td>${ex.unit === 's' ? `<button type="button" class="icon-button set-timer" data-exercise-timer="${ex.id}" data-index="${i}" aria-label="${set.done ? 'Desmarcar' : 'Temporizador de'} ${esc(ex.name)}, série ${i + 1}" aria-pressed="${set.done}" aria-haspopup="dialog" aria-controls="rest-dialog">${icon('timer')}</button>` : `<label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="Concluir ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</td></tr>`).join('')}</tbody></table>
       ${prev ? `<details class="exercise-extra"><summary>Treino anterior ${icon('chevron')}</summary><p class="previous-date">${esc(displayDate(prev.date, true))}</p><ul class="previous-list">${old.map((set, i) => `<li><span>Série ${i + 1}</span><span>${esc(previousLabel(set, ex.unit))}${ex.unit === 'reps' ? ' reps' : ''}</span></li>`).join('')}</ul><p class="previous-date">kg total</p><button class="button full" data-copy="${esc(ex.id)}" aria-label="Usar valores anteriores de ${esc(ex.name)} nas séries vazias">${icon('copy')}Repetir valores</button></details>` : ''}
     </article>`;
       }
@@ -2904,7 +2922,7 @@
             const repeats = block.group.repeats, p = D.intervalProgress(session, block.group);
             const label = `Intervalado de ${repeats} ${repeats === 1 ? 'volta' : 'voltas'}`;
             const stages = block.exercises.map(ex => `<div class="interval-stage"><h4>${esc(ex.name)}</h4><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div>`).join('');
-            return `<section class="${history ? 'history-superset' : 'superset'} interval-block ${p.complete ? 'is-done' : ''}" aria-label="${label}"><div class="interval-heading"><div><h3 class="superset-label">Intervalado</h3><span class="interval-count">${repeats} ${repeats === 1 ? 'volta' : 'voltas'}</span></div>${history ? completionMark(p.complete, p.done > 0) : `<label class="complete-set"><input type="checkbox" data-interval="${block.id}" aria-label="Concluir bloco: ${label.toLocaleLowerCase('pt-BR')}" ${p.complete ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</div><p class="interval-hint">${repeats === 1 ? 'Faça a sequência abaixo uma vez.' : `Repita a sequência abaixo ${repeats} vezes.`}</p>${stages}</section>`;
+            return `<section class="${history ? 'history-superset' : 'superset'} interval-block ${p.complete ? 'is-done' : ''}" aria-label="${label}"><div class="interval-heading"><div><h3 class="superset-label">Intervalado</h3><span class="interval-count">${repeats} ${repeats === 1 ? 'volta' : 'voltas'}</span></div>${history ? completionMark(p.complete, p.done > 0) : `<label class="complete-set"><input type="checkbox" data-interval="${block.id}" aria-label="Concluir bloco: ${label.toLocaleLowerCase('pt-BR')}" ${p.complete ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</div>${stages}</section>`;
           }
           const content = block.exercises.map(ex => render(ex, workout.exercises.indexOf(ex))).join('');
           return block.group ? `<section class="${history ? 'history-superset' : 'superset'}" aria-label="${esc(block.name)}"><h3 class="superset-label">${esc(block.name)}</h3>${content}</section>` : content;
@@ -2915,7 +2933,7 @@
         syncRestContext();
         $('workout').setAttribute('aria-labelledby', 'workout-title');
         if (!w) {
-          $('workout').innerHTML = `<div class="empty-workout">${icon(PLAN.length ? 'calendar' : 'reminder')}<h2 id="workout-title" tabindex="-1">${PLAN.length ? esc(D.weekdays[selectedWeekday - 1]) : 'Monte sua ficha'}</h2><p>${PLAN.length ? 'Nenhum treino cadastrado para este dia.' : 'Organize seus treinos de força e corrida ao longo da semana.'}</p><div class="empty-actions"><button type="button" class="button primary" data-setup-workout>${PLAN.length ? 'Novo treino' : 'Criar primeiro treino'}</button>${!store.profile ? '<button type="button" class="button" data-setup-profile>Configurar perfil</button>' : ''}</div></div>`;
+          $('workout').innerHTML = `<div class="empty-workout">${icon(PLAN.length ? 'calendar' : 'reminder')}<h2 id="workout-title" tabindex="-1">${PLAN.length ? esc(D.weekdays[selectedWeekday - 1]) : 'Monte sua ficha'}</h2>${PLAN.length ? '<p>Nenhum treino cadastrado para este dia.</p>' : ''}<div class="empty-actions"><button type="button" class="button primary" data-setup-workout>${PLAN.length ? 'Novo treino' : 'Criar primeiro treino'}</button>${!store.profile ? '<button type="button" class="button" data-setup-profile>Configurar perfil</button>' : ''}</div></div>`;
           return;
         }
         const s = currentSession(), strength = w.kind === 'strength', locked = isReadOnly(), choices = PLAN.filter(item => item.weekday === selectedWeekday);
@@ -2924,7 +2942,7 @@
           <div class="workout-heading"><div class="session-meta">${icon(strength ? 'dumbbell' : 'run')}<span>${strength ? 'Força' : 'Corrida'} · ${esc(displayDate(selectedDate))}</span></div><h2 id="workout-title" tabindex="-1">${esc(w.title)}</h2><div class="progress-label"><span id="progress-label"></span><span class="save-status" id="save-status" role="status"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div></div>
           <div id="exercise-list">${renderExerciseBlocks(w, (ex, i) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s), false, s)}</div>
           <p class="form-error" id="entry-error" role="alert" hidden></p>
-          <details class="disclosure notes" ${s.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="${strength ? 'Anote algo sobre o treino.' : 'Anote como foi a corrida.'}">${esc(s.notes)}</textarea></details>
+          <details class="disclosure notes" ${s.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="Observações">${esc(s.notes)}</textarea></details>
           <div class="session-actions"><button class="button primary" id="finish-workout">${locked ? 'Próximo treino' : 'Concluir treino'}</button></div>`;
         if (locked) $('exercise-list').querySelectorAll('button,input').forEach(el => el.disabled = true);
         updateProgress(); updateSaveStatus(); timerUI();
@@ -2941,6 +2959,14 @@
           const block = el.closest('.interval-block');
           block.classList.toggle('is-done', progress.complete);
         });
+        $('exercise-list').querySelectorAll('[data-exercise-timer]').forEach(button => {
+          const exercise = s.workout.exercises.find(ex => ex.id === button.dataset.exerciseTimer), index = +button.dataset.index;
+          const done = !!s.logs[exercise.id]?.sets[index]?.done;
+          button.disabled = locked;
+          button.setAttribute('aria-pressed', String(done));
+          button.setAttribute('aria-label', `${done ? 'Desmarcar' : 'Temporizador de'} ${exercise.name}, série ${index + 1}`);
+          button.closest('tr').classList.toggle('completed', done);
+        });
         $('finish-workout').hidden = false; $('finish-workout').textContent = locked ? 'Próximo treino' : 'Concluir treino';
       }
       function validInputs() {
@@ -2949,7 +2975,8 @@
       }
       function chooseDay(day) {
         if (!validInputs()) return;
-        viewingRecord = null; selectedDay = day;
+        selectedDay = day; selectedWeekday = PLAN.find(w => w.id === day)?.weekday || selectedWeekday;
+        viewingRecord = Object.values(store.sessions).filter(s => s.done && s.day === day && s.date === localDate()).sort((a, b) => b.updatedAt - a.updatedAt)[0]?.key || null;
         selectedDate = effectiveDate(currentRecord() || currentDraft());
         renderNav(); renderWorkout();
       }
@@ -3009,6 +3036,7 @@
         const choice = e.target.closest('[data-workout-choice]'); if (choice) { chooseDay(choice.dataset.workoutChoice); return; }
         if (e.target.closest('#finish-workout')) { if (validInputs()) openFinish(); return; }
         if (isReadOnly()) return;
+        const timed = e.target.closest('[data-exercise-timer]'); if (timed) { openExerciseTimer(timed); return; }
         const field = e.target.closest('button[data-field]'); if (field) { openValuePicker(field); return; }
         const copy = e.target.closest('[data-copy]');
         if (copy) {
@@ -3093,13 +3121,8 @@
         }).join('') : '<p class="calendar-empty">Nenhum treino nesta data.</p>';
       }
       $('history-open').addEventListener('click', () => {
+        historyDate = localDate(); historyMonth = historyDate.slice(0, 7);
         setMonthPickerOpen(false);
-        historyDate = selectedDate; historyMonth = selectedDate.slice(0, 7);
-        const list = historySessions();
-        if (!list.some(s => s.date === historyDate)) {
-          const nearest = list.find(s => s.date.startsWith(historyMonth)) || list[0];
-          if (nearest) { historyDate = nearest.date; historyMonth = nearest.date.slice(0, 7); }
-        }
         renderHistory(); openDialog('history-dialog');
       });
       $('history-prev').addEventListener('click', () => shiftHistoryMonth(-1));
@@ -3140,7 +3163,7 @@
       $('history-list').addEventListener('click', e => {
         const b = e.target.closest('[data-open-record]'); if (!b || !validInputs()) return;
         const s = store.sessions[b.dataset.openRecord]; if (!s) return;
-        $('history-dialog').close(); viewingRecord = s.key; selectedDate = s.date; selectedDay = s.day; renderNav(); renderWorkout(); $('workout').scrollIntoView({ block: 'start', behavior: 'smooth' });
+        $('history-dialog').close(); viewingRecord = s.key; selectedDate = s.date; selectedDay = s.day; selectedWeekday = s.workout.weekday; renderNav(); renderWorkout(); $('workout').scrollIntoView({ block: 'start', behavior: 'smooth' });
       });
 
       function deleteHistory(recordKey = null) {
@@ -3171,7 +3194,7 @@
         }
         if (viewingRecord && !store.sessions[viewingRecord]) {
           viewingRecord = null;
-          if (!PLAN.some(w => w.id === selectedDay)) goToNext();
+          if (!PLAN.some(w => w.id === selectedDay)) goToToday();
         }
         renderNav(); renderWorkout(); renderHistory(); storageNotice();
         toast(removed ? (recordKey ? 'Registro excluído.' : 'Histórico apagado.') : 'Nenhum registro para apagar.');
@@ -3191,6 +3214,79 @@
         confirm('Excluir este registro?',
           `${session.workout.title} · ${displayDate(session.date, true)}. As cargas, repetições, marcações e observações deste treino serão apagadas.`,
           'Excluir registro', () => deleteHistory(session.key), 'history-dialog');
+      });
+
+      let numericPicker = null;
+      const numericText = value => value == null ? '' : value.toLocaleString('pt-BR', { useGrouping: false, maximumFractionDigits: 3 });
+      function numericError(message) {
+        $('numeric-error').textContent = message; $('numeric-error').hidden = false;
+        $('numeric-input').setAttribute('aria-invalid', 'true'); $('numeric-input').focus({ preventScroll: true });
+      }
+      function numericControls() {
+        if (!numericPicker) return;
+        const distance = numericPicker.kind === 'distance', meters = numericPicker.unit === 'm';
+        $('numeric-units').hidden = !distance; $('numeric-adjustments').hidden = distance;
+        $('numeric-label').textContent = distance ? `Distância (${meters ? 'm' : 'km'})` : 'Carga (kg total)';
+        $('numeric-input').inputMode = distance && meters ? 'numeric' : 'decimal';
+        $('numeric-units').querySelectorAll('[data-distance-unit]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.distanceUnit === numericPicker.unit)));
+        const parsed = D.parseNumber($('numeric-input').value);
+        $('numeric-minus').disabled = !parsed.valid || (parsed.value ?? 0) <= 0;
+        $('numeric-plus').disabled = !parsed.valid || (parsed.value ?? 0) >= 10000;
+      }
+      function readNumericValue(required = true) {
+        if (!numericPicker) return null;
+        const distance = numericPicker.kind === 'distance', meters = numericPicker.unit === 'm';
+        const parsed = D.parseNumber($('numeric-input').value, distance && meters ? 10000000 : 10000);
+        if (!parsed.valid) { numericError(distance ? `Informe uma distância entre 0 e ${meters ? '10000000 m' : '10000 km'}.` : 'Informe uma carga entre 0 e 10000 kg.'); return null; }
+        if (distance && parsed.value !== null && meters && !Number.isInteger(parsed.value)) { numericError('Informe a distância em metros inteiros.'); return null; }
+        if (distance && required && !(parsed.value > 0)) { numericError('Informe uma distância maior que zero.'); return null; }
+        return parsed;
+      }
+      function openNumericPicker({ kind, title, subtitle, value, apply, trigger }) {
+        const unit = kind === 'distance' ? (preferences.distanceUnit === 'm' ? 'm' : 'km') : 'kg';
+        numericPicker = { kind, unit, apply, trigger };
+        $('numeric-title').textContent = title; $('numeric-exercise').textContent = subtitle;
+        $('numeric-input').value = numericText(value == null ? null : unit === 'm' ? Math.round(value * 1000) : value);
+        $('numeric-input').removeAttribute('aria-invalid'); $('numeric-error').hidden = true;
+        numericControls();
+        // A distance entry keeps its unsaved workout confirmation underneath.
+        $('numeric-dialog').showModal(); $('numeric-input').focus({ preventScroll: true }); $('numeric-input').select();
+      }
+      function applyNumericValue(value) {
+        if (!numericPicker) return;
+        const active = numericPicker, error = active.apply(value, active.unit);
+        if (error) { numericError(error); return; }
+        $('numeric-dialog').close();
+      }
+      $('numeric-form').addEventListener('submit', e => {
+        e.preventDefault(); const parsed = readNumericValue(); if (!parsed) return;
+        const value = parsed.value;
+        applyNumericValue(value === null ? null : numericPicker.kind === 'distance' && numericPicker.unit === 'm' ? value / 1000 : value);
+      });
+      $('numeric-input').addEventListener('input', () => {
+        $('numeric-input').removeAttribute('aria-invalid'); $('numeric-error').hidden = true; numericControls();
+      });
+      function adjustNumericLoad(delta) {
+        if (numericPicker?.kind !== 'load') return;
+        const parsed = readNumericValue(false); if (!parsed) return;
+        const next = Math.max(0, Math.min(10000, Math.round(((parsed.value ?? 0) + delta) * 1000) / 1000));
+        $('numeric-input').value = numericText(next); $('numeric-input').removeAttribute('aria-invalid'); $('numeric-error').hidden = true; numericControls();
+      }
+      $('numeric-minus').addEventListener('click', () => adjustNumericLoad(-.5));
+      $('numeric-plus').addEventListener('click', () => adjustNumericLoad(.5));
+      $('numeric-units').addEventListener('click', e => {
+        const button = e.target.closest('[data-distance-unit]'); if (!button || numericPicker?.kind !== 'distance' || button.dataset.distanceUnit === numericPicker.unit) return;
+        const parsed = readNumericValue(false); if (!parsed) return;
+        const valueKm = parsed.value === null ? null : numericPicker.unit === 'm' ? parsed.value / 1000 : parsed.value;
+        numericPicker.unit = button.dataset.distanceUnit;
+        $('numeric-input').value = numericText(valueKm === null ? null : numericPicker.unit === 'm' ? Math.round(valueKm * 1000) : valueKm);
+        $('numeric-input').removeAttribute('aria-invalid'); $('numeric-error').hidden = true; numericControls();
+      });
+      $('numeric-dialog').addEventListener('close', () => {
+        if ($('numeric-dialog').open) return;
+        const trigger = numericPicker?.trigger; numericPicker = null;
+        document.body.classList.remove('keyboard-open');
+        if (trigger?.isConnected) trigger.focus({ preventScroll: true });
       });
 
       let ticker = null;
@@ -3340,7 +3436,7 @@
         store.plan = nextPlan.sort((a, b) => a.weekday - b.weekday);
         store.planUpdatedAt = Math.max(Date.now(), store.planUpdatedAt + 1);
         D.normalizeCycle(store); syncPlan();
-        if (!viewingRecord && !PLAN.some(w => w.id === selectedDay)) goToNext();
+        if (!viewingRecord && !PLAN.some(w => w.id === selectedDay)) goToToday();
         const saved = writeStore(); renderNav(); renderWorkout(); return saved;
       }
       function freshExercise(kind) {
@@ -3367,7 +3463,7 @@
         return `<div class="form-field"><span>${esc(label)}</span><button type="button" class="number-ticker" data-config-number="${field}" aria-label="${esc(label + ': ' + value)}" aria-haspopup="dialog" aria-controls="ticker-dialog"><span>${esc(value)}</span>${icon('chevron')}</button></div>`;
       }
       function dragHandle(name) {
-        return `<button type="button" class="drag-handle" data-drag-handle aria-label="Reordenar ${esc(name || 'exercício')}. Arraste ou toque para escolher a posição." aria-keyshortcuts="ArrowUp ArrowDown" aria-haspopup="dialog" aria-controls="selection-dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h.01M16 5h.01M8 12h.01M16 12h.01M8 19h.01M16 19h.01" stroke-width="4"/></svg></button>`;
+        return `<button type="button" class="drag-handle" data-drag-handle aria-label="Reordenar ${esc(name || 'exercício')}" aria-keyshortcuts="ArrowUp ArrowDown" aria-haspopup="dialog" aria-controls="selection-dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h.01M16 5h.01M8 12h.01M16 12h.01M8 19h.01M16 19h.01" stroke-width="4"/></svg></button>`;
       }
       function renderEditor(focusId = null, selector = '[data-drag-handle]') {
         if (!editorDraft) return;
@@ -3381,12 +3477,12 @@
           return `<section class="editor-exercise" data-editor-ex="${ex.id}" ${grouped ? '' : `data-sort-id="${ex.id}"`}>
             <div class="editor-exercise-head">${grouped ? '' : dragHandle(ex.name)}<h3>${strength ? 'Exercício' : 'Etapa'} ${i + 1}</h3></div>
             <label class="form-field">Nome ${strength ? 'do exercício' : 'da etapa'}<input data-edit="name" value="${esc(ex.name)}" maxlength="200" required autocomplete="off"></label>
-            ${strength ? `${pickerField('Séries', 'sets', ex.sets)}<div class="form-grid">${pickerField('Reps mínimas', 'min', t.min ?? '—')}${pickerField('Reps máximas', 'max', t.max ?? '—')}</div>`
-              : `${grouped ? '' : pickerField('Repetições da etapa', 'repeats', t.repeats)}<div class="form-grid">${pickerField('Tempo mínimo', 'duration', C.durationText(t.durationSeconds))}${pickerField('Tempo máximo', 'duration-max', C.durationText(t.durationMaxSeconds))}</div><div class="speed-mode" role="group" aria-label="Tipo de intensidade da etapa"><button type="button" data-speed-mode="speed" aria-pressed="${t.mode === 'speed'}">Velocidade</button><button type="button" data-speed-mode="pace" aria-pressed="${t.mode === 'pace'}">Pace</button><button type="button" data-speed-mode="rest" aria-pressed="${t.mode === 'rest'}">Descanso</button></div>${t.mode === 'rest' ? '<p class="form-hint">Pausa sem deslocamento.</p>' : pickerField(t.mode === 'pace' ? 'Pace (min/km)' : 'Velocidade (km/h)', t.mode === 'pace' ? 'pace' : 'speed', t.mode === 'pace' ? C.paceText(t.speedKmh) : C.valueText(t.speedKmh))}`}
+            ${strength ? `<div class="speed-mode" role="group" aria-label="Modo do exercício"><button type="button" data-exercise-unit="reps" aria-pressed="${ex.unit === 'reps'}">Repetições</button><button type="button" data-exercise-unit="s" aria-pressed="${ex.unit === 's'}">Tempo</button></div>${pickerField('Séries', 'sets', ex.sets)}<div class="form-grid">${pickerField(ex.unit === 's' ? 'Tempo mínimo' : 'Reps mínimas', 'min', t.min == null ? '—' : ex.unit === 's' ? C.durationText(t.min) : t.min)}${pickerField(ex.unit === 's' ? 'Tempo máximo' : 'Reps máximas', 'max', t.max == null ? '—' : ex.unit === 's' ? C.durationText(t.max) : t.max)}</div>`
+              : `${grouped ? '' : pickerField('Repetições da etapa', 'repeats', t.repeats)}<div class="form-grid">${pickerField('Tempo mínimo', 'duration', C.durationText(t.durationSeconds))}${pickerField('Tempo máximo', 'duration-max', C.durationText(t.durationMaxSeconds))}</div><div class="speed-mode" role="group" aria-label="Tipo de intensidade da etapa"><button type="button" data-speed-mode="speed" aria-pressed="${t.mode === 'speed'}">Velocidade</button><button type="button" data-speed-mode="pace" aria-pressed="${t.mode === 'pace'}">Pace</button><button type="button" data-speed-mode="rest" aria-pressed="${t.mode === 'rest'}">Descanso</button></div>${t.mode === 'rest' ? '' : pickerField(t.mode === 'pace' ? 'Pace (min/km)' : 'Velocidade (km/h)', t.mode === 'pace' ? 'pace' : 'speed', t.mode === 'pace' ? C.paceText(t.speedKmh) : C.valueText(t.speedKmh))}`}
             <button class="button danger secondary editor-remove" type="button" data-remove-ex>${icon('trash')}Remover ${strength ? 'exercício' : 'etapa'}</button></section>`;
         }
         $('editor-exercises').innerHTML = C.blocks(editorDraft).map(block => block.group
-          ? `<section class="editor-superset" data-sort-id="${block.id}"><div class="superset-heading">${dragHandle(block.name)}<h3>${esc(block.name)}</h3><button type="button" class="button compact" data-separate-group="${block.id}">Separar</button></div>${strength ? '' : `<div class="form-field interval-repeat"><span>Voltas do intervalado</span><button type="button" class="number-ticker" data-group-repeats="${block.id}" aria-label="Voltas do intervalado: ${block.group.repeats}" aria-haspopup="dialog" aria-controls="ticker-dialog"><span>${block.group.repeats}</span>${icon('chevron')}</button><p class="form-hint">Repita as etapas abaixo, nesta ordem, a cada volta.</p></div>`}${block.exercises.map(ex => card(ex, true)).join('')}</section>`
+          ? `<section class="editor-superset" data-sort-id="${block.id}"><div class="superset-heading">${dragHandle(block.name)}<h3>${esc(block.name)}</h3><button type="button" class="button compact" data-separate-group="${block.id}">Separar</button></div>${strength ? '' : `<div class="form-field interval-repeat"><span>Voltas do intervalado</span><button type="button" class="number-ticker" data-group-repeats="${block.id}" aria-label="Voltas do intervalado: ${block.group.repeats}" aria-haspopup="dialog" aria-controls="ticker-dialog"><span>${block.group.repeats}</span>${icon('chevron')}</button></div>`}${block.exercises.map(ex => card(ex, true)).join('')}</section>`
           : card(block.exercises[0], false)).join('');
         $('editor-add').disabled = editorDraft.exercises.length >= 30;
         decorateSortOverview();
@@ -3401,9 +3497,10 @@
       }
       function configNumber(ex, field, trigger) {
         const t = ex.target, strength = editorDraft.kind === 'strength';
-        const isTime = ['duration', 'duration-max', 'pace'].includes(field);
-        const titles = { sets: 'Séries', min: 'Reps mínimas', max: 'Reps máximas', repeats: 'Repetições da etapa', duration: 'Tempo mínimo', 'duration-max': 'Tempo máximo', speed: 'Velocidade', pace: 'Pace' };
-        const initial = field === 'sets' ? ex.sets : field === 'duration' ? t.durationSeconds : field === 'duration-max' ? t.durationMaxSeconds : field === 'speed' ? t.speedKmh : field === 'pace' ? Math.round(3600 / t.speedKmh) : (t[field] ?? 1);
+        const timedStrength = strength && ex.unit === 's' && ['min', 'max'].includes(field);
+        const isTime = timedStrength || ['duration', 'duration-max', 'pace'].includes(field);
+        const titles = { sets: 'Séries', min: timedStrength ? 'Tempo mínimo' : 'Reps mínimas', max: timedStrength ? 'Tempo máximo' : 'Reps máximas', repeats: 'Repetições da etapa', duration: 'Tempo mínimo', 'duration-max': 'Tempo máximo', speed: 'Velocidade', pace: 'Pace' };
+        const initial = timedStrength ? (t[field] ?? 30) : field === 'sets' ? ex.sets : field === 'duration' ? t.durationSeconds : field === 'duration-max' ? t.durationMaxSeconds : field === 'speed' ? t.speedKmh : field === 'pace' ? Math.round(3600 / t.speedKmh) : (t[field] ?? 1);
         const columns = isTime ? [
           { label: field === 'pace' ? 'Min / km' : 'Minutos', values: numericRange(0, field === 'pace' ? 600 : strength ? 166 : 1440), value: Math.floor(initial / 60) },
           { label: field === 'pace' ? 'Seg / km' : 'Segundos', values: numericRange(0, 59), value: initial % 60, format: n => String(n).padStart(2, '0') }
@@ -3434,7 +3531,7 @@
         const repeat = e.target.closest('[data-group-repeats]');
         if (repeat) {
           const group = editorDraft?.groups.find(g => g.id === repeat.dataset.groupRepeats); if (!group) return;
-          openTicker('Voltas do intervalado', 'Uma volta inclui todas as etapas do bloco.', [{ label: 'Voltas', values: numericRange(1, 100), value: group.repeats }], values => {
+          openTicker('Voltas do intervalado', 'Intervalado', [{ label: 'Voltas', values: numericRange(1, 100), value: group.repeats }], values => {
             if (!editorDraft?.groups.includes(group)) return 'O intervalado foi alterado. Feche este seletor e tente novamente.';
             group.repeats = values[0]; renderEditor(group.id, '[data-group-repeats]');
             if (ticker) ticker.trigger = $('editor-exercises').querySelector(`[data-group-repeats="${group.id}"]`);
@@ -3443,6 +3540,12 @@
           return;
         }
         const button = e.target.closest('button'), ex = editorDraft?.exercises.find(x => x.id === button?.closest('[data-editor-ex]')?.dataset.editorEx); if (!ex) return;
+        if (button.hasAttribute('data-exercise-unit') && editorDraft.kind === 'strength') {
+          const unit = button.dataset.exerciseUnit;
+          if (unit === ex.unit) return;
+          ex.unit = unit; ex.target = unit === 's' ? { min: 30, max: 30 } : { min: 8, max: 12 };
+          C.syncMeta(ex, 'strength'); renderEditor(ex.id, `[data-exercise-unit="${unit}"]`);
+        }
         if (button.hasAttribute('data-config-number')) configNumber(ex, button.dataset.configNumber, button);
         if (button.hasAttribute('data-speed-mode')) { ex.target.mode = button.dataset.speedMode; C.syncMeta(ex, editorDraft.kind); renderEditor(ex.id, `[data-speed-mode="${ex.target.mode}"]`); }
         if (button.hasAttribute('data-remove-ex')) { editorDraft.exercises.splice(editorDraft.exercises.indexOf(ex), 1); C.cleanGroups(editorDraft); renderEditor(); $('editor-add').focus({ preventScroll: true }); }
@@ -3499,10 +3602,9 @@
         groupSelection = new Set([...groupSelection].filter(id => available.some(ex => ex.id === id)));
         $('groups-title').textContent = cardio ? 'Juntar etapas' : 'Superséries';
         $('group-choices').setAttribute('aria-label', cardio ? 'Etapas para o intervalado' : 'Exercícios para agrupar');
-        $('existing-groups').innerHTML = (editorDraft.groups || []).map(g => `<section class="group-summary"><div><h3>${C.groupName(g, editorDraft.kind)}${cardio ? ` · ${g.repeats} ${g.repeats === 1 ? 'volta' : 'voltas'}` : ''}</h3><p>${g.exerciseIds.map(id => esc(editorDraft.exercises.find(ex => ex.id === id)?.name || fallback)).join(cardio ? ' → ' : ' + ')}</p></div><button type="button" class="button compact" data-separate-group="${g.id}">Separar</button></section>`).join('');
-        $('groups-hint').textContent = cardio
-          ? (available.length > 1 ? 'Selecione duas ou mais etapas, como corrida e descanso. Elas serão alternadas na ordem do treino. Ajuste as voltas no bloco.' : 'Adicione mais etapas ou separe um bloco para criar outro intervalado.')
-          : (available.length > 1 ? 'Selecione 2 exercícios para um biset ou 3 para um triset.' : 'Adicione mais exercícios ao treino ou separe um grupo para criar outra supersérie.');
+        $('existing-groups').innerHTML = (editorDraft.groups || []).map(g => `<section class="group-summary"><div><h3>${C.groupName(g, editorDraft.kind)}${cardio ? ` · ${g.repeats} ${g.repeats === 1 ? 'volta' : 'voltas'}` : ''}</h3><p>${g.exerciseIds.map(id => esc(editorDraft.exercises.find(ex => ex.id === id)?.name || fallback)).join(' - ')}</p></div><button type="button" class="button compact" data-separate-group="${g.id}">Separar</button></section>`).join('');
+        $('groups-empty').hidden = available.length > 1;
+        $('groups-empty').textContent = cardio ? 'Menos de 2 etapas disponíveis.' : 'Menos de 2 exercícios disponíveis.';
         $('group-choices').innerHTML = available.map(ex => `<label class="group-choice"><input type="checkbox" value="${ex.id}" ${groupSelection.has(ex.id) ? 'checked' : ''} ${groupSelection.size === limit && !groupSelection.has(ex.id) ? 'disabled' : ''}><span class="check-box">${icon('check')}</span><span>${esc(ex.name || fallback)}</span></label>`).join('');
         $('group-create').disabled = groupSelection.size < 2;
         $('group-create').textContent = cardio ? 'Criar intervalado' : 'Criar supersérie';
@@ -3542,7 +3644,7 @@
       let exerciseDrag = null, suppressSortClickUntil = 0, sortOverview = false, sortLandedId = null, sortSavedLayout = null;
       const sortList = () => $('editor-exercises');
       const sortCards = () => [...sortList().querySelectorAll('[data-sort-id]')];
-      const sortName = block => block.group ? `${block.name}: ${block.exercises.map(ex => ex.name || 'Novo exercício').join(' + ')}` : block.name || (editorDraft?.kind === 'cardio' ? 'Nova etapa' : 'Novo exercício');
+      const sortName = block => block.group ? `${block.name}: ${block.exercises.map(ex => ex.name || 'Novo exercício').join(' - ')}` : block.name || (editorDraft?.kind === 'cardio' ? 'Nova etapa' : 'Novo exercício');
       function restoreSortLayout() {
         if (!sortSavedLayout) return;
         $('editor-dialog').style.height = sortSavedLayout.height; sortList().style.paddingTop = sortSavedLayout.padding;
@@ -3667,7 +3769,7 @@
         const before = others.find(card => card.dataset.sortId === drag.beforeId);
         if (before) before.classList.add('drop-before'); else others.at(-1)?.classList.add('drop-after');
         const position = before ? others.indexOf(before) + 1 : others.length + 1;
-        const feedback = `Solte na posição ${position} de ${others.length + 1}`;
+        const feedback = `Posição ${position} de ${others.length + 1}`;
         if ($('sort-feedback').textContent !== feedback) $('sort-feedback').textContent = feedback;
       }
       function sortFrame(time) {
@@ -3769,7 +3871,7 @@
         if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
       }
       function openProfile(returnTo = 'menu-dialog') {
-        profileReturnTo = returnTo; $('profile-title').textContent = store.profile ? 'Editar perfil' : 'Configurar perfil';
+        profileReturnTo = returnTo; $('profile-title').textContent = 'Perfil';
         profileDraft = D.clone(store.profile || DEFAULT_PROFILE); profileBusy = false; profileUpload++;
         $('profile-name-input').value = profileDraft.name; $('profile-name-input').removeAttribute('aria-invalid'); $('profile-error').hidden = true;
         renderProfileDraft(); openDialog('profile-dialog');
@@ -3832,7 +3934,7 @@
         return `${hours ? hours + 'h ' : ''}${minutes}min${seconds % 60 ? ' ' + seconds % 60 + 's' : ''}`;
       }
       function renderFinishMetrics() {
-        const values = { 'cardio-duration': finishMetrics?.durationSeconds ? totalDuration(finishMetrics.durationSeconds) : 'Selecionar', 'cardio-distance': finishMetrics?.distanceKm ? number(finishMetrics.distanceKm) + ' km' : 'Selecionar' };
+        const values = { 'cardio-duration': finishMetrics?.durationSeconds ? totalDuration(finishMetrics.durationSeconds) : 'Selecionar', 'cardio-distance': finishMetrics?.distanceKm ? (preferences.distanceUnit === 'm' ? number(Math.round(finishMetrics.distanceKm * 1000)) + ' m' : number(finishMetrics.distanceKm) + ' km') : 'Selecionar' };
         for (const [id, value] of Object.entries(values)) $(id).innerHTML = `<span>${esc(value)}</span>${icon('chevron')}`;
       }
       function openFinish() {
@@ -3841,7 +3943,7 @@
         finishTarget = session.key; finishMetrics = D.clone(session.cardio || { durationSeconds: null, distanceKm: null });
         finishDate = effectiveDate(session); renderFinishDate();
         $('finish-summary').textContent = session.workout.title;
-        $('finish-progress').textContent = `${p.done} de ${p.total} ${cardio ? 'etapas marcadas' : 'séries marcadas'}. ` + (p.done < p.total ? 'As partes não marcadas ficarão como não realizadas no registro. ' : '') + 'O treino entra no histórico ao confirmar.';
+        $('finish-progress').textContent = `${p.done} de ${p.total} ${cardio ? 'etapas' : 'séries'} realizadas`;
         $('finish-cardio').hidden = !cardio; renderFinishMetrics();
         $('finish-error').hidden = true;
         $('finish-form').querySelectorAll('[aria-invalid]').forEach(el => el.removeAttribute('aria-invalid'));
@@ -3852,28 +3954,33 @@
         $('finish-error').textContent = message; $('finish-error').hidden = false;
         el.setAttribute('aria-invalid', 'true'); el.focus();
       }
-      function finishTicker(field) {
+      function finishTicker() {
         if (!finishTarget || !finishMetrics) return;
-        const target = finishTarget, duration = field === 'durationSeconds', trigger = $(duration ? 'cardio-duration' : 'cardio-distance');
-        const initial = finishMetrics[field] || 0, meters = Math.round(initial * 1000);
-        const columns = duration ? [
+        const target = finishTarget, trigger = $('cardio-duration'), initial = finishMetrics.durationSeconds || 0;
+        const columns = [
           { label: 'Horas', values: numericRange(0, 168), value: Math.floor(initial / 3600) },
           { label: 'Minutos', values: numericRange(0, 59), value: Math.floor(initial / 60) % 60, format: n => String(n).padStart(2, '0') },
           { label: 'Segundos', values: numericRange(0, 59), value: initial % 60, format: n => String(n).padStart(2, '0') }
-        ] : [
-          { label: 'Quilômetros', values: numericRange(0, 1000), value: Math.floor(meters / 1000) },
-          { label: 'Metros', values: numericRange(0, 999), value: meters % 1000, format: n => String(n).padStart(3, '0') }
         ];
-        openTicker(duration ? 'Tempo total' : 'Distância total', store.drafts[target]?.workout.title || 'Corrida', columns, values => {
+        openTicker('Tempo total', store.drafts[target]?.workout.title || 'Corrida', columns, values => {
           if (finishTarget !== target || !finishMetrics || !$('finish-dialog').open) return 'A conclusão foi alterada. Feche este seletor e tente novamente.';
-          const value = duration ? values[0] * 3600 + values[1] * 60 + values[2] : (values[0] * 1000 + values[1]) / 1000;
-          if (!value || value > (duration ? 604800 : 10000)) return duration ? 'Escolha um tempo maior que zero, de até 168 horas.' : 'Escolha uma distância maior que zero.';
-          finishMetrics[field] = value; renderFinishMetrics(); trigger.removeAttribute('aria-invalid'); $('finish-error').hidden = true;
+          const value = values[0] * 3600 + values[1] * 60 + values[2];
+          if (!value || value > 604800) return 'Escolha um tempo maior que zero, de até 168 horas.';
+          finishMetrics.durationSeconds = value; renderFinishMetrics(); trigger.removeAttribute('aria-invalid'); $('finish-error').hidden = true;
           return null;
         }, trigger);
       }
-      $('cardio-duration').addEventListener('click', () => finishTicker('durationSeconds'));
-      $('cardio-distance').addEventListener('click', () => finishTicker('distanceKm'));
+      function finishDistance() {
+        if (!finishTarget || !finishMetrics) return;
+        const target = finishTarget, trigger = $('cardio-distance');
+        openNumericPicker({ kind: 'distance', title: 'Distância total', subtitle: store.drafts[target]?.workout.title || 'Corrida', value: finishMetrics.distanceKm, trigger, apply: (value, unit) => {
+          if (finishTarget !== target || !finishMetrics || !$('finish-dialog').open) return 'A conclusão foi alterada. Feche este campo e tente novamente.';
+          finishMetrics.distanceKm = value; preferences.distanceUnit = unit; savePreferences();
+          renderFinishMetrics(); trigger.removeAttribute('aria-invalid'); $('finish-error').hidden = true; return null;
+        } });
+      }
+      $('cardio-duration').addEventListener('click', finishTicker);
+      $('cardio-distance').addEventListener('click', finishDistance);
       $('finish-form').addEventListener('submit', e => {
         e.preventDefault();
         const draft = store.drafts[finishTarget];
@@ -3882,16 +3989,16 @@
         let cardio = null;
         if (draft.workout.kind === 'cardio') {
           if (!finishMetrics?.durationSeconds) { finishError('Selecione o tempo total da corrida.', $('cardio-duration')); return; }
-          if (!finishMetrics?.distanceKm) { finishError('Selecione a distância total percorrida.', $('cardio-distance')); return; }
+          if (!finishMetrics?.distanceKm) { finishError('Informe a distância total percorrida.', $('cardio-distance')); return; }
           cardio = D.clone(finishMetrics);
         }
         const session = { ...D.clone(draft), date: finishDate, dateMode: finishDate === localDate() ? 'auto' : 'manual', cardio, done: true, updatedAt: Math.max(Date.now(), draft.updatedAt + 1) };
         store.sessions[session.key] = session; delete store.drafts[session.key];
-        const reset = D.markCycleComplete(store, session, PLAN), saved = writeStore();
+        D.markCycleComplete(store, session, PLAN); const saved = writeStore();
         $('finish-dialog').close(); syncRestContext();
-        goToNext(); renderNav(); renderWorkout();
+        goToToday(); renderNav(); renderWorkout();
         $('workout').scrollIntoView({ block: 'start' }); $('workout').querySelector('h2').focus({ preventScroll: true });
-        toast(saved ? (reset ? 'Treino salvo. Sequência reiniciada.' : 'Treino salvo no histórico. Próximo treino aberto.') : 'Treino registrado nesta aba. Exporte um backup antes de fechar.');
+        toast(saved ? 'Treino salvo no histórico.' : 'Treino registrado nesta aba. Exporte um backup antes de fechar.');
       });
       $('finish-dialog').addEventListener('close', () => { if (!$('finish-dialog').open) { finishTarget = null; finishMetrics = null; finishDate = null; } });
 
@@ -3915,7 +4022,16 @@
         if (!ex || !ex.sets || !['load', 'value'].includes(field) || index < 0 || index >= ex.sets) return;
         if (isReadOnly()) return;
         const current = ensureSession().logs[ex.id].sets[index][field];
-        const prev = D.previous(store.sessions, selectedDate, selectedDay, ex.id, key())?.logs[ex.id]?.sets[index]?.[field] ?? null;
+        if (field === 'load') {
+          const sessionKey = key();
+          openNumericPicker({ kind: 'load', title: 'Carga', subtitle: `${ex.name} · Série ${index + 1}`, value: current, trigger: button, apply: value => {
+            if (key() !== sessionKey || isReadOnly()) return 'Esta série não está mais disponível.';
+            const set = ensureSession().logs[ex.id]?.sets[index]; if (!set) return 'Esta série não está mais disponível.';
+            set.load = value; set.auto.load = false; changed(); refreshSetValues(ex.id); return null;
+          } });
+          return;
+        }
+        const prev = D.previous(store.sessions, selectedDate, selectedDay, ex.id, key(), ex.unit)?.logs[ex.id]?.sets[index]?.[field] ?? null;
         picker = { exercise: ex, index: 0, setIndex: index, field, sessionKey: key(), value: current, trigger: button, options: TrainingPicker.values(field, ex.unit, current, prev) };
         const title = field === 'load' ? 'Carga' : ex.unit === 's' ? 'Tempo' : 'Repetições';
         $('value-title').textContent = title;
@@ -3961,8 +4077,12 @@
         updateWheelSelection(TrainingPicker.indexAt($('value-wheel').scrollTop, picker.options.length));
         commitPicker(picker.value);
       });
-      $('picker-clear').addEventListener('click', () => commitPicker(null));
-      $('value-dialog').addEventListener('close', () => { if (!$('value-dialog').open) { picker = null; document.body.classList.remove('keyboard-open'); } });
+      $('value-dialog').addEventListener('close', () => {
+        if ($('value-dialog').open) return;
+        const trigger = picker?.trigger; picker = null;
+        document.body.classList.remove('keyboard-open');
+        if (trigger?.isConnected) trigger.focus({ preventScroll: true });
+      });
 
       function showBackup() { openDialog('backup-dialog'); }
       $('backup-open').addEventListener('click', showBackup);
@@ -3970,7 +4090,7 @@
         const data = { ...store, plan: D.clone(PLAN), exportedAt: new Date().toISOString() };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a');
         a.href = url; a.download = `treino-hibrido-backup-${localDate()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000);
-        preferences.lastBackup = Date.now(); savePreferences(); toast('Backup gerado. Confira o arquivo nos downloads.');
+        preferences.lastBackup = Date.now(); savePreferences(); toast('Backup gerado.');
       }
       $('export-backup').addEventListener('click', downloadBackup);
       $('import-backup').addEventListener('click', () => { $('import-file').value = ''; $('import-file').click(); });
@@ -4009,31 +4129,50 @@
       $('import-preview').addEventListener('click', e => {
         if (!e.target.closest('#confirm-import') || !pendingImport) return;
         if (!validInputs()) { toast('Feche o backup e corrija o valor destacado no treino.'); return; }
-        const merged = D.merge(store, pendingImport); store = merged.data; const saved = writeStore(); pendingImport = null; $('import-preview').hidden = true; goToNext(); renderNav(); renderWorkout();
+        const merged = D.merge(store, pendingImport); store = merged.data; const saved = writeStore(); pendingImport = null; $('import-preview').hidden = true; goToToday(); renderNav(); renderWorkout();
         $('backup-dialog').close(); toast(saved ? 'Backup importado.' : 'Backup carregado nesta aba. O navegador não permitiu salvá-lo.');
       });
       // Timer uses wall-clock time, so delayed rendering does not accumulate drift.
-      let timer = { mode: 'countdown', duration: 90000, adjustment: 0, elapsed: 0, startedAt: null, finished: false, workoutKey: null };
+      let timer = { mode: 'countdown', duration: 90000, adjustment: 0, elapsed: 0, startedAt: null, finished: false, workoutKey: null, exercise: null };
       try {
         const t = JSON.parse(localStorage.getItem(TIMER_KEY) || 'null');
         if (t && Number.isFinite(t.duration) && t.duration >= 1000 && t.duration <= 7200000) {
           timer.duration = Math.round(t.duration / 1000) * 1000;
           if (t.mode === 'countdown' && typeof t.workoutKey === 'string' && t.workoutKey.length < 200 && Number.isFinite(t.elapsed) && t.elapsed >= 0 && (t.startedAt === null || (Number.isFinite(t.startedAt) && t.startedAt <= Date.now()))) {
-            const adjustment = Number.isFinite(t.adjustment) ? t.adjustment : 0, duration = timer.duration + adjustment;
+            const ex = t.exercise;
+            const exercise = ex && typeof ex.sessionKey === 'string' && typeof ex.exerciseId === 'string' && Number.isInteger(ex.setIndex) && ex.setIndex >= 0 && ex.setIndex < 20 && Number.isInteger(ex.duration) && ex.duration >= 1000 && ex.duration <= 10000000 ? { sessionKey: ex.sessionKey, exerciseId: ex.exerciseId, setIndex: ex.setIndex, duration: ex.duration } : null;
+            const adjustment = Number.isFinite(t.adjustment) ? t.adjustment : 0, duration = exercise?.duration ?? timer.duration + adjustment;
             const used = t.elapsed + (t.startedAt === null ? 0 : Math.max(0, Date.now() - t.startedAt));
-            if (!t.finished && duration > 0 && duration <= 7200000 && used < duration) { timer.adjustment = adjustment; timer.elapsed = t.elapsed; timer.startedAt = t.startedAt; timer.workoutKey = t.workoutKey; }
+            if ((!ex || exercise) && (exercise || (!t.finished && duration > 0 && duration <= 7200000 && used < duration))) {
+              timer.adjustment = exercise ? 0 : adjustment; timer.elapsed = t.elapsed; timer.startedAt = t.startedAt; timer.workoutKey = t.workoutKey; timer.exercise = exercise;
+              if (exercise && (t.finished || used >= duration)) { timer.elapsed = duration; timer.startedAt = null; timer.finished = true; }
+            }
           }
         }
       } catch { }
-      let audioContext = null, soundGeneration = 0, soundNodes = [];
-      if (typeof preferences.sound !== 'boolean') preferences.sound = true;
-      if (!Number.isFinite(preferences.alertVolume) || preferences.alertVolume < .1 || preferences.alertVolume > 1) preferences.alertVolume = .8;
-      async function initAudio(force = false) {
-        if (!preferences.sound && !force) return false;
+      let audioContext = null, audioOutput = null, soundGeneration = 0, soundNodes = [];
+      function normalizeAudioPreferences() {
+        if (typeof preferences.sound !== 'boolean') preferences.sound = true;
+        if (!Number.isFinite(preferences.alertVolume) || preferences.alertVolume < 0 || preferences.alertVolume > 1) preferences.alertVolume = .8;
+      }
+      normalizeAudioPreferences();
+      function applySoundVolume(immediate = false) {
+        if (!audioContext || !audioOutput) return;
+        // A shared gain keeps active and future tones at the selected volume.
+        // The curve gives the lower half of the slider a useful quiet range.
+        const level = preferences.sound ? preferences.alertVolume ** 2 : 0, now = audioContext.currentTime;
+        audioOutput.gain.cancelScheduledValues(now);
+        if (immediate) audioOutput.gain.setValueAtTime(level, now);
+        else audioOutput.gain.setTargetAtTime(level, now, .015);
+      }
+      async function initAudio() {
+        if (!preferences.sound) return false;
         try {
           const AudioCtor = window.AudioContext || window.webkitAudioContext;
           if (!AudioCtor) return false;
-          if (!audioContext || audioContext.state === 'closed') audioContext = new AudioCtor();
+          if (!audioContext || audioContext.state === 'closed') {
+            audioContext = new AudioCtor(); audioOutput = audioContext.createGain(); audioOutput.connect(audioContext.destination); applySoundVolume(true);
+          }
           if (audioContext.state !== 'running') await Promise.race([audioContext.resume(), new Promise(resolve => setTimeout(resolve, 1500))]);
           return audioContext.state === 'running';
         } catch { return false; }
@@ -4042,18 +4181,21 @@
         soundGeneration++;
         const nodes = soundNodes; soundNodes = [];
         for (const node of nodes) { try { node.stop(); } catch { } }
+        try { navigator.vibrate?.(0); } catch { }
       }
-      async function beep(force = false) {
-        if (!preferences.sound && !force) return false;
+      async function beep() {
+        if (!preferences.sound) return false;
         stopSound(); const generation = soundGeneration;
-        const ready = await initAudio(force);
-        if (!ready || generation !== soundGeneration || (!preferences.sound && !force)) return false;
+        if (preferences.alertVolume === 0) { applySoundVolume(true); return true; }
+        const ready = await initAudio();
+        if (!ready || generation !== soundGeneration || !preferences.sound) return false;
         try {
-          const peak = .85 * preferences.alertVolume;
+          applySoundVolume(true);
+          const peak = .85;
           for (let i = 0; i < 4; i++) {
             const osc = audioContext.createOscillator(), gain = audioContext.createGain(), t = audioContext.currentTime + .025 + i * .42;
             osc.type = 'triangle'; osc.frequency.setValueAtTime(i % 2 ? 1100 : 880, t);
-            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.connect(gain); gain.connect(audioOutput);
             gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(peak, t + .015);
             gain.gain.setValueAtTime(peak, t + .23); gain.gain.linearRampToValueAtTime(0, t + .31);
             soundNodes.push(osc);
@@ -4067,10 +4209,17 @@
 
       function persistTimer() { try { localStorage.setItem(TIMER_KEY, JSON.stringify(timer)); } catch { } }
       const elapsed = () => timer.elapsed + (timer.startedAt === null ? 0 : Math.max(0, Date.now() - timer.startedAt));
-      const restDuration = () => timer.duration + timer.adjustment;
+      const activeTimerDuration = () => timer.exercise?.duration ?? timer.duration + timer.adjustment;
       const restAvailable = () => currentWorkout()?.kind === 'strength' && !isReadOnly();
       const restScope = () => restAvailable() ? `${store.cycle.number}:${currentWorkout().id}` : null;
       const restOwner = () => PLAN.find(w => w.kind === 'strength' && `${store.cycle.number}:${w.id}` === timer.workoutKey && !store.cycle.completed[w.id]);
+      function exerciseTimerOwner() {
+        const target = timer.exercise, session = target && store.drafts[target.sessionKey];
+        if (!session || session.archived || session.done || session.cycleNumber !== store.cycle.number || `${session.cycleNumber}:${session.day}` !== timer.workoutKey || !restOwner()) return null;
+        const exercise = session.workout.exercises.find(ex => ex.id === target.exerciseId && ex.unit === 's' && ex.sets);
+        const set = exercise && session.logs[exercise.id]?.sets[target.setIndex];
+        return set && !set.done ? { session, exercise, set } : null;
+      }
       let restTrigger = null;
       function renderRestMini() {
         const minimized = !!timer.workoutKey && !$('rest-dialog').open;
@@ -4080,7 +4229,7 @@
         document.body.style.setProperty('--rest-mini-height', $('rest-mini').getBoundingClientRect().height + 'px');
       }).observe($('rest-mini'));
       function endRest(playSound = false) {
-        stopSound(); timer.elapsed = 0; timer.startedAt = null; timer.finished = false; timer.workoutKey = null; timer.adjustment = 0; persistTimer();
+        stopSound(); timer.elapsed = 0; timer.startedAt = null; timer.finished = false; timer.workoutKey = null; timer.adjustment = 0; timer.exercise = null; persistTimer();
         renderRestMini();
         // General settings remain available even when a short rest finishes.
         if ($('rest-dialog').open) $('rest-dialog').close();
@@ -4088,22 +4237,48 @@
       }
       function syncRestContext() {
         // Browsing does not stop a rest. Completing or removing its source workout does.
-        if (timer.workoutKey && !restOwner()) endRest();
+        if (timer.workoutKey && (timer.exercise ? !exerciseTimerOwner() : !restOwner())) endRest();
       }
       function timeText(ms) { const seconds = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(seconds / 3600), m = Math.floor(seconds / 60) % 60, s = seconds % 60; return `${h ? String(h).padStart(2, '0') + ':' : ''}${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; }
       function timerUI() {
         syncRestContext();
-        const current = elapsed(), duration = restDuration();
-        if (timer.workoutKey && current >= duration) { endRest(true); return; }
+        const current = elapsed(), duration = activeTimerDuration(), exercise = timer.exercise, owner = exerciseTimerOwner();
+        if (timer.workoutKey && current >= duration && !timer.finished) {
+          if (!exercise) { endRest(true); return; }
+          timer.elapsed = duration; timer.startedAt = null; timer.finished = true; persistTimer(); beep();
+          toast('Tempo concluído.');
+        }
         const remaining = Math.max(0, duration - current), display = timeText(remaining), running = timer.startedAt !== null;
+        const title = exercise ? 'Temporizador' : 'Descanso', subject = exercise ? 'temporizador' : 'descanso';
+        $('rest-title').textContent = title;
+        $('rest-mini').setAttribute('aria-label', title);
+        $('rest-mini').querySelector('.rest-mini-title').textContent = owner ? `${owner.exercise.name} · Série ${exercise.setIndex + 1}${timer.finished ? ' · Tempo concluído' : ''}` : title;
+        $('rest-minimize').setAttribute('aria-label', 'Minimizar ' + subject);
+        $('rest-expand').setAttribute('aria-label', 'Expandir ' + subject);
+        $('exercise-timer-context').hidden = !exercise;
+        $('exercise-timer-context').textContent = owner ? `${owner.exercise.name} · Série ${exercise.setIndex + 1}` : '';
+        $('exercise-timer-duration-field').hidden = !exercise;
+        $('exercise-timer-duration').disabled = running || current > 0;
+        if (exercise && $('exercise-timer-duration').dataset.duration !== String(duration)) {
+          $('exercise-timer-duration').dataset.duration = String(duration);
+          $('exercise-timer-duration').innerHTML = `<span>${esc(C.durationText(duration / 1000))}</span>${icon('chevron')}`;
+        }
+        $('rest-adjustments').hidden = !!exercise;
+        $('exercise-timer-cancel').hidden = !exercise;
+        $('rest-done').textContent = exercise ? 'Concluir série' : 'Continuar treino';
+        $('rest-done').disabled = !!exercise && !timer.finished;
         for (const id of ['timer-display', 'rest-mini-display']) if ($(id).textContent !== display) $(id).textContent = display;
+        for (const id of ['timer-display', 'rest-mini-display']) $(id).setAttribute('aria-label', 'Tempo restante de ' + (exercise ? 'exercício' : 'descanso'));
         $('timer-display').classList.toggle('is-long', remaining >= 3600000);
         const progress = 100 * (1 - Math.min(1, current / duration)) + '%';
         $('timer-progress').style.width = progress; $('rest-mini-progress').style.width = progress;
         $('rest-minus').disabled = !timer.workoutKey;
         $('rest-plus').disabled = !timer.workoutKey || duration >= 7200000;
-        const label = running ? 'Pausar' : 'Retomar';
-        if ($('timer-start').dataset.label !== label) { $('timer-start').innerHTML = icon(running ? 'pause' : 'play') + `<span>${label}</span>`; $('timer-start').dataset.label = label; $('timer-start').setAttribute('aria-label', label + ' descanso'); }
+        const label = timer.finished || running ? 'Pausar' : current > 0 ? 'Retomar' : 'Iniciar';
+        $('timer-start').disabled = timer.finished;
+        $('timer-start').setAttribute('aria-label', label + ' ' + subject);
+        $('timer-reset').setAttribute('aria-label', 'Reiniciar ' + subject);
+        if ($('timer-start').dataset.label !== label) { $('timer-start').innerHTML = icon(label === 'Pausar' ? 'pause' : 'play') + `<span>${label}</span>`; $('timer-start').dataset.label = label; }
         if ($('rest-duration').dataset.duration !== String(timer.duration)) {
           $('rest-duration').dataset.duration = String(timer.duration);
           $('rest-duration').innerHTML = `<span>${esc(C.durationText(timer.duration / 1000))}</span>${icon('chevron')}`;
@@ -4117,20 +4292,47 @@
       }
       function openRest(trigger) {
         if (!timer.workoutKey) return;
-        if (elapsed() >= restDuration()) { timerUI(); return; }
+        timerUI(); if (!timer.workoutKey) return;
         restTrigger = trigger; openDialog('rest-dialog'); timerUI();
       }
       function startRest(trigger) {
         if (!restAvailable()) return;
-        stopSound(); timer.elapsed = 0; timer.startedAt = Date.now(); timer.finished = false; timer.workoutKey = restScope(); timer.adjustment = 0;
+        stopSound(); timer.elapsed = 0; timer.startedAt = Date.now(); timer.finished = false; timer.workoutKey = restScope(); timer.adjustment = 0; timer.exercise = null;
         persistTimer(); initAudio(); openRest(trigger);
+      }
+      function openExerciseTimer(trigger) {
+        if (!restAvailable()) return;
+        const session = ensureSession(), exercise = session.workout.exercises.find(ex => ex.id === trigger.dataset.exerciseTimer && ex.unit === 's');
+        const index = Number(trigger.dataset.index), set = exercise && session.logs[exercise.id]?.sets[index];
+        if (!set) return;
+        if (set.done) { set.done = false; changed(); return; }
+        const active = timer.exercise;
+        if (active?.sessionKey === session.key && active.exerciseId === exercise.id && active.setIndex === index) { openRest(trigger); return; }
+        const duration = Math.max(1000, Math.round((set.value > 0 ? set.value : exercise.target?.min || 30) * 1000));
+        endRest();
+        timer.workoutKey = restScope(); timer.exercise = { sessionKey: session.key, exerciseId: exercise.id, setIndex: index, duration };
+        changed(); persistTimer(); openRest(trigger);
+      }
+      function completeTimedSet() {
+        const owner = exerciseTimerOwner(), target = timer.exercise;
+        if (!owner || !timer.finished) return;
+        const { session, exercise, set } = owner;
+        set.value = target.duration / 1000; set.auto.value = false; set.done = true;
+        D.repeatNext(session, exercise.id, target.setIndex);
+        session.updatedAt = Math.max(Date.now(), session.updatedAt + 1);
+        endRest(); writeStore();
+        viewingRecord = null; selectedDay = session.day; selectedWeekday = session.workout.weekday;
+        selectedDate = effectiveDate(session); renderNav(); renderWorkout();
+        const next = $('exercise-list').querySelector(`[data-exercise-timer="${exercise.id}"][aria-pressed="false"]`) || $('finish-workout');
+        if (roundComplete(session, exercise.id, target.setIndex)) startRest(next);
+        else next.focus({ preventScroll: true });
       }
       function minimizeRest() { if ($('rest-dialog').open) $('rest-dialog').close(); renderRestMini(); }
       $('rest-minimize').addEventListener('click', minimizeRest);
       $('rest-expand').addEventListener('click', () => openRest($('rest-expand')));
       $('timer-start').addEventListener('click', () => {
         if (!timer.workoutKey) return;
-        if (elapsed() >= restDuration()) { timerUI(); return; }
+        if (elapsed() >= activeTimerDuration()) { timerUI(); return; }
         initAudio(); stopSound();
         if (timer.startedAt !== null) { timer.elapsed = elapsed(); timer.startedAt = null; }
         else timer.startedAt = Date.now();
@@ -4138,18 +4340,32 @@
       });
       $('timer-reset').addEventListener('click', () => resetRest());
       function adjustRest(seconds) {
-        if (!timer.workoutKey) return;
+        if (!timer.workoutKey || timer.exercise) return;
         const current = elapsed();
-        if (current >= restDuration()) { timerUI(); return; }
-        const duration = Math.min(7200000, restDuration() + seconds * 1000);
+        if (current >= activeTimerDuration()) { timerUI(); return; }
+        const duration = Math.min(7200000, activeTimerDuration() + seconds * 1000);
         if (duration <= current) { endRest(true); return; }
         timer.adjustment = duration - timer.duration;
         persistTimer(); timerUI();
       }
       $('rest-minus').addEventListener('click', () => adjustRest(-30));
       $('rest-plus').addEventListener('click', () => adjustRest(30));
-      $('rest-done').addEventListener('click', () => endRest());
-      $('rest-settings-open').addEventListener('click', () => { timerUI(); $('timer-dialog').showModal(); });
+      $('rest-done').addEventListener('click', () => timer.exercise ? completeTimedSet() : endRest());
+      $('exercise-timer-cancel').addEventListener('click', () => endRest());
+      $('exercise-timer-duration').addEventListener('click', () => {
+        const target = timer.exercise; if (!target || elapsed() > 0 || timer.startedAt !== null) return;
+        const seconds = target.duration / 1000;
+        openTicker('Duração da série', exerciseTimerOwner()?.exercise.name || 'Exercício', [
+          { label: 'Minutos', values: numericRange(0, 166), value: Math.floor(seconds / 60) },
+          { label: 'Segundos', values: numericRange(0, 59), value: seconds % 60, format: n => String(n).padStart(2, '0') }
+        ], values => {
+          if (timer.exercise !== target || !exerciseTimerOwner()) return 'Esta série não está mais disponível.';
+          const duration = (values[0] * 60 + values[1]) * 1000;
+          if (duration < 1000 || duration > 10000000) return 'Escolha uma duração de 1 a 10000 segundos.';
+          target.duration = duration; persistTimer(); timerUI(); return null;
+        }, $('exercise-timer-duration'));
+      });
+      $('rest-settings-open').addEventListener('click', () => { timerUI(); openDialog('timer-dialog'); });
       $('rest-dialog').addEventListener('close', () => {
         if ($('rest-dialog').open) return;
         renderRestMini(); const trigger = restTrigger; restTrigger = null;
@@ -4162,7 +4378,7 @@
       });
       $('rest-duration').addEventListener('click', () => {
         const seconds = timer.duration / 1000;
-        openTicker('Duração do descanso', 'Contagem regressiva', [
+        openTicker('Duração de descanso', 'Contagem regressiva', [
           { label: 'Minutos', values: numericRange(0, 120), value: Math.floor(seconds / 60) },
           { label: 'Segundos', values: numericRange(0, 59), value: seconds % 60, format: n => String(n).padStart(2, '0') }
         ], values => {
@@ -4170,7 +4386,7 @@
           if (duration < 1000 || duration > 7200000) return 'Escolha uma duração de 1 segundo a 120 minutos.';
           if (duration !== timer.duration) {
             timer.duration = duration;
-            if (timer.workoutKey) resetRest(); else { persistTimer(); timerUI(); }
+            if (timer.workoutKey && !timer.exercise) resetRest(); else { persistTimer(); timerUI(); }
           }
           return null;
         }, $('rest-duration'));
@@ -4185,44 +4401,55 @@
       }
       $('sound-toggle').addEventListener('click', () => {
         preferences.sound = !preferences.sound;
+        applySoundVolume();
         if (preferences.sound) initAudio(); else stopSound();
         savePreferences(); soundUI();
       });
-      $('sound-volume').addEventListener('input', e => {
-        preferences.alertVolume = Math.min(1, Math.max(.1, Number(e.target.value) / 100));
-        $('sound-volume-value').textContent = Math.round(preferences.alertVolume * 100) + '%'; savePreferences();
-      });
+      function changeSoundVolume(e) {
+        preferences.alertVolume = Math.min(1, Math.max(0, Number(e.target.value) / 100));
+        normalizeAudioPreferences();
+        $('sound-volume-value').textContent = Math.round(preferences.alertVolume * 100) + '%';
+        applySoundVolume(); if (preferences.alertVolume === 0) stopSound(); savePreferences();
+      }
+      $('sound-volume').addEventListener('input', changeSoundVolume);
+      $('sound-volume').addEventListener('change', changeSoundVolume);
       $('sound-test').addEventListener('click', async () => {
-        const played = await beep(true);
-        if (!played) toast('Não foi possível tocar o som. Toque em Testar som novamente.');
+        const played = await beep();
+        if (!played) toast('Não foi possível tocar o som.');
       });
       document.addEventListener('focusin', e => { document.body.classList.toggle('keyboard-open', e.target.matches('textarea,input[type=text]')); });
       document.addEventListener('focusout', () => setTimeout(() => document.body.classList.toggle('keyboard-open', !!document.activeElement?.matches('textarea,input[type=text]')), 0));
       let renderedCalendarDate = localDate();
       function refreshCalendarDay() {
         const today = localDate(); if (today === renderedCalendarDate) return;
-        renderedCalendarDate = today; updateDayChecks();
-        const w = currentWorkout();
-        if (w && !isReadOnly()) {
-          selectedDate = effectiveDate(refreshDraftDate(currentDraft()));
-          const caption = $('workout').querySelector('.session-meta span');
-          if (caption) caption.textContent = `${w.kind === 'strength' ? 'Força' : 'Corrida'} · ${displayDate(selectedDate)}`;
-        }
+        renderedCalendarDate = today; goToToday(); renderNav(); renderWorkout();
+        if ($('history-dialog').open) { historyDate = today; historyMonth = today.slice(0, 7); setMonthPickerOpen(false); renderHistory(); }
       }
       document.addEventListener('visibilitychange', () => { if (!document.hidden) { timerUI(); refreshCalendarDay(); updateDayChecks(); } });
       window.addEventListener('focus', refreshCalendarDay);
       setInterval(refreshCalendarDay, 30000);
       window.addEventListener('storage', e => {
+        if (e.key === PREF_KEY) {
+          try {
+            const incoming = JSON.parse(e.newValue || '{}');
+            if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return;
+            preferences = { ...preferences, ...incoming }; normalizeAudioPreferences();
+            applySoundVolume(); soundUI();
+            if (!preferences.sound || preferences.alertVolume === 0) stopSound();
+          } catch { }
+          return;
+        }
         if (e.key !== STORAGE_KEY && e.key !== null) return;
         try {
           const raw = e.key === null ? localStorage.getItem(STORAGE_KEY) : e.newValue;
           const incoming = raw ? D.validate(JSON.parse(raw)) : D.empty();
           store = incoming; syncPlan(); renderProfile();
           if ($('value-dialog').open) $('value-dialog').close();
+          if ($('numeric-dialog').open) $('numeric-dialog').close();
           if ($('ticker-dialog').open) $('ticker-dialog').close();
           if ($('finish-dialog').open) $('finish-dialog').close();
-          if (viewingRecord && !store.sessions[viewingRecord]) goToNext();
-          else if (!viewingRecord && ((!selectedDay && PLAN.length) || store.cycle.completed[selectedDay] || (selectedDay && !PLAN.some(w => w.id === selectedDay)))) goToNext();
+          if (viewingRecord && !store.sessions[viewingRecord]) goToToday();
+          else if (!viewingRecord && ((!selectedDay && PLAN.length) || store.cycle.completed[selectedDay] || (selectedDay && !PLAN.some(w => w.id === selectedDay)))) goToToday();
           renderNav(); renderWorkout();
           if ($('history-dialog').open) renderHistory();
           if ($('manager-dialog').open) renderManager();
