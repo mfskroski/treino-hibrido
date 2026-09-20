@@ -2040,6 +2040,9 @@
     .timer-digits.is-long { font-size:54px; }
     .timer-context { text-align:center; margin-bottom:12px; overflow-wrap:anywhere; }
     .set-timer { width:46px; min-width:46px; height:50px; padding:11px; }
+    /* Timed and regular sets use the same visual weight before completion. */
+    .set-timer:not([aria-pressed=true]) { color:var(--muted); }
+    .set-timer:not([aria-pressed=true])>.icon { opacity:.5; }
     .set-timer[aria-pressed=true] { background:var(--ink); color:var(--inverse); border-color:var(--ink); }
     .set-timer[aria-pressed=true]:disabled { opacity:1; }
     .timer-actions { display:grid; gap:12px; }
@@ -2077,6 +2080,28 @@
       #rest-expand { padding-left:16px; padding-right:16px; }
     }
     @media print { .rest-mini { display:none!important; } body.rest-minimized .shell { padding-bottom:0; } }
+    .exercise-header { display:flex; align-items:center; gap:14px; }
+    .exercise-heading-copy { flex:1; min-width:0; }
+    .editor-media { margin:18px 0 16px; }
+    .media-upload { position:relative; display:flex; align-items:center; justify-content:center; gap:9px; min-height:54px; padding:10px 14px; border:1px dashed var(--line); border-radius:14px; background:var(--soft); font-size:14px; cursor:pointer; overflow:hidden; }
+    .media-upload input { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+    .media-upload:focus-within { outline:2px solid var(--ink); outline-offset:3px; }
+    .media-upload:has(input:disabled) { opacity:.5; cursor:wait; }
+    .media-upload .icon { width:20px; height:20px; }
+    .interval-stage-row { display:flex; align-items:center; gap:12px; }
+    .interval-stage-row>div { flex:1; min-width:0; }
+    .exercise-media { width:min(100%,240px); margin:16px auto; }
+    .editor-media .exercise-media { width:min(100%,180px); margin:0; }
+    .media-square { position:relative; display:grid; place-items:center; width:100%; aspect-ratio:1 / 1; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:var(--soft); }
+    .media-square img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
+    .media-placeholder { color:var(--muted); }
+    .media-square [data-media-status] { position:relative; margin:0; padding:12px; text-align:center; font-size:12px; color:var(--muted); background:var(--bg); }
+    .media-square .icon-button { position:absolute; right:8px; width:40px; min-width:40px; min-height:40px; padding:9px; background:var(--bg); box-shadow:0 1px 5px rgb(0 0 0 / .12); }
+    .media-square [data-remove-media] { top:8px; }
+    .media-square [data-media-motion] { bottom:8px; }
+    .media-square .icon-button>.icon { width:20px; height:20px; }
+    @media(max-width:350px) { .exercise-header { gap:10px; } }
+    @media print { .exercise-media, .editor-media { display:none!important; } }
   </style>
 </head>
 
@@ -2198,7 +2223,8 @@
     <div class="dialog-body">
       <div class="backup-actions"><button class="button full" id="export-backup"><i data-icon="download"></i>Exportar
           backup</button><button class="button full" id="import-backup"><i data-icon="upload"></i>Importar
-          backup</button><input id="import-file" type="file" accept=".json,application/json" hidden></div>
+          backup</button><input id="import-file" type="file" accept=".json,.treino,application/json,application/octet-stream" hidden></div>
+      <p class="form-hint" id="backup-status" role="status" hidden></p>
       <div class="import-preview" id="import-preview" hidden></div>
       <p class="form-error" id="import-error" role="alert" hidden></p>
     </div>
@@ -2416,6 +2442,227 @@
 
     HugeiconsSubset.trash = {"name":"Delete02Icon","body":"<path d=\"M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M9.5 16.5L9.5 10.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.5 16.5L14.5 10.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path>"};
 
+    HugeiconsSubset.image = { name: 'ImageIcon', body: '<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/>' };
+
+    // Large originals stay as Blobs in IndexedDB; only small references/previews
+    // belong in localStorage. Nothing is uploaded to an external service.
+    const TrainingMedia = (() => {
+      const MAX_BYTES = 10 * 1024 * 1024;
+      const MAX_STORED_BYTES = 50 * 1024 * 1024; // Keep older attachments/backups readable.
+      const TYPES = ['image/gif', 'image/png', 'image/jpeg', 'image/webp'];
+      const MAGIC = 'TREINO-HIBRIDO-BACKUP-1\n';
+      let database;
+      function openDB() {
+        if (!database) database = new Promise((resolve, reject) => {
+          if (!globalThis.indexedDB) { reject(new Error('Este navegador não permite salvar anexos.')); return; }
+          const request = indexedDB.open('treino-hibrido.media.v1', 1);
+          request.onupgradeneeded = () => request.result.createObjectStore('files');
+          request.onerror = () => reject(request.error);
+          request.onblocked = () => reject(new Error('Feche outras abas deste treino e tente novamente.'));
+          request.onsuccess = () => {
+            const db = request.result;
+            db.onversionchange = () => { db.close(); database = null; };
+            resolve(db);
+          };
+        }).catch(error => { database = null; throw error; });
+        return database;
+      }
+      async function get(id) {
+        const db = await openDB();
+        return new Promise((resolve, reject) => {
+          const request = db.transaction('files', 'readonly').objectStore('files').get(id);
+          request.onsuccess = () => resolve(request.result || null);
+          request.onerror = () => reject(request.error);
+        });
+      }
+      async function putAll(files) {
+        if (!files.size) return;
+        const db = await openDB();
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction('files', 'readwrite');
+          tx.oncomplete = () => resolve();
+          tx.onabort = tx.onerror = () => reject(tx.error || new Error('Não foi possível salvar os anexos.'));
+          for (const [id, blob] of files) tx.objectStore('files').put(blob, id);
+        });
+      }
+      async function remove(ids) {
+        if (!ids.length) return;
+        const db = await openDB();
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction('files', 'readwrite');
+          tx.oncomplete = resolve;
+          tx.onabort = tx.onerror = () => reject(tx.error);
+          ids.forEach(id => tx.objectStore('files').delete(id));
+        });
+      }
+      const slots = data => [...(data.plan || []), ...Object.values(data.sessions || {}).map(s => s.workout), ...Object.values(data.drafts || {}).map(s => s.workout)].flatMap(w => w.exercises).filter(ex => ex.media);
+      const references = data => new Map(slots(data).filter(ex => typeof ex.media === 'object').map(ex => [ex.media.id, ex.media]));
+      function validReference(m) {
+        return m && typeof m === 'object' && !Array.isArray(m) &&
+          typeof m.id === 'string' && /^media-[a-z0-9-]{1,70}$/.test(m.id) &&
+          typeof m.name === 'string' && m.name.length > 0 && m.name.length <= 200 &&
+          TYPES.includes(m.type) && Number.isInteger(m.size) && m.size > 0 && m.size <= MAX_STORED_BYTES &&
+          typeof m.preview === 'string' && m.preview.length < 60000 && /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(m.preview) &&
+          typeof m.animated === 'boolean';
+      }
+      async function sniff(blob) {
+        const bytes = new Uint8Array(await blob.slice(0, 2048).arrayBuffer());
+        const text = String.fromCharCode(...bytes);
+        if (/^GIF8[79]a/.test(text)) return { type: 'image/gif', animated: true };
+        if (bytes[0] === 137 && text.slice(1, 4) === 'PNG') return { type: 'image/png', animated: text.includes('acTL') };
+        if (bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255) return { type: 'image/jpeg', animated: false };
+        if (text.startsWith('RIFF') && text.slice(8, 12) === 'WEBP') return { type: 'image/webp', animated: text.includes('ANIM') || (text.slice(12, 16) === 'VP8X' && !!(bytes[20] & 2)) };
+        throw new Error('Escolha uma imagem JPG, PNG, WebP ou GIF válido.');
+      }
+      function readDataURL(blob, signal) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          const finish = (error, result) => {
+            reader.onload = reader.onerror = reader.onabort = null;
+            signal?.removeEventListener('abort', abort);
+            error ? reject(error) : resolve(result);
+          };
+          const abort = () => { finish(new DOMException('Leitura cancelada.', 'AbortError')); reader.abort(); };
+          reader.onload = () => finish(null, reader.result);
+          reader.onerror = () => finish(reader.error || new Error('Não foi possível ler o arquivo selecionado.'));
+          reader.onabort = () => finish(new DOMException('Leitura cancelada.', 'AbortError'));
+          if (signal?.aborted) { abort(); return; }
+          signal?.addEventListener('abort', abort, { once: true });
+          try { reader.readAsDataURL(blob); } catch (error) { finish(error); }
+        });
+      }
+      async function loadImage(blob, img = new Image(), { signal, dataOnly = false } = {}) {
+        let objectURL = null;
+        const release = () => {
+          img.onload = img.onerror = null;
+          if (img.removeAttribute) img.removeAttribute('src'); else img.src = '';
+          if (objectURL) { URL.revokeObjectURL(objectURL); objectURL = null; }
+        };
+        const load = source => new Promise((resolve, reject) => {
+          const finish = error => {
+            clearTimeout(timeout); img.onload = img.onerror = null;
+            signal?.removeEventListener('abort', abort);
+            error ? reject(error) : resolve();
+          };
+          const abort = () => finish(new DOMException('Leitura cancelada.', 'AbortError'));
+          const timeout = setTimeout(() => finish(new Error('A imagem demorou demais para carregar.')), 30000);
+          img.onload = () => finish(img.naturalWidth && img.naturalHeight ? null : new Error('A imagem está vazia.'));
+          img.onerror = () => finish(new Error('Não foi possível carregar o arquivo selecionado.'));
+          if (signal?.aborted) { abort(); return; }
+          signal?.addEventListener('abort', abort, { once: true });
+          try { img.src = source; } catch (error) { finish(error); }
+        });
+        try {
+          if (!dataOnly) {
+            try {
+              objectURL = URL.createObjectURL(blob);
+              await load(objectURL);
+              return { img, release };
+            } catch (error) {
+              release();
+              if (error?.name === 'AbortError') throw error;
+            }
+          }
+          // Some local HTML viewers cannot decode blob: image URLs. Read the
+          // user-selected file directly; this temporary string is never saved.
+          const source = await readDataURL(blob, signal);
+          await load(source);
+          return { img, release };
+        } catch (error) { release(); throw error; }
+      }
+      function imagePreview(img, edge = 160) {
+        const scale = Math.min(1, edge / Math.max(img.naturalWidth, img.naturalHeight));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale)); canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('Não foi possível criar a prévia neste navegador.');
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const preview = canvas.toDataURL('image/webp', .72);
+        return preview.length < 60000 ? preview : canvas.toDataURL('image/jpeg', .65);
+      }
+      async function prepare(file, name = file.name || 'Execução') {
+        if (!file.size || file.size > MAX_BYTES) throw new Error('O anexo deve ter até 10 MB.');
+        const { type, animated } = await sniff(file), blob = file.slice(0, file.size, type);
+        let loaded;
+        try {
+          loaded = await loadImage(blob);
+          let preview;
+          try { preview = imagePreview(loaded.img); }
+          catch (error) {
+            if (error?.name !== 'SecurityError') throw error;
+            loaded.release(); loaded = await loadImage(blob, new Image(), { dataOnly: true });
+            preview = imagePreview(loaded.img);
+          }
+          const id = 'media-' + (globalThis.crypto?.randomUUID?.() || Date.now().toString(36) + '-' + Math.random().toString(36).slice(2));
+          const ref = { id, name: name.slice(0, 200), type, size: blob.size, preview, animated };
+          if (!validReference(ref)) throw new Error('Não foi possível preparar a prévia desta imagem.');
+          return { ref, blob };
+        } finally { loaded?.release(); }
+      }
+      function fromLegacy(data) {
+        const [header, encoded] = data.split(','), decoded = atob(encoded), bytes = new Uint8Array(decoded.length);
+        for (let i = 0; i < decoded.length; i++) bytes[i] = decoded.charCodeAt(i);
+        return new Blob([bytes], { type: header.slice(5).split(';')[0] });
+      }
+      async function migrateLegacy(data, files = new Map()) {
+        const converted = new Map();
+        for (const ex of slots(data)) {
+          if (typeof ex.media !== 'string') continue;
+          if (!converted.has(ex.media)) {
+            const prepared = await prepare(fromLegacy(ex.media), ex.name);
+            files.set(prepared.ref.id, prepared.blob); converted.set(ex.media, prepared.ref);
+          }
+          ex.media = { ...converted.get(ex.media) };
+        }
+        return files;
+      }
+      function errorText(error) {
+        if (error?.name === 'QuotaExceededError') return 'Não há espaço disponível para salvar o anexo. Libere espaço no navegador ou escolha um arquivo menor.';
+        if (error?.name === 'SecurityError' || error?.name === 'InvalidStateError') return 'O navegador bloqueou o armazenamento de anexos. Abra fora do modo privado ou use outro navegador.';
+        return error?.message || 'Não foi possível salvar os anexos. Tente novamente.';
+      }
+      async function exportBackup(data) {
+        const files = await migrateLegacy(data);
+        const media = [], parts = [];
+        for (const [id, ref] of references(data)) {
+          const blob = files.get(id) || await get(id);
+          if (!blob || blob.size !== ref.size) throw new Error('Um anexo não está disponível neste navegador. Reanexe-o antes de exportar o backup completo.');
+          media.push({ id, size: blob.size, type: ref.type }); parts.push(blob);
+        }
+        if (!media.length) return { blob: new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), extension: 'json' };
+        const manifest = new TextEncoder().encode(JSON.stringify({ data, media }));
+        if (manifest.length > 32 * 1024 * 1024) throw new Error('A ficha é grande demais para este backup.');
+        const length = new ArrayBuffer(4); new DataView(length).setUint32(0, manifest.length);
+        // Raw Blobs avoid Base64 expansion and reading all GIFs into one string.
+        return { blob: new Blob([MAGIC, length, manifest, ...parts], { type: 'application/octet-stream' }), extension: 'treino' };
+      }
+      async function readBackup(file) {
+        const magicSize = MAGIC.length;
+        if (await file.slice(0, magicSize).text() !== MAGIC) {
+          if (file.size > 32 * 1024 * 1024) throw new Error('Este JSON é muito grande. Para anexos grandes, use o backup .treino.');
+          return { data: TrainingData.validate(JSON.parse(await file.text())), files: new Map() };
+        }
+        const bad = () => { throw new Error('O backup de anexos está incompleto ou não é válido.'); };
+        if (file.size < magicSize + 4) bad();
+        const size = new DataView(await file.slice(magicSize, magicSize + 4).arrayBuffer()).getUint32(0);
+        if (!size || size > 32 * 1024 * 1024 || magicSize + 4 + size > file.size) bad();
+        const manifest = JSON.parse(await file.slice(magicSize + 4, magicSize + 4 + size).text());
+        const data = TrainingData.validate(manifest.data), refs = references(data), files = new Map();
+        if (!Array.isArray(manifest.media) || manifest.media.length !== refs.size) bad();
+        let offset = magicSize + 4 + size;
+        for (const item of manifest.media) {
+          const ref = refs.get(item.id);
+          if (!ref || files.has(item.id) || ref.size !== item.size || ref.type !== item.type || offset + item.size > file.size) bad();
+          const blob = file.slice(offset, offset + item.size, item.type);
+          if ((await sniff(blob)).type !== item.type) bad();
+          files.set(item.id, blob); offset += item.size;
+        }
+        if (offset !== file.size) bad();
+        return { data, files };
+      }
+      return { MAX_BYTES, prepare, loadImage, imagePreview, get, putAll, remove, references, validReference, fromLegacy, migrateLegacy, errorText, exportBackup, readBackup };
+    })();
+
     // Drafts, confirmed history and the recurring training cycle are independent.
     const TrainingData = (() => {
       const APP = 'treino-hibrido';
@@ -2423,7 +2670,7 @@
       const weekdays = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
       const shortDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
       const clone = value => JSON.parse(JSON.stringify(value));
-      const empty = () => ({ app: APP, schema: 6, profile: null, profileUpdatedAt: 0, sessions: {}, drafts: {}, plan: null, planUpdatedAt: 0, cycle: { number: 1, completed: {}, updatedAt: 0 } });
+      const empty = () => ({ app: APP, schema: 8, profile: null, profileUpdatedAt: 0, sessions: {}, drafts: {}, plan: null, planUpdatedAt: 0, cycle: { number: 1, completed: {}, updatedAt: 0 } });
       const validDate = text => {
         if (typeof text !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(text)) return false;
         const d = new Date(text + 'T12:00:00Z');
@@ -2442,13 +2689,28 @@
       function createSession(workout, date, cycleNumber = 1) {
         const logs = {};
         for (const ex of workout.exercises) logs[ex.id] = ex.sets ? { sets: Array.from({ length: ex.sets }, blankSet) } : stageLog(workout, ex.id);
-        return { key: key(date, workout.id) + '_' + uid(), date, dateMode: 'auto', archived: false, day: workout.id, cycleNumber, workout: clone(workout), logs, notes: '', cardio: null, done: false, updatedAt: Date.now() };
+        // Exercise media belongs to the plan. Keeping it out of every session
+        // snapshot avoids duplicating large images in the training history.
+        const sessionWorkout = clone(workout);
+        sessionWorkout.exercises.forEach(ex => delete ex.media);
+        return { key: key(date, workout.id) + '_' + uid(), date, dateMode: 'auto', archived: false, day: workout.id, cycleNumber, workout: sessionWorkout, logs, notes: '', cardio: null, done: false, updatedAt: Date.now() };
       }
       function hasExerciseData(log) {
         return !!log && (log.sets ? log.sets.some(s => s.load !== null || s.value !== null || s.done) : log.done || log.rounds?.some(Boolean));
       }
       function previous(sessions, date, day, exerciseId, excludeKey = null, unit = null) {
         return Object.values(sessions).filter(s => s.done && s.key !== excludeKey && s.day === day && s.date <= date && (!unit || s.workout.exercises.find(ex => ex.id === exerciseId)?.unit === unit) && hasExerciseData(s.logs[exerciseId])).sort((a, b) => b.date.localeCompare(a.date) || b.updatedAt - a.updatedAt)[0] || null;
+      }
+      function fillFromLastSession(session, sessions) {
+        for (const ex of session.workout.exercises) {
+          if (!ex.sets) continue;
+          const old = previous(sessions, session.date, session.day, ex.id, session.key, ex.unit)?.logs[ex.id]?.sets || [];
+          session.logs[ex.id].sets.forEach((set, index) => {
+            const source = old[index]; if (!source) return;
+            for (const field of ['load', 'value']) if (source[field] !== null) { set[field] = source[field]; set.auto[field] = true; }
+          });
+        }
+        return session;
       }
       function intervalProgress(session, group) {
         const total = group.exerciseIds.length * group.repeats;
@@ -2545,6 +2807,16 @@
             if ((w.kind === 'strength' && ex.sets === 0) || (w.kind === 'cardio' && ex.sets !== 0)) bad();
             seen.add(ex.id);
             const clean = { id: ex.id, name: ex.name, sets: ex.sets, meta: [...ex.meta], unit: ex.unit, loadLabel: ex.loadLabel };
+            if (ex.media !== undefined) {
+              if (typeof ex.media === 'string') {
+                if (!str(ex.media, 4500000) || !/^data:image\/(?:gif|png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(ex.media)) bad();
+                clean.media = ex.media;
+              } else {
+                if (!TrainingMedia.validReference(ex.media)) bad();
+                const { id, name, type, size, preview, animated } = ex.media;
+                clean.media = { id, name, type, size, preview, animated };
+              }
+            }
             if (ex.target != null) {
               const t = ex.target;
               if (!obj(t)) bad();
@@ -2603,7 +2875,7 @@
           if (!legacy && (!Number.isSafeInteger(s.cycleNumber) || s.cycleNumber < 1)) bad();
           return { key: id, date: s.date, dateMode: s.dateMode === 'manual' ? 'manual' : 'auto', archived: s.archived === true, day: s.day, cycleNumber: legacy ? 1 : s.cycleNumber, workout: w, logs, notes: s.notes, cardio, done: s.done, updatedAt: s.updatedAt };
         };
-        if (!obj(raw) || raw.app !== APP || ![1, 2, 3, 4, 5, 6].includes(raw.schema) || !obj(raw.sessions) || Object.keys(raw.sessions).length > 10000) bad();
+        if (!obj(raw) || raw.app !== APP || ![1, 2, 3, 4, 5, 6, 7, 8].includes(raw.schema) || !obj(raw.sessions) || Object.keys(raw.sessions).length > 10000) bad();
         const result = empty();
         if (raw.profile != null) {
           if (!obj(raw.profile) || !str(raw.profile.name, 100) || !raw.profile.name.trim() || !(raw.profile.avatar === null || (str(raw.profile.avatar, 1500000) && /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(raw.profile.avatar))) || !stamp(raw.profileUpdatedAt)) bad();
@@ -2645,7 +2917,7 @@
       }
       function merge(current, incoming) {
         const result = clone(current); let added = 0, updated = 0, kept = 0;
-        result.schema = 6;
+        result.schema = 8;
         for (const field of ['sessions', 'drafts']) for (const [id, s] of Object.entries(incoming[field])) {
           if (!result[field][id]) { result[field][id] = clone(s); if (field === 'sessions') added++; }
           else if (s.updatedAt > result[field][id].updatedAt) { result[field][id] = clone(s); if (field === 'sessions') updated++; }
@@ -2661,7 +2933,7 @@
         for (const id of Object.keys(result.sessions)) delete result.drafts[id];
         return { data: result, added, updated, kept };
       }
-      return { APP, weekdays, shortDays, empty, key, uid, validDate, createSession, previous, intervalProgress, progress, isComplete, parseNumber, repeatNext, adaptSession, normalizeCycle, markCycleComplete, validate, merge, clone };
+      return { APP, weekdays, shortDays, empty, key, uid, validDate, createSession, previous, fillFromLastSession, intervalProgress, progress, isComplete, parseNumber, repeatNext, adaptSession, normalizeCycle, markCycleComplete, validate, merge, clone };
     })();
 
     const TrainingConfig = (() => {
@@ -2803,11 +3075,14 @@
       const isReadOnly = () => !!currentRecord();
       const key = () => currentRecord()?.key || currentDraft()?.key || '';
       const currentWorkout = () => currentRecord()?.workout || currentDraft()?.workout || PLAN.find(w => w.id === selectedDay);
-      const currentSession = () => currentRecord() || refreshDraftDate(currentDraft()) || (currentWorkout() ? D.createSession(currentWorkout(), selectedDate, store.cycle.number) : null);
+      const currentSession = () => currentRecord() || refreshDraftDate(currentDraft()) || (currentWorkout() ? D.fillFromLastSession(D.createSession(currentWorkout(), selectedDate, store.cycle.number), store.sessions) : null);
       function ensureSession() {
         if (isReadOnly()) return currentSession();
         let draft = currentDraft();
-        if (!draft) { draft = D.createSession(currentWorkout(), selectedDate, store.cycle.number); store.drafts[draft.key] = draft; }
+        if (!draft) {
+          draft = D.fillFromLastSession(D.createSession(currentWorkout(), selectedDate, store.cycle.number), store.sessions);
+          store.drafts[draft.key] = draft;
+        }
         return refreshDraftDate(draft);
       }
       function goToNext() {
@@ -2892,28 +3167,29 @@
         selectedDay = next?.id || null; selectedDate = effectiveDate(currentRecord() || currentDraft());
         renderNav(); renderWorkout();
       }
-      function previousLabel(set, unit) {
-        if (!set || (set.load === null && set.value === null)) return '—';
-        return `${number(set.load)} × ${number(set.value)}${unit === 's' ? ' s' : ''}`;
+      function exerciseMedia(ex) {
+        return PLAN.find(workout => workout.id === selectedDay)?.exercises.find(item => item.id === ex.id)?.media || ex.media || null;
+      }
+      function mediaFrame(ex, media = exerciseMedia(ex), editor = false) {
+        if (!media) return '';
+        const preview = typeof media === 'object' ? media.preview : '';
+        return `<div class="exercise-media" data-inline-media="${esc(ex.id)}"><div class="media-square"><span class="media-placeholder" aria-hidden="true">${icon('image')}</span><img data-media-image ${preview ? `src="${esc(preview)}"` : 'hidden'} alt="Execução de ${esc(ex.name || 'exercício')}"><p data-media-status role="status" hidden></p><button type="button" class="icon-button secondary" data-media-motion aria-label="Pausar animação" aria-pressed="false" hidden>${icon('pause')}</button>${editor ? `<button type="button" class="icon-button danger secondary" data-remove-media aria-label="Remover anexo de ${esc(ex.name || 'exercício')}">${icon('trash')}</button>` : ''}</div></div>`;
       }
       function renderStrength(ex, index, session) {
-        const prev = D.previous(store.sessions, session.date, selectedDay, ex.id, session.key, ex.unit);
-        const old = prev?.logs[ex.id]?.sets || [];
         const log = session.logs[ex.id];
         const loadHeader = 'kg total';
         return `<article class="exercise" data-exercise="${esc(ex.id)}">
-      <div class="exercise-header"><h3>${esc(ex.name)}</h3><p class="target">${ex.meta.map(esc).join(' · ')}</p></div>
+      <div class="exercise-header"><div class="exercise-heading-copy"><h3>${esc(ex.name)}</h3><p class="target">${ex.meta.map(esc).join(' · ')}</p></div></div>${mediaFrame(ex)}
       <table class="sets" aria-label="Séries de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col" title="kg total">${loadHeader}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col"><span class="sr-only">${ex.unit === 's' ? 'Temporizador' : 'Feita'}</span></th></tr></thead>
       <tbody>${log.sets.map((set, i) => `<tr class="set-row ${set.done ? 'completed' : ''}"><td>${i + 1}</td>
         <td><button type="button" class="set-input" data-field="load" data-index="${i}" data-ex="${ex.id}" data-value="${set.load ?? ''}" aria-haspopup="dialog" aria-controls="numeric-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, kg total: ${esc(number(set.load))}">${esc(number(set.load))}</button></td>
         <td><button type="button" class="set-input" data-field="value" data-index="${i}" data-ex="${ex.id}" data-value="${set.value ?? ''}" aria-haspopup="dialog" aria-controls="value-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, ${ex.unit === 's' ? 'segundos' : 'repetições'}: ${esc(number(set.value))}">${esc(number(set.value))}</button></td>
         <td>${ex.unit === 's' ? `<button type="button" class="icon-button secondary set-timer" data-exercise-timer="${ex.id}" data-index="${i}" aria-label="${set.done ? 'Desmarcar' : 'Iniciar'} ${esc(ex.name)}, série ${i + 1}" aria-pressed="${set.done}" aria-haspopup="${set.done ? 'false' : 'dialog'}" aria-controls="rest-dialog">${icon(set.done ? 'check' : 'play')}</button>` : `<label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="Concluir ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</td></tr>`).join('')}</tbody></table>
-      ${prev ? `<details class="exercise-extra"><summary>Treino anterior ${icon('chevron')}</summary><p class="previous-date">${esc(displayDate(prev.date, true))}</p><ul class="previous-list">${old.map((set, i) => `<li><span>Série ${i + 1}</span><span>${esc(previousLabel(set, ex.unit))}${ex.unit === 'reps' ? ' reps' : ''}</span></li>`).join('')}</ul><p class="previous-date">kg total</p><button class="button full" data-copy="${esc(ex.id)}" aria-label="Usar valores anteriores de ${esc(ex.name)} nas séries vazias">${icon('copy')}Repetir valores</button></details>` : ''}
     </article>`;
       }
       function renderCardio(ex, index, session) {
         const done = session.logs[ex.id].done;
-        return `<article class="exercise cardio-stage ${done ? 'is-done' : ''}"><div class="stage-main"><h3>${esc(ex.name)}</h3><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div><label class="complete-set"><input type="checkbox" data-stage="${ex.id}" aria-label="Concluir etapa ${esc(ex.name)}" ${done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></article>`;
+        return `<article class="exercise ${done ? 'is-done' : ''}"><div class="cardio-stage"><div class="stage-main"><h3>${esc(ex.name)}</h3><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div><label class="complete-set"><input type="checkbox" data-stage="${ex.id}" aria-label="Concluir etapa ${esc(ex.name)}" ${done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></div></article>`;
       }
       function completionMark(done, partial = false) {
         return `<span class="record-check ${done ? 'is-done' : partial ? 'is-partial' : ''}" role="img" aria-label="${done ? 'Realizado' : partial ? 'Parcialmente realizado' : 'Não realizado'}">${icon('check')}</span>`;
@@ -2923,7 +3199,7 @@
           if (block.group && workout.kind === 'cardio') {
             const repeats = block.group.repeats, p = D.intervalProgress(session, block.group);
             const label = `Intervalado de ${repeats} ${repeats === 1 ? 'volta' : 'voltas'}`;
-            const stages = block.exercises.map(ex => `<div class="interval-stage"><h4>${esc(ex.name)}</h4><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div>`).join('');
+            const stages = block.exercises.map(ex => `<div class="interval-stage interval-stage-row"><div><h4>${esc(ex.name)}</h4><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div></div>`).join('');
             return `<section class="${history ? 'history-superset' : 'superset'} interval-block ${p.complete ? 'is-done' : ''}" aria-label="${label}"><div class="interval-heading"><div><h3 class="superset-label">Intervalado</h3><span class="interval-count">${repeats} ${repeats === 1 ? 'volta' : 'voltas'}</span></div>${history ? completionMark(p.complete, p.done > 0) : `<label class="complete-set"><input type="checkbox" data-interval="${block.id}" aria-label="Concluir bloco: ${label.toLocaleLowerCase('pt-BR')}" ${p.complete ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</div>${stages}</section>`;
           }
           const content = block.exercises.map(ex => render(ex, workout.exercises.indexOf(ex))).join('');
@@ -2931,6 +3207,7 @@
         }).join('');
       }
       function renderWorkout() {
+        clearInlineMedia($('workout'));
         const w = currentWorkout();
         syncRestContext();
         $('workout').setAttribute('aria-labelledby', 'workout-title');
@@ -2946,7 +3223,8 @@
           <p class="form-error" id="entry-error" role="alert" hidden></p>
           <details class="disclosure notes" ${s.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="Observações">${esc(s.notes)}</textarea></details>
           <div class="session-actions"><button class="button primary" id="finish-workout">${locked ? 'Próximo treino' : 'Concluir treino'}</button></div>`;
-        if (locked) $('exercise-list').querySelectorAll('button,input').forEach(el => el.disabled = true);
+        if (locked) $('exercise-list').querySelectorAll('button:not([data-media-motion]),input').forEach(el => el.disabled = true);
+        if (strength) bindInlineMedia($('workout'), w.exercises, exerciseMedia);
         updateProgress(); updateSaveStatus(); timerUI();
       }
       function updateProgress() {
@@ -3035,6 +3313,7 @@
         }
       });
       $('workout').addEventListener('click', e => {
+        if (toggleInlineMedia(e)) return;
         if (e.target.closest('[data-setup-workout]')) { openEditor(); return; }
         if (e.target.closest('[data-setup-profile]')) { openProfile(null); return; }
         const choice = e.target.closest('[data-workout-choice]'); if (choice) { chooseDay(choice.dataset.workoutChoice); return; }
@@ -3042,13 +3321,6 @@
         if (isReadOnly()) return;
         const timed = e.target.closest('[data-exercise-timer]'); if (timed) { openExerciseTimer(timed); return; }
         const field = e.target.closest('button[data-field]'); if (field) { openValuePicker(field); return; }
-        const copy = e.target.closest('[data-copy]');
-        if (copy) {
-          const prev = D.previous(store.sessions, selectedDate, selectedDay, copy.dataset.copy, key(), currentWorkout().exercises.find(ex => ex.id === copy.dataset.copy)?.unit); if (!prev) return;
-          const log = ensureSession().logs[copy.dataset.copy];
-          log.sets.forEach((s, i) => { const p = prev.logs[copy.dataset.copy].sets[i]; if (p && !s.done) { if (s.load === null) { s.load = p.load; s.auto.load = false; } if (s.value === null) { s.value = p.value; s.auto.value = false; } } });
-          changed(); renderWorkout(); toast('Valores anteriores aplicados aos campos vazios.');
-        }
       });
       $('theme-toggle').addEventListener('click', () => { preferences.theme = preferences.theme === 'dark' ? 'light' : 'dark'; applyTheme(); savePreferences(); });
       function historyExercise(ex, log) {
@@ -3437,7 +3709,93 @@
       $('date-dialog').addEventListener('close', () => { if ($('date-dialog').open) return; const trigger = datePicker?.trigger; datePicker = null; if (trigger?.isConnected) trigger.focus({ preventScroll: true }); });
 
       const C = TrainingConfig;
-      let editorDraft = null, editorIsNew = false;
+      const M = TrainingMedia;
+      let editorDraft = null, editorIsNew = false, editorMediaBusy = false, editorSaving = false, mediaUploadToken = 0;
+      let editorFiles = new Map();
+      const inlineMedia = new Map();
+      const mediaObserver = typeof IntersectionObserver === 'function' ? new IntersectionObserver(entries => {
+        for (const entry of entries) {
+          const state = inlineMedia.get(entry.target);
+          if (!state) continue;
+          if (entry.isIntersecting) loadInlineMedia(state); else stopInlineMedia(state);
+        }
+      }, { rootMargin: '120px' }) : null;
+      function inlineMotionUI(state) {
+        state.button.hidden = !state.animated;
+        state.button.setAttribute('aria-pressed', String(state.paused));
+        state.button.setAttribute('aria-label', (state.paused ? 'Reproduzir' : 'Pausar') + ' animação de ' + state.ex.name);
+        state.button.innerHTML = icon(state.paused ? 'play' : 'pause');
+      }
+      function stopInlineMedia(state) {
+        state.token++; state.controller?.abort(); state.controller = null;
+        if (state.loaded && state.img.naturalWidth) {
+          try { state.preview = M.imagePreview(state.img, 480); } catch { }
+        }
+        state.loaded?.release(); state.loaded = null; state.loading = false;
+        state.img.hidden = !state.preview;
+        if (state.preview) state.img.src = state.preview; else state.img.removeAttribute('src');
+        state.frame.removeAttribute('aria-busy');
+      }
+      function clearInlineMedia(root) {
+        for (const [frame, state] of inlineMedia) {
+          if (state.root !== root) continue;
+          state.active = false; mediaObserver?.unobserve(frame); stopInlineMedia(state);
+          state.img.removeAttribute('src'); inlineMedia.delete(frame);
+        }
+      }
+      async function loadInlineMedia(state) {
+        if (!state.active || state.loading || state.loaded || (state.paused && state.preview)) return;
+        const token = ++state.token, controller = new AbortController();
+        state.controller = controller; state.loading = true;
+        state.frame.setAttribute('aria-busy', 'true'); state.status.hidden = true;
+        try {
+          const media = state.media;
+          const blob = typeof media === 'string' ? M.fromLegacy(media) : editorFiles.get(media.id) || await M.get(media.id);
+          if (!state.active || token !== state.token) return;
+          if (!blob) throw new Error('Anexo indisponível. Remova-o e anexe novamente.');
+          const loaded = await M.loadImage(blob, new Image(), { signal: controller.signal });
+          if (!state.active || token !== state.token) { loaded.release(); return; }
+          loaded.img.alt = 'Execução de ' + (state.ex.name || 'exercício'); loaded.img.dataset.mediaImage = '';
+          state.img.replaceWith(loaded.img); state.img = loaded.img; state.loaded = loaded;
+          state.frame.querySelector('.media-placeholder').hidden = true;
+          if (state.paused) stopInlineMedia(state);
+        } catch (error) {
+          if (state.active && token === state.token && error?.name !== 'AbortError') {
+            state.status.textContent = M.errorText(error); state.status.hidden = false;
+          }
+        } finally {
+          if (token === state.token) { state.loading = false; state.frame.removeAttribute('aria-busy'); }
+        }
+      }
+      function bindInlineMedia(root, exercises, getMedia) {
+        root.querySelectorAll('[data-inline-media]').forEach(frame => {
+          const ex = exercises.find(item => item.id === frame.dataset.inlineMedia), media = ex && getMedia(ex);
+          if (!media) return;
+          const animated = typeof media === 'object' ? media.animated : /^data:image\/gif[;,]/.test(media);
+          const state = { root, frame, ex, media, animated, active: true, token: 0, loaded: null, loading: false,
+            preview: typeof media === 'object' ? media.preview : '', paused: animated && matchMedia('(prefers-reduced-motion: reduce)').matches,
+            img: frame.querySelector('[data-media-image]'), status: frame.querySelector('[data-media-status]'), button: frame.querySelector('[data-media-motion]') };
+          inlineMedia.set(frame, state); inlineMotionUI(state);
+          if (mediaObserver) mediaObserver.observe(frame); else loadInlineMedia(state);
+        });
+      }
+      function toggleInlineMedia(event) {
+        const button = event.target.closest('[data-media-motion]');
+        if (!button) return false;
+        const state = inlineMedia.get(button.closest('[data-inline-media]'));
+        if (state) {
+          state.paused = !state.paused;
+          if (state.paused) stopInlineMedia(state); else loadInlineMedia(state);
+          inlineMotionUI(state);
+        }
+        return true;
+      }
+      function editorBusyUI() {
+        $('editor-form').inert = editorSaving;
+        $('editor-form').querySelector('[type=submit]').disabled = editorMediaBusy || editorSaving;
+        $('editor-form').querySelector('[type=submit]').textContent = editorSaving ? 'Salvando…' : 'Salvar alterações';
+        $('editor-exercises').querySelectorAll('[data-media-file],[data-remove-media]').forEach(el => el.disabled = editorMediaBusy || editorSaving);
+      }
       function renderManager() {
         $('managed-workouts').innerHTML = D.weekdays.map((day, i) => {
           const workouts = PLAN.filter(w => w.weekday === i + 1);
@@ -3448,11 +3806,17 @@
       }
       function openManager() { renderManager(); openDialog('manager-dialog'); }
       function savePlan(nextPlan) {
+        const oldMedia = M.references(store);
         store.plan = nextPlan.sort((a, b) => a.weekday - b.weekday);
         store.planUpdatedAt = Math.max(Date.now(), store.planUpdatedAt + 1);
         D.normalizeCycle(store); syncPlan();
         if (!viewingRecord && !PLAN.some(w => w.id === selectedDay)) goToToday();
-        const saved = writeStore(); renderNav(); renderWorkout(); return saved;
+        const saved = writeStore(); renderNav(); renderWorkout();
+        if (saved) {
+          const kept = M.references(store);
+          M.remove([...oldMedia.keys()].filter(id => !kept.has(id))).catch(() => {});
+        }
+        return saved;
       }
       function freshExercise(kind) {
         const ex = { id: 'ex-' + D.uid(), name: '', sets: kind === 'strength' ? 3 : 0, unit: 'reps', loadLabel: 'kg total', meta: [] };
@@ -3460,6 +3824,7 @@
         return C.syncMeta(ex, kind);
       }
       function openEditor(id = null, weekday = selectedWeekday) {
+        mediaUploadToken++; editorFiles = new Map(); editorMediaBusy = false; editorSaving = false;
         const existing = PLAN.find(w => w.id === id);
         editorIsNew = !existing;
         if (editorIsNew && PLAN.length >= 100) return;
@@ -3480,8 +3845,14 @@
       function dragHandle(name) {
         return `<button type="button" class="drag-handle" data-drag-handle aria-label="Reordenar ${esc(name || 'exercício')}" aria-keyshortcuts="ArrowUp ArrowDown" aria-haspopup="dialog" aria-controls="selection-dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h.01M16 5h.01M8 12h.01M16 12h.01M8 19h.01M16 19h.01" stroke-width="4"/></svg></button>`;
       }
+      function editorMedia(ex) {
+        if (editorDraft?.kind !== 'strength') return '';
+        const upload = `<label class="media-upload">${icon('upload')}<span>Anexar GIF ou imagem</span><input type="file" accept=".gif,.png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp,image/gif" data-media-file aria-label="Anexar execução de ${esc(ex.name || 'exercício')}"></label>`;
+        return `<section class="editor-media" aria-label="Imagem de execução">${ex.media ? mediaFrame(ex, ex.media, true) : upload}</section>`;
+      }
       function renderEditor(focusId = null, selector = '[data-drag-handle]') {
         if (!editorDraft) return;
+        clearInlineMedia($('editor-exercises'));
         const strength = editorDraft.kind === 'strength';
         $('editor-exercises-label').textContent = strength ? 'Exercícios' : 'Etapas';
         $('editor-add').textContent = strength ? 'Adicionar exercício' : 'Adicionar etapa';
@@ -3494,13 +3865,15 @@
             <label class="form-field">Nome ${strength ? 'do exercício' : 'da etapa'}<input data-edit="name" value="${esc(ex.name)}" maxlength="200" required autocomplete="off"></label>
             ${strength ? `<div class="speed-mode" role="group" aria-label="Modo do exercício"><button type="button" data-exercise-unit="reps" aria-pressed="${ex.unit === 'reps'}">Repetições</button><button type="button" data-exercise-unit="s" aria-pressed="${ex.unit === 's'}">Tempo</button></div>${pickerField('Séries', 'sets', ex.sets)}<div class="form-grid">${pickerField(ex.unit === 's' ? 'Tempo mínimo' : 'Reps mínimas', 'min', t.min == null ? '—' : ex.unit === 's' ? C.durationText(t.min) : t.min)}${pickerField(ex.unit === 's' ? 'Tempo máximo' : 'Reps máximas', 'max', t.max == null ? '—' : ex.unit === 's' ? C.durationText(t.max) : t.max)}</div>`
               : `${grouped ? '' : pickerField('Repetições da etapa', 'repeats', t.repeats)}<div class="form-grid">${pickerField('Tempo mínimo', 'duration', C.durationText(t.durationSeconds))}${pickerField('Tempo máximo', 'duration-max', C.durationText(t.durationMaxSeconds))}</div><div class="speed-mode" role="group" aria-label="Tipo de intensidade da etapa"><button type="button" data-speed-mode="speed" aria-pressed="${t.mode === 'speed'}">Velocidade</button><button type="button" data-speed-mode="pace" aria-pressed="${t.mode === 'pace'}">Pace</button><button type="button" data-speed-mode="rest" aria-pressed="${t.mode === 'rest'}">Descanso</button></div>${t.mode === 'rest' ? '' : pickerField(t.mode === 'pace' ? 'Pace (min/km)' : 'Velocidade (km/h)', t.mode === 'pace' ? 'pace' : 'speed', t.mode === 'pace' ? C.paceText(t.speedKmh) : C.valueText(t.speedKmh))}`}
-            <button class="button danger secondary editor-remove" type="button" data-remove-ex>${icon('trash')}Remover ${strength ? 'exercício' : 'etapa'}</button></section>`;
+            ${editorMedia(ex)}<button class="button danger secondary editor-remove" type="button" data-remove-ex>${icon('trash')}Remover ${strength ? 'exercício' : 'etapa'}</button></section>`;
         }
         $('editor-exercises').innerHTML = C.blocks(editorDraft).map(block => block.group
           ? `<section class="editor-superset" data-sort-id="${block.id}"><div class="superset-heading">${dragHandle(block.name)}<h3>${esc(block.name)}</h3><button type="button" class="button compact" data-separate-group="${block.id}">Separar</button></div>${strength ? '' : `<div class="form-field interval-repeat"><span>Voltas do intervalado</span><button type="button" class="number-ticker" data-group-repeats="${block.id}" aria-label="Voltas do intervalado: ${block.group.repeats}" aria-haspopup="dialog" aria-controls="ticker-dialog"><span>${block.group.repeats}</span>${icon('chevron')}</button></div>`}${block.exercises.map(ex => card(ex, true)).join('')}</section>`
           : card(block.exercises[0], false)).join('');
         $('editor-add').disabled = editorDraft.exercises.length >= 30;
         decorateSortOverview();
+        editorBusyUI();
+        if (strength) bindInlineMedia($('editor-exercises'), editorDraft.exercises, ex => ex.media);
         if (focusId) {
           const card = $('editor-exercises').querySelector(`[data-editor-ex="${focusId}"]`) || $('editor-exercises').querySelector(`[data-sort-id="${focusId}"]`);
           card?.querySelector(selector)?.focus({ preventScroll: true });
@@ -3541,7 +3914,28 @@
         if (ex && e.target.dataset.edit === 'name') ex.name = e.target.value;
         e.target.removeAttribute('aria-invalid'); $('editor-error').hidden = true;
       });
+      $('editor-exercises').addEventListener('change', async e => {
+        const input = e.target.closest('[data-media-file]');
+        if (!input || editorDraft?.kind !== 'strength' || editorMediaBusy || editorSaving) return;
+        const ex = editorDraft.exercises.find(x => x.id === input.closest('[data-editor-ex]')?.dataset.editorEx), file = input.files?.[0];
+        if (!ex || !file) return;
+        const token = ++mediaUploadToken;
+        editorMediaBusy = true; editorBusyUI(); $('editor-error').hidden = true;
+        input.closest('label').querySelector('span').textContent = 'Preparando…';
+        try {
+          const prepared = await M.prepare(file);
+          if (token !== mediaUploadToken || !editorDraft?.exercises.includes(ex)) return;
+          if (ex.media?.id) editorFiles.delete(ex.media.id);
+          editorFiles.set(prepared.ref.id, prepared.blob); ex.media = prepared.ref;
+        } catch (error) {
+          if (token === mediaUploadToken && editorDraft) editorError(M.errorText(error));
+        } finally {
+          if (token === mediaUploadToken && editorDraft) { editorMediaBusy = false; renderEditor(ex.id, ex.media ? '[data-remove-media]' : '[data-media-file]'); }
+        }
+      });
       $('editor-exercises').addEventListener('click', e => {
+        if (editorSaving) return;
+        if (toggleInlineMedia(e)) return;
         const separate = e.target.closest('[data-separate-group]'); if (separate) { separateGroup(separate.dataset.separateGroup); return; }
         const repeat = e.target.closest('[data-group-repeats]');
         if (repeat) {
@@ -3555,6 +3949,7 @@
           return;
         }
         const button = e.target.closest('button'), ex = editorDraft?.exercises.find(x => x.id === button?.closest('[data-editor-ex]')?.dataset.editorEx); if (!ex) return;
+        if (button.hasAttribute('data-remove-media')) { if (ex.media?.id) editorFiles.delete(ex.media.id); delete ex.media; renderEditor(ex.id, '[data-media-file]'); return; }
         if (button.hasAttribute('data-exercise-unit') && editorDraft.kind === 'strength') {
           const unit = button.dataset.exerciseUnit;
           if (unit === ex.unit) return;
@@ -3578,8 +3973,8 @@
           setSelectionField('editor-kind', value, value === 'strength' ? 'Força' : 'Corrida'); renderEditor();
         }, $('editor-kind'));
       });
-      $('editor-form').addEventListener('submit', e => {
-        e.preventDefault(); if (!editorDraft) return;
+      $('editor-form').addEventListener('submit', async e => {
+        e.preventDefault(); if (!editorDraft || editorMediaBusy || editorSaving) return;
         const title = $('editor-workout-name').value.trim();
         if (!title) { editorError('Informe o nome do treino.', $('editor-workout-name')); return; }
         if (!editorDraft.exercises.length) { editorError('Adicione pelo menos um exercício ou uma etapa.'); return; }
@@ -3589,13 +3984,32 @@
         }
         editorDraft.title = title; editorDraft.short = title.slice(0, 40); editorDraft.subtitle = ''; editorDraft.weekday = Number($('editor-weekday').value);
         editorDraft.day = D.weekdays[editorDraft.weekday - 1]; editorDraft.shortDay = D.shortDays[editorDraft.weekday - 1];
-        const nextPlan = D.clone(PLAN), index = nextPlan.findIndex(w => w.id === editorDraft.id);
-        if (index === -1) nextPlan.push(D.clone(editorDraft)); else nextPlan[index] = D.clone(editorDraft);
-        for (const [id, draft] of Object.entries(store.drafts)) if (!draft.archived && draft.day === editorDraft.id && draft.cycleNumber === store.cycle.number && !store.cycle.completed[editorDraft.id]) store.drafts[id] = D.adaptSession(draft, editorDraft);
-        const saved = savePlan(nextPlan); $('editor-dialog').close();
-        toast(saved ? 'Treino salvo.' : 'Treino atualizado nesta aba. Exporte um backup antes de fechar.');
+        const draftToSave = editorDraft;
+        editorSaving = true; editorBusyUI();
+        try {
+          // Migrate old inline attachments when their workout is next saved.
+          const staged = new Map(editorFiles);
+          await M.migrateLegacy({ plan: [draftToSave] }, staged);
+          if (editorDraft === draftToSave) editorFiles = staged;
+          const refs = M.references({ plan: [draftToSave] }), needed = new Map();
+          for (const [id, ref] of refs) {
+            if (staged.has(id)) needed.set(id, staged.get(id));
+            else { const blob = await M.get(id); if (!blob || blob.size !== ref.size) throw new Error('Um anexo não está disponível. Reanexe-o antes de salvar.'); }
+          }
+          await M.putAll(needed);
+          if (editorDraft !== draftToSave || !$('editor-dialog').open) {
+            const kept = M.references(store); await M.remove([...needed.keys()].filter(id => !kept.has(id))); return;
+          }
+          const nextPlan = D.clone(PLAN), index = nextPlan.findIndex(w => w.id === editorDraft.id);
+          if (index === -1) nextPlan.push(D.clone(editorDraft)); else nextPlan[index] = D.clone(editorDraft);
+          for (const [id, draft] of Object.entries(store.drafts)) if (!draft.archived && draft.day === editorDraft.id && draft.cycleNumber === store.cycle.number && !store.cycle.completed[editorDraft.id]) store.drafts[id] = D.adaptSession(draft, editorDraft);
+          const saved = savePlan(nextPlan);
+          if (!saved) { editorError('Não foi possível salvar a ficha no navegador. Suas alterações continuam nesta aba; exporte um backup antes de fechar.'); return; }
+          $('editor-dialog').close(); toast('Treino salvo.');
+        } catch (error) { if (editorDraft === draftToSave) editorError(M.errorText(error)); }
+        finally { if (editorDraft === draftToSave) { editorSaving = false; editorBusyUI(); } }
       });
-      $('editor-dialog').addEventListener('close', () => { if (!$('editor-dialog').open) { editorDraft = null; openManager(); } });
+      $('editor-dialog').addEventListener('close', () => { if (!$('editor-dialog').open) { clearInlineMedia($('editor-exercises')); mediaUploadToken++; editorFiles.clear(); editorMediaBusy = false; editorSaving = false; editorDraft = null; openManager(); } });
       $('editor-open').addEventListener('click', openManager);
       $('new-workout').addEventListener('click', () => openEditor());
       $('managed-workouts').addEventListener('click', e => {
@@ -4101,11 +4515,23 @@
 
       function showBackup() { openDialog('backup-dialog'); }
       $('backup-open').addEventListener('click', showBackup);
-      function downloadBackup() {
-        const data = { ...store, plan: D.clone(PLAN), exportedAt: new Date().toISOString() };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a');
-        a.href = url; a.download = `treino-hibrido-backup-${localDate()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000);
-        preferences.lastBackup = Date.now(); savePreferences(); toast('Backup gerado.');
+      let backupBusy = false;
+      function backupBusyUI(busy, message = '') {
+        backupBusy = busy;
+        $('export-backup').disabled = busy; $('import-backup').disabled = busy;
+        if ($('confirm-import')) $('confirm-import').disabled = busy;
+        $('backup-status').textContent = message; $('backup-status').hidden = !message;
+      }
+      async function downloadBackup() {
+        if (backupBusy) return;
+        backupBusyUI(true, 'Preparando backup com os anexos…'); $('import-error').hidden = true;
+        try {
+          const data = D.clone({ ...store, plan: PLAN, exportedAt: new Date().toISOString() });
+          const { blob, extension } = await M.exportBackup(data), url = URL.createObjectURL(blob), a = document.createElement('a');
+          a.href = url; a.download = `treino-hibrido-backup-${localDate()}.${extension}`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
+          preferences.lastBackup = Date.now(); savePreferences(); toast('Backup completo gerado.');
+        } catch (error) { $('import-error').textContent = M.errorText(error); $('import-error').hidden = false; }
+        finally { backupBusyUI(false); }
       }
       $('export-backup').addEventListener('click', downloadBackup);
       $('import-backup').addEventListener('click', () => { $('import-file').value = ''; $('import-file').click(); });
@@ -4130,22 +4556,37 @@
         }
         const drafts = Object.values(data.drafts).filter(s => !s.archived).length;
         if (drafts) row('dumbbell', `${drafts} ${drafts === 1 ? 'treino em andamento' : 'treinos em andamento'}`);
+        const attachments = M.references(data);
+        if (attachments.size) row('image', `${attachments.size} ${attachments.size === 1 ? 'anexo de execução' : 'anexos de execução'}`, `${([...attachments.values()].reduce((sum, ref) => sum + ref.size, 0) / 1024 / 1024).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} MB`);
         $('import-preview').innerHTML = `<strong>Conteúdo do backup</strong>${rows.length ? `<ul class="import-summary">${rows.join('')}</ul>` : '<p>Este backup não contém treinos, histórico ou perfil.</p>'}<button type="button" class="button primary" id="confirm-import">Importar backup</button>`;
       }
       $('import-file').addEventListener('change', async e => {
-        const file = e.target.files?.[0]; if (!file) return; pendingImport = null; $('import-preview').hidden = true; $('import-error').hidden = true;
+        const file = e.target.files?.[0]; if (!file || backupBusy) return; pendingImport = null; $('import-preview').hidden = true; $('import-error').hidden = true;
+        backupBusyUI(true, 'Conferindo backup…');
         try {
-          if (file.size > 5 * 1024 * 1024) throw new Error('O backup deve ter até 5 MB.');
-          pendingImport = D.validate(JSON.parse(await file.text()));
-          renderImportPreview(pendingImport);
+          pendingImport = await M.readBackup(file);
+          renderImportPreview(pendingImport.data);
           $('import-preview').hidden = false;
         } catch (error) { $('import-error').textContent = error instanceof SyntaxError ? 'O arquivo não contém um JSON válido. Escolha um backup exportado por este treino.' : error.message; $('import-error').hidden = false; }
+        finally { backupBusyUI(false); }
       });
-      $('import-preview').addEventListener('click', e => {
-        if (!e.target.closest('#confirm-import') || !pendingImport) return;
+      $('import-preview').addEventListener('click', async e => {
+        if (!e.target.closest('#confirm-import') || !pendingImport || backupBusy) return;
         if (!validInputs()) { toast('Feche o backup e corrija o valor destacado no treino.'); return; }
-        const merged = D.merge(store, pendingImport); store = merged.data; const saved = writeStore(); pendingImport = null; $('import-preview').hidden = true; goToToday(); renderNav(); renderWorkout();
-        $('backup-dialog').close(); toast(saved ? 'Backup importado.' : 'Backup carregado nesta aba. O navegador não permitiu salvá-lo.');
+        backupBusyUI(true, 'Salvando ficha e anexos…'); $('import-error').hidden = true;
+        try {
+          const imported = pendingImport;
+          await M.migrateLegacy(imported.data, imported.files);
+          const merged = D.merge(store, imported.data), needed = new Map();
+          for (const [id, ref] of M.references(merged.data)) {
+            if (imported.files.has(id)) needed.set(id, imported.files.get(id));
+            else { const blob = await M.get(id); if (!blob || blob.size !== ref.size) throw new Error('O backup não contém todos os anexos. Exporte um backup completo no navegador de origem.'); }
+          }
+          await M.putAll(needed);
+          store = merged.data; const saved = writeStore(); pendingImport = null; $('import-preview').hidden = true; goToToday(); renderNav(); renderWorkout();
+          $('backup-dialog').close(); toast(saved ? 'Backup importado.' : 'Backup carregado nesta aba. O navegador não permitiu salvá-lo.');
+        } catch (error) { $('import-error').textContent = M.errorText(error); $('import-error').hidden = false; }
+        finally { backupBusyUI(false); }
       });
       // Timer uses wall-clock time, so delayed rendering does not accumulate drift.
       let timer = { mode: 'countdown', duration: 90000, adjustment: 0, elapsed: 0, startedAt: null, finished: false, workoutKey: null, exercise: null };
