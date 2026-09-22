@@ -34,6 +34,7 @@
 
     html {
       scroll-behavior: smooth;
+      scrollbar-gutter: stable;
       -webkit-text-size-adjust: 100%;
       scroll-padding-top: 114px
     }
@@ -1900,8 +1901,6 @@
     .drag-handle { display:flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; border:0; background:transparent; border-radius:10px; cursor:grab; touch-action:none; }
     .drag-handle:active { cursor:grabbing; }
     .editor-exercise.is-dragging { opacity:.3; }
-    .editor-exercise.drop-before { box-shadow:0 -4px 0 var(--ink); }
-    .editor-exercise.drop-after { box-shadow:0 4px 0 var(--ink); }
     .sorting-exercises { user-select:none; -webkit-user-select:none; cursor:grabbing; }
     .drag-preview { position:fixed; z-index:5; padding:12px 16px; border:1px solid var(--line); border-radius:14px; background:var(--ink); color:var(--inverse); box-shadow:0 10px 35px rgb(0 0 0 / .25); pointer-events:none; font-size:15px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
     @media(max-width:350px) { .number-ticker { padding:10px 8px; font-size:16px; } .weekly-overview { gap:10px; } .managed-workout-main { gap:8px; } .editor-section-label { gap:8px; } }
@@ -1952,23 +1951,32 @@
     .superset .exercise+.exercise { margin-top:20px; padding-top:20px; border-top:1px solid var(--line); }
     .history-superset { padding-top:18px; }
     .history-superset .superset-label { margin:0; }
-    .group-summary { display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:12px; }
+    .group-summaries { display:grid; gap:10px; margin-bottom:22px; }
+    .group-summaries:empty { display:none; }
+    .group-summary { display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:16px; padding:14px; background:var(--bg); box-shadow:var(--shadow-card); }
     .group-summary>div { flex:1; min-width:0; }
     .group-summary h3 { font-size:15px; font-weight:550; }
-    .group-summary p { color:var(--muted); font-size:13px; margin-top:4px; overflow-wrap:anywhere; }
-    #group-choices { display:grid; gap:8px; margin:16px 0 20px; }
-    .group-choice { position:relative; display:flex; align-items:center; gap:12px; padding:12px; min-height:52px; border:1px solid var(--line); border-radius:12px; font-size:15px; cursor:pointer; }
+    .group-summary p { color:var(--muted); font-size:13px; line-height:1.45; margin-top:4px; overflow-wrap:anywhere; }
+    .group-summary>.button { flex:none; }
+    .group-config-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .group-config-heading h3 { font-size:14px; font-weight:550; }
+    .group-config-heading>span { font-size:12px; color:var(--muted); white-space:nowrap; }
+    .group-config-body #groups-empty { margin:0 0 12px; }
+    #group-choices { display:grid; gap:8px; }
+    .group-choice { position:relative; display:flex; align-items:center; gap:12px; padding:12px; min-height:60px; border:1px solid var(--line); border-radius:16px; font-size:15px; cursor:pointer; transition:background .18s,border-color .18s,opacity .18s; }
     .group-choice>span:last-child { min-width:0; overflow-wrap:anywhere; }
     .group-choice input { position:absolute; inset:0; opacity:0; width:100%; height:100%; margin:0; z-index:1; cursor:pointer; }
-    .group-choice .check-box { flex:none; }
+    .group-choice .check-box { flex:none; width:30px; height:30px; border-radius:9px; }
+    .group-choice .check-box>.icon { width:18px; height:18px; }
+    .group-choice:has(input:checked) { background:var(--soft); border-color:var(--muted); }
     .group-choice input:checked+.check-box { background:var(--ink); border-color:var(--ink); color:var(--inverse); }
     .group-choice input:checked+.check-box .icon { opacity:1; }
-    .group-choice input:focus-visible+.check-box { outline:2px solid var(--ink); outline-offset:4px; }
+    .group-choice:has(input:focus-visible) { outline:2px solid var(--ink); outline-offset:3px; }
     .group-choice:has(input:disabled) { opacity:.5; cursor:default; }
-    #groups-dialog .button.full+.button.full { margin-top:10px; }
+    .group-choice input:disabled { cursor:default; }
+    .group-config-actions { position:sticky; bottom:0; z-index:1; margin:0; padding:16px 20px 20px; background:var(--bg); border-top:1px solid var(--line); }
+    .group-config-actions .button { min-width:0; padding:10px 12px; font-size:14px; }
     [data-sort-id].is-dragging { opacity:.3; }
-    [data-sort-id].drop-before { box-shadow:0 -4px 0 var(--ink); }
-    [data-sort-id].drop-after { box-shadow:0 4px 0 var(--ink); }
     @media(max-width:380px) { .editor-superset { padding:8px; } .editor-superset .editor-exercise { padding:12px; } .superset { padding:12px; } .selection-field { padding:10px; font-size:15px; } }
     @media(prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto!important; transition:none!important; animation:none!important; } }
     #date-calendar .calendar-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; width:100%; margin:0; }
@@ -2018,12 +2026,10 @@
     .profile-preview>.icon { width:38px; height:38px; }
     .editor-footer-secondary { display:flex; gap:8px; }
     .editor-footer-secondary>.button { flex:1; min-width:0; padding:10px 8px; font-size:14px; white-space:nowrap; }
-    #sort-feedback { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:13px; line-height:1.35; min-height:20px; margin:0 0 2px; }
-    #sort-feedback>.icon { width:17px; height:17px; flex:none; color:var(--ink); }
     #editor-exercises.sort-compact .sort-summary-text { display:flex; gap:10px; align-items:center; align-self:stretch; border:0; background:transparent; color:var(--ink); padding:0; text-align:left; font:inherit; font-size:14px; cursor:pointer; }
     .sort-summary-text .sort-item-name { min-width:0; flex:1; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; line-height:1.35; }
     .sort-summary-text>.icon { width:15px; height:15px; flex:none; color:var(--muted); }
-    .sort-position { display:grid; place-items:center; flex:none; width:24px; height:24px; border-radius:8px; background:var(--soft); font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; }
+    .sort-position,.overview-number { display:grid; place-items:center; flex:none; width:24px; height:24px; border-radius:8px; background:var(--soft); color:var(--ink); font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; }
     #editor-exercises .sort-landed { border-color:var(--ink); box-shadow:0 0 0 1px var(--ink); }
     #editor-exercises .sort-landed .sort-position { background:var(--ink); color:var(--inverse); }
     #editor-exercises.sort-compact [data-sort-id]>.editor-exercise-head,
@@ -2098,35 +2104,392 @@
     .media-square [data-media-status] { position:relative; margin:0; padding:12px; text-align:center; font-size:12px; color:var(--muted); background:var(--bg); }
     .media-square .icon-button { position:absolute; right:8px; width:40px; min-width:40px; min-height:40px; padding:9px; background:var(--bg); box-shadow:0 1px 5px rgb(0 0 0 / .12); }
     .media-square [data-remove-media] { top:8px; }
-    .media-square [data-media-motion] { bottom:8px; }
+    .media-square [data-expand-media] { top:8px; }
     .media-square .icon-button>.icon { width:20px; height:20px; }
     @media(max-width:350px) { .exercise-header { gap:10px; } }
     @media print { .exercise-media, .editor-media { display:none!important; } }
+    /* Shared surface, elevation and feedback tokens. */
+    :root {
+      --canvas:#fff; --bg:#fff; --ink:#000; --inverse:#fff;
+      --line:rgb(0 0 0 / .16); --soft:rgb(0 0 0 / .04); --muted:rgb(0 0 0 / .65);
+      --accent:var(--ink); --accent-soft:var(--soft);
+      --success:#286043; --success-bg:#eaf5ee; --success-line:#c7e2d0;
+      --error:#9e3737; --error-bg:#fff0ef; --error-line:#efceca;
+      --shadow-card:0 2px 4px rgb(26 39 30 / .025),0 10px 30px rgb(26 39 30 / .045);
+      --shadow-float:0 4px 12px rgb(26 39 30 / .07),0 18px 44px rgb(26 39 30 / .12);
+      --shadow-modal:0 8px 24px rgb(10 20 14 / .12),0 32px 90px rgb(10 20 14 / .28);
+      --drop-color:rgb(90 128 102 / .36);
+    }
+    :root[data-theme=dark] {
+      --canvas:#000; --bg:#000; --ink:#fff; --inverse:#000;
+      --line:rgb(255 255 255 / .25); --soft:rgb(255 255 255 / .08); --muted:rgb(255 255 255 / .75);
+      --accent:var(--ink); --accent-soft:var(--soft);
+      --success:#b6dfc3; --success-bg:#20382a; --success-line:#395641;
+      --error:#f3b4ae; --error-bg:#402725; --error-line:#65403c;
+      --shadow-card:0 2px 5px rgb(0 0 0 / .12),0 12px 32px rgb(0 0 0 / .12);
+      --shadow-float:0 4px 12px rgb(0 0 0 / .18),0 20px 44px rgb(0 0 0 / .28);
+      --shadow-modal:0 10px 30px rgb(0 0 0 / .26),0 36px 100px rgb(0 0 0 / .5);
+      --drop-color:rgb(150 192 164 / .42);
+    }
+    body { background:var(--canvas); }
+    .header { padding:26px 0 22px; }
+    .header .profile h1 { font-size:18px; letter-spacing:-.35px; }
+    .profile-copy { min-width:0; }
+    .profile-copy>span { display:block; font-size:12px; color:var(--muted); margin-bottom:2px; }
+    .header-actions .icon-button { background:var(--bg); width:44px; min-width:44px; min-height:44px; border-radius:50%; box-shadow:0 2px 6px rgb(0 0 0 / .025); }
+    .avatar { background:var(--accent-soft); color:var(--accent); }
+    .button,.icon-button,.set-input { transition:background .18s,border-color .18s,box-shadow .18s,transform .18s; }
+    .button.primary { box-shadow:0 3px 8px rgb(0 0 0 / .1); }
+    .button:active:not(:disabled),.icon-button:active:not(:disabled) { transform:translateY(1px); }
+    .week-panel,.exercise,.managed-workout,.editor-exercise,.editor-superset,.history-entry { box-shadow:var(--shadow-card); background:var(--bg); }
+    .week-panel { padding:20px 14px 12px; border-radius:24px; margin-top:24px; }
+    .day[aria-selected=true] { box-shadow:0 4px 12px rgb(0 0 0 / .12); }
+    .weekly-progress>span,.progress-line>span { background:var(--accent); }
+    dialog { box-shadow:var(--shadow-modal); border-color:var(--line); }
+    dialog::backdrop { background:rgb(12 20 15 / .36); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); }
+    :root[data-theme=dark] dialog::backdrop { background:rgb(0 0 0 / .55); }
+    dialog[open]:not(.value-dialog) { animation:dialog-in .2s ease-out; }
+    .dialog-header { padding:20px 20px 16px; }
+    .dialog-body { padding-left:20px; padding-right:20px; }
+    .editor-footer { box-shadow:0 -10px 24px var(--bg); }
+    .rest-mini { box-shadow:var(--shadow-float); }
+    @keyframes dialog-in { from { opacity:0; transform:translateY(10px) scale(.985); } to { opacity:1; transform:none; } }
+    [data-sort-id] { position:relative; transition:box-shadow .18s,border-color .18s; }
+    .editor-exercise.drop-before,[data-sort-id].drop-before { box-shadow:0 -6px 16px -7px var(--drop-color),var(--shadow-card); }
+    .editor-exercise.drop-after,[data-sort-id].drop-after { box-shadow:0 6px 16px -7px var(--drop-color),var(--shadow-card); }
+    .drag-preview { background:var(--bg); color:var(--ink); border:1px solid var(--line); box-shadow:var(--shadow-float); padding:15px 18px; border-radius:16px; }
+    #editor-exercises .sort-landed { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft),var(--shadow-card); }
+    .form-error,.storage-alert { border:1px solid var(--error-line); background:var(--error-bg); color:var(--error); border-radius:14px; }
+    .dialog-body>.form-error { color:var(--error); }
+    .form-field [aria-invalid=true],[aria-invalid=true].set-input { border:1px solid var(--error); box-shadow:0 0 0 3px var(--error-bg); }
+    .toast { display:flex; align-items:center; gap:11px; width:min(440px,calc(100% - 32px)); padding:14px 14px 14px 16px; text-align:left; color:var(--success); background:var(--success-bg); border:1px solid var(--success-line); box-shadow:var(--shadow-float); font-size:14px; line-height:1.45; z-index:200; }
+    .toast[data-tone=error] { color:var(--error); background:var(--error-bg); border-color:var(--error-line); }
+    .toast[data-tone=info] { color:var(--ink); background:var(--bg); border-color:var(--line); }
+    .toast>.icon { width:22px; height:22px; }
+    .toast>span { flex:1; min-width:0; }
+    .toast-dismiss { display:grid; place-items:center; width:32px; height:36px; flex:none; padding:4px; border:0; background:transparent; color:inherit; border-radius:9px; }
+    .toast-dismiss>.icon { width:18px; height:18px; }
+    .toast-dismiss .icon { pointer-events:none; }
+    .toast[popover] { inset:auto; left:50%; bottom:calc(18px + env(safe-area-inset-bottom,0px)); margin:0; overflow:visible; }
+    body.rest-minimized .toast[popover] { bottom:calc(var(--rest-mini-height,90px) + 12px); }
+    .toast:not([hidden]) { animation:toast-in .2s ease-out; }
+    @keyframes toast-in { from { opacity:0; margin-bottom:-8px; } to { opacity:1; margin-bottom:0; } }
+    .context-label { font-size:12px; font-weight:500; letter-spacing:normal; text-transform:none; color:var(--muted); }
+    .home-intro { margin:8px 0 22px; }
+    .home-intro h2 { font-size:32px; font-weight:600; letter-spacing:-1.2px; line-height:1.15; margin-top:8px; }
+    .home-intro p:last-child { font-size:14px; color:var(--muted); margin-top:9px; }
+    .today-card { position:relative; overflow:hidden; padding:26px; border:1px solid var(--line); border-radius:28px; background:var(--bg); box-shadow:var(--shadow-card); }
+    .today-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 100% 0%,var(--accent-soft),transparent 70%); pointer-events:none; }
+    .today-card>* { position:relative; }
+    .today-card-top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:28px; }
+    .kind-badge { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:550; color:var(--accent); background:var(--accent-soft); padding:7px 11px; border-radius:99px; }
+    .kind-badge>.icon { width:17px; height:17px; }
+    .today-card h3 { max-width:100%; font-size:29px; font-weight:600; letter-spacing:-.9px; line-height:1.18; overflow-wrap:anywhere; }
+    .today-detail { color:var(--muted); font-size:14px; margin:10px 0 24px; }
+    .today-card .button { width:100%; justify-content:space-between; }
+    .arrow-right { transform:rotate(-90deg); }
+    .arrow-left { transform:rotate(90deg); }
+    .section-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:24px 0 12px; }
+    .section-heading h2,.section-heading h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
+    .section-heading .button { min-height:40px; font-size:13px; padding:7px 10px; }
+    .workout-row { display:flex; align-items:center; gap:13px; width:100%; border:1px solid var(--line); border-radius:18px; padding:17px; background:var(--bg); text-align:left; margin-bottom:10px; box-shadow:var(--shadow-card); }
+    .workout-row:hover,.overview-item:hover { background:var(--soft); }
+    .workout-row .row-icon { display:grid; place-items:center; width:43px; height:43px; flex:none; border-radius:14px; background:var(--soft); color:var(--accent); }
+    .workout-row>span:nth-child(2) { flex:1; min-width:0; }
+    .workout-row strong,.workout-row small { display:block; overflow-wrap:anywhere; }
+    .workout-row strong { font-size:15px; font-weight:600; }
+    .workout-row small { margin-top:4px; font-size:12px; color:var(--muted); }
+    .workout-row>.icon { width:18px; height:18px; color:var(--muted); }
+    .rest-day { padding:20px; border:1px solid var(--line); border-radius:20px; background:var(--bg); color:var(--muted); font-size:14px; }
+    .home-footer { display:flex; justify-content:center; gap:14px; padding-top:18px; }
+    .home-footer .button { font-size:13px; min-height:44px; color:var(--muted); }
+    .resume-card { margin:16px 0 0; }
+    .view-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 20px; }
+    .icon-button.back-button { width:44px; min-width:44px; min-height:44px; padding:0; border-radius:50%; }
+    .back-button .icon { width:20px; height:20px; }
+    .view-toolbar .icon-button { min-width:44px; width:44px; min-height:44px; border-radius:50%; }
+    .summary-heading { padding:4px 0 0; }
+    .summary-heading h2 { font-size:34px; line-height:1.15; letter-spacing:-1.2px; font-weight:600; margin:13px 0 10px; overflow-wrap:anywhere; }
+    .summary-heading>p { font-size:14px; color:var(--muted); }
+    .summary-stats { display:flex; gap:0; border:1px solid var(--line); border-radius:20px; background:var(--bg); box-shadow:var(--shadow-card); margin:24px 0 18px; padding:20px 0; }
+    .summary-stats>div { flex:1; text-align:center; border-right:1px solid var(--line); }
+    .summary-stats>div:last-child { border:0; }
+    .summary-stats dt { color:var(--muted); font-size:12px; }
+    .summary-stats dd { font-size:23px; letter-spacing:-.6px; font-weight:600; margin:0 0 3px; }
+    .summary-start { width:100%; min-height:54px; }
+    .summary-list { border:1px solid var(--line); border-radius:22px; background:var(--bg); overflow:hidden; box-shadow:var(--shadow-card); }
+    .overview-item { display:flex; align-items:center; gap:14px; width:100%; border:0; border-bottom:1px solid var(--line); padding:17px; background:transparent; text-align:left; }
+    .overview-item:last-child { border-bottom:0; }
+    .overview-copy { flex:1; min-width:0; }
+    .overview-copy strong { display:block; font-size:14px; font-weight:550; overflow-wrap:anywhere; }
+    .overview-copy small { display:block; font-size:12px; color:var(--muted); margin-top:4px; }
+    .overview-item>.icon { width:18px; height:18px; color:var(--muted); }
+    .overview-item[aria-current=true] { background:var(--accent-soft); }
+    .overview-number>.icon { width:17px; height:17px; }
+    .group-tag { display:inline-block; color:var(--accent); font-size:11px; font-weight:600; margin-bottom:4px; }
+    .session-toolbar { margin-bottom:12px; }
+    .session-toolbar-copy { flex:1; min-width:0; text-align:center; }
+    .session-toolbar-copy h2 { font-size:13px; font-weight:550; margin-top:3px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+    .focus-progress { display:flex; gap:5px; margin:0 0 18px; overflow-x:auto; scrollbar-width:none; }
+    .focus-dot { position:relative; flex:1 0 16px; min-width:16px; height:26px; padding:10px 0; background:transparent; border:0; border-radius:6px; }
+    .focus-dot::after { content:''; display:block; height:4px; width:100%; border-radius:9px; background:var(--line); }
+    .focus-dot[aria-current=true]::after { background:var(--ink); }
+    .focus-dot.is-complete::after { background:var(--accent); }
+    .focus-exercise { border-radius:28px; margin-bottom:14px; }
+    .focus-exercise .exercise-media { width:100%; margin:0; }
+    .focus-exercise .media-square { height:clamp(240px,34svh,380px); aspect-ratio:auto; border:0; border-radius:0; background:var(--soft); }
+    .focus-exercise .media-square img { padding:12px; object-fit:contain; }
+    .media-square [data-expand-media] { top:12px; bottom:auto; border-radius:50%; width:40px; min-width:40px; min-height:40px; }
+    .focus-exercise .exercise-header { display:block; padding:22px 20px 12px; }
+    .focus-exercise h3 { font-size:25px; font-weight:600; line-height:1.2; letter-spacing:-.75px; }
+    .focus-exercise .exercise-header .context-label { margin-bottom:7px; }
+    .focus-exercise .target { font-size:13px; margin-top:8px; }
+    .focus-exercise .sets { width:calc(100% - 40px); margin:0 20px 20px; }
+    .focus-exercise .sets td { padding-top:5px; padding-bottom:5px; }
+    .focus-exercise .set-input { border-radius:14px; background:var(--soft); border-color:transparent; }
+    .focus-exercise .set-row.completed .set-input { color:var(--muted); background:transparent; }
+    .focus-exercise .set-row.is-current .set-input { border-color:var(--line); background:var(--bg); box-shadow:0 2px 8px rgb(0 0 0 / .035); }
+    .set-section-heading { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:6px 20px 15px; }
+    .set-section-heading strong { font-size:13px; font-weight:600; }
+    .rest-shortcut { display:flex; align-items:center; gap:6px; min-height:38px; padding:7px 10px; border:1px solid var(--line); border-radius:99px; background:transparent; font-size:11px; color:var(--muted); }
+    .rest-shortcut>.icon { width:15px; height:15px; }
+    .exercise-navigation { display:grid; grid-template-columns:48px minmax(0,1fr) 48px; align-items:center; gap:10px; margin:16px 0 4px; }
+    .exercise-navigation>.icon-button { border-radius:50%; box-shadow:var(--shadow-card); }
+    .exercise-navigation .next-copy { display:flex; flex-direction:column; justify-content:center; text-align:center; border:0; background:transparent; padding:8px; min-height:48px; }
+    .next-copy .context-label { display:block; margin-bottom:4px; }
+    .next-copy strong { display:block; font-size:13px; font-weight:500; overflow-wrap:anywhere; }
+    .session-bottom .progress-label { font-size:12px; margin-top:22px; }
+    .session-bottom .notes { margin-top:16px; }
+    .session-bottom .notes summary { font-size:13px; }
+    .session-bottom .session-actions { margin-top:12px; }
+    #exercise-picker-dialog .dialog-body { padding-top:2px; }
+    #exercise-picker-dialog .overview-item { border-radius:14px; border-bottom:0; margin-bottom:5px; }
+    #media-dialog { width:min(800px,calc(100% - 24px)); }
+    #media-viewer .exercise-media { width:100%; margin:0; }
+    #media-viewer .media-square { height:65vh; height:65dvh; max-height:740px; aspect-ratio:auto; border:0; background:var(--soft); }
+    #media-viewer .media-square img { object-fit:contain; }
+    #media-dialog .dialog-header h2 { font-size:18px; }
+    .media-square [data-media-status] { z-index:2; max-width:85%; border:1px solid var(--error-line); border-radius:12px; background:var(--error-bg); color:var(--error); }
+    .record-banner { color:var(--success); background:var(--success-bg); border:1px solid var(--success-line); padding:14px 16px; border-radius:16px; margin-bottom:20px; font-size:13px; }
+    body[data-view=session]>.shell>.header { display:none; }
+    body[data-view=session] #workout { padding-top:20px; }
+    @media(min-width:700px) { .shell { max-width:680px; padding-left:28px; padding-right:28px; } .home-intro { margin-top:18px; } .today-card { padding:30px; } .focus-exercise .media-square { height:380px; } }
+    @media(max-width:350px) { .header { gap:8px; } .header-actions { gap:5px; } .header .profile h1 { font-size:16px; } .today-card { padding:22px; } .today-card h3 { font-size:26px; } .home-intro h2 { font-size:29px; } .focus-exercise .exercise-header { padding:18px 14px 10px; } .focus-exercise .sets { width:calc(100% - 28px); margin-left:14px; margin-right:14px; } .set-section-heading { padding-left:14px; padding-right:14px; } .focus-exercise h3 { font-size:23px; } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; scroll-behavior:auto!important; } }
+    @media print { body { background:white; } .view-toolbar,.home-footer,.focus-progress,.exercise-navigation,.summary-start { display:none!important; } .exercise,.today-card,.week-panel { box-shadow:none; } }
+
+    /* Original monochrome palette; semantic color is reserved for feedback. */
+    :root {
+      --canvas:#fff; --bg:#fff; --ink:#000; --inverse:#fff;
+      --line:rgb(0 0 0 / .16); --soft:rgb(0 0 0 / .04); --muted:rgb(0 0 0 / .65);
+      --accent:var(--ink); --accent-soft:var(--soft); --drop-color:rgb(0 0 0 / .18);
+      --shadow-card:0 2px 5px rgb(0 0 0 / .025),0 10px 30px rgb(0 0 0 / .045);
+      --shadow-float:0 4px 12px rgb(0 0 0 / .07),0 18px 44px rgb(0 0 0 / .12);
+      --shadow-modal:0 8px 24px rgb(0 0 0 / .12),0 32px 90px rgb(0 0 0 / .28);
+      --nav-surface:#fff; --nav-space:calc(90px + env(safe-area-inset-bottom,0px));
+      --motion-page:260ms; --motion-overlay:220ms; --ease-out:cubic-bezier(.2,.8,.2,1);
+    }
+    :root[data-theme=dark] {
+      --canvas:#000; --bg:#000; --ink:#fff; --inverse:#000;
+      --line:rgb(255 255 255 / .25); --soft:rgb(255 255 255 / .08); --muted:rgb(255 255 255 / .75);
+      --accent:var(--ink); --accent-soft:var(--soft); --drop-color:rgb(255 255 255 / .3);
+      --shadow-card:0 2px 5px rgb(0 0 0 / .16),0 12px 32px rgb(0 0 0 / .2);
+      --shadow-float:0 4px 12px rgb(0 0 0 / .22),0 20px 44px rgb(0 0 0 / .3);
+      --shadow-modal:0 10px 30px rgb(0 0 0 / .3),0 36px 100px rgb(0 0 0 / .6);
+      --nav-surface:#141414;
+    }
+    .shell { padding-bottom:calc(var(--nav-space) + 24px); }
+    .header { padding:28px 0 22px; }
+    .header h1 { font-size:26px; font-weight:600; letter-spacing:-.8px; }
+    .home-profile { display:flex; align-items:center; gap:14px; max-width:100%; min-height:48px; padding:0; border:0; border-radius:16px; background:transparent; text-align:left; }
+    .home-profile .avatar { width:48px; height:48px; border-radius:50%; }
+    .home-profile-name { min-width:0; font-size:20px; font-weight:600; letter-spacing:-.5px; overflow-wrap:anywhere; }
+    body[data-view=summary]>.shell>.header,body[data-view=session]>.shell>.header { display:none; }
+    body[data-view=summary] #workout { padding-top:20px; }
+    .week-panel { margin:0 0 22px; padding:22px 20px 18px; }
+    .week-panel .weekly-overview { padding:0 0 18px; }
+    .today-card { margin-bottom:16px; padding:20px; border-radius:24px; }
+    .today-card::before { display:none; }
+    .today-card h2 { font-size:24px; font-weight:600; letter-spacing:-.6px; line-height:1.25; overflow-wrap:anywhere; }
+    .today-card h2+.button { margin-top:18px; }
+    .today-card-top { margin-bottom:14px; }
+    .today-card-top .context-label { font-size:13px; }
+    .today-card .kind-badge { padding:5px 10px; flex:none; }
+    .today-card .today-detail { font-size:13px; margin:7px 0 18px; }
+    .today-card .button { min-height:44px; justify-content:center; font-size:14px; padding:9px 14px; border-radius:12px; }
+    .overview-item[aria-current=true] .overview-number,.overview-item.is-complete .overview-number { color:var(--ink); background:var(--soft); }
+    .record-banner { color:var(--ink); background:var(--soft); border-color:var(--line); }
+    .bottom-nav { position:fixed; z-index:30; left:0; right:0; bottom:calc(14px + env(safe-area-inset-bottom,0px)); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); align-items:center; justify-items:center; width:min(380px,calc(100% - 32px)); min-height:66px; padding:8px; gap:8px; border:1px solid var(--line); border-radius:40px; background:var(--nav-surface); box-shadow:var(--shadow-float); }
+    .nav-item { display:grid; place-items:center; width:48px; min-height:48px; border:0; border-radius:50%; padding:12px; background:transparent; color:var(--muted); transition:background .2s,color .2s,transform .2s; }
+    .nav-item:hover { color:var(--ink); background:var(--soft); }
+    .nav-item[aria-current=page] { color:var(--inverse); background:var(--ink); box-shadow:0 2px 8px rgb(0 0 0 / .1); }
+    .nav-item:active { transform:scale(.94); }
+    .nav-item .icon { width:23px; height:23px; }
+    .app-page { min-width:0; }
+    .view-entering { animation:page-in var(--motion-page) var(--ease-out) both; }
+    .app-page>.dialog-body { padding:0; }
+    .app-page .page-toolbar { margin:0 0 16px; }
+    #manager-dialog .managed-day { margin:0 0 20px; }
+    #manager-dialog .managed-empty { padding:22px 0; }
+    .managed-workout { padding:8px; gap:2px; }
+    .managed-workout-main { padding:12px 8px; }
+    .managed-workout-main>.icon:last-child { display:none; }
+    .managed-edit,.managed-delete { align-self:center; width:48px; min-width:48px; height:48px; min-height:48px; border:1px solid var(--line); border-radius:14px; background:var(--bg); }
+    .managed-edit .icon,.managed-delete .icon { width:24px; height:24px; }
+    .managed-delete.icon-button.danger { border-color:var(--danger-line); }
+    .managed-workout-main { min-width:0; }
+    .managed-workout-main strong { font-size:15px; }
+    #history-dialog>.dialog-body,#timer-dialog>.dialog-body,#backup-dialog>.dialog-body { padding:20px; border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow-card); background:var(--bg); }
+    .profile-card { display:flex; align-items:center; gap:16px; width:100%; border:1px solid var(--line); border-radius:24px; background:var(--bg); box-shadow:var(--shadow-card); padding:20px; margin-bottom:22px; text-align:left; transition:border-color .18s,box-shadow .18s,transform .18s; }
+    .profile-card .avatar { width:64px; height:64px; font-size:22px; }
+    .profile-card-copy { flex:1; min-width:0; }
+    .profile-card-name { display:block; font-size:20px; font-weight:600; letter-spacing:-.5px; line-height:1.3; overflow-wrap:anywhere; }
+    .profile-edit { display:grid; place-items:center; flex:none; width:44px; height:44px; border:1px solid var(--line); border-radius:50%; background:var(--soft); transition:background .18s,color .18s; }
+    .profile-edit .icon { width:20px; height:20px; }
+    .profile-card:hover { border-color:var(--muted); }
+    .profile-card:hover .profile-edit { background:var(--ink); color:var(--inverse); }
+    .profile-card:active { transform:translateY(1px); }
+    .profile-settings { padding:0 18px; background:var(--bg); border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow-card); }
+    .settings-link,.settings-row { display:flex; align-items:center; gap:14px; min-height:70px; width:100%; padding:14px 0; border:0; border-bottom:1px solid var(--line); background:transparent; text-align:left; font-size:15px; }
+    .settings-link:last-child,.settings-row:last-child { border-bottom:0; }
+    .settings-link>span,.settings-row>span { flex:1; }
+    .settings-link>.settings-chevron .icon { width:18px; height:18px; transform:rotate(-90deg); color:var(--muted); }
+    .settings-row>[data-icon] .icon,.settings-link>[data-icon]:first-child .icon { width:22px; height:22px; }
+    .settings-switch { position:relative; width:50px; min-width:50px; height:32px; padding:3px; border:1px solid var(--ink); border-radius:99px; background:var(--bg); transition:background var(--motion-overlay),border-color var(--motion-overlay); }
+    .settings-switch::after { content:''; position:absolute; inset:-6px 0; }
+    .settings-switch>span { display:block; width:24px; height:24px; border-radius:50%; background:var(--ink); transition:transform var(--motion-overlay) var(--ease-out),background var(--motion-overlay); }
+    .settings-switch[aria-checked=true] { background:var(--ink); border-color:var(--ink); }
+    .settings-switch[aria-checked=true]>span { transform:translateX(18px); background:var(--inverse); }
+    .toast { text-align:left; padding:15px 18px; gap:14px; }
+    .toast-dismiss { width:auto; height:36px; padding:5px; font-size:12px; font-weight:550; text-decoration:underline; text-underline-offset:3px; }
+    .toast[data-tone=error] .toast-dismiss { display:flex; align-items:center; justify-content:center; align-self:center; flex:0 0 36px; width:36px; height:36px; padding:0; margin:0; line-height:0; text-decoration:none; }
+    .toast[data-tone=error] .toast-dismiss>.icon { display:block; flex:none; width:18px; height:18px; margin:0; }
+    .toast[popover] { bottom:calc(var(--nav-space) + 12px); }
+    body.rest-minimized .toast[popover] { bottom:calc(var(--nav-space) + var(--rest-mini-height,90px) + 20px); }
+    .rest-mini { bottom:var(--nav-space); }
+    body.rest-minimized .shell { padding-bottom:calc(var(--nav-space) + var(--rest-mini-height,90px) + 24px); }
+    dialog::backdrop { background:rgb(0 0 0 / .36); }
+    dialog[open]:not(.value-dialog):not(.is-closing) { animation:dialog-in var(--motion-overlay) var(--ease-out); }
+    dialog.value-dialog[open]:not(.is-closing) { animation:sheet-in var(--motion-page) var(--ease-out); }
+    dialog[open]::backdrop { animation:backdrop-in var(--motion-overlay) var(--ease-out); }
+    dialog[open].is-closing { animation:dialog-out .2s ease-in forwards; pointer-events:none; }
+    dialog.value-dialog[open].is-closing { animation:sheet-out .22s cubic-bezier(.4,0,1,1) forwards; }
+    dialog.value-dialog[open].is-closing.is-minimizing { animation:sheet-minimize .22s cubic-bezier(.4,0,1,1) forwards; transform-origin:bottom center; }
+    dialog[open].is-closing::backdrop { animation:backdrop-out .2s ease-in forwards; }
+    .rest-mini.is-entering { animation:mini-in var(--motion-overlay) var(--ease-out); }
+    .rest-mini.is-leaving { animation:mini-out .2s ease-in forwards; pointer-events:none; }
+    .field-updated { animation:field-commit .42s ease-out; }
+    .form-field input,.number-ticker,.selection-field { transition:box-shadow .18s,border-color .18s,background .18s; }
+    .form-field input:focus { border-color:var(--ink); box-shadow:0 0 0 3px var(--soft); }
+    .set-row { transition:opacity .18s; }
+    .check-box,.check-box>.icon { transition:background .18s,color .18s,opacity .18s; }
+    .activity-dock { position:fixed; z-index:25; left:0; right:0; bottom:var(--nav-space); width:min(560px,calc(100% - 32px)); margin:0 auto; border:1px solid var(--line); border-radius:22px; background:var(--bg); color:var(--ink); box-shadow:var(--shadow-float); overflow:hidden; }
+    .active-workout { position:fixed; z-index:25; top:calc(12px + env(safe-area-inset-top,0px)); left:0; right:0; width:min(560px,calc(100% - 32px)); margin:0 auto; border:1px solid var(--line); border-radius:22px; background:var(--bg); box-shadow:var(--shadow-float); }
+    body.has-active-workout .shell { padding-top:calc(var(--active-workout-height,96px) + 24px + env(safe-area-inset-top,0px)); }
+    #resume-active-workout { display:flex; align-items:center; gap:16px; width:100%; min-height:94px; padding:14px 16px; border:0; border-radius:inherit; background:transparent; text-align:left; }
+    #resume-active-workout:hover { background:var(--soft); }
+    #resume-active-workout:focus-visible { outline-offset:-4px; }
+    .active-workout-copy { display:grid; gap:3px; flex:1; min-width:0; }
+    .active-workout-title { font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .active-workout-exercise { font-size:15px; font-weight:600; line-height:1.35; overflow-wrap:anywhere; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
+    .active-workout-detail { font-size:12px; color:var(--muted); }
+    .active-workout-action { display:grid; place-items:center; flex:none; width:32px; height:32px; }
+    .active-workout-action .icon { width:20px; height:20px; }
+    .activity-dock .rest-mini { position:static; width:100%; max-width:none; margin:0; border:0; border-radius:inherit; box-shadow:none; }
+    .activity-dock #rest-expand { padding:12px 16px 14px; }
+    body.has-activity-dock .shell { padding-bottom:calc(var(--nav-space) + var(--activity-height,100px) + 24px); }
+    body.has-activity-dock .toast,body.has-activity-dock .toast[popover] { bottom:calc(var(--nav-space) + var(--activity-height,100px) + 12px); }
+    .active-workout.is-entering { animation:activity-in var(--motion-overlay) var(--ease-out); }
+    .active-workout.is-leaving { animation:activity-out .2s ease-in forwards; pointer-events:none; }
+    @keyframes activity-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
+    @keyframes activity-out { from { opacity:1; transform:none; } to { opacity:0; transform:translateY(-8px); } }
+    @keyframes page-in { from { opacity:0; transform:translateY(7px); } to { opacity:1; transform:none; } }
+    @keyframes dialog-out { from { opacity:1; transform:none; } to { opacity:0; transform:translateY(10px) scale(.98); } }
+    @keyframes sheet-out { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(100%); } }
+    @keyframes sheet-minimize { from { opacity:1; transform:translateY(0) scale(1); } to { opacity:0; transform:translateY(50%) scale(.92); } }
+    @keyframes backdrop-in { from { opacity:0; } to { opacity:1; } }
+    @keyframes backdrop-out { from { opacity:1; } to { opacity:0; } }
+    @keyframes mini-in { from { opacity:0; transform:translateY(100%); } to { opacity:1; transform:none; } }
+    @keyframes mini-out { from { opacity:1; transform:none; } to { opacity:0; transform:translateY(100%); } }
+    @keyframes field-commit { 0% { transform:scale(1); } 35% { transform:scale(1.025); box-shadow:0 0 0 3px var(--soft); } 100% { transform:scale(1); } }
+    @media(max-width:350px) { .profile-card { padding:18px; gap:12px; } .profile-card .avatar { width:56px; height:56px; } .profile-card-name { font-size:18px; } .profile-edit { width:40px; height:40px; } .today-card { padding:18px; } .today-card h2 { font-size:22px; } #history-dialog>.dialog-body { padding:16px 12px; } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+    @media print { .bottom-nav,.activity-dock,.active-workout { display:none!important; } body.has-active-workout .shell { padding-top:0; } body.has-activity-dock .shell,.shell { padding-bottom:0; } }
+
   </style>
 </head>
 
 <body>
-  <a class="skip" href="#workout">Pular para o treino</a>
+  <a class="skip" href="#app-main">Pular para o conteúdo</a>
   <div class="shell">
-    <header class="header">
-      <div class="profile">
-        <div class="avatar" id="profile-avatar" aria-hidden="true"><i data-icon="profile"></i></div>
-        <h1 id="profile-name">Sem nome</h1>
-      </div>
-      <div class="header-actions">
-        <button type="button" class="icon-button" id="theme-toggle" aria-label="Ativar tema escuro" title="Ativar tema escuro"><i data-icon="moon"></i></button>
-        <button type="button" class="icon-button" id="menu-open" aria-label="Abrir configurações" title="Configurações"><i data-icon="settings"></i></button>
-      </div>
-    </header>
-    <main>
-      <section class="week-panel" aria-label="Acompanhamento da semana">
+<header class="header"><h1 id="app-title" tabindex="-1">Início</h1><button type="button" id="home-profile" class="home-profile" data-page="profile" aria-label="Abrir perfil" hidden><span class="avatar" id="home-avatar" aria-hidden="true"><i data-icon="profile"></i></span><span class="home-profile-name" id="home-name">Seu perfil</span></button></header>
+    <main id="app-main" tabindex="-1">
+      <section id="week-panel" class="week-panel" aria-label="Acompanhamento da semana">
         <div class="weekly-overview" id="weekly-overview" aria-live="polite"></div>
         <nav class="week-nav" id="week-nav" role="tablist" aria-label="Treinos da semana"></nav>
       </section>
+      <section id="home" role="tabpanel" tabindex="0" aria-label="Treinos do dia selecionado"></section>
       <div class="storage-alert" id="storage-alert" role="alert" hidden></div>
       <section class="training" id="workout" role="tabpanel" tabindex="0" aria-label="Treino selecionado"></section>
+<section id="manager-dialog" class="app-page" data-page="workouts" aria-labelledby="manager-title" hidden><h2 id="manager-title" class="sr-only">Treinos</h2>    <div class="dialog-body"><div id="managed-workouts"></div><button class="button primary full" id="new-workout">Novo treino</button></div>
+  </section>
+<section id="history-dialog" class="app-page" data-page="history" aria-labelledby="history-title" hidden><h2 id="history-title" class="sr-only">Histórico</h2>    <div class="dialog-body">
+      <div class="calendar-toolbar"><button class="icon-button calendar-prev" id="history-prev"
+          aria-label="Mês anterior"><i data-icon="chevron"></i></button><button class="calendar-month-toggle"
+          id="history-month-toggle" aria-expanded="false" aria-controls="history-month-picker"><span
+            id="history-month-label"></span><i data-icon="chevron"></i></button><button
+          class="icon-button calendar-next" id="history-next" aria-label="Próximo mês"><i
+            data-icon="chevron"></i></button></div>
+      <div id="history-month-picker" hidden>
+        <div class="calendar-year"><button class="icon-button calendar-prev" id="history-year-prev"
+            aria-label="Ano anterior"><i data-icon="chevron"></i></button><strong id="history-picker-year"
+            aria-live="polite"></strong><button class="icon-button calendar-next" id="history-year-next"
+            aria-label="Próximo ano"><i data-icon="chevron"></i></button></div>
+        <div class="calendar-month-options" id="history-month-options" role="group" aria-label="Escolher mês"></div>
+      </div>
+      <div id="history-calendar"></div>
+      <div class="calendar-footer">
+        <p class="history-count" id="history-count" role="status"></p><button class="calendar-today"
+          id="history-today">Hoje</button>
+      </div>
+      <h3 class="history-day-heading" id="history-date-title" aria-live="polite"></h3>
+      <div id="history-list"></div>
+      <div class="history-actions"><button class="button danger secondary full" id="clear-history"><i data-icon="trash"></i>Apagar histórico</button></div>
+    </div>
+  </section>
+<section id="timer-dialog" class="app-page" data-page="timer" aria-labelledby="timer-title" hidden><h2 id="timer-title" class="sr-only">Temporizador</h2><div class="page-toolbar"><button type="button" class="icon-button back-button" data-page="profile" aria-label="Voltar ao perfil"><i data-icon="chevron" class="arrow-left"></i></button></div>    <div class="dialog-body">
+      <div class="form-field rest-duration-field"><span id="rest-duration-label">Duração de descanso</span><button type="button" class="number-ticker" id="rest-duration" aria-labelledby="rest-duration-label rest-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
+      <div class="setting-row"><span id="auto-rest-label">Abrir descanso ao completar uma série</span><button type="button" class="settings-switch" id="auto-rest-toggle" role="switch" aria-labelledby="auto-rest-label" aria-checked="true"><span></span></button></div>
+      <div class="setting-row"><span>Som ao terminar</span><button class="icon-button" id="sound-toggle"
+          aria-label="Ativar som do timer" aria-pressed="false"><i data-icon="volume-off"></i></button></div>
+      <div class="sound-controls" id="sound-controls" hidden>
+        <div class="sound-volume"><label for="sound-volume">Volume</label><input id="sound-volume" type="range" min="0"
+            max="100" step="10" value="80"><output id="sound-volume-value" for="sound-volume">80%</output></div><button
+          class="button sound-test" id="sound-test"><i data-icon="volume"></i>Testar som</button>
+      </div>
+    </div>
+  </section>
+<section id="backup-dialog" class="app-page" data-page="backup" aria-labelledby="backup-title" hidden><h2 id="backup-title" class="sr-only">Backup</h2><div class="page-toolbar"><button type="button" class="icon-button back-button" data-page="profile" aria-label="Voltar ao perfil"><i data-icon="chevron" class="arrow-left"></i></button></div>    <div class="dialog-body">
+      <div class="backup-actions"><button class="button full" id="export-backup"><i data-icon="download"></i>Exportar
+          backup</button><button class="button full" id="import-backup"><i data-icon="upload"></i>Importar
+          backup</button><input id="import-file" type="file" accept=".json,.treino,application/json,application/octet-stream" hidden></div>
+      <p class="form-hint" id="backup-status" role="status" hidden></p>
+      <div class="import-preview" id="import-preview" hidden></div>
+      <p class="form-error" id="import-error" role="alert" hidden></p>
+    </div>
+  </section>
+<section id="profile-page" class="app-page" data-page="profile" aria-label="Perfil" hidden>
+  <button type="button" class="profile-card" id="profile-open" aria-label="Editar perfil" aria-haspopup="dialog" aria-controls="profile-dialog"><span class="avatar" id="profile-avatar" aria-hidden="true"><i data-icon="profile"></i></span><span class="profile-card-copy"><span class="profile-card-name" id="profile-name">Seu perfil</span></span><span class="profile-edit" aria-hidden="true"><i data-icon="edit"></i></span></button>
+  <div class="profile-settings"><button type="button" class="settings-link" id="rest-settings-open"><i data-icon="timer"></i><span>Temporizador</span><i data-icon="chevron" class="settings-chevron"></i></button><button type="button" class="settings-link" id="backup-open"><i data-icon="download"></i><span>Backup</span><i data-icon="chevron" class="settings-chevron"></i></button><div class="settings-row"><i data-icon="moon"></i><span>Tema escuro</span><button type="button" id="theme-toggle" class="settings-switch" role="switch" aria-label="Tema escuro" aria-checked="false"><span></span></button></div></div>
+</section>
     </main>
   </div>
+<nav id="bottom-nav" class="bottom-nav" aria-label="Navegação principal">
+    <button type="button" id="nav-home" class="nav-item" data-nav="home" aria-label="Início" title="Início" aria-current="page"><i data-icon="home"></i></button>
+    <button type="button" id="editor-open" class="nav-item" data-nav="workouts" aria-label="Treinos" title="Treinos"><i data-icon="reminder"></i></button>
+    <button type="button" id="history-open" class="nav-item" data-nav="history" aria-label="Histórico" title="Histórico"><i data-icon="history"></i></button>
+    <button type="button" id="nav-profile" class="nav-item" data-nav="profile" aria-label="Perfil" title="Perfil"><i data-icon="profile"></i></button>
+  </nav>
   <dialog id="rest-dialog" class="value-dialog rest-sheet" aria-labelledby="rest-title">
     <div class="dialog-header">
       <h2 id="rest-title" tabindex="-1" autofocus>Descanso</h2>
@@ -2153,82 +2516,23 @@
       </div>
     </div>
   </dialog>
+  <aside class="active-workout" id="active-workout" aria-label="Treino em execução" hidden>
+    <button type="button" id="resume-active-workout" aria-label="Retomar treino">
+      <span class="active-workout-copy" aria-live="polite" aria-atomic="true"><span class="active-workout-title" id="active-workout-title"></span><strong class="active-workout-exercise" id="active-workout-exercise"></strong><span class="active-workout-detail" id="active-workout-detail"></span></span>
+      <span class="active-workout-action" aria-hidden="true"><i data-icon="chevron" class="arrow-right"></i></span>
+    </button>
+  </aside>
+  <div class="activity-dock" id="activity-dock" hidden>
   <aside class="rest-mini" id="rest-mini" aria-label="Descanso" hidden>
     <button type="button" id="rest-expand" aria-label="Expandir descanso" aria-haspopup="dialog" aria-controls="rest-dialog">
       <span class="rest-mini-readout"><span class="rest-mini-title">Descanso</span><span class="rest-mini-digits" id="rest-mini-display" role="timer" aria-label="Tempo restante de descanso">01:30</span></span>
       <span class="timer-progress" aria-hidden="true"><span id="rest-mini-progress"></span></span>
     </button>
   </aside>
-  <dialog id="menu-dialog" aria-labelledby="menu-title">
-    <div class="dialog-header">
-      <h2 id="menu-title">Configurações</h2><button class="icon-button" data-close="menu-dialog" aria-label="Fechar opções"><i
-          data-icon="close"></i></button>
-    </div>
-    <div class="dialog-body">
-      <div class="menu-list"><button class="button" id="profile-open"><i data-icon="profile"></i>Perfil</button><button class="button" id="editor-open"><i data-icon="reminder"></i>Treinos</button><button type="button" class="button" id="rest-settings-open" aria-haspopup="dialog" aria-controls="timer-dialog"><i data-icon="timer"></i>Temporizador</button><button class="button" id="history-open"><i
-            data-icon="history"></i>Histórico</button><button class="button" id="backup-open"><i
-            data-icon="download"></i>Backup</button></div>
-    </div>
-  </dialog>
-  <dialog id="timer-dialog" aria-labelledby="timer-title">
-    <div class="dialog-header">
-      <h2 id="timer-title">Temporizador</h2><button class="icon-button" data-close="timer-dialog"
-        aria-label="Fechar temporizador"><i data-icon="close"></i></button>
-    </div>
-    <div class="dialog-body">
-      <div class="form-field rest-duration-field"><span id="rest-duration-label">Duração de descanso</span><button type="button" class="number-ticker" id="rest-duration" aria-labelledby="rest-duration-label rest-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
-      <div class="setting-row"><span>Som ao terminar</span><button class="icon-button" id="sound-toggle"
-          aria-label="Ativar som do timer" aria-pressed="false"><i data-icon="volume-off"></i></button></div>
-      <div class="sound-controls" id="sound-controls" hidden>
-        <div class="sound-volume"><label for="sound-volume">Volume</label><input id="sound-volume" type="range" min="0"
-            max="100" step="10" value="80"><output id="sound-volume-value" for="sound-volume">80%</output></div><button
-          class="button sound-test" id="sound-test"><i data-icon="volume"></i>Testar som</button>
-      </div>
-    </div>
-  </dialog>
-  <dialog id="history-dialog" aria-labelledby="history-title">
-    <div class="dialog-header">
-      <h2 id="history-title">Histórico</h2><button class="icon-button" data-close="history-dialog"
-        aria-label="Fechar histórico"><i data-icon="close"></i></button>
-    </div>
-    <div class="dialog-body">
-      <div class="calendar-toolbar"><button class="icon-button calendar-prev" id="history-prev"
-          aria-label="Mês anterior"><i data-icon="chevron"></i></button><button class="calendar-month-toggle"
-          id="history-month-toggle" aria-expanded="false" aria-controls="history-month-picker"><span
-            id="history-month-label"></span><i data-icon="chevron"></i></button><button
-          class="icon-button calendar-next" id="history-next" aria-label="Próximo mês"><i
-            data-icon="chevron"></i></button></div>
-      <div id="history-month-picker" hidden>
-        <div class="calendar-year"><button class="icon-button calendar-prev" id="history-year-prev"
-            aria-label="Ano anterior"><i data-icon="chevron"></i></button><strong id="history-picker-year"
-            aria-live="polite"></strong><button class="icon-button calendar-next" id="history-year-next"
-            aria-label="Próximo ano"><i data-icon="chevron"></i></button></div>
-        <div class="calendar-month-options" id="history-month-options" role="group" aria-label="Escolher mês"></div>
-      </div>
-      <div id="history-calendar"></div>
-      <div class="calendar-footer">
-        <p class="history-count" id="history-count" role="status"></p><button class="calendar-today"
-          id="history-today">Hoje</button>
-      </div>
-      <h3 class="history-day-heading" id="history-date-title" aria-live="polite"></h3>
-      <div id="history-list"></div>
-      <div class="history-actions"><button class="button danger secondary full" id="clear-history"><i data-icon="trash"></i>Apagar histórico</button></div>
-    </div>
-  </dialog>
-  <dialog id="backup-dialog" aria-labelledby="backup-title">
-    <div class="dialog-header">
-      <h2 id="backup-title">Backup</h2><button class="icon-button" data-close="backup-dialog"
-        aria-label="Fechar backup"><i data-icon="close"></i></button>
-    </div>
-    <div class="dialog-body">
-      <div class="backup-actions"><button class="button full" id="export-backup"><i data-icon="download"></i>Exportar
-          backup</button><button class="button full" id="import-backup"><i data-icon="upload"></i>Importar
-          backup</button><input id="import-file" type="file" accept=".json,.treino,application/json,application/octet-stream" hidden></div>
-      <p class="form-hint" id="backup-status" role="status" hidden></p>
-      <div class="import-preview" id="import-preview" hidden></div>
-      <p class="form-error" id="import-error" role="alert" hidden></p>
-    </div>
-  </dialog>
+  </div>
+
+
+
   <dialog id="value-dialog" class="value-dialog" aria-labelledby="value-title">
     <div class="dialog-header">
       <h2 id="value-title">Carga</h2><button class="icon-button" data-close="value-dialog"
@@ -2258,10 +2562,7 @@
       <div class="picker-actions"><button type="button" class="button" id="numeric-cancel" data-close="numeric-dialog">Cancelar</button><button type="submit" class="button primary" id="numeric-apply">Aplicar</button></div>
     </form>
   </dialog>
-  <dialog id="manager-dialog" aria-labelledby="manager-title">
-    <div class="dialog-header"><h2 id="manager-title">Treinos</h2><button class="icon-button" data-close="manager-dialog" aria-label="Fechar treinos"><i data-icon="close"></i></button></div>
-    <div class="dialog-body"><div id="managed-workouts"></div><button class="button primary full" id="new-workout">Novo treino</button></div>
-  </dialog>
+
   <dialog id="editor-dialog" aria-labelledby="editor-title">
     <div class="dialog-header"><h2 id="editor-title">Editar treino</h2><button class="icon-button" data-close="editor-dialog" aria-label="Cancelar edição"><i data-icon="close"></i></button></div>
     <form id="editor-form" class="dialog-body" novalidate>
@@ -2271,7 +2572,7 @@
       <div id="editor-exercises"></div>
       <button class="button full" id="editor-add" type="button">Adicionar exercício</button>
       <p class="form-error" id="editor-error" role="alert" hidden></p>
-      <div class="editor-footer"><p id="sort-feedback" hidden></p><button type="submit" class="button primary full">Salvar alterações</button><div class="editor-footer-secondary"><button type="button" class="button" id="editor-expand" hidden>Editar campos</button><button type="button" class="button" data-close="editor-dialog">Cancelar</button></div></div>
+      <div class="editor-footer"><button type="submit" class="button primary full">Salvar alterações</button><div class="editor-footer-secondary"><button type="button" class="button" id="editor-expand" hidden>Editar campos</button><button type="button" class="button" data-close="editor-dialog">Cancelar</button></div></div>
       <span id="sort-announcement" class="sr-only" role="status" aria-live="polite"></span>
     </form>
   </dialog>
@@ -2294,7 +2595,13 @@
   </dialog>
   <dialog id="groups-dialog" aria-labelledby="groups-title">
     <div class="dialog-header"><h2 id="groups-title">Superséries</h2><button type="button" class="icon-button" data-close="groups-dialog" aria-label="Cancelar"><i data-icon="close"></i></button></div>
-    <div class="dialog-body"><div id="existing-groups"></div><p class="form-hint" id="groups-empty" hidden></p><div id="group-choices" role="group" aria-label="Exercícios para agrupar"></div><button type="button" class="button primary full" id="group-create" disabled>Criar supersérie</button><button type="button" class="button full" data-close="groups-dialog">Cancelar</button></div>
+    <div class="dialog-body group-config-body">
+      <div id="existing-groups" class="group-summaries"></div>
+      <div class="group-config-heading"><h3 id="group-choices-title">Exercícios</h3><span id="group-selection-count" role="status">0 selecionados</span></div>
+      <p class="form-hint" id="groups-empty" hidden></p>
+      <div id="group-choices" role="group" aria-labelledby="group-choices-title"></div>
+    </div>
+    <div class="picker-actions group-config-actions"><button type="button" class="button" data-close="groups-dialog">Cancelar</button><button type="button" class="button primary" id="group-create" disabled>Criar supersérie</button></div>
   </dialog>
   <dialog id="profile-dialog" aria-labelledby="profile-title">
     <div class="dialog-header"><h2 id="profile-title">Perfil</h2><button type="button" class="icon-button" data-close="profile-dialog" aria-label="Fechar perfil"><i data-icon="close"></i></button></div>
@@ -2333,7 +2640,15 @@
           class="button" data-close="confirm-dialog">Cancelar</button></div>
     </div>
   </dialog>
-  <div class="toast" id="toast" role="status" hidden></div>
+  <dialog id="exercise-picker-dialog" aria-labelledby="exercise-picker-title">
+    <div class="dialog-header"><h2 id="exercise-picker-title">Exercícios do treino</h2><button type="button" class="icon-button" data-close="exercise-picker-dialog" aria-label="Fechar lista de exercícios"><i data-icon="close"></i></button></div>
+    <div class="dialog-body" id="exercise-picker-list"></div>
+  </dialog>
+  <dialog id="media-dialog" aria-labelledby="media-title">
+    <div class="dialog-header"><h2 id="media-title">Demonstração</h2><button type="button" class="icon-button" data-close="media-dialog" aria-label="Fechar demonstração"><i data-icon="close"></i></button></div>
+    <div class="dialog-body" id="media-viewer"></div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" popover="manual" hidden></div>
   <noscript><section class="shell"><p>Ative o JavaScript no navegador para configurar seus treinos.</p></section></noscript>
   <script id="workout-plan" type="application/json">[]</script>
   <script>
@@ -2435,14 +2750,17 @@
     "body": "<path d=\"M3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3C16.2426 3 18.364 3 19.682 4.31802C21 5.63604 21 7.75736 21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M7.37545 7.99976H7.25045M7.37482 11.9999H7.24982M7.37498 15.9999H7.24998M7.50045 7.99976C7.50045 8.13783 7.38852 8.24976 7.25045 8.24976C7.11238 8.24976 7.00045 8.13783 7.00045 7.99976C7.00045 7.86169 7.11238 7.74976 7.25045 7.74976C7.38852 7.74976 7.50045 7.86169 7.50045 7.99976ZM7.49982 11.9999C7.49982 12.138 7.38789 12.2499 7.24982 12.2499C7.11175 12.2499 6.99982 12.138 6.99982 11.9999C6.99982 11.8618 7.11175 11.7499 7.24982 11.7499C7.38789 11.7499 7.49982 11.8618 7.49982 11.9999ZM7.49998 15.9999C7.49998 16.138 7.38805 16.2499 7.24998 16.2499C7.11191 16.2499 6.99998 16.138 6.99998 15.9999C6.99998 15.8618 7.11191 15.7499 7.24998 15.7499C7.38805 15.7499 7.49998 15.8618 7.49998 15.9999Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M11 8H17M11 12H17M11 16H17\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"
   },
   "profile": {
-    "name": "User02Icon",
-    "body": "<circle cx=\"12\" cy=\"7\" r=\"4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M12 14C7 14 4 16.5 4 19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19C20 16.5 17 14 12 14Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"
+    "name": "UserRoundIcon",
+    "body": "<path d=\"M17 8.5C17 5.73858 14.7614 3.5 12 3.5C9.23858 3.5 7 5.73858 7 8.5C7 11.2614 9.23858 13.5 12 13.5C14.7614 13.5 17 11.2614 17 8.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M19 20.5C19 16.634 15.866 13.5 12 13.5C8.13401 13.5 5 16.634 5 20.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"
   }
 };
 
     HugeiconsSubset.trash = {"name":"Delete02Icon","body":"<path d=\"M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M9.5 16.5L9.5 10.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path><path d=\"M14.5 16.5L14.5 10.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"></path>"};
 
-    HugeiconsSubset.image = { name: 'ImageIcon', body: '<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/>' };
+    HugeiconsSubset.edit = {"name":"PencilEdit02Icon","body":"<path d=\"M16.4249 4.60509L17.4149 3.6151C18.2351 2.79497 19.5648 2.79497 20.3849 3.6151C21.205 4.43524 21.205 5.76493 20.3849 6.58507L19.3949 7.57506M16.4249 4.60509L9.76558 11.2644C9.25807 11.772 8.89804 12.4078 8.72397 13.1041L8 16L10.8959 15.276C11.5922 15.102 12.228 14.7419 12.7356 14.2344L19.3949 7.57506M16.4249 4.60509L19.3949 7.57506\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M18.9999 13.5C18.9999 16.7875 18.9999 18.4312 18.092 19.5376C17.9258 19.7401 17.7401 19.9258 17.5375 20.092C16.4312 21 14.7874 21 11.4999 21H11C7.22876 21 5.34316 21 4.17159 19.8284C3.00003 18.6569 3 16.7712 3 13V12.5C3 9.21252 3 7.56879 3.90794 6.46244C4.07417 6.2599 4.2599 6.07417 4.46244 5.90794C5.56879 5 7.21252 5 10.5 5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"};
+    HugeiconsSubset.home = {"name":"Home04Icon","body":"<path d=\"M3 11.9896V14.5C3 17.7998 3 19.4497 4.02513 20.4749C5.05025 21.5 6.70017 21.5 10 21.5H14C17.2998 21.5 18.9497 21.5 19.9749 20.4749C21 19.4497 21 17.7998 21 14.5V11.9896C21 10.3083 21 9.46773 20.6441 8.74005C20.2882 8.01237 19.6247 7.49628 18.2976 6.46411L16.2976 4.90855C14.2331 3.30285 13.2009 2.5 12 2.5C10.7991 2.5 9.76689 3.30285 7.70242 4.90855L5.70241 6.46411C4.37533 7.49628 3.71179 8.01237 3.3559 8.74005C3 9.46773 3 10.3083 3 11.9896Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 17H8\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"};
+    HugeiconsSubset.image = {"name": "Image01Icon", "body": "<circle cx=\"7.5\" cy=\"7.5\" r=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M5 21C9.37246 15.775 14.2741 8.88406 21.4975 13.5424\" stroke=\"currentColor\" stroke-width=\"1.5\"></path>"};
+    HugeiconsSubset.expand = {"name":"FullScreenIcon","body":"<path d=\"M15.5 21C16.8956 21 17.5933 21 18.1611 20.8278C19.4395 20.44 20.44 19.4395 20.8278 18.1611C21 17.5933 21 16.8956 21 15.5M21 8.5C21 7.10444 21 6.40666 20.8278 5.83886C20.44 4.56046 19.4395 3.56004 18.1611 3.17224C17.5933 3 16.8956 3 15.5 3M8.5 21C7.10444 21 6.40666 21 5.83886 20.8278C4.56046 20.44 3.56004 19.4395 3.17224 18.1611C3 17.5933 3 16.8956 3 15.5M3 8.5C3 7.10444 3 6.40666 3.17224 5.83886C3.56004 4.56046 4.56046 3.56004 5.83886 3.17224C6.40666 3 7.10444 3 8.5 3\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"};
 
     // Large originals stay as Blobs in IndexedDB; only small references/previews
     // belong in localStorage. Nothing is uploaded to an external service.
@@ -3037,7 +3355,9 @@
       let store = D.empty(), preferences = {}, storageOkay = true, loadBlocked = false, pendingImport = null, confirmAction = null, confirmReturn = null;
       let selectedDate = localDate();
       let selectedDay = PLAN[0]?.id || null, selectedWeekday = (new Date().getDay() + 6) % 7 + 1, viewingRecord = null;
-      let toastTimeout = null;
+      let toastTimeout = null, appView = 'home', focusExerciseId = null;
+      let modalSequence=0;
+      const modalOrder=new WeakMap();
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) store = D.validate(JSON.parse(raw));
@@ -3070,7 +3390,7 @@
         }
         return draft;
       }
-      const currentDraft = () => Object.values(store.drafts).filter(s => !s.archived && s.day === selectedDay && s.cycleNumber === store.cycle.number).sort((a, b) => b.updatedAt - a.updatedAt)[0] || null;
+      const currentDraft = () => { const drafts = Object.values(store.drafts).filter(s => !s.archived && s.day === selectedDay && s.cycleNumber === store.cycle.number).sort((a,b) => b.updatedAt-a.updatedAt); return drafts.find(s => s.key === preferences.activeWorkout?.sessionKey) || drafts[0] || null; };
       const currentRecord = () => store.sessions[viewingRecord || store.cycle.completed[selectedDay]] || null;
       const isReadOnly = () => !!currentRecord();
       const key = () => currentRecord()?.key || currentDraft()?.key || '';
@@ -3102,7 +3422,48 @@
         selectedDate = effectiveDate(currentRecord() || currentDraft());
       }
       goToToday();
-      function toast(message) { $('toast').textContent = message; $('toast').hidden = false; clearTimeout(toastTimeout); toastTimeout = setTimeout(() => $('toast').hidden = true, 4200); }
+      function hideToast() {
+        const el=$('toast'); clearTimeout(toastTimeout);
+        try { if (typeof el.hidePopover === 'function' && el.matches(':popover-open')) el.hidePopover(); } catch { }
+        el.hidden=true;toastTimeout=null;
+      }
+      function syncToastLayer() {
+        const el=$('toast'); if (el.hidden) return;
+        // Popovers outside the active modal are still inert, even in the top layer.
+        const host=[...document.querySelectorAll('dialog[open]')].reduce((top,dialog)=>
+          !top || (modalOrder.get(dialog) || 0) >= (modalOrder.get(top) || 0) ? dialog : top,null) || document.body;
+        const hasPopover=typeof el.showPopover === 'function';
+        if(el.parentElement !== host) {
+          if(hasPopover && el.matches(':popover-open')) el.hidePopover();
+          host.appendChild(el);
+        }
+        if(hasPopover && !el.matches(':popover-open')) el.showPopover();
+      }
+      function toast(message, tone='success') {
+        const el=$('toast');
+        el.dataset.tone=tone; el.setAttribute('role',tone === 'error' ? 'alert' : 'status');
+        el.setAttribute('aria-live',tone === 'error' ? 'assertive' : 'polite');
+        el.innerHTML=`<span>${esc(message)}</span><button type="button" class="toast-dismiss" aria-label="Fechar aviso">${tone === 'error' ? icon('close') : 'Fechar'}</button>`;
+        el.hidden=false; syncToastLayer(); clearTimeout(toastTimeout);
+        toastTimeout=setTimeout(hideToast,tone === 'error' ? 8000 : 4500);
+      }
+      $('toast').addEventListener('click',e=>{
+        if(!e.target.closest?.('.toast-dismiss')) return;
+        e.preventDefault();e.stopPropagation();hideToast();
+      });
+      $('toast').addEventListener('pointerenter',()=>clearTimeout(toastTimeout));
+      $('toast').addEventListener('pointerleave',()=>{toastTimeout=setTimeout(hideToast,4500);});
+      $('toast').addEventListener('focusin',()=>clearTimeout(toastTimeout));
+      $('toast').addEventListener('focusout',()=>{toastTimeout=setTimeout(hideToast,4500);});
+      const dialogLayerObserver=new MutationObserver(()=>syncToastLayer());
+      document.querySelectorAll('dialog').forEach(dialog=>dialogLayerObserver.observe(dialog,{attributes:true,attributeFilter:['open']}));
+      function reportError(id,message,field=null) {
+        const el=$(id);
+        el.textContent=message; el.hidden=false; el.classList.add('sr-only');
+        el.removeAttribute('role'); el.setAttribute('aria-live','off');
+        if(field) { field.setAttribute('aria-invalid','true'); field.setAttribute('aria-describedby',id); field.focus({preventScroll:true}); }
+        toast(message,'error');
+      }
       function savePreferences() { try { localStorage.setItem(PREF_KEY, JSON.stringify(preferences)); } catch { } }
       function storageNotice() {
         $('storage-alert').hidden = storageOkay;
@@ -3111,18 +3472,23 @@
           : 'O navegador não permitiu salvar seus registros. Eles estão apenas nesta aba: exporte um backup antes de fechar.';
       }
       function writeStore() {
+        const wasOkay = storageOkay;
         if (loadBlocked) { storageOkay = false; updateSaveStatus(); storageNotice(); return false; }
         try {
           const onDisk = localStorage.getItem(STORAGE_KEY);
           if (onDisk) store = D.merge(D.validate(JSON.parse(onDisk)), store).data;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); storageOkay = true;
         } catch { storageOkay = false; }
-        syncPlan(); renderProfile(); updateSaveStatus(); storageNotice(); return storageOkay;
+        syncPlan(); renderProfile(); updateSaveStatus(); storageNotice(); renderActiveWorkout();
+        if (!storageOkay && wasOkay) toast('Não foi possível salvar. Suas alterações estão nesta aba; exporte um backup antes de fechar.','error');
+        return storageOkay;
       }
       function changed() {
         if (isReadOnly()) return;
         const s = ensureSession(); s.updatedAt = Math.max(Date.now(), s.updatedAt + 1);
-        writeStore(); updateProgress(); updateDayChecks();
+        writeStore();
+        rememberActiveWorkout(s, focusExerciseId);
+        renderActiveWorkout(); updateProgress(); updateDayChecks();
       }
       function updateSaveStatus() {
         const el = $('save-status'); if (!el) return;
@@ -3131,18 +3497,18 @@
         el.classList.toggle('error', !storageOkay);
       }
       function applyTheme() {
-        const dark = preferences.theme === 'dark'; document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-        $('theme-toggle').innerHTML = icon(dark ? 'sun' : 'moon');
-        $('theme-toggle').title = dark ? 'Ativar tema claro' : 'Ativar tema escuro';
-        $('theme-toggle').setAttribute('aria-label', dark ? 'Ativar tema claro' : 'Ativar tema escuro');
-        document.querySelector('meta[name="theme-color"]').content = dark ? '#000000' : '#ffffff';
+        const dark=preferences.theme === 'dark';
+        document.documentElement.dataset.theme=dark ? 'dark' : 'light';
+        $('theme-toggle').setAttribute('aria-checked',String(dark));
+        document.querySelector('meta[name="theme-color"]').content=dark ? '#000000' : '#ffffff';
       }
       function weekDates() {
         const start = new Date(localDate() + 'T12:00:00'); start.setDate(start.getDate() - (start.getDay() + 6) % 7);
         return Array.from({ length: 7 }, (_, i) => { const d = new Date(start); d.setDate(d.getDate() + i); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; });
       }
       function renderNav() {
-        $('week-nav').innerHTML = D.shortDays.map((day, i) => `<button class="day" id="tab-weekday-${i + 1}" role="tab" aria-controls="workout" aria-selected="${i + 1 === selectedWeekday}" tabindex="${i + 1 === selectedWeekday ? 0 : -1}" data-weekday="${i + 1}"><span>${esc(day)}</span><span class="day-number"></span><span class="day-check"></span></button>`).join('');
+        $('week-nav').innerHTML = D.shortDays.map((day, i) => `<button type="button" class="day" id="tab-weekday-${i + 1}" role="tab" aria-controls="home" aria-selected="${i + 1 === selectedWeekday}" tabindex="${i + 1 === selectedWeekday ? 0 : -1}" data-weekday="${i + 1}"><span>${esc(day)}</span><span class="day-number"></span><span class="day-check"></span></button>`).join('');
+        $('home').setAttribute('aria-labelledby','tab-weekday-' + selectedWeekday);
         updateDayChecks();
       }
       function updateDayChecks() {
@@ -3170,16 +3536,16 @@
       function exerciseMedia(ex) {
         return PLAN.find(workout => workout.id === selectedDay)?.exercises.find(item => item.id === ex.id)?.media || ex.media || null;
       }
-      function mediaFrame(ex, media = exerciseMedia(ex), editor = false) {
+      function mediaFrame(ex, media = exerciseMedia(ex), editor = false, expanded = false) {
         if (!media) return '';
         const preview = typeof media === 'object' ? media.preview : '';
-        return `<div class="exercise-media" data-inline-media="${esc(ex.id)}"><div class="media-square"><span class="media-placeholder" aria-hidden="true">${icon('image')}</span><img data-media-image ${preview ? `src="${esc(preview)}"` : 'hidden'} alt="Execução de ${esc(ex.name || 'exercício')}"><p data-media-status role="status" hidden></p><button type="button" class="icon-button secondary" data-media-motion aria-label="Pausar animação" aria-pressed="false" hidden>${icon('pause')}</button>${editor ? `<button type="button" class="icon-button danger secondary" data-remove-media aria-label="Remover anexo de ${esc(ex.name || 'exercício')}">${icon('trash')}</button>` : ''}</div></div>`;
+        return `<div class="exercise-media" data-inline-media="${esc(ex.id)}"><div class="media-square"><span class="media-placeholder" aria-hidden="true">${icon('image')}</span><img data-media-image ${preview ? `src="${esc(preview)}"` : 'hidden'} alt="Execução de ${esc(ex.name || 'exercício')}"><p data-media-status role="status" hidden></p>${editor ? `<button type="button" class="icon-button danger secondary" data-remove-media aria-label="Remover anexo de ${esc(ex.name || 'exercício')}">${icon('trash')}</button>` : expanded ? '' : `<button type="button" class="icon-button" data-expand-media="${esc(ex.id)}" aria-label="Ampliar demonstração de ${esc(ex.name)}" aria-haspopup="dialog" aria-controls="media-dialog">${icon('expand')}</button>`}</div></div>`;
       }
-      function renderStrength(ex, index, session) {
+      function renderStrength(ex, index, session, focused = false, group = '') {
         const log = session.logs[ex.id];
         const loadHeader = 'kg total';
-        return `<article class="exercise" data-exercise="${esc(ex.id)}">
-      <div class="exercise-header"><div class="exercise-heading-copy"><h3>${esc(ex.name)}</h3><p class="target">${ex.meta.map(esc).join(' · ')}</p></div></div>${mediaFrame(ex)}
+        return `<article class="exercise ${focused ? 'focus-exercise' : ''}" data-exercise="${esc(ex.id)}">
+      ${focused ? mediaFrame(ex) : ''}<div class="exercise-header"><div class="exercise-heading-copy">${focused ? `<p class="context-label">${group ? esc(group) : 'Exercício ' + String(index+1).padStart(2,'0')}</p>` : ''}<h3 tabindex="-1">${esc(ex.name)}</h3><p class="target">${ex.meta.map(esc).join(' · ')}</p></div></div>${focused ? `<div class="set-section-heading"><strong>Séries</strong></div>` : mediaFrame(ex)}
       <table class="sets" aria-label="Séries de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col" title="kg total">${loadHeader}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col"><span class="sr-only">${ex.unit === 's' ? 'Temporizador' : 'Feita'}</span></th></tr></thead>
       <tbody>${log.sets.map((set, i) => `<tr class="set-row ${set.done ? 'completed' : ''}"><td>${i + 1}</td>
         <td><button type="button" class="set-input" data-field="load" data-index="${i}" data-ex="${ex.id}" data-value="${set.load ?? ''}" aria-haspopup="dialog" aria-controls="numeric-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, kg total: ${esc(number(set.load))}">${esc(number(set.load))}</button></td>
@@ -3206,7 +3572,7 @@
           return block.group ? `<section class="${history ? 'history-superset' : 'superset'}" aria-label="${esc(block.name)}"><h3 class="superset-label">${esc(block.name)}</h3>${content}</section>` : content;
         }).join('');
       }
-      function renderWorkout() {
+      function renderLegacySession() {
         clearInlineMedia($('workout'));
         const w = currentWorkout();
         syncRestContext();
@@ -3222,11 +3588,331 @@
           <div id="exercise-list">${renderExerciseBlocks(w, (ex, i) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s), false, s)}</div>
           <p class="form-error" id="entry-error" role="alert" hidden></p>
           <details class="disclosure notes" ${s.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="Observações">${esc(s.notes)}</textarea></details>
-          <div class="session-actions"><button class="button primary" id="finish-workout">${locked ? 'Próximo treino' : 'Concluir treino'}</button></div>`;
-        if (locked) $('exercise-list').querySelectorAll('button:not([data-media-motion]),input').forEach(el => el.disabled = true);
+          <div class="session-actions"><button type="button" class="button primary" id="finish-workout"></button></div>`;
+        if (locked) $('exercise-list').querySelectorAll('button:not([data-expand-media]),input').forEach(el => el.disabled = true);
         if (strength) bindInlineMedia($('workout'), w.exercises, exerciseMedia);
         updateProgress(); updateSaveStatus(); timerUI();
       }
+      // Navigation is independent of the saved workout schema and its backups.
+      const orderedExercises = workout => TrainingConfig.blocks(workout).flatMap(block => block.exercises);
+      const draftFor = workout => { const drafts = Object.values(store.drafts).filter(s => !s.archived && s.day === workout.id && s.cycleNumber === store.cycle.number).sort((a,b) => b.updatedAt-a.updatedAt); return drafts.find(s => s.key === preferences.activeWorkout?.sessionKey) || drafts[0]; };
+      const recordFor = workout => Object.values(store.sessions).filter(s => s.done && s.day === workout.id && s.date === localDate()).sort((a,b) => b.updatedAt-a.updatedAt)[0] || store.sessions[store.cycle.completed[workout.id]];
+      const workoutDetail = workout => `${workout.exercises.length} ${workout.kind === 'strength' ? 'exercícios · ' + workout.exercises.reduce((sum,ex) => sum + ex.sets,0) + ' séries' : 'etapas'}`;
+      function exerciseComplete(ex, session) {
+        const log = session?.logs[ex.id];
+        return !!log && (log.sets ? log.sets.every(set => set.done) : log.done);
+      }
+      const isOngoingDraft = session => !!session && !session.done && !session.archived && session.cycleNumber === store.cycle.number && !store.cycle.completed[session.day] && PLAN.some(workout => workout.id === session.day);
+      const activeWorkoutSession = () => {
+        const session = store.drafts[preferences.activeWorkout?.sessionKey];
+        return isOngoingDraft(session) ? session : Object.values(store.drafts).filter(isOngoingDraft).sort((a,b) => b.updatedAt-a.updatedAt)[0] || null;
+      };
+      function rememberActiveWorkout(session, exerciseId = null) {
+        const draft = store.drafts[session?.key];
+        if (!isOngoingDraft(draft)) return;
+        const running = activeWorkoutSession();
+        if (running && running.key !== draft.key) return;
+        const exercises = orderedExercises(draft.workout);
+        const exercise = (draft.workout.kind === 'strength' && exercises.find(ex => ex.id === exerciseId)) || exercises.find(ex => !exerciseComplete(ex, draft)) || exercises.at(-1);
+        if (!exercise) return;
+        const active = preferences.activeWorkout;
+        if (active?.sessionKey === draft.key && active.exerciseId === exercise.id) return;
+        preferences.activeWorkout = { sessionKey: draft.key, exerciseId: exercise.id };
+        preferences.focusExercise = { ...preferences.activeWorkout };
+        savePreferences();
+      }
+      function restoreActiveWorkout() {
+        // Migrate existing drafts once. A cleared activity must not revive an older draft.
+        if (preferences.activeWorkout !== undefined) return;
+        const drafts = Object.values(store.drafts).filter(isOngoingDraft).sort((a, b) => b.updatedAt - a.updatedAt);
+        const session = drafts.find(s => `${s.cycleNumber}:${s.day}` === timer.workoutKey) || drafts.find(s => s.key === preferences.focusExercise?.sessionKey) || drafts[0];
+        if (session) rememberActiveWorkout(session, preferences.focusExercise?.sessionKey === session.key ? preferences.focusExercise.exerciseId : null);
+        else { preferences.activeWorkout = null; savePreferences(); }
+      }
+      function activeWorkoutPosition(session) {
+        const exercises = orderedExercises(session.workout);
+        if (session.workout.kind === 'cardio') {
+          const blocks = C.blocks(session.workout);
+          const pending = blocks.find(block => block.group ? !D.intervalProgress(session, block.group).complete : !exerciseComplete(block.exercises[0], session));
+          const block = pending || blocks.at(-1), exercise = block.exercises[0];
+          return { exerciseId: exercise.id, groupId: block.group?.id, name: block.group ? block.name : exercise.name, detail: !pending ? 'Etapas concluídas' : block.group ? `${block.exercises.length} etapas · ${block.group.repeats} ${block.group.repeats === 1 ? 'volta' : 'voltas'}` : `Etapa ${exercises.indexOf(exercise) + 1} de ${exercises.length}` };
+        }
+        const owner = exerciseTimerOwner(), timed = owner?.session.key === session.key;
+        const exercise = (timed && owner.exercise) || exercises.find(ex => ex.id === preferences.activeWorkout?.exerciseId) || exercises.find(ex => !exerciseComplete(ex, session)) || exercises.at(-1);
+        const sets = session.logs[exercise.id].sets, index = timed ? timer.exercise.setIndex : sets.findIndex(set => !set.done);
+        return { exerciseId: exercise.id, name: exercise.name, detail: index < 0 ? 'Séries concluídas' : `Série ${index + 1} de ${sets.length}${timed && timer.finished ? ' · Tempo concluído' : ''}` };
+      }
+      function renderActiveWorkout() {
+        const session = activeWorkoutSession();
+        if (!session && preferences.activeWorkout) { preferences.activeWorkout = null; savePreferences(); }
+        if (session) {
+          if (preferences.activeWorkout?.sessionKey !== session.key) rememberActiveWorkout(session, preferences.focusExercise?.sessionKey === session.key ? preferences.focusExercise.exerciseId : null);
+          const position = activeWorkoutPosition(session);
+          const values = { 'active-workout-title': `Em execução · ${session.workout.title}`, 'active-workout-exercise': position.name, 'active-workout-detail': position.detail };
+          for (const [id, value] of Object.entries(values)) if ($(id).textContent !== value) $(id).textContent = value;
+          $('resume-active-workout').setAttribute('aria-label', `Retomar ${session.workout.title}. ${position.name}. ${position.detail}.`);
+        }
+        setDockItemVisible('active-workout', !!session && !(appView === 'session' && currentDraft()?.key === session.key && !isReadOnly()));
+      }
+      function resumeActiveWorkout() {
+        if (!validInputs()) return;
+        const session = activeWorkoutSession();
+        if (!session) { renderActiveWorkout(); return; }
+        const position = activeWorkoutPosition(session);
+        if (!['session', 'summary'].includes(appView)) summaryOrigin = appView;
+        viewingRecord = null; selectedDay = session.day; selectedWeekday = session.workout.weekday; selectedDate = effectiveDate(session);
+        const started = startSession(position.exerciseId);
+        const focusStage = () => {
+          if (appView !== 'session' || currentDraft()?.key !== session.key || session.workout.kind !== 'cardio') return;
+          const field = position.groupId ? $('exercise-list').querySelector(`[data-interval="${position.groupId}"]`) : $('exercise-list').querySelector(`[data-stage="${position.exerciseId}"]`);
+          field?.closest('.interval-block,article')?.scrollIntoView({ block: 'center', behavior: 'auto' });
+          field?.focus({ preventScroll: true });
+        };
+        if (started?.then) started.then(focusStage); else focusStage();
+      }
+      $('resume-active-workout').addEventListener('click', resumeActiveWorkout);
+      function workoutState(workout) {
+        const record = recordFor(workout), draft = draftFor(workout);
+        if (record) return { label:'Concluído', record, draft:null };
+        if (draft && activeWorkoutSession()?.key === draft.key) return { label:'Em andamento', draft, record:null };
+        return { label:workout.kind === 'strength' ? 'Força' : 'Corrida', draft:null, record:null };
+      }
+      function workoutRow(workout, resume = false) {
+        const state = workoutState(workout), progress = state.draft && D.progress(state.draft);
+        return `<button type="button" class="workout-row" ${resume ? 'data-resume-workout' : 'data-overview-workout'}="${esc(workout.id)}"><span class="row-icon">${icon(state.record ? 'check' : workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><span><strong>${esc(workout.title)}</strong><small>${resume ? 'Retomar · ' : ''}${progress ? `${progress.done}/${progress.total} ${workout.kind === 'strength' ? 'séries' : 'etapas'}` : workoutDetail(workout)}${state.record ? ' · Concluído' : ''}</small></span><span class="sr-only">${resume ? 'Retomar treino' : 'Ver resumo'}</span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
+      }
+      function groupLabel(workout, id) {
+        return TrainingConfig.blocks(workout).find(block => block.group && block.exercises.some(ex => ex.id === id))?.name || '';
+      }
+      function overviewRows(workout, session, navigation = false) {
+        return orderedExercises(workout).map((ex,i) => {
+          const done = exerciseComplete(ex,session), group = groupLabel(workout,ex.id);
+          const media = exerciseMedia(ex), tag = navigation || media ? 'button' : 'div';
+          return `<${tag} ${tag === 'button' ? `type="button" ${navigation ? `data-focus-exercise="${ex.id}" aria-current="${focusExerciseId === ex.id}"` : `data-preview-exercise="${ex.id}" aria-label="Ver demonstração de ${esc(ex.name)}"`}` : ''} class="overview-item ${done ? 'is-complete' : ''}"><span class="overview-number">${i+1}</span><span class="overview-copy">${group ? `<span class="group-tag">${esc(group)}</span>` : ''}<strong>${esc(ex.name)}</strong><small>${ex.meta.map(esc).join(' · ')}</small></span>${!navigation && media ? icon('image') : ''}</${tag}>`;
+        }).join('');
+      }
+      function renderSummary(workout) {
+        const session = currentSession(), strength = workout.kind === 'strength', locked = isReadOnly(), progress = D.progress(session);
+        const running = activeWorkoutSession(), blocked = !locked && running && running.day !== workout.id;
+        $('workout').innerHTML = `<div class="view-toolbar"><button type="button" class="icon-button back-button" data-summary-back aria-label="Voltar para ${esc(pageTitles[summaryOrigin])}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button>${PLAN.some(w=>w.id === workout.id) ? `<button type="button" class="icon-button" data-edit-current aria-label="Editar ${esc(workout.title)}">${icon('settings')}</button>` : ''}</div><div class="summary-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="workout-title" tabindex="-1">${esc(workout.title)}</h2><p>${esc(workout.day)}${locked ? ' · ' + esc(displayDate(session.date,true)) : ' · Resumo do treino'}</p></div>
+          <dl class="summary-stats"><div><dd>${workout.exercises.length}</dd><dt>${strength ? 'exercícios' : 'etapas'}</dt></div><div><dd>${strength ? progress.total : TrainingConfig.blocks(workout).length}</dd><dt>${strength ? 'séries' : 'blocos'}</dt></div><div><dd>${Math.round(progress.done/(progress.total || 1)*100)}%</dd><dt>realizado</dt></div></dl>
+          ${locked ? '<p class="record-banner">Treino concluído. Seu registro está salvo no histórico.</p>' : ''}<button type="button" class="button primary summary-start" data-start-session ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${locked ? 'Ver execução registrada' : currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${blocked ? `<p class="form-hint" id="start-blocked">Conclua ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}<div class="section-heading"><h3>${strength ? 'Exercícios' : 'Etapas do treino'}</h3></div><div class="summary-list">${overviewRows(workout,session)}</div>${workout.groups?.length && strength ? '<p class="form-hint">Nas superséries, alterne entre os exercícios do grupo antes do descanso.</p>' : ''}`;
+      }
+      function sessionNotes(session, locked) {
+        return `<details class="disclosure notes" ${session.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="Como foi o treino?">${esc(session.notes)}</textarea></details>`;
+      }
+      function focusNavigation(workout, exercises, index) {
+        const next = exercises[index+1];
+        return `<nav class="exercise-navigation" aria-label="Navegar pelos exercícios"><button type="button" class="icon-button" data-focus-exercise="${exercises[index-1]?.id || ''}" aria-label="Exercício anterior" ${index === 0 ? 'disabled' : ''}>${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button>${next ? `<button type="button" class="next-copy" data-focus-exercise="${next.id}"><span class="context-label">Próximo exercício</span><strong>${esc(next.name)}</strong></button><button type="button" class="icon-button" data-focus-exercise="${next.id}" aria-label="Próximo exercício">${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>` : '<div class="next-copy"><span class="context-label">Último exercício</span></div>'}</nav>`;
+      }
+      function renderFocusedSession(workout) {
+        const session = currentSession(), exercises = orderedExercises(workout), locked = isReadOnly();
+        let index = exercises.findIndex(ex=>ex.id === focusExerciseId);
+        if (index < 0) { index = Math.max(0,exercises.findIndex(ex=>!exerciseComplete(ex,session))); focusExerciseId = exercises[index].id; }
+        const ex = exercises[index], group = groupLabel(workout,ex.id);
+        if (!locked) rememberActiveWorkout(session, ex.id);
+        $('workout').innerHTML = `<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-summary aria-label="Voltar ao resumo do treino">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${locked ? 'Registro' : 'Em execução'} · ${index+1} de ${exercises.length}</span><h2 id="workout-title" tabindex="-1">${esc(workout.title)}</h2></div><button type="button" class="icon-button" data-review-exercises aria-label="Ver todos os exercícios" aria-haspopup="dialog" aria-controls="exercise-picker-dialog">${icon('reminder')}</button></div>
+          <nav class="focus-progress" aria-label="Progresso por exercício">${exercises.map((item,i)=>`<button type="button" class="focus-dot ${exerciseComplete(item,session) ? 'is-complete' : ''}" data-focus-exercise="${item.id}" aria-current="${item.id === ex.id}" aria-label="${i+1}. ${esc(item.name)}${exerciseComplete(item,session) ? ', concluído' : ''}"></button>`).join('')}</nav>
+          <div id="exercise-list">${renderStrength(ex,index,session,true,group)}</div>${focusNavigation(workout,exercises,index)}<div class="session-bottom"><div class="progress-label"><span id="progress-label"></span><span class="save-status" id="save-status" role="status"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div>${sessionNotes(session,locked)}<div class="session-actions"><button type="button" class="button primary" id="finish-workout"></button></div></div>`;
+        if (locked) $('exercise-list').querySelectorAll('button:not([data-expand-media]),input').forEach(el => el.disabled = true);
+        bindInlineMedia($('workout'),workout.exercises,exerciseMedia);
+        updateProgress(); updateSaveStatus(); timerUI();
+      }
+      const pageIds = { workouts:'manager-dialog', history:'history-dialog', profile:'profile-page', timer:'timer-dialog', backup:'backup-dialog' };
+      const pageTitles = { home:'Início',workouts:'Treinos',history:'Histórico',profile:'Perfil',timer:'Temporizador',backup:'Backup',summary:'Treino',session:'Treino' };
+      let summaryOrigin = 'home';
+      function isPageOpen(id) { return pageIds[appView] === id; }
+      function syncPageChrome() {
+        document.body.dataset.view=appView;
+        $('app-title').textContent=pageTitles[appView] || 'Treino';
+        $('app-title').classList.toggle('sr-only',appView === 'home');
+        $('home-profile').hidden=appView !== 'home';
+        const active=appView === 'session' ? 'workouts' : appView === 'summary' ? summaryOrigin : ['timer','backup'].includes(appView) ? 'profile' : appView;
+        $('bottom-nav').hidden=false;
+        $('bottom-nav').querySelectorAll('[data-nav]').forEach(button=>{
+          if(button.dataset.nav === active) button.setAttribute('aria-current','page');
+          else button.removeAttribute('aria-current');
+        });
+        for(const [page,id] of Object.entries(pageIds)) $(id).hidden=appView !== page;
+        $('home').hidden=appView !== 'home';
+        $('week-panel').hidden=appView !== 'home';
+        $('workout').hidden=!['summary','session'].includes(appView);
+        $('workout').setAttribute('role','region');
+      }
+      function navigatePage(page,{preserveDay=false}={}) {
+        if(!['home',...Object.keys(pageIds)].includes(page) || !validInputs()) return;
+        if(page === 'home' && !preserveDay) goToToday();
+        appView=page; renderNav(); renderWorkout(); focusPage();
+      }
+      function renderHome() {
+        const weekday=selectedWeekday, workouts=PLAN.filter(w=>w.weekday === weekday);
+        const label=D.weekdays[weekday-1];
+        $('home').innerHTML=workouts.length ? workouts.map(w=>{
+          const state=workoutState(w);
+          return `<section class="today-card" aria-label="${esc(label)}"><div class="today-card-top"><span class="context-label">${esc(label)}</span><span class="kind-badge">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}${w.kind === 'strength' ? 'Força' : 'Corrida'}</span></div><h2>${esc(w.title)}</h2><p class="today-detail">${workoutDetail(w)}</p><button type="button" class="button primary" ${state.draft ? 'data-resume-workout' : 'data-overview-workout'}="${w.id}">${state.record ? 'Ver registro' : state.draft ? 'Retomar treino' : 'Ver treino'}</button></section>`;
+        }).join('') : `<section class="today-card"><div class="today-card-top"><span class="context-label">${esc(label)}</span></div><h2>${PLAN.length ? 'Dia livre' : 'Nenhum treino'}</h2><button type="button" class="button primary" data-setup-workout>Criar treino</button></section>`;
+        $('workout').replaceChildren();
+      }
+      let motionRoute=null, motionDetail=null;
+      const entranceTimers=new WeakMap();
+      function enterView(element) {
+        if(!element || element.hidden) return;
+        clearTimeout(entranceTimers.get(element));
+        element.classList.remove('view-entering');
+        if(reduceMotion()) return;
+        void element.offsetWidth;
+        element.classList.add('view-entering');
+        entranceTimers.set(element,setTimeout(()=>element.classList.remove('view-entering'),280));
+      }
+      function syncViewMotion() {
+        const route=['summary','session'].includes(appView) ? `${appView}:${selectedDay}:${viewingRecord || ''}` : appView;
+        const detail=appView === 'home' ? selectedWeekday : appView === 'session' ? focusExerciseId : null;
+        if(route !== motionRoute) {
+          document.querySelectorAll('.view-entering').forEach(element=>{
+            clearTimeout(entranceTimers.get(element));element.classList.remove('view-entering');
+          });
+          if(!['summary','session'].includes(appView)) enterView(document.querySelector('.header'));
+          enterView($('app-main'));
+        } else if(detail !== motionDetail) {
+          if(appView === 'home') enterView($('home'));
+          else if(appView === 'session') {
+            enterView($('exercise-list'));
+            enterView($('workout').querySelector('.exercise-navigation'));
+          }
+        }
+        motionRoute=route;motionDetail=detail;
+      }
+      function renderWorkout() {
+        clearInlineMedia($('workout'));
+        const workout=currentWorkout();
+        if(!workout && ['summary','session'].includes(appView)) appView='home';
+        if(appView === 'session' && !isReadOnly() && activeWorkoutSession() && activeWorkoutSession().day !== selectedDay) appView='summary';
+        syncPageChrome(); syncRestContext();
+        if(appView === 'home') renderHome();
+        else if(appView === 'workouts') renderManager();
+        else if(appView === 'history') renderHistory();
+        else if(appView === 'profile') renderProfile();
+        else if(appView === 'timer') { timerUI(); soundUI(); }
+        else if(['summary','session'].includes(appView)) {
+          $('workout').setAttribute('aria-labelledby','workout-title');
+          if(appView === 'summary') renderSummary(workout);
+          else if(workout.kind === 'strength') renderFocusedSession(workout);
+          else {
+            renderLegacySession();
+            $('workout').insertAdjacentHTML('afterbegin',`<div class="view-toolbar"><button type="button" class="icon-button back-button" data-session-summary aria-label="Voltar ao resumo do treino">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button></div>`);
+          }
+        }
+        renderActiveWorkout(); syncViewMotion();
+      }
+      function focusPage() {
+        window.scrollTo({top:0,behavior:'auto'});
+        (['summary','session'].includes(appView) ? $('workout-title') : $('app-title'))?.focus({preventScroll:true});
+      }
+      function goHome() { navigatePage('home'); }
+      function showOverview(id) {
+        if(['home','workouts','history'].includes(appView)) summaryOrigin=appView;
+        appView='summary';focusExerciseId=null;chooseDay(id);focusPage();
+      }
+      $('bottom-nav').addEventListener('click',e=>{
+        const button=e.target.closest('[data-nav]');if(!button) return;
+        if(button.dataset.nav === 'history') {
+          historyDate=localDate();historyMonth=historyDate.slice(0,7);setMonthPickerOpen(false);
+        }
+        navigatePage(button.dataset.nav);
+      });
+      document.addEventListener('click',e=>{
+        const target=e.target.closest('[data-page]');
+        if(target?.tagName === 'BUTTON') navigatePage(target.dataset.page);
+      });
+
+      function startSession(exerciseId = null) {
+        if (!currentWorkout() || !validInputs()) return;
+        const requestedDay = selectedDay, requestedRecord = viewingRecord, requestedView = appView;
+        if (!isReadOnly() && navigator.locks?.request) {
+          return navigator.locks.request('treino-hibrido.start-session', () => {
+            if (selectedDay !== requestedDay || viewingRecord !== requestedRecord || appView !== requestedView) return;
+            startSessionNow(exerciseId);
+          }).catch(() => toast('Não foi possível iniciar o treino. Tente novamente.','error'));
+        }
+        return startSessionNow(exerciseId);
+      }
+      function startSessionNow(exerciseId = null) {
+        if (!currentWorkout()) return;
+        // Resolve other tabs before creating a draft. Browsing a record remains available.
+        if (!isReadOnly() && !loadBlocked) {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) { store = D.merge(D.validate(JSON.parse(raw)), store).data; syncPlan(); }
+            const savedPreferences = JSON.parse(localStorage.getItem(PREF_KEY) || '{}');
+            if (savedPreferences && Object.hasOwn(savedPreferences,'activeWorkout')) preferences.activeWorkout = savedPreferences.activeWorkout;
+          } catch { }
+        }
+        const running = activeWorkoutSession();
+        if (!isReadOnly() && running && running.day !== selectedDay) {
+          toast(`Conclua ${running.workout.title} antes de iniciar outro treino.`,'info');
+          renderWorkout(); return false;
+        }
+        const session = isReadOnly() ? currentSession() : ensureSession();
+        const saved = preferences.focusExercise;
+        focusExerciseId = exerciseId || (saved?.sessionKey === session.key ? saved.exerciseId : null);
+        if (!isReadOnly()) {
+          if (timer.workoutKey && timer.workoutKey !== `${session.cycleNumber}:${session.day}`) endRest();
+          // Publish the draft before its activity pointer so other tabs can resolve it.
+          writeStore(); rememberActiveWorkout(session, focusExerciseId);
+        }
+        appView = 'session'; renderWorkout(); focusPage();
+      }
+      function selectFocus(id) {
+        if (!currentWorkout()?.exercises.some(ex=>ex.id === id)) return;
+        focusExerciseId = id;
+        if (!isReadOnly()) rememberActiveWorkout(currentDraft(), id);
+        $('exercise-picker-dialog').close(); renderWorkout();
+        window.scrollTo({top:0,behavior:'auto'});
+        $('exercise-list').querySelector('h3')?.focus({preventScroll:true});
+      }
+      function showExerciseList() {
+        $('exercise-picker-list').innerHTML = overviewRows(currentWorkout(),currentSession(),true);
+        openDialog('exercise-picker-dialog');
+      }
+      function showMedia(id) {
+        const ex = currentWorkout()?.exercises.find(item=>item.id === id);
+        if (!ex || !exerciseMedia(ex)) return;
+        clearInlineMedia($('media-viewer'));
+        $('media-title').textContent = ex.name;
+        $('media-viewer').innerHTML = mediaFrame(ex,exerciseMedia(ex),false,true);
+        openDialog('media-dialog');
+        bindInlineMedia($('media-viewer'),[ex],exerciseMedia);
+      }
+      function handleNavigation(e) {
+        const target = e.target.closest('button'); if (!target) return;
+        if (target.hasAttribute('data-home')) goHome();
+        else if(target.hasAttribute('data-summary-back')) navigatePage(summaryOrigin,{preserveDay:true});
+        else if (target.hasAttribute('data-overview-workout')) showOverview(target.dataset.overviewWorkout);
+        else if (target.hasAttribute('data-resume-workout')) { summaryOrigin=appView; appView='summary'; chooseDay(target.dataset.resumeWorkout); startSession(); }
+        else if (target.hasAttribute('data-start-session')) startSession();
+        else if (target.hasAttribute('data-session-summary')) { appView='summary'; renderWorkout(); focusPage(); }
+        else if (target.hasAttribute('data-focus-exercise')) selectFocus(target.dataset.focusExercise);
+        else if (target.hasAttribute('data-review-exercises')) showExerciseList();
+        else if (target.hasAttribute('data-preview-exercise')) showMedia(target.dataset.previewExercise);
+        else if (target.hasAttribute('data-expand-media')) showMedia(target.dataset.expandMedia);
+        else if (target.hasAttribute('data-edit-current')) openEditor(selectedDay);
+        else if (target.hasAttribute('data-manage-plan')) openManager();
+        else if (target.hasAttribute('data-home-history')) $('history-open').click();
+        else if (target.hasAttribute('data-home-backup')) showBackup();
+      }
+      $('workout').addEventListener('click',handleNavigation);
+      $('home').addEventListener('click',e => {
+        if(e.target.closest('[data-setup-workout]')) {
+          const weekday=selectedWeekday;
+          navigatePage('workouts');
+          if(appView === 'workouts') openEditor(null,weekday);
+          return;
+        }
+        handleNavigation(e);
+      });
+      $('exercise-picker-list').addEventListener('click',handleNavigation);
+      $('media-dialog').addEventListener('close',()=>{ if (!$('media-dialog').open) { clearInlineMedia($('media-viewer')); $('media-viewer').replaceChildren(); } });
+
       function updateProgress() {
         const s = currentSession(); if (!s || !$('workout-progress')) return;
         const p = D.progress(s), unit = s.workout.kind === 'strength' ? 'séries' : 'etapas', locked = isReadOnly();
@@ -3249,22 +3935,122 @@
           button.innerHTML = icon(done ? 'check' : 'play');
           button.closest('tr').classList.toggle('completed', done);
         });
-        $('finish-workout').hidden = false; $('finish-workout').textContent = locked ? 'Próximo treino' : 'Concluir treino';
+        const finish=$('finish-workout');
+        finish.hidden=false;finish.className=locked ? 'icon-button back-button' : 'button primary';
+        finish.setAttribute('aria-label',locked ? 'Voltar ao início' : 'Concluir treino');
+        finish.innerHTML=locked ? icon('chevron').replace('class="icon"','class="icon arrow-left"') : 'Concluir treino';
+        const exercises=orderedExercises(s.workout);
+        $('workout').querySelectorAll('.focus-dot').forEach(button=>{
+          const ex=exercises.find(item=>item.id === button.dataset.focusExercise), complete=exerciseComplete(ex,s);
+          button.classList.toggle('is-complete',complete);
+          button.setAttribute('aria-label',`${exercises.indexOf(ex)+1}. ${ex.name}${complete ? ', concluído' : ''}`);
+        });
+        $('exercise-list').querySelectorAll('[data-exercise]').forEach(article=>{
+          const log=s.logs[article.dataset.exercise], next=log?.sets.findIndex(set=>!set.done);
+          article.querySelectorAll('.set-row').forEach((row,i)=>row.classList.toggle('is-current',!locked && i === next));
+        });
       }
       function validInputs() {
         const invalid = $('workout').querySelector('[aria-invalid="true"]');
-        if (invalid) { invalid.focus(); toast('Corrija o valor destacado antes de continuar.'); return false; } return true;
+        if (invalid) { invalid.focus(); toast('Corrija o valor destacado antes de continuar.','error'); return false; } return true;
       }
       function chooseDay(day) {
         if (!validInputs()) return;
+        if (appView === 'session' && day !== selectedDay) appView = 'summary';
         selectedDay = day; selectedWeekday = PLAN.find(w => w.id === day)?.weekday || selectedWeekday;
         viewingRecord = Object.values(store.sessions).filter(s => s.done && s.day === day && s.date === localDate()).sort((a, b) => b.updatedAt - a.updatedAt)[0]?.key || null;
         selectedDate = effectiveDate(currentRecord() || currentDraft());
         renderNav(); renderWorkout();
       }
+      // Keep the dialog in the top layer until its exit animation finishes.
+      // Native close events still own cleanup, focus return and timer state.
+      const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+      document.querySelectorAll('dialog').forEach(dialog=>{
+        const nativeClose=dialog.close?.bind(dialog), nativeShow=dialog.showModal?.bind(dialog);
+        if(!nativeClose) return;
+        let pending=null;
+        const reset=()=>{
+          if(pending) { clearTimeout(pending.timeout); dialog.removeEventListener('animationend',pending.listener); }
+          pending=null; dialog.classList.remove('is-closing','is-minimizing'); dialog.inert=false;
+        };
+        dialog.close=(value)=>{
+          const minimizing=dialog.dataset.closeMotion === 'minimize';
+          delete dialog.dataset.closeMotion;
+          if(!dialog.open) return;
+          if(pending) { if(minimizing) dialog.classList.add('is-minimizing'); return; }
+          if(reduceMotion()) { nativeClose(value); syncToastLayer(); return; }
+          dialog.classList.add('is-closing');
+          if(minimizing) dialog.classList.add('is-minimizing');
+          dialog.inert=true;
+          const finish=()=>{
+            if(!pending) return;
+            reset(); nativeClose(value);syncToastLayer();
+          };
+          const listener=e=>{ if(e.target === dialog && ['dialog-out','sheet-out','sheet-minimize'].includes(e.animationName)) finish(); };
+          pending={listener,timeout:setTimeout(finish,230)};
+          dialog.addEventListener('animationend',listener);
+        };
+        if(nativeShow) dialog.showModal=()=>{
+          reset();
+          if(!dialog.open) { nativeShow();modalOrder.set(dialog,++modalSequence); }
+          syncToastLayer();
+        };
+        dialog.addEventListener('close',()=>{
+          if(!dialog.open) syncToastLayer();
+          const field=dialog._committedField;dialog._committedField=null;
+          if(field) animateField(field);
+        });
+      });
+      // The cancel event does not bubble in every browser; register the final
+      // handler on each dialog after all specific listeners have been installed.
+      function installDialogCancelMotion() {
+        document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('cancel',e=>{
+          if(e.defaultPrevented) return;
+          e.preventDefault();dialog.close();
+        }));
+      }
+      const dockItemMotion = new Map();
+      function syncActivityLayout() {
+        const dock = $('activity-dock'), visible = [...dock.children].some(item => !item.hidden);
+        dock.hidden = !visible;
+        document.body.classList.toggle('rest-minimized', !$('rest-mini').hidden);
+        document.body.classList.toggle('has-activity-dock', visible);
+        document.body.style.setProperty('--activity-height', `${visible ? dock.getBoundingClientRect().height : 0}px`);
+        const active = $('active-workout');
+        document.body.classList.toggle('has-active-workout', !active.hidden);
+        document.body.style.setProperty('--active-workout-height', `${active.hidden ? 0 : active.getBoundingClientRect().height}px`);
+      }
+      function setDockItemVisible(id, visible) {
+        const item = $(id), motion = dockItemMotion.get(id) || { wanted: false, version: 0, timeout: null };
+        if(visible === motion.wanted && (visible || item.hidden || item.classList.contains('is-leaving'))) return;
+        dockItemMotion.set(id, motion); motion.wanted=visible; const version=++motion.version;
+        clearTimeout(motion.timeout);item.classList.remove('is-entering','is-leaving');
+        if(visible) {
+          item.hidden=false; item.inert=false;
+          if(!reduceMotion()) item.classList.add('is-entering');
+          motion.timeout=setTimeout(()=>{if(version === motion.version)item.classList.remove('is-entering');},230);
+        } else {
+          item.inert=true;
+          const finish=()=>{if(version !== motion.version)return;item.hidden=true;item.classList.remove('is-leaving');syncActivityLayout();};
+          if(item.hidden || reduceMotion()) finish();
+          else {item.classList.add('is-leaving');motion.timeout=setTimeout(finish,210);}
+        }
+        syncActivityLayout();
+      }
+      function setMiniVisible(visible) { setDockItemVisible('rest-mini', visible); }
+      function animateField(field) {
+        if(!field?.isConnected || reduceMotion()) return;
+        field.classList.remove('field-updated');
+        void field.offsetWidth;
+        field.classList.add('field-updated');
+        setTimeout(()=>field.classList.remove('field-updated'),450);
+      }
+
       function openDialog(id) {
+        const page=Object.keys(pageIds).find(page=>pageIds[page] === id);
+        if(page) { navigatePage(page); return true; }
         if (typeof $(id).showModal !== 'function') {
-          toast('Este navegador não oferece suporte a este controle. Abra o treino em uma versão atualizada do Safari ou Chrome.');
+          toast('Este navegador não oferece suporte a este controle. Abra o treino em uma versão atualizada do Safari ou Chrome.','error');
           return false;
         }
         document.querySelectorAll('dialog[open]').forEach(d => { if (d.id !== id) d.close(); });
@@ -3280,8 +4066,7 @@
         if (returnTo) openDialog(returnTo);
       });
       document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close).close()));
-      $('menu-open').addEventListener('click', () => { if (validInputs()) openDialog('menu-dialog'); });
-      $('week-nav').addEventListener('click', e => { const b = e.target.closest('[data-weekday]'); if (b) chooseWeekday(+b.dataset.weekday); });
+      $('week-nav').addEventListener('click', e => { const b = e.target.closest('[data-weekday]'); if (b) { chooseWeekday(+b.dataset.weekday); $('tab-weekday-' + b.dataset.weekday).focus({preventScroll:true}); } });
       $('week-nav').addEventListener('keydown', e => {
         if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
         e.preventDefault();
@@ -3313,7 +4098,6 @@
         }
       });
       $('workout').addEventListener('click', e => {
-        if (toggleInlineMedia(e)) return;
         if (e.target.closest('[data-setup-workout]')) { openEditor(); return; }
         if (e.target.closest('[data-setup-profile]')) { openProfile(null); return; }
         const choice = e.target.closest('[data-workout-choice]'); if (choice) { chooseDay(choice.dataset.workoutChoice); return; }
@@ -3396,11 +4180,6 @@
           return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${cardioTotals(s)}${renderExerciseBlocks(s.workout, ex => historyExercise(ex, s.logs[ex.id]), true, s)}${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button class="button" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
         }).join('') : '<p class="calendar-empty">Nenhum treino nesta data.</p>';
       }
-      $('history-open').addEventListener('click', () => {
-        historyDate = localDate(); historyMonth = historyDate.slice(0, 7);
-        setMonthPickerOpen(false);
-        renderHistory(); openDialog('history-dialog');
-      });
       $('history-prev').addEventListener('click', () => shiftHistoryMonth(-1));
       $('history-next').addEventListener('click', () => shiftHistoryMonth(1));
       $('history-today').addEventListener('click', () => {
@@ -3439,12 +4218,12 @@
       $('history-list').addEventListener('click', e => {
         const b = e.target.closest('[data-open-record]'); if (!b || !validInputs()) return;
         const s = store.sessions[b.dataset.openRecord]; if (!s) return;
-        $('history-dialog').close(); viewingRecord = s.key; selectedDate = s.date; selectedDay = s.day; selectedWeekday = s.workout.weekday; renderNav(); renderWorkout(); $('workout').scrollIntoView({ block: 'start', behavior: 'smooth' });
+        summaryOrigin='history'; appView='summary'; viewingRecord = s.key; selectedDate = s.date; selectedDay = s.day; selectedWeekday = s.workout.weekday; renderNav(); renderWorkout(); $('workout').scrollIntoView({ block: 'start', behavior: 'smooth' });
       });
 
       function deleteHistory(recordKey = null) {
         if (loadBlocked) {
-          toast('Não foi possível ler os registros salvos. Exporte os dados disponíveis antes de continuar.');
+          toast('Não foi possível ler os registros salvos. Exporte os dados disponíveis antes de continuar.','error');
           return;
         }
         let removed = 0;
@@ -3465,7 +4244,7 @@
         } catch {
           storageOkay = false;
           updateSaveStatus(); storageNotice();
-          toast('Não foi possível apagar os registros. Nenhum registro foi removido desta aba.');
+          toast('Não foi possível apagar os registros. Nenhum registro foi removido desta aba.','error');
           return;
         }
         if (viewingRecord && !store.sessions[viewingRecord]) {
@@ -3505,8 +4284,7 @@
       window.visualViewport?.addEventListener('scroll', fitNumericDialog);
       window.addEventListener('resize', fitNumericDialog);
       function numericError(message) {
-        $('numeric-error').textContent = message; $('numeric-error').hidden = false;
-        $('numeric-input').setAttribute('aria-invalid', 'true'); $('numeric-input').focus({ preventScroll: true });
+        reportError('numeric-error',message,$('numeric-input'));
       }
       function numericControls() {
         if (!numericPicker) return;
@@ -3543,7 +4321,7 @@
         if (!numericPicker) return;
         const active = numericPicker, error = active.apply(value, active.unit);
         if (error) { numericError(error); return; }
-        $('numeric-dialog').close();
+        $('numeric-dialog')._committedField=active.trigger; $('numeric-dialog').close();
       }
       $('numeric-form').addEventListener('submit', e => {
         e.preventDefault(); const parsed = readNumericValue(); if (!parsed) return;
@@ -3619,8 +4397,8 @@
         const active = ticker;
         active.columns.forEach((c, i) => selectTicker(i, Math.round($('ticker-columns').querySelector(`[data-ticker-column="${i}"]`).scrollTop / 48)));
         const error = active.apply(active.columns.map(c => c.value));
-        if (error) { $('ticker-error').textContent = error; $('ticker-error').hidden = false; return; }
-        $('ticker-dialog').close();
+        if (error) { reportError('ticker-error',error); return; }
+        $('ticker-dialog')._committedField=active.trigger; $('ticker-dialog').close();
       });
       $('ticker-dialog').addEventListener('close', () => { if (!$('ticker-dialog').open) { const trigger = ticker?.trigger; ticker = null; if (trigger?.isConnected) trigger.focus({ preventScroll: true }); } });
 
@@ -3637,7 +4415,7 @@
       }
       $('selection-options').addEventListener('click', e => {
         const button = e.target.closest('[data-choice]'); if (!button || !selection) return;
-        const s = selection; s.apply(s.options[+button.dataset.choice].value); $('selection-dialog').close();
+        const s = selection; s.apply(s.options[+button.dataset.choice].value); $('selection-dialog')._committedField=s.trigger; $('selection-dialog').close();
       });
       $('selection-options').addEventListener('keydown', e => {
         if (!['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
@@ -3704,7 +4482,7 @@
       });
       $('date-apply').addEventListener('click', () => {
         if (!datePicker || !D.validDate(datePicker.date)) return;
-        datePicker.apply(datePicker.date, datePicker.mode); $('date-dialog').close();
+        datePicker.apply(datePicker.date, datePicker.mode); $('date-dialog')._committedField=datePicker.trigger; $('date-dialog').close();
       });
       $('date-dialog').addEventListener('close', () => { if ($('date-dialog').open) return; const trigger = datePicker?.trigger; datePicker = null; if (trigger?.isConnected) trigger.focus({ preventScroll: true }); });
 
@@ -3720,12 +4498,6 @@
           if (entry.isIntersecting) loadInlineMedia(state); else stopInlineMedia(state);
         }
       }, { rootMargin: '120px' }) : null;
-      function inlineMotionUI(state) {
-        state.button.hidden = !state.animated;
-        state.button.setAttribute('aria-pressed', String(state.paused));
-        state.button.setAttribute('aria-label', (state.paused ? 'Reproduzir' : 'Pausar') + ' animação de ' + state.ex.name);
-        state.button.innerHTML = icon(state.paused ? 'play' : 'pause');
-      }
       function stopInlineMedia(state) {
         state.token++; state.controller?.abort(); state.controller = null;
         if (state.loaded && state.img.naturalWidth) {
@@ -3744,7 +4516,7 @@
         }
       }
       async function loadInlineMedia(state) {
-        if (!state.active || state.loading || state.loaded || (state.paused && state.preview)) return;
+        if (!state.active || state.loading || state.loaded) return;
         const token = ++state.token, controller = new AbortController();
         state.controller = controller; state.loading = true;
         state.frame.setAttribute('aria-busy', 'true'); state.status.hidden = true;
@@ -3758,7 +4530,6 @@
           loaded.img.alt = 'Execução de ' + (state.ex.name || 'exercício'); loaded.img.dataset.mediaImage = '';
           state.img.replaceWith(loaded.img); state.img = loaded.img; state.loaded = loaded;
           state.frame.querySelector('.media-placeholder').hidden = true;
-          if (state.paused) stopInlineMedia(state);
         } catch (error) {
           if (state.active && token === state.token && error?.name !== 'AbortError') {
             state.status.textContent = M.errorText(error); state.status.hidden = false;
@@ -3773,22 +4544,11 @@
           if (!media) return;
           const animated = typeof media === 'object' ? media.animated : /^data:image\/gif[;,]/.test(media);
           const state = { root, frame, ex, media, animated, active: true, token: 0, loaded: null, loading: false,
-            preview: typeof media === 'object' ? media.preview : '', paused: animated && matchMedia('(prefers-reduced-motion: reduce)').matches,
-            img: frame.querySelector('[data-media-image]'), status: frame.querySelector('[data-media-status]'), button: frame.querySelector('[data-media-motion]') };
-          inlineMedia.set(frame, state); inlineMotionUI(state);
+            preview: typeof media === 'object' ? media.preview : '',
+            img: frame.querySelector('[data-media-image]'), status: frame.querySelector('[data-media-status]') };
+          inlineMedia.set(frame, state);
           if (mediaObserver) mediaObserver.observe(frame); else loadInlineMedia(state);
         });
-      }
-      function toggleInlineMedia(event) {
-        const button = event.target.closest('[data-media-motion]');
-        if (!button) return false;
-        const state = inlineMedia.get(button.closest('[data-inline-media]'));
-        if (state) {
-          state.paused = !state.paused;
-          if (state.paused) stopInlineMedia(state); else loadInlineMedia(state);
-          inlineMotionUI(state);
-        }
-        return true;
       }
       function editorBusyUI() {
         $('editor-form').inert = editorSaving;
@@ -3799,12 +4559,13 @@
       function renderManager() {
         $('managed-workouts').innerHTML = D.weekdays.map((day, i) => {
           const workouts = PLAN.filter(w => w.weekday === i + 1);
-          return `<section class="managed-day"><div class="managed-day-heading"><h3>${esc(day)}</h3><button class="icon-button" data-create-workout="${i + 1}" aria-label="Criar treino para ${esc(day)}">+</button></div>${workouts.length ? workouts.map(w => `<div class="managed-workout"><button class="managed-workout-main" data-manage-workout="${w.id}">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}<span><strong>${esc(w.title)}</strong><small>${w.exercises.length} ${w.kind === 'strength' ? 'exercícios' : 'etapas'}${w.kind === 'strength' ? ' · ' + w.exercises.reduce((sum, ex) => sum + ex.sets, 0) + ' séries' : ''}</small></span>${icon('settings')}</button><button class="icon-button danger secondary managed-delete" data-remove-workout="${w.id}" aria-label="Remover treino ${esc(w.title)}">${icon('trash')}</button></div>`).join('') : '<p class="managed-empty">Sem treino</p>'}</section>`;
-        }).join('');
+          if(!workouts.length) return '';
+          return `<section class="managed-day"><div class="managed-day-heading"><h3>${esc(day)}</h3><button class="icon-button" data-create-workout="${i + 1}" aria-label="Criar treino para ${esc(day)}">+</button></div>${workouts.length ? workouts.map(w => `<div class="managed-workout"><button class="managed-workout-main" data-open-workout="${w.id}">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}<span><strong>${esc(w.title)}</strong><small>${w.exercises.length} ${w.kind === 'strength' ? 'exercícios' : 'etapas'}${w.kind === 'strength' ? ' · ' + w.exercises.reduce((sum, ex) => sum + ex.sets, 0) + ' séries' : ''}</small></span>${icon('settings')}</button><button type="button" class="icon-button managed-edit" data-manage-workout="${w.id}" aria-label="Editar ${esc(w.title)}">${icon('settings')}</button><button class="icon-button danger secondary managed-delete" data-remove-workout="${w.id}" aria-label="Remover treino ${esc(w.title)}">${icon('trash')}</button></div>`).join('') : '<p class="managed-empty">Sem treino</p>'}</section>`;
+        }).join('') || '<p class="managed-empty">Nenhum treino cadastrado.</p>';
         $('new-workout').disabled = PLAN.length >= 100;
         $('managed-workouts').querySelectorAll('[data-create-workout]').forEach(b => b.disabled = PLAN.length >= 100);
       }
-      function openManager() { renderManager(); openDialog('manager-dialog'); }
+      function openManager() { navigatePage('workouts'); }
       function savePlan(nextPlan) {
         const oldMedia = M.references(store);
         store.plan = nextPlan.sort((a, b) => a.weekday - b.weekday);
@@ -3857,7 +4618,7 @@
         $('editor-exercises-label').textContent = strength ? 'Exercícios' : 'Etapas';
         $('editor-add').textContent = strength ? 'Adicionar exercício' : 'Adicionar etapa';
         $('editor-groups').hidden = false;
-        $('editor-groups').textContent = strength ? 'Superséries' : 'Intervalado';
+        $('editor-groups').textContent = strength ? 'Superséries' : 'Intervalados';
         function card(ex, grouped) {
           const t = ex.target, i = editorDraft.exercises.indexOf(ex);
           return `<section class="editor-exercise" data-editor-ex="${ex.id}" ${grouped ? '' : `data-sort-id="${ex.id}"`}>
@@ -3880,8 +4641,7 @@
         }
       }
       function editorError(message, el = null) {
-        $('editor-error').textContent = message; $('editor-error').hidden = false;
-        if (el) { el.setAttribute('aria-invalid', 'true'); el.focus(); } else $('editor-error').scrollIntoView({ block: 'nearest' });
+        reportError('editor-error',message,el);
       }
       function configNumber(ex, field, trigger) {
         const t = ex.target, strength = editorDraft.kind === 'strength';
@@ -3935,7 +4695,6 @@
       });
       $('editor-exercises').addEventListener('click', e => {
         if (editorSaving) return;
-        if (toggleInlineMedia(e)) return;
         const separate = e.target.closest('[data-separate-group]'); if (separate) { separateGroup(separate.dataset.separateGroup); return; }
         const repeat = e.target.closest('[data-group-repeats]');
         if (repeat) {
@@ -4009,16 +4768,16 @@
         } catch (error) { if (editorDraft === draftToSave) editorError(M.errorText(error)); }
         finally { if (editorDraft === draftToSave) { editorSaving = false; editorBusyUI(); } }
       });
-      $('editor-dialog').addEventListener('close', () => { if (!$('editor-dialog').open) { clearInlineMedia($('editor-exercises')); mediaUploadToken++; editorFiles.clear(); editorMediaBusy = false; editorSaving = false; editorDraft = null; openManager(); } });
-      $('editor-open').addEventListener('click', openManager);
+      $('editor-dialog').addEventListener('close', () => { if (!$('editor-dialog').open) { clearInlineMedia($('editor-exercises')); mediaUploadToken++; editorFiles.clear(); editorMediaBusy = false; editorSaving = false; editorDraft = null; renderWorkout(); } });
       $('new-workout').addEventListener('click', () => openEditor());
       $('managed-workouts').addEventListener('click', e => {
+        const open=e.target.closest('[data-open-workout]');if(open) { showOverview(open.dataset.openWorkout); return; }
         const edit = e.target.closest('[data-manage-workout]'), add = e.target.closest('[data-create-workout]'), remove = e.target.closest('[data-remove-workout]');
         if (edit) openEditor(edit.dataset.manageWorkout);
         if (add) openEditor(null, +add.dataset.createWorkout);
         if (remove) {
           const w = PLAN.find(w => w.id === remove.dataset.removeWorkout); if (!w) return;
-          confirm('Remover este treino?', `${w.title} será removido da ficha. Seus registros concluídos serão mantidos no histórico.`, 'Remover treino', () => { savePlan(PLAN.filter(item => item.id !== w.id)); renderManager(); toast('Treino removido da ficha.'); }, 'manager-dialog');
+          confirm('Remover este treino?', `${w.title} será removido da ficha. Seus registros concluídos serão mantidos no histórico.`, 'Remover treino', () => { const saved=savePlan(PLAN.filter(item => item.id !== w.id)); renderManager(); toast(saved ? 'Treino removido da ficha.' : 'Alteração mantida apenas nesta aba. Exporte um backup.',saved ? 'success' : 'error'); }, 'manager-dialog');
         }
       });
 
@@ -4029,8 +4788,9 @@
         const assigned = new Set((editorDraft.groups || []).flatMap(g => g.exerciseIds));
         const available = editorDraft.exercises.filter(ex => !assigned.has(ex.id));
         groupSelection = new Set([...groupSelection].filter(id => available.some(ex => ex.id === id)));
-        $('groups-title').textContent = cardio ? 'Intervalado' : 'Superséries';
-        $('group-choices').setAttribute('aria-label', cardio ? 'Etapas para o intervalado' : 'Exercícios para agrupar');
+        $('groups-title').textContent = cardio ? 'Intervalados' : 'Superséries';
+        $('group-choices-title').textContent = cardio ? 'Etapas' : 'Exercícios';
+        $('group-selection-count').textContent = `${groupSelection.size} ${groupSelection.size === 1 ? (cardio ? 'selecionada' : 'selecionado') : (cardio ? 'selecionadas' : 'selecionados')}`;
         $('existing-groups').innerHTML = (editorDraft.groups || []).map(g => `<section class="group-summary"><div><h3>${C.groupName(g, editorDraft.kind)}${cardio ? ` · ${g.repeats} ${g.repeats === 1 ? 'volta' : 'voltas'}` : ''}</h3><p>${g.exerciseIds.map(id => esc(editorDraft.exercises.find(ex => ex.id === id)?.name || fallback)).join(' - ')}</p></div><button type="button" class="button compact" data-separate-group="${g.id}">Separar</button></section>`).join('');
         $('groups-empty').hidden = available.length > 1;
         $('groups-empty').textContent = cardio ? 'Menos de 2 etapas disponíveis.' : 'Menos de 2 exercícios disponíveis.';
@@ -4086,7 +4846,6 @@
           dialog.style.height = dialog.getBoundingClientRect().height + 'px';
         } else if (!sortOverview) restoreSortLayout();
         $('editor-expand').hidden = !sortOverview; $('editor-expand').disabled = !!exerciseDrag;
-        $('sort-feedback').hidden = !sortOverview;
         $('editor-groups').disabled = sortOverview; $('editor-add').hidden = sortOverview;
         list.querySelectorAll('.sort-summary-text').forEach(el => el.remove());
         for (const [index, block] of C.blocks(editorDraft).entries()) {
@@ -4102,7 +4861,6 @@
         }
       }
       function announceOrder(block, from, index, count) {
-        $('sort-feedback').innerHTML = `${icon('check')}<span>${from === index ? 'Posição mantida' : 'Ordem atualizada'} · ${index + 1} de ${count}</span>`;
         $('sort-announcement').textContent = `${sortName(block)}${from === index ? ' permanece na posição' : ' foi movido da posição ' + (from + 1) + ' para a posição'} ${index + 1} de ${count}.`;
       }
       function focusSortBlock(id, reveal = false) {
@@ -4157,7 +4915,7 @@
         if (!keepOverview) list.style.paddingTop = drag.paddingTop;
         list.querySelectorAll('.is-dragging,.drop-before,.drop-after').forEach(el => el.classList.remove('is-dragging', 'drop-before', 'drop-after'));
         document.body.classList.remove('sorting-exercises');
-        if (!keepOverview) { sortOverview = drag.wasOverview; $('sort-feedback').innerHTML = drag.feedback; }
+        if (!keepOverview) sortOverview = drag.wasOverview;
         if (editorDraft) decorateSortOverview();
         if (restoreScroll && drag.started) $('editor-dialog').scrollTop = drag.scrollTop;
         if (drag.input === 'pointer') { try { if (list.hasPointerCapture?.(drag.id)) list.releasePointerCapture(drag.id); } catch { } }
@@ -4167,7 +4925,7 @@
         const card = handle.closest('[data-sort-id]'); if (!card) return false;
         sortCards().forEach(el => el.getAnimations?.().forEach(animation => animation.cancel()));
         const bounds = handle.getBoundingClientRect();
-        exerciseDrag = { card, handle, blockId: card.dataset.sortId, input, id, startX: x, startY: y, y, handleTop: bounds.top, scrollTop: $('editor-dialog').scrollTop, minHeight: sortList().style.minHeight, paddingTop: sortList().style.paddingTop, wasOverview: sortOverview, feedback: $('sort-feedback').innerHTML, started: false, frame: 0, lastTime: 0 };
+        exerciseDrag = { card, handle, blockId: card.dataset.sortId, input, id, startX: x, startY: y, y, handleTop: bounds.top, scrollTop: $('editor-dialog').scrollTop, minHeight: sortList().style.minHeight, paddingTop: sortList().style.paddingTop, wasOverview: sortOverview, started: false, frame: 0, lastTime: 0 };
         return true;
       }
       function startSortPreview() {
@@ -4199,7 +4957,7 @@
         if (before) before.classList.add('drop-before'); else others.at(-1)?.classList.add('drop-after');
         const position = before ? others.indexOf(before) + 1 : others.length + 1;
         const feedback = `Posição ${position} de ${others.length + 1}`;
-        if ($('sort-feedback').textContent !== feedback) $('sort-feedback').textContent = feedback;
+        if ($('sort-announcement').textContent !== feedback) $('sort-announcement').textContent = feedback;
       }
       function sortFrame(time) {
         const drag = exerciseDrag; if (!drag?.started) return;
@@ -4268,7 +5026,7 @@
       });
       $('editor-dialog').addEventListener('cancel', e => { if (exerciseDrag) { e.preventDefault(); clearDrag(); } });
       $('editor-expand').addEventListener('click', () => finishSortOverview());
-      $('editor-dialog').addEventListener('close', () => { clearDrag(); sortOverview = false; sortLandedId = null; restoreSortLayout(); $('sort-feedback').innerHTML = ''; });
+      $('editor-dialog').addEventListener('close', () => { clearDrag(); sortOverview = false; sortLandedId = null; restoreSortLayout(); $('sort-announcement').textContent = ''; });
       window.addEventListener('blur', () => { if (exerciseDrag) clearDrag(); });
       document.addEventListener('visibilitychange', () => { if (document.hidden && exerciseDrag) clearDrag(); });
 
@@ -4282,8 +5040,11 @@
       }
       function renderProfile() {
         const profile = store.profile || DEFAULT_PROFILE;
-        $('profile-name').textContent = profile.name || 'Sem nome'; paintAvatar($('profile-avatar'), profile);
-        $('profile-open').innerHTML = icon('profile') + '<span>Perfil</span>';
+        $('profile-name').textContent = profile.name || 'Seu perfil'; paintAvatar($('profile-avatar'), profile);
+        $('home-name').textContent = profile.name || 'Seu perfil'; paintAvatar($('home-avatar'), profile);
+        $('home-profile').setAttribute('aria-label',profile.name ? `Abrir perfil de ${profile.name}` : 'Configurar perfil');
+        $('profile-open').setAttribute('aria-label',profile.name ? `Editar perfil de ${profile.name}` : 'Configurar perfil');
+        $('profile-open').title=store.profile ? 'Editar perfil' : 'Configurar perfil';
       }
       function renderProfileDraft() {
         if (!profileDraft) return;
@@ -4296,10 +5057,9 @@
         $('profile-upload-status').hidden = !profileBusy;
       }
       function profileError(message, field = null) {
-        $('profile-error').textContent = message; $('profile-error').hidden = false;
-        if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
+        reportError('profile-error',message,field);
       }
-      function openProfile(returnTo = 'menu-dialog') {
+      function openProfile(returnTo = null) {
         profileReturnTo = returnTo; $('profile-title').textContent = 'Perfil';
         profileDraft = D.clone(store.profile || DEFAULT_PROFILE); profileBusy = false; profileUpload++;
         $('profile-name-input').value = profileDraft.name; $('profile-name-input').removeAttribute('aria-invalid'); $('profile-error').hidden = true;
@@ -4336,10 +5096,10 @@
         const name = $('profile-name-input').value.trim();
         if (!name) { profileError('Informe seu nome.', $('profile-name-input')); return; }
         store.profile = { name, avatar: profileDraft.avatar }; store.profileUpdatedAt = Math.max(Date.now(), store.profileUpdatedAt + 1);
-        const saved = writeStore(); renderProfile(); if (!currentWorkout()) renderWorkout(); $('profile-dialog').close();
-        toast(saved ? 'Perfil atualizado.' : 'Perfil atualizado nesta aba. Exporte um backup antes de fechar.');
+        const saved = writeStore(); renderProfile(); if (appView === 'home') renderWorkout(); $('profile-dialog').close();
+        toast(saved ? 'Perfil atualizado.' : 'Perfil atualizado nesta aba. Exporte um backup antes de fechar.',saved ? 'success' : 'error');
       });
-      $('profile-dialog').addEventListener('close', () => { if (!$('profile-dialog').open) { profileUpload++; profileDraft = null; profileBusy = false; const returnTo = profileReturnTo; profileReturnTo = null; if (returnTo) openDialog(returnTo); else ($('workout').querySelector('[data-setup-profile]') || $('menu-open')).focus({ preventScroll: true }); } });
+      $('profile-dialog').addEventListener('close', () => { if (!$('profile-dialog').open) { profileUpload++; profileDraft = null; profileBusy = false; const returnTo = profileReturnTo; profileReturnTo = null; if (returnTo) openDialog(returnTo); else $('profile-open').focus({ preventScroll: true }); } });
 
       let finishTarget = null, finishMetrics = null, finishDate = null;
       function renderFinishDate() {
@@ -4367,7 +5127,7 @@
         for (const [id, value] of Object.entries(values)) $(id).innerHTML = `<span>${esc(value)}</span>${icon('chevron')}`;
       }
       function openFinish() {
-        if (isReadOnly()) { goToNext(); renderNav(); renderWorkout(); return; }
+        if (isReadOnly()) { goHome(); return; }
         const session = ensureSession(), p = D.progress(session), cardio = session.workout.kind === 'cardio';
         finishTarget = session.key; finishMetrics = D.clone(session.cardio || { durationSeconds: null, distanceKm: null });
         finishDate = effectiveDate(session); renderFinishDate();
@@ -4380,8 +5140,7 @@
         if (cardio) $('cardio-duration').focus();
       }
       function finishError(message, el) {
-        $('finish-error').textContent = message; $('finish-error').hidden = false;
-        el.setAttribute('aria-invalid', 'true'); el.focus();
+        reportError('finish-error',message,el);
       }
       function finishTicker() {
         if (!finishTarget || !finishMetrics) return;
@@ -4425,9 +5184,9 @@
         store.sessions[session.key] = session; delete store.drafts[session.key];
         D.markCycleComplete(store, session, PLAN); const saved = writeStore();
         $('finish-dialog').close(); syncRestContext();
-        goToToday(); renderNav(); renderWorkout();
-        $('workout').scrollIntoView({ block: 'start' }); $('workout').querySelector('h2').focus({ preventScroll: true });
-        toast(saved ? 'Treino salvo no histórico.' : 'Treino registrado nesta aba. Exporte um backup antes de fechar.');
+        appView='home'; goToToday(); renderNav(); renderWorkout();
+        $('workout').scrollIntoView({ block: 'start' }); $('workout').querySelector('h2')?.focus({ preventScroll: true });
+        toast(saved ? 'Treino salvo no histórico.' : 'Treino registrado nesta aba. Exporte um backup antes de fechar.',saved ? 'success' : 'error');
       });
       $('finish-dialog').addEventListener('close', () => { if (!$('finish-dialog').open) { finishTarget = null; finishMetrics = null; finishDate = null; } });
 
@@ -4488,7 +5247,7 @@
         const set = session.logs[exercise.id].sets[setIndex];
         set[field] = value; set.auto[field] = false;
         changed(); refreshSetValues(exercise.id);
-        $('value-dialog').close(); trigger.focus({ preventScroll: true });
+        $('value-dialog')._committedField=trigger; $('value-dialog').close();
       }
       $('value-wheel').addEventListener('scroll', () => {
         if (picker) updateWheelSelection(TrainingPicker.indexAt($('value-wheel').scrollTop, picker.options.length));
@@ -4530,7 +5289,7 @@
           const { blob, extension } = await M.exportBackup(data), url = URL.createObjectURL(blob), a = document.createElement('a');
           a.href = url; a.download = `treino-hibrido-backup-${localDate()}.${extension}`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
           preferences.lastBackup = Date.now(); savePreferences(); toast('Backup completo gerado.');
-        } catch (error) { $('import-error').textContent = M.errorText(error); $('import-error').hidden = false; }
+        } catch (error) { reportError('import-error',M.errorText(error)); }
         finally { backupBusyUI(false); }
       }
       $('export-backup').addEventListener('click', downloadBackup);
@@ -4567,12 +5326,12 @@
           pendingImport = await M.readBackup(file);
           renderImportPreview(pendingImport.data);
           $('import-preview').hidden = false;
-        } catch (error) { $('import-error').textContent = error instanceof SyntaxError ? 'O arquivo não contém um JSON válido. Escolha um backup exportado por este treino.' : error.message; $('import-error').hidden = false; }
+        } catch (error) { reportError('import-error',error instanceof SyntaxError ? 'O arquivo não contém um JSON válido. Escolha um backup exportado por este treino.' : error.message); }
         finally { backupBusyUI(false); }
       });
       $('import-preview').addEventListener('click', async e => {
         if (!e.target.closest('#confirm-import') || !pendingImport || backupBusy) return;
-        if (!validInputs()) { toast('Feche o backup e corrija o valor destacado no treino.'); return; }
+        if (!validInputs()) { toast('Feche o backup e corrija o valor destacado no treino.','error'); return; }
         backupBusyUI(true, 'Salvando ficha e anexos…'); $('import-error').hidden = true;
         try {
           const imported = pendingImport;
@@ -4583,9 +5342,9 @@
             else { const blob = await M.get(id); if (!blob || blob.size !== ref.size) throw new Error('O backup não contém todos os anexos. Exporte um backup completo no navegador de origem.'); }
           }
           await M.putAll(needed);
-          store = merged.data; const saved = writeStore(); pendingImport = null; $('import-preview').hidden = true; goToToday(); renderNav(); renderWorkout();
-          $('backup-dialog').close(); toast(saved ? 'Backup importado.' : 'Backup carregado nesta aba. O navegador não permitiu salvá-lo.');
-        } catch (error) { $('import-error').textContent = M.errorText(error); $('import-error').hidden = false; }
+          store = merged.data; const saved = writeStore(); pendingImport = null; $('import-preview').hidden = true; appView='home'; goToToday(); renderNav(); renderWorkout();
+          toast(saved ? 'Backup importado.' : 'Backup carregado nesta aba. O navegador não permitiu salvá-lo.',saved ? 'success' : 'error');
+        } catch (error) { reportError('import-error',M.errorText(error)); }
         finally { backupBusyUI(false); }
       });
       // Timer uses wall-clock time, so delayed rendering does not accumulate drift.
@@ -4609,6 +5368,7 @@
       let audioContext = null, audioOutput = null, soundGeneration = 0, soundNodes = [];
       function normalizeAudioPreferences() {
         if (typeof preferences.sound !== 'boolean') preferences.sound = true;
+        if (typeof preferences.autoOpenRest !== 'boolean') preferences.autoOpenRest = true;
         if (!Number.isFinite(preferences.alertVolume) || preferences.alertVolume < 0 || preferences.alertVolume > 1) preferences.alertVolume = .8;
       }
       normalizeAudioPreferences();
@@ -4678,12 +5438,11 @@
       }
       let restTrigger = null;
       function renderRestMini() {
-        const minimized = !!timer.workoutKey && !$('rest-dialog').open;
-        $('rest-mini').hidden = !minimized; document.body.classList.toggle('rest-minimized', minimized);
+        setMiniVisible(!!timer.workoutKey && !$('rest-dialog').open);
+        renderActiveWorkout();
       }
-      new ResizeObserver(() => {
-        document.body.style.setProperty('--rest-mini-height', $('rest-mini').getBoundingClientRect().height + 'px');
-      }).observe($('rest-mini'));
+      new ResizeObserver(syncActivityLayout).observe($('activity-dock'));
+      new ResizeObserver(syncActivityLayout).observe($('active-workout'));
       function endRest(playSound = false) {
         stopSound(); timer.elapsed = 0; timer.startedAt = null; timer.finished = false; timer.workoutKey = null; timer.adjustment = 0; timer.exercise = null; persistTimer();
         renderRestMini();
@@ -4754,7 +5513,13 @@
       function startRest(trigger) {
         if (!restAvailable()) return;
         stopSound(); timer.elapsed = 0; timer.startedAt = Date.now(); timer.finished = false; timer.workoutKey = restScope(); timer.adjustment = 0; timer.exercise = null;
-        persistTimer(); initAudio(); openRest(trigger);
+        persistTimer(); initAudio();
+        if(preferences.autoOpenRest) openRest(trigger);
+        else {
+          restTrigger=trigger;
+          if($('rest-dialog').open) { $('rest-dialog').dataset.closeMotion='minimize'; $('rest-dialog').close(); }
+          timerUI();
+        }
       }
       function openExerciseTimer(trigger) {
         if (!restAvailable()) return;
@@ -4778,12 +5543,12 @@
         session.updatedAt = Math.max(Date.now(), session.updatedAt + 1);
         endRest(); writeStore();
         viewingRecord = null; selectedDay = session.day; selectedWeekday = session.workout.weekday;
-        selectedDate = effectiveDate(session); renderNav(); renderWorkout();
+        selectedDate = effectiveDate(session); appView='session'; focusExerciseId=exercise.id; renderNav(); renderWorkout();
         const next = $('exercise-list').querySelector(`[data-exercise-timer="${exercise.id}"][aria-pressed="false"]`) || $('finish-workout');
         if (roundComplete(session, exercise.id, target.setIndex)) startRest(next);
         else next.focus({ preventScroll: true });
       }
-      function minimizeRest() { if ($('rest-dialog').open) $('rest-dialog').close(); renderRestMini(); }
+      function minimizeRest() { if ($('rest-dialog').open) { $('rest-dialog').dataset.closeMotion='minimize'; $('rest-dialog').close(); } renderRestMini(); }
       $('rest-minimize').addEventListener('click', minimizeRest);
       $('rest-expand').addEventListener('click', () => openRest($('rest-expand')));
       $('timer-start').addEventListener('click', () => {
@@ -4848,6 +5613,7 @@
         }, $('rest-duration'));
       });
       function soundUI() {
+        $('auto-rest-toggle').setAttribute('aria-checked',String(preferences.autoOpenRest));
         $('sound-toggle').setAttribute('aria-pressed', !!preferences.sound);
         $('sound-toggle').setAttribute('aria-label', preferences.sound ? 'Desativar som do timer' : 'Ativar som do timer');
         $('sound-toggle').innerHTML = icon(preferences.sound ? 'volume' : 'volume-off');
@@ -4855,6 +5621,10 @@
         $('sound-volume').value = String(Math.round(preferences.alertVolume * 100));
         $('sound-volume-value').textContent = Math.round(preferences.alertVolume * 100) + '%';
       }
+      $('auto-rest-toggle').addEventListener('click',()=>{
+        preferences.autoOpenRest=!preferences.autoOpenRest;
+        savePreferences();soundUI();
+      });
       $('sound-toggle').addEventListener('click', () => {
         preferences.sound = !preferences.sound;
         applySoundVolume();
@@ -4871,7 +5641,7 @@
       $('sound-volume').addEventListener('change', changeSoundVolume);
       $('sound-test').addEventListener('click', async () => {
         const played = await beep();
-        if (!played) toast('Não foi possível tocar o som.');
+        if (!played) toast('Não foi possível tocar o som.','error');
       });
       document.addEventListener('focusin', e => { document.body.classList.toggle('keyboard-open', e.target.matches('textarea,input[type=text]')); });
       document.addEventListener('focusout', () => setTimeout(() => document.body.classList.toggle('keyboard-open', !!document.activeElement?.matches('textarea,input[type=text]')), 0));
@@ -4879,7 +5649,7 @@
       function refreshCalendarDay() {
         const today = localDate(); if (today === renderedCalendarDate) return;
         renderedCalendarDate = today; goToToday(); renderNav(); renderWorkout();
-        if ($('history-dialog').open) { historyDate = today; historyMonth = today.slice(0, 7); setMonthPickerOpen(false); renderHistory(); }
+        if (isPageOpen('history-dialog')) { historyDate = today; historyMonth = today.slice(0, 7); setMonthPickerOpen(false); renderHistory(); }
       }
       document.addEventListener('visibilitychange', () => { if (!document.hidden) { timerUI(); refreshCalendarDay(); updateDayChecks(); } });
       window.addEventListener('focus', refreshCalendarDay);
@@ -4890,7 +5660,7 @@
             const incoming = JSON.parse(e.newValue || '{}');
             if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return;
             preferences = { ...preferences, ...incoming }; normalizeAudioPreferences();
-            applySoundVolume(); soundUI();
+            applySoundVolume(); soundUI(); renderActiveWorkout();
             if (!preferences.sound || preferences.alertVolume === 0) stopSound();
           } catch { }
           return;
@@ -4907,11 +5677,12 @@
           if (viewingRecord && !store.sessions[viewingRecord]) goToToday();
           else if (!viewingRecord && ((!selectedDay && PLAN.length) || store.cycle.completed[selectedDay] || (selectedDay && !PLAN.some(w => w.id === selectedDay)))) goToToday();
           renderNav(); renderWorkout();
-          if ($('history-dialog').open) renderHistory();
-          if ($('manager-dialog').open) renderManager();
+          if (isPageOpen('history-dialog')) renderHistory();
+          if (isPageOpen('manager-dialog')) renderManager();
         } catch { }
       });
       window.addEventListener('beforeunload', e => { if ((!storageOkay && (Object.keys(store.sessions).length || Object.values(store.drafts).filter(s => !s.archived).length || store.plan)) || $('workout').querySelector('[aria-invalid="true"]')) { e.preventDefault(); e.returnValue = ''; } });
+      restoreActiveWorkout(); installDialogCancelMotion();
       applyTheme(); renderProfile(); renderNav(); renderWorkout(); soundUI(); timerUI(); storageNotice(); setInterval(timerUI, 200);
       // Persist migration once, keeping the original storage key and old backups readable.
       if (!loadBlocked && storageOkay) writeStore();
