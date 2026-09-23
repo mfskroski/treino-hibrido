@@ -2242,7 +2242,7 @@
     .group-tag { display:inline-block; color:var(--accent); font-size:11px; font-weight:600; margin-bottom:4px; }
     .session-toolbar { margin-bottom:12px; }
     .session-toolbar-copy { flex:1; min-width:0; text-align:center; }
-    .session-toolbar-copy h2 { font-size:13px; font-weight:550; margin-top:3px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+    .session-workout-name { font-size:13px; font-weight:550; margin-top:3px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
     .focus-progress { display:flex; gap:5px; margin:0 0 18px; overflow-x:auto; scrollbar-width:none; }
     .focus-dot { position:relative; flex:1 0 16px; min-width:16px; height:26px; padding:10px 0; background:transparent; border:0; border-radius:6px; }
     .focus-dot::after { content:''; display:block; height:4px; width:100%; border-radius:9px; background:var(--line); }
@@ -2254,27 +2254,30 @@
     .focus-exercise .media-square,#media-viewer .media-square { height:auto; aspect-ratio:1 / 1; border:0; border-radius:0; }
     .focus-exercise .media-square img,#media-viewer .media-square img { padding:0; object-fit:cover; object-position:center; }
     .media-square [data-expand-media] { top:12px; bottom:auto; border-radius:50%; width:40px; min-width:40px; min-height:40px; }
-    .focus-exercise .exercise-header { display:block; padding:22px 20px 12px; }
-    .focus-exercise h3 { font-size:25px; font-weight:600; line-height:1.2; letter-spacing:-.75px; }
-    .focus-exercise .exercise-header .context-label { margin-bottom:7px; }
-    .focus-exercise .target { font-size:13px; margin-top:8px; }
+    .focus-exercise .media-square img { -webkit-user-drag:none; }
     .focus-exercise .sets { width:calc(100% - 40px); margin:0 20px 20px; }
     .focus-exercise .sets td { padding-top:5px; padding-bottom:5px; }
     .focus-exercise .set-input { border-radius:14px; background:var(--soft); border-color:transparent; }
     .focus-exercise .set-row.completed .set-input { color:var(--muted); background:transparent; }
     .focus-exercise .set-row.is-current .set-input { border-color:var(--line); background:var(--bg); box-shadow:0 2px 8px rgb(0 0 0 / .035); }
-    .set-section-heading { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:6px 20px 15px; }
+    .set-section-heading { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:20px 20px 15px; }
     .set-section-heading strong { font-size:13px; font-weight:600; }
     .rest-shortcut { display:flex; align-items:center; gap:6px; min-height:38px; padding:7px 10px; border:1px solid var(--line); border-radius:99px; background:transparent; font-size:11px; color:var(--muted); }
     .rest-shortcut>.icon { width:15px; height:15px; }
-    .exercise-navigation { display:grid; grid-template-columns:48px minmax(0,1fr) 48px; align-items:center; gap:10px; margin:16px 0 4px; }
-    .exercise-navigation>.icon-button { border-radius:50%; box-shadow:var(--shadow-card); }
-    .exercise-navigation .next-copy { display:flex; flex-direction:column; justify-content:center; text-align:center; border:0; background:transparent; padding:8px; min-height:48px; }
-    .next-copy .context-label { display:block; margin-bottom:4px; }
-    .next-copy strong { display:block; font-size:13px; font-weight:500; overflow-wrap:anywhere; }
-    .session-bottom .progress-label { font-size:12px; margin-top:22px; }
-    .session-bottom .notes { margin-top:16px; }
-    .session-bottom .notes summary { font-size:13px; }
+    .session-controls { min-width:0; margin:0 0 16px; padding:16px 16px 18px; border:1px solid var(--line); border-radius:24px; background:var(--bg); box-shadow:var(--shadow-card); }
+    .session-progress { margin:0 0 20px; }
+    .session-progress .progress-label { align-items:center; margin-top:0; font-size:12px; }
+    .session-progress .progress-line { height:4px; margin-top:8px; }
+    .session-controls .focus-progress { margin:0 0 14px; }
+    .exercise-navigation { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; gap:10px; margin:0; }
+    .exercise-navigation>.icon-button { width:44px; min-width:44px; min-height:44px; padding:10px; border-radius:50%; box-shadow:var(--shadow-card); }
+    .current-exercise-copy { min-width:0; text-align:center; }
+    .current-exercise-copy h2 { font-size:25px; font-weight:600; line-height:1.2; letter-spacing:-.75px; overflow-wrap:anywhere; }
+    .current-exercise-copy .target { font-size:13px; line-height:1.5; margin-top:8px; }
+    .session-superset { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:6px 8px; margin-top:14px; text-align:center; }
+    .superset-tag { padding:4px 8px; border-radius:99px; background:var(--soft); color:var(--muted); font-size:11px; font-weight:550; }
+    .superset-detail { font-size:12px; line-height:1.4; color:var(--muted); }
+    .session-bottom>.save-status { display:flex; justify-content:center; margin-top:12px; font-size:12px; }
     .session-bottom .session-actions { margin-top:12px; }
     #exercise-picker-dialog .dialog-body { padding-top:2px; }
     #exercise-picker-dialog .overview-item { border-radius:14px; border-bottom:0; margin-bottom:5px; }
@@ -2287,9 +2290,9 @@
     body[data-view=session]>.shell>.header { display:none; }
     body[data-view=session] #workout { padding-top:20px; }
     @media(min-width:700px) { .shell { max-width:680px; padding-left:28px; padding-right:28px; } .home-intro { margin-top:18px; } .today-card { padding:30px; } }
-    @media(max-width:350px) { .header { gap:8px; } .header-actions { gap:5px; } .header .profile h1 { font-size:16px; } .today-card { padding:22px; } .today-card h3 { font-size:26px; } .home-intro h2 { font-size:29px; } .focus-exercise .exercise-header { padding:18px 14px 10px; } .focus-exercise .sets { width:calc(100% - 28px); margin-left:14px; margin-right:14px; } .set-section-heading { padding-left:14px; padding-right:14px; } .focus-exercise h3 { font-size:23px; } }
+    @media(max-width:350px) { .header { gap:8px; } .header-actions { gap:5px; } .header .profile h1 { font-size:16px; } .today-card { padding:22px; } .today-card h3 { font-size:26px; } .home-intro h2 { font-size:29px; } .focus-exercise .sets { width:calc(100% - 28px); margin-left:14px; margin-right:14px; } .set-section-heading { padding-left:14px; padding-right:14px; } .session-controls { padding-left:12px; padding-right:12px; } .exercise-navigation { gap:8px; } .current-exercise-copy h2 { font-size:21px; } }
     @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; scroll-behavior:auto!important; } }
-    @media print { body { background:white; } .view-toolbar,.home-footer,.focus-progress,.exercise-navigation,.summary-start { display:none!important; } .exercise,.today-card,.week-panel { box-shadow:none; } }
+    @media print { body { background:white; } .view-toolbar,.home-footer,.focus-progress,.exercise-navigation>.icon-button,.summary-start { display:none!important; } .exercise-navigation { display:block; } .exercise,.today-card,.week-panel { box-shadow:none; } }
 
     /* Original monochrome palette; semantic color is reserved for feedback. */
     :root {
@@ -2637,6 +2640,10 @@
         <div class="form-field"><span id="cardio-duration-label">Tempo total</span><button type="button" class="number-ticker" id="cardio-duration" aria-labelledby="cardio-duration-label cardio-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
         <div class="form-field"><span id="cardio-distance-label">Distância total</span><button type="button" class="number-ticker" id="cardio-distance" aria-labelledby="cardio-distance-label cardio-distance" aria-haspopup="dialog" aria-controls="numeric-dialog"></button></div>
       </fieldset>
+      <details class="disclosure notes" id="finish-notes-details">
+        <summary>Observações<svg class="icon" data-hugeicon="ArrowDown01Icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9"></path></svg></summary>
+        <label class="sr-only" for="finish-notes">Observações do treino</label><textarea id="finish-notes" rows="3" maxlength="2000" placeholder="Como foi o treino?"></textarea>
+      </details>
       <p class="form-error" id="finish-error" role="alert" hidden></p>
       <div class="session-actions"><button type="submit" class="button primary" id="finish-confirm">Confirmar conclusão</button><button type="button" class="button" data-close="finish-dialog">Continuar treino</button></div>
     </form>
@@ -3511,8 +3518,8 @@
       }
       function updateSaveStatus() {
         const el = $('save-status'); if (!el) return;
-        const label = isReadOnly() ? 'Salvo' : currentDraft() ? 'Progresso salvo' : 'Não iniciado';
-        el.innerHTML = (storageOkay ? '' : icon('info')) + (storageOkay ? label : 'Sem salvar');
+        el.hidden = storageOkay;
+        el.innerHTML = storageOkay ? '' : icon('info') + 'Sem salvar';
         el.classList.toggle('error', !storageOkay);
       }
       function applyTheme() {
@@ -3560,11 +3567,11 @@
         const preview = typeof media === 'object' ? media.preview : '';
         return `<div class="exercise-media" data-inline-media="${esc(ex.id)}"><div class="media-square"><span class="media-placeholder" aria-hidden="true">${icon('image')}</span><img data-media-image ${preview ? `src="${esc(preview)}"` : 'hidden'} alt="Execução de ${esc(ex.name || 'exercício')}"><p data-media-status role="status" hidden></p>${editor ? `<button type="button" class="icon-button danger secondary" data-remove-media aria-label="Remover anexo de ${esc(ex.name || 'exercício')}">${icon('trash')}</button>` : expanded ? '' : `<button type="button" class="icon-button" data-expand-media="${esc(ex.id)}" aria-label="Ampliar demonstração de ${esc(ex.name)}" aria-haspopup="dialog" aria-controls="media-dialog">${icon('expand')}</button>`}</div></div>`;
       }
-      function renderStrength(ex, index, session, focused = false, group = '') {
+      function renderStrength(ex, index, session, focused = false) {
         const log = session.logs[ex.id];
         const loadHeader = 'kg total';
-        return `<article class="exercise ${focused ? 'focus-exercise' : ''}" data-exercise="${esc(ex.id)}">
-      ${focused ? mediaFrame(ex) : ''}<div class="exercise-header"><div class="exercise-heading-copy">${focused ? `<p class="context-label">${group ? esc(group) : 'Exercício ' + String(index+1).padStart(2,'0')}</p>` : ''}<h3 tabindex="-1">${esc(ex.name)}</h3><p class="target">${ex.meta.map(esc).join(' · ')}</p></div></div>${focused ? `<div class="set-section-heading"><strong>Séries</strong></div>` : mediaFrame(ex)}
+        return `<article class="exercise ${focused ? 'focus-exercise' : ''}" data-exercise="${esc(ex.id)}" aria-label="${esc(ex.name)}">
+      ${focused ? `${mediaFrame(ex)}<div class="set-section-heading"><strong>Séries</strong></div>` : `<div class="exercise-header"><div class="exercise-heading-copy"><h3 tabindex="-1">${esc(ex.name)}</h3><p class="target">${ex.meta.map(esc).join(' · ')}</p></div></div>${mediaFrame(ex)}`}
       <table class="sets" aria-label="Séries de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col" title="kg total">${loadHeader}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col"><span class="sr-only">${ex.unit === 's' ? 'Temporizador' : 'Feita'}</span></th></tr></thead>
       <tbody>${log.sets.map((set, i) => `<tr class="set-row ${set.done ? 'completed' : ''}"><td>${i + 1}</td>
         <td><button type="button" class="set-input" data-field="load" data-index="${i}" data-ex="${ex.id}" data-value="${set.load ?? ''}" aria-haspopup="dialog" aria-controls="numeric-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, kg total: ${esc(number(set.load))}">${esc(number(set.load))}</button></td>
@@ -3603,11 +3610,11 @@
         const s = currentSession(), strength = w.kind === 'strength', locked = isReadOnly(), choices = PLAN.filter(item => item.weekday === selectedWeekday);
         selectedDate = effectiveDate(s);
         $('workout').innerHTML = `${choices.length > 1 ? `<div class="workout-switcher" role="group" aria-label="Treinos de ${esc(D.weekdays[selectedWeekday - 1])}">${choices.map(item => `<button class="button" data-workout-choice="${item.id}" aria-pressed="${item.id === selectedDay}">${esc(item.title)}</button>`).join('')}</div>` : ''}
-          <div class="workout-heading"><div class="session-meta">${icon(strength ? 'dumbbell' : 'run')}<span>${strength ? 'Força' : 'Corrida'} · ${esc(displayDate(selectedDate))}</span></div><h2 id="workout-title" tabindex="-1">${esc(w.title)}</h2><div class="progress-label"><span id="progress-label"></span><span class="save-status" id="save-status" role="status"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div></div>
+          <div class="workout-heading"><div class="session-meta">${icon(strength ? 'dumbbell' : 'run')}<span>${strength ? 'Força' : 'Corrida'} · ${esc(displayDate(selectedDate))}</span></div><h2 id="workout-title" tabindex="-1">${esc(w.title)}</h2></div>
+          ${sessionProgress()}
           <div id="exercise-list">${renderExerciseBlocks(w, (ex, i) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s), false, s)}</div>
           <p class="form-error" id="entry-error" role="alert" hidden></p>
-          <details class="disclosure notes" ${s.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="Observações">${esc(s.notes)}</textarea></details>
-          <div class="session-actions"><button type="button" class="button primary" id="finish-workout"></button>${locked ? '' : cancelWorkoutButton(s)}</div>`;
+          <div class="session-bottom"><div class="session-actions"><button type="button" class="button primary" id="finish-workout"></button>${locked ? '' : cancelWorkoutButton(s)}</div><span class="save-status" id="save-status" role="status" hidden></span></div>`;
         if (locked) $('exercise-list').querySelectorAll('button:not([data-expand-media]),input').forEach(el => el.disabled = true);
         if (strength) bindInlineMedia($('workout'), w.exercises, exerciseMedia);
         updateProgress(); updateSaveStatus(); timerUI();
@@ -3721,8 +3728,11 @@
         const state = workoutState(workout), progress = state.draft && D.progress(state.draft);
         return `<button type="button" class="workout-row" ${resume ? 'data-resume-workout' : 'data-overview-workout'}="${esc(workout.id)}"><span class="row-icon">${icon(state.record ? 'check' : workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><span><strong>${esc(workout.title)}</strong><small>${resume ? 'Retomar · ' : ''}${progress ? `${progress.done}/${progress.total} ${workout.kind === 'strength' ? 'séries' : 'etapas'}` : workoutDetail(workout)}${state.record ? ' · Concluído' : ''}</small></span><span class="sr-only">${resume ? 'Retomar treino' : 'Ver resumo'}</span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
       }
-      function groupLabel(workout, id) {
-        return TrainingConfig.blocks(workout).find(block => block.group && block.exercises.some(ex => ex.id === id))?.name || '';
+      function supersetNotice(workout, id) {
+        const block = TrainingConfig.blocks(workout).find(block => block.group && block.exercises.some(ex => ex.id === id));
+        if (!block) return '';
+        const position = block.exercises.findIndex(ex => ex.id === id) + 1;
+        return `<div class="session-superset"><span class="superset-tag">${esc(block.name)}</span><span class="superset-detail">Exercício ${position} de ${block.exercises.length}</span></div>`;
       }
       function overviewRows(workout, session, navigation = false) {
         let index = 0;
@@ -3743,24 +3753,29 @@
         const running = activeWorkoutSession(), blocked = !locked && running && running.day !== workout.id;
         $('workout').innerHTML = `<div class="view-toolbar"><button type="button" class="icon-button back-button" data-summary-back aria-label="Voltar para ${esc(pageTitles[summaryOrigin])}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button>${PLAN.some(w=>w.id === workout.id) ? `<button type="button" class="icon-button" data-edit-current aria-label="Editar ${esc(workout.title)}">${icon('settings')}</button>` : ''}</div><div class="summary-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="workout-title" tabindex="-1">${esc(workout.title)}</h2><p>${esc(workout.day)}${locked ? ' · ' + esc(displayDate(session.date,true)) : ' · Resumo do treino'}</p></div>
           <dl class="summary-stats"><div><dd>${workout.exercises.length}</dd><dt>${strength ? 'exercícios' : 'etapas'}</dt></div><div><dd>${strength ? progress.total : TrainingConfig.blocks(workout).length}</dd><dt>${strength ? 'séries' : 'blocos'}</dt></div><div><dd>${Math.round(progress.done/(progress.total || 1)*100)}%</dd><dt>realizado</dt></div></dl>
-          <button type="button" class="button primary summary-start" ${locked ? `data-view-history="${esc(session.key)}"` : 'data-start-session'} ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${locked ? 'Ver histórico' : currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}<div class="section-heading"><h3>${strength ? 'Exercícios' : 'Etapas do treino'}</h3></div><div class="summary-list">${overviewRows(workout,session)}</div>${workout.groups?.length && strength ? '<p class="form-hint">Nas superséries, alterne entre os exercícios do grupo antes do descanso.</p>' : ''}`;
+          <button type="button" class="button primary summary-start" ${locked ? `data-view-history="${esc(session.key)}"` : 'data-start-session'} ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${locked ? 'Ver histórico' : currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}<div class="section-heading"><h3>${strength ? 'Exercícios' : 'Etapas do treino'}</h3></div><div class="summary-list">${overviewRows(workout,session)}</div>`;
       }
-      function sessionNotes(session, locked) {
-        return `<details class="disclosure notes" ${session.notes ? 'open' : ''}><summary>Observações ${icon('chevron')}</summary><label class="sr-only" for="session-notes">Observações do treino</label><textarea id="session-notes" maxlength="2000" ${locked ? 'readonly' : ''} placeholder="Como foi o treino?">${esc(session.notes)}</textarea></details>`;
+      function sessionProgress() {
+        return `<section class="session-progress" aria-label="Progresso do treino"><div class="progress-label"><span>Progresso do treino</span><span id="progress-label"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div></section>`;
       }
-      function focusNavigation(workout, exercises, index) {
-        const next = exercises[index+1];
-        return `<nav class="exercise-navigation" aria-label="Navegar pelos exercícios"><button type="button" class="icon-button" data-focus-exercise="${exercises[index-1]?.id || ''}" aria-label="Exercício anterior" ${index === 0 ? 'disabled' : ''}>${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button>${next ? `<button type="button" class="next-copy" data-focus-exercise="${next.id}"><span class="context-label">Próximo exercício</span><strong>${esc(next.name)}</strong></button><button type="button" class="icon-button" data-focus-exercise="${next.id}" aria-label="Próximo exercício">${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>` : '<div class="next-copy"><span class="context-label">Último exercício</span></div>'}</nav>`;
+      function focusNavigation(exercises, index) {
+        const ex = exercises[index], previous = exercises[index-1], next = exercises[index+1];
+        return `<nav class="exercise-navigation" aria-label="Navegar pelos exercícios"><button type="button" class="icon-button" data-focus-exercise="${previous?.id || ''}" aria-label="Exercício anterior" ${previous ? '' : 'disabled'}>${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="current-exercise-copy"><h2 id="workout-title" tabindex="-1" aria-describedby="exercise-target">${esc(ex.name)}</h2><p class="target" id="exercise-target">${ex.meta.map(esc).join(' · ')}</p></div><button type="button" class="icon-button" data-focus-exercise="${next?.id || ''}" aria-label="Próximo exercício" ${next ? '' : 'disabled'}>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></nav>`;
+      }
+      function focusedSessionControls(workout, session, exercises, index) {
+        const ex = exercises[index];
+        return `<section class="session-controls" aria-label="Controle de exercícios">
+          <nav class="focus-progress" aria-label="Progresso por exercício">${exercises.map((item,i)=>`<button type="button" class="focus-dot ${exerciseComplete(item,session) ? 'is-complete' : ''}" data-focus-exercise="${item.id}" aria-current="${item.id === ex.id}" aria-label="${i+1}. ${esc(item.name)}${exerciseComplete(item,session) ? ', concluído' : ''}"></button>`).join('')}</nav>
+          ${focusNavigation(exercises,index)}${supersetNotice(workout,ex.id)}</section>`;
       }
       function renderFocusedSession(workout) {
         const session = currentSession(), exercises = orderedExercises(workout), locked = isReadOnly();
         let index = exercises.findIndex(ex=>ex.id === focusExerciseId);
         if (index < 0) { index = Math.max(0,exercises.findIndex(ex=>!exerciseComplete(ex,session))); focusExerciseId = exercises[index].id; }
-        const ex = exercises[index], group = groupLabel(workout,ex.id);
+        const ex = exercises[index];
         if (!locked) rememberActiveWorkout(session, ex.id);
-        $('workout').innerHTML = `<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-summary aria-label="Voltar ao resumo do treino">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${locked ? 'Registro' : 'Em execução'} · ${index+1} de ${exercises.length}</span><h2 id="workout-title" tabindex="-1">${esc(workout.title)}</h2></div><button type="button" class="icon-button" data-review-exercises aria-label="Ver todos os exercícios" aria-haspopup="dialog" aria-controls="exercise-picker-dialog">${icon('reminder')}</button></div>
-          <nav class="focus-progress" aria-label="Progresso por exercício">${exercises.map((item,i)=>`<button type="button" class="focus-dot ${exerciseComplete(item,session) ? 'is-complete' : ''}" data-focus-exercise="${item.id}" aria-current="${item.id === ex.id}" aria-label="${i+1}. ${esc(item.name)}${exerciseComplete(item,session) ? ', concluído' : ''}"></button>`).join('')}</nav>
-          <div id="exercise-list">${renderStrength(ex,index,session,true,group)}</div>${focusNavigation(workout,exercises,index)}<div class="session-bottom"><div class="progress-label"><span id="progress-label"></span><span class="save-status" id="save-status" role="status"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div>${sessionNotes(session,locked)}<div class="session-actions"><button type="button" class="button primary" id="finish-workout"></button>${locked ? '' : cancelWorkoutButton(session)}</div></div>`;
+        $('workout').innerHTML = `<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-summary aria-label="Voltar ao resumo do treino">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${locked ? 'Registro' : 'Em execução'} · ${index+1} de ${exercises.length}</span><p class="session-workout-name">${esc(workout.title)}</p></div><button type="button" class="icon-button" data-review-exercises aria-label="Ver todos os exercícios" aria-haspopup="dialog" aria-controls="exercise-picker-dialog">${icon('reminder')}</button></div>
+          ${sessionProgress()}<div data-exercise-swipe>${focusedSessionControls(workout,session,exercises,index)}<div id="exercise-list">${renderStrength(ex,index,session,true)}</div></div><div class="session-bottom"><div class="session-actions"><button type="button" class="button primary" id="finish-workout"></button>${locked ? '' : cancelWorkoutButton(session)}</div><span class="save-status" id="save-status" role="status" hidden></span></div>`;
         if (locked) $('exercise-list').querySelectorAll('button:not([data-expand-media]),input').forEach(el => el.disabled = true);
         bindInlineMedia($('workout'),workout.exercises,exerciseMedia);
         updateProgress(); updateSaveStatus(); timerUI();
@@ -3913,12 +3928,12 @@
         appView = 'session'; renderWorkout(); focusPage();
       }
       function selectFocus(id) {
-        if (!currentWorkout()?.exercises.some(ex=>ex.id === id)) return;
+        if (!validInputs() || !currentWorkout()?.exercises.some(ex=>ex.id === id)) return;
         focusExerciseId = id;
         if (!isReadOnly()) rememberActiveWorkout(currentDraft(), id);
         $('exercise-picker-dialog').close(); renderWorkout();
         window.scrollTo({top:0,behavior:'auto'});
-        $('exercise-list').querySelector('h3')?.focus({preventScroll:true});
+        $('workout-title')?.focus({preventScroll:true});
       }
       function showExerciseList() {
         $('exercise-picker-list').innerHTML = overviewRows(currentWorkout(),currentSession(),true);
@@ -3934,7 +3949,7 @@
         bindInlineMedia($('media-viewer'),[ex],exerciseMedia);
       }
       function handleNavigation(e) {
-        const target = e.target.closest('button'); if (!target) return;
+        const target = e.target.closest('button'); if (!target || target.disabled) return;
         if (target.hasAttribute('data-home')) goHome();
         else if (target.hasAttribute('data-view-history')) openWorkoutHistory(target.dataset.viewHistory);
         else if (target.hasAttribute('data-cancel-workout')) requestCancelWorkout(target.dataset.cancelWorkout);
@@ -3964,6 +3979,41 @@
       });
       $('exercise-picker-list').addEventListener('click',handleNavigation);
       $('media-dialog').addEventListener('close',()=>{ if (!$('media-dialog').open) { clearInlineMedia($('media-viewer')); $('media-viewer').replaceChildren(); } });
+
+      // Track a single horizontal gesture without consuming vertical scrolling,
+      // pinching, form controls, or the horizontally scrollable progress strip.
+      let exerciseSwipe = null;
+      $('workout').addEventListener('touchstart', e => {
+        exerciseSwipe = null;
+        if (appView !== 'session' || currentWorkout()?.kind !== 'strength' || e.touches.length !== 1 || document.querySelector('dialog[open]')) return;
+        if (!e.target.closest('[data-exercise-swipe]') || e.target.closest('button,input,textarea,select,label,a,[contenteditable],.focus-progress')) return;
+        const touch = e.touches[0];
+        exerciseSwipe = { id:touch.identifier, x:touch.clientX, y:touch.clientY, startedAt:Date.now(), exerciseId:focusExerciseId, sessionKey:key(), horizontal:false };
+      }, { passive:true });
+      $('workout').addEventListener('touchmove', e => {
+        if (!exerciseSwipe) return;
+        const touch = [...e.touches].find(t => t.identifier === exerciseSwipe.id);
+        if (e.touches.length !== 1 || !touch) { exerciseSwipe = null; return; }
+        const dx = Math.abs(touch.clientX - exerciseSwipe.x), dy = Math.abs(touch.clientY - exerciseSwipe.y);
+        if (!exerciseSwipe.horizontal) {
+          if (dy > 12 && dy >= dx) { exerciseSwipe = null; return; }
+          if (dx > 12 && dx > dy * 1.5) exerciseSwipe.horizontal = true;
+        }
+        if (exerciseSwipe.horizontal && e.cancelable) e.preventDefault();
+      }, { passive:false });
+      $('workout').addEventListener('touchend', e => {
+        const swipe = exerciseSwipe; exerciseSwipe = null;
+        if (!swipe || e.touches.length || appView !== 'session' || swipe.exerciseId !== focusExerciseId || swipe.sessionKey !== key() || document.querySelector('dialog[open]')) return;
+        const touch = [...e.changedTouches].find(t => t.identifier === swipe.id);
+        if (!touch) return;
+        const dx = touch.clientX - swipe.x, dy = touch.clientY - swipe.y;
+        if (Math.abs(dx) < 60 || Math.abs(dx) <= Math.abs(dy) * 1.5 || Date.now() - swipe.startedAt > 800) return;
+        const exercises = orderedExercises(currentWorkout()), index = exercises.findIndex(ex => ex.id === focusExerciseId);
+        const next = exercises[index + (dx < 0 ? 1 : -1)];
+        if (e.cancelable) e.preventDefault();
+        if (next) selectFocus(next.id);
+      }, { passive:false });
+      $('workout').addEventListener('touchcancel', () => { exerciseSwipe = null; }, { passive:true });
 
       function updateProgress() {
         const s = currentSession(); if (!s || !$('workout-progress')) return;
@@ -4125,9 +4175,6 @@
         const day = e.key === 'Home' ? 1 : e.key === 'End' ? 7 : (selectedWeekday - 1 + (e.key === 'ArrowRight' ? 1 : 6)) % 7 + 1;
         chooseWeekday(day); $('tab-weekday-' + day).focus();
       });
-      $('workout').addEventListener('input', e => {
-        if (e.target.id === 'session-notes' && !isReadOnly()) { ensureSession().notes = e.target.value; changed(); }
-      });
       $('workout').addEventListener('change', e => {
         if (isReadOnly()) return;
         const el = e.target;
@@ -4135,7 +4182,7 @@
           const s = ensureSession(); s.logs[el.dataset.ex].sets[+el.dataset.set].done = el.checked;
           if (el.checked) D.repeatNext(s, el.dataset.ex, +el.dataset.set);
           el.closest('tr').classList.toggle('completed', el.checked); changed(); refreshSetValues(el.dataset.ex);
-          if (el.checked && roundComplete(s, el.dataset.ex, +el.dataset.set)) startRest(el);
+          if (el.checked) afterSetCompleted(currentSession(), el.dataset.ex, +el.dataset.set, el);
         } else if (el.matches('[data-interval]')) {
           const session = ensureSession(), group = session.workout.groups.find(g => g.id === el.dataset.interval);
           if (!group) return;
@@ -4894,6 +4941,35 @@
         const group = session.workout.groups?.find(g => g.exerciseIds.includes(exId));
         return !group || group.exerciseIds.every(id => !session.logs[id]?.sets[index] || session.logs[id].sets[index].done);
       }
+      function nextSupersetExercise(session, exId, setIndex) {
+        const group = session.workout.groups?.find(g => g.exerciseIds.includes(exId));
+        if (!group) return null;
+        const ids = group.exerciseIds, position = ids.indexOf(exId);
+        // Finish this round first, even after manual navigation or an undo.
+        for (let step = 1; step < ids.length; step++) {
+          const id = ids[(position + step) % ids.length], set = session.logs[id]?.sets[setIndex];
+          if (set && !set.done) return id;
+        }
+        // Unequal set counts and completed exercises must not cause a dead end.
+        const pendingRounds = ids.map(id => session.logs[id]?.sets.findIndex(set => !set.done) ?? -1).filter(index => index >= 0);
+        if (pendingRounds.length) {
+          const round = Math.min(...pendingRounds);
+          return ids.find(id => { const set = session.logs[id]?.sets[round]; return set && !set.done; });
+        }
+        const exercises = orderedExercises(session.workout), last = exercises.findIndex(ex => ex.id === ids.at(-1));
+        return exercises[last + 1]?.id || null;
+      }
+      function afterSetCompleted(session, exId, index, trigger) {
+        if (appView !== 'session' || isReadOnly() || currentDraft()?.key !== session.key) return;
+        const nextId = nextSupersetExercise(session, exId, index);
+        if (nextId && nextId !== focusExerciseId) { selectFocus(nextId); trigger = $('workout-title'); }
+        if (roundComplete(session, exId, index)) startRest(trigger);
+        else {
+          // Timed sets may still be closing their dialog when the exercise changes.
+          if ($('rest-dialog').open) restTrigger = trigger;
+          trigger?.focus({ preventScroll:true });
+        }
+      }
 
       let exerciseDrag = null, suppressSortClickUntil = 0, sortOverview = false, sortLandedId = null, sortSavedLayout = null;
       const sortList = () => $('editor-exercises');
@@ -5197,11 +5273,22 @@
         $('finish-summary').textContent = session.workout.title;
         $('finish-progress').textContent = `${p.done} de ${p.total} ${cardio ? 'etapas' : 'séries'} realizadas`;
         $('finish-cardio').hidden = !cardio; renderFinishMetrics();
+        $('finish-notes').value = session.notes || '';
+        $('finish-notes-details').open = false;
         $('finish-error').hidden = true;
         $('finish-form').querySelectorAll('[aria-invalid]').forEach(el => el.removeAttribute('aria-invalid'));
         openDialog('finish-dialog');
         if (cardio) $('cardio-duration').focus();
       }
+      function saveFinishNotes() {
+        const draft = store.drafts[finishTarget];
+        if (!draft || draft.done || draft.archived || draft.cycleNumber !== store.cycle.number || store.cycle.completed[draft.day]) return;
+        const notes = $('finish-notes').value.slice(0,2000);
+        if (draft.notes === notes) return;
+        draft.notes = notes; draft.updatedAt = Math.max(Date.now(), draft.updatedAt + 1);
+        writeStore();
+      }
+      $('finish-notes').addEventListener('input', saveFinishNotes);
       function finishError(message, el) {
         reportError('finish-error',message,el);
       }
@@ -5250,7 +5337,7 @@
           if (!finishMetrics?.distanceKm) { finishError('Informe a distância total percorrida.', $('cardio-distance')); return; }
           cardio = D.clone(finishMetrics);
         }
-        const session = { ...D.clone(draft), date: finishDate, dateMode: finishDate === localDate() ? 'auto' : 'manual', cardio, done: true, updatedAt: Math.max(Date.now(), draft.updatedAt + 1) };
+        const session = { ...D.clone(draft), date: finishDate, dateMode: finishDate === localDate() ? 'auto' : 'manual', cardio, notes: $('finish-notes').value.slice(0,2000), done: true, updatedAt: Math.max(Date.now(), draft.updatedAt + 1) };
         store.sessions[session.key] = session; delete store.drafts[session.key];
         D.markCycleComplete(store, session, PLAN); const saved = writeStore();
         $('finish-dialog').close(); syncRestContext();
@@ -5614,9 +5701,8 @@
         endRest(); writeStore();
         viewingRecord = null; selectedDay = session.day; selectedWeekday = session.workout.weekday;
         selectedDate = effectiveDate(session); appView='session'; focusExerciseId=exercise.id; renderNav(); renderWorkout();
-        const next = $('exercise-list').querySelector(`[data-exercise-timer="${exercise.id}"][aria-pressed="false"]`) || $('finish-workout');
-        if (roundComplete(session, exercise.id, target.setIndex)) startRest(next);
-        else next.focus({ preventScroll: true });
+        const next = $('exercise-list').querySelector(`[data-exercise-timer="${exercise.id}"][aria-pressed="false"]`) || $('workout-title');
+        afterSetCompleted(currentSession(), exercise.id, target.setIndex, next);
       }
       function minimizeRest() { if ($('rest-dialog').open) { $('rest-dialog').dataset.closeMotion='minimize'; $('rest-dialog').close(); } renderRestMini(); }
       $('rest-minimize').addEventListener('click', minimizeRest);
