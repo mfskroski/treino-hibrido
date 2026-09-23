@@ -2268,12 +2268,13 @@
     .session-progress { margin:0 0 20px; }
     .session-progress .progress-label { align-items:center; margin-top:0; font-size:12px; }
     .session-progress .progress-line { height:4px; margin-top:8px; }
-    .session-controls .focus-progress { margin:0 0 14px; }
-    .exercise-navigation { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; gap:10px; margin:0; }
+    .session-controls .focus-progress { margin:0 0 10px; }
+    .exercise-navigation { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; gap:8px; margin:0; }
     .exercise-navigation>.icon-button { width:44px; min-width:44px; min-height:44px; padding:10px; border-radius:50%; box-shadow:var(--shadow-card); }
     .current-exercise-copy { min-width:0; text-align:center; }
-    .current-exercise-copy h2 { font-size:25px; font-weight:600; line-height:1.2; letter-spacing:-.75px; overflow-wrap:anywhere; }
-    .current-exercise-copy .target { font-size:13px; line-height:1.5; margin-top:8px; }
+    /* Reserve two title lines for steady navigation; longer names remain fully visible. */
+    .current-exercise-copy h2 { display:grid; align-content:center; min-height:2.6em; font-size:clamp(1.0625rem,4.5vw,1.1875rem); font-weight:600; line-height:1.3; letter-spacing:-.015em; text-wrap:balance; overflow-wrap:anywhere; }
+    .current-exercise-copy .target { font-size:13px; line-height:1.5; margin-top:6px; }
     .session-superset { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:6px 8px; margin-top:14px; text-align:center; }
     .superset-tag { padding:4px 8px; border-radius:99px; background:var(--soft); color:var(--muted); font-size:11px; font-weight:550; }
     .superset-detail { font-size:12px; line-height:1.4; color:var(--muted); }
@@ -2290,7 +2291,7 @@
     body[data-view=session]>.shell>.header { display:none; }
     body[data-view=session] #workout { padding-top:20px; }
     @media(min-width:700px) { .shell { max-width:680px; padding-left:28px; padding-right:28px; } .home-intro { margin-top:18px; } .today-card { padding:30px; } }
-    @media(max-width:350px) { .header { gap:8px; } .header-actions { gap:5px; } .header .profile h1 { font-size:16px; } .today-card { padding:22px; } .today-card h3 { font-size:26px; } .home-intro h2 { font-size:29px; } .focus-exercise .sets { width:calc(100% - 28px); margin-left:14px; margin-right:14px; } .set-section-heading { padding-left:14px; padding-right:14px; } .session-controls { padding-left:12px; padding-right:12px; } .exercise-navigation { gap:8px; } .current-exercise-copy h2 { font-size:21px; } }
+    @media(max-width:350px) { .header { gap:8px; } .header-actions { gap:5px; } .header .profile h1 { font-size:16px; } .today-card { padding:22px; } .today-card h3 { font-size:26px; } .home-intro h2 { font-size:29px; } .focus-exercise .sets { width:calc(100% - 28px); margin-left:14px; margin-right:14px; } .set-section-heading { padding-left:14px; padding-right:14px; } .session-controls { padding-left:12px; padding-right:12px; } .exercise-navigation { gap:6px; } }
     @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; scroll-behavior:auto!important; } }
     @media print { body { background:white; } .view-toolbar,.home-footer,.focus-progress,.exercise-navigation>.icon-button,.summary-start { display:none!important; } .exercise-navigation { display:block; } .exercise,.today-card,.week-panel { box-shadow:none; } }
 
