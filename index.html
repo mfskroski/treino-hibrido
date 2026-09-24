@@ -589,7 +589,7 @@
       background: var(--bg);
       padding: 12px;
       font-size: 16px;
-      margin: 0 0 14px
+      margin: 0
     }
 
     .notes summary {
@@ -879,7 +879,7 @@
       margin-bottom: 12px
     }
 
-    .history-entry summary {
+    .history-entry>summary {
       list-style: none;
       display: flex;
       justify-content: space-between;
@@ -889,7 +889,7 @@
       cursor: pointer
     }
 
-    .history-entry summary::-webkit-details-marker {
+    .history-entry>summary::-webkit-details-marker {
       display: none
     }
 
@@ -905,18 +905,18 @@
       font-weight: 400
     }
 
-    .history-entry summary p {
+    .history-entry>summary p {
       font-size: 14px;
       color: var(--muted);
       margin-top: 4px
     }
 
-    .history-entry summary>.icon {
+    .history-entry>summary>.icon {
       width: 20px;
       height: 20px
     }
 
-    .history-entry[open] summary>.icon {
+    .history-entry[open]>summary>.icon {
       transform: rotate(180deg)
     }
 
@@ -925,23 +925,8 @@
       border-top: 1px solid var(--line)
     }
 
-    .history-ex {
-      padding: 14px 0 0
-    }
 
-    .history-ex strong {
-      display: block;
-      font-size: 16px;
-      font-weight: 550;
-      margin-bottom: 6px
-    }
 
-    .history-ex span {
-      font-size: 15px;
-      line-height: 1.65;
-      color: var(--muted);
-      white-space: pre-wrap
-    }
 
     .history-notes {
       margin-top: 14px;
@@ -1172,7 +1157,7 @@
       margin-bottom: 12px
     }
 
-    .history-entry summary {
+    .history-entry>summary {
       display: grid;
       grid-template-columns: 46px minmax(0, 1fr) 18px;
       align-items: center;
@@ -1192,18 +1177,18 @@
       overflow-wrap: anywhere
     }
 
-    .history-entry summary .history-session p {
+    .history-entry>summary .history-session p {
       margin-top: 5px;
       font-size: 14px;
       color: var(--muted)
     }
 
-    .history-entry summary>.icon {
+    .history-entry>summary>.icon {
       width: 18px;
       height: 18px
     }
 
-    .history-entry[open] summary {
+    .history-entry[open]>summary {
       border-bottom: 1px solid var(--line)
     }
 
@@ -1212,103 +1197,20 @@
       border-top: 0
     }
 
-    .history-ex {
-      padding: 18px 0 16px;
-      border-bottom: 1px solid var(--line)
-    }
 
-    .history-ex h4 {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.4;
-      margin: 0 0 10px
-    }
 
-    .history-sets {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      font-variant-numeric: tabular-nums
-    }
 
-    .history-sets th {
-      font-size: 14px;
-      font-weight: 450;
-      color: var(--muted);
-      padding: 6px 2px;
-      text-align: center;
-      white-space: normal;
-      overflow-wrap: normal
-    }
 
-    .history-sets th:first-child {
-      width: 33px;
-      text-align: left;
-      padding-left: 0
-    }
 
-    .history-sets th:last-child {
-      width: 65px;
-      text-align: right;
-      padding-right: 0
-    }
 
-    .history-sets td {
-      padding: 9px 2px;
-      border-top: 1px solid var(--line);
-      font-size: 15px;
-      text-align: center;
-      overflow-wrap: anywhere
-    }
 
-    .history-sets td:first-child {
-      text-align: left;
-      padding-left: 0;
-      color: var(--muted)
-    }
 
-    .history-sets td:last-child {
-      text-align: right;
-      padding-right: 0;
-      font-size: 14px;
-      color: var(--muted)
-    }
 
-    .history-sets tr:not(.record-done) td {
-      color: var(--muted)
-    }
 
-    .history-sets tr.record-done td:nth-child(2) {
-      font-weight: 600
-    }
 
-    .history-stage {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 12px;
-      align-items: center;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--line)
-    }
 
-    .history-stage h4 {
-      font-size: 16px;
-      font-weight: 550;
-      line-height: 1.35;
-      margin: 0 0 5px
-    }
 
-    .history-stage p {
-      font-size: 14px;
-      color: var(--muted)
-    }
 
-    .record-check { display:inline-grid; place-items:center; width:24px; height:24px; border:1px solid var(--line); border-radius:7px; background:var(--bg); color:var(--muted); vertical-align:middle; flex:none; }
-    .record-check>.icon { width:16px; height:16px; opacity:0; }
-    .record-check.is-done { background:var(--ink); color:var(--inverse); border-color:var(--ink); }
-    .record-check.is-done>.icon { opacity:1; }
-    .record-check.is-partial>.icon { display:none; }
-    .record-check.is-partial::after { content:''; width:12px; height:2px; border-radius:1px; background:var(--ink); }
 
     .history-notes-label {
       font-size: 14px;
@@ -1467,7 +1369,7 @@
         font-size: 17px
       }
 
-      .history-entry summary {
+      .history-entry>summary {
         gap: 9px
       }
 
@@ -1480,13 +1382,7 @@
         padding-right: 10px
       }
 
-      .history-sets th:first-child {
-        width: 30px
-      }
 
-      .history-sets th:last-child {
-        width: 63px
-      }
 
       .picker-actions {
         grid-template-columns: 1fr 1.2fr
@@ -1700,7 +1596,7 @@
       text-transform: none
     }
 
-    .history-entry summary {
+    .history-entry>summary {
       grid-template-columns: 36px minmax(0, 1fr) 18px
     }
 
@@ -1950,8 +1846,6 @@
     .speed-mode button { flex:1 1 auto; min-width:max-content; padding:8px; font-size:13px; white-space:nowrap; overflow-wrap:normal; }
     .superset .exercise { margin:0; border:0; border-radius:0; padding-left:0; padding-right:0; }
     .superset .exercise+.exercise { margin-top:20px; padding-top:20px; border-top:1px solid var(--line); }
-    .history-superset { padding-top:18px; }
-    .history-superset .superset-label { margin:0; }
     .group-summaries { display:grid; gap:10px; margin-bottom:22px; }
     .group-summaries:empty { display:none; }
     .group-summary { display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:16px; padding:14px; background:var(--bg); box-shadow:var(--shadow-card); }
@@ -2192,7 +2086,7 @@
     .section-heading h2,.section-heading h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
     .section-heading .button { min-height:40px; font-size:13px; padding:7px 10px; }
     .workout-row { display:flex; align-items:center; gap:13px; width:100%; border:1px solid var(--line); border-radius:18px; padding:17px; background:var(--bg); text-align:left; margin-bottom:10px; box-shadow:var(--shadow-card); }
-    .workout-row:hover,.overview-item:hover { background:var(--soft); }
+    .workout-row:hover,button.overview-item:hover,summary.overview-item:hover { background:var(--soft); }
     .workout-row .row-icon { display:grid; place-items:center; width:43px; height:43px; flex:none; border-radius:14px; background:var(--soft); color:var(--accent); }
     .workout-row>span:nth-child(2) { flex:1; min-width:0; }
     .workout-row strong,.workout-row small { display:block; overflow-wrap:anywhere; }
@@ -2221,17 +2115,15 @@
     .stat-strip dt { font-size:12px; line-height:18px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .summary-start { width:100%; min-height:54px; }
     .summary-cancel { display:block; width:100%; margin-top:8px; }
-    .overview-group { margin:12px; border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+    .overview-group { --row-x:14px; --row-y:14px; margin:12px; border:1px solid var(--line); border-radius:16px; overflow:hidden; }
     .overview-group-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:var(--soft); }
-    .overview-group-heading h4 { font-size:14px; font-weight:600; }
+    .overview-group-heading h4 { margin:0; font-size:14px; font-weight:600; }
     .overview-group-heading>span { font-size:12px; color:var(--muted); }
     .overview-group-items { background:var(--bg); }
-    .overview-group .overview-item { padding:14px; }
-    .overview-group .overview-item:last-child { border-bottom:0; }
     #exercise-picker-list .overview-group .overview-item { margin:0; border-radius:0; }
-    .summary-list { border:1px solid var(--line); border-radius:22px; background:var(--bg); overflow:hidden; box-shadow:var(--shadow-card); }
-    .overview-item { display:flex; align-items:center; gap:14px; width:100%; border:0; border-bottom:1px solid var(--line); padding:17px; background:transparent; text-align:left; }
-    .overview-item:last-child { border-bottom:0; }
+    .overview-list { --row-x:17px; --row-y:17px; border:1px solid var(--line); border-radius:22px; background:var(--bg); overflow:hidden; box-shadow:var(--shadow-card); }
+    .overview-item { display:flex; align-items:center; gap:14px; width:100%; border:0; padding:var(--row-y,17px) var(--row-x,17px); background:transparent; text-align:left; }
+    .overview-entry+.overview-entry { border-top:1px solid var(--line); }
     .overview-copy { flex:1; min-width:0; }
     .overview-copy strong { display:block; font-size:14px; font-weight:550; overflow-wrap:anywhere; }
     .overview-copy small { display:block; font-size:12px; color:var(--muted); margin-top:4px; }
@@ -2333,7 +2225,7 @@
     .today-card .kind-badge { padding:5px 10px; flex:none; }
     .today-card .today-detail { font-size:13px; margin:7px 0 18px; }
     .today-card .button { min-height:44px; justify-content:center; font-size:14px; padding:9px 14px; border-radius:12px; }
-    .overview-item[aria-current=true] .overview-number,.overview-item.is-complete .overview-number { color:var(--ink); background:var(--soft); }
+    .overview-item[aria-current=true] .overview-number { color:var(--ink); background:var(--soft); }
     .record-banner { color:var(--ink); background:var(--soft); border-color:var(--line); }
     .bottom-nav { position:fixed; z-index:30; left:0; right:0; bottom:calc(14px + env(safe-area-inset-bottom,0px)); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); align-items:center; justify-items:center; width:min(380px,calc(100% - 32px)); min-height:66px; padding:8px; gap:8px; border:1px solid var(--line); border-radius:40px; background:var(--nav-surface); box-shadow:var(--shadow-float); }
     .nav-item { display:grid; place-items:center; width:48px; min-height:48px; border:0; border-radius:50%; padding:12px; background:transparent; color:var(--muted); transition:background .2s,color .2s,transform .2s; }
@@ -2392,7 +2284,6 @@
     dialog[open].is-closing::backdrop { animation:backdrop-out .2s ease-in forwards; }
     .rest-mini.is-entering { animation:mini-in var(--motion-overlay) var(--ease-out); }
     .rest-mini.is-leaving { animation:mini-out .2s ease-in forwards; pointer-events:none; }
-    .field-updated { animation:field-commit .42s ease-out; }
     .form-field input,.number-ticker,.selection-field { transition:box-shadow .18s,border-color .18s,background .18s; }
     .form-field input:focus { border-color:var(--ink); box-shadow:0 0 0 3px var(--soft); }
     .set-row { transition:opacity .18s; }
@@ -2423,7 +2314,6 @@
     @keyframes backdrop-out { from { opacity:1; } to { opacity:0; } }
     @keyframes mini-in { from { opacity:0; transform:translateY(100%); } to { opacity:1; transform:none; } }
     @keyframes mini-out { from { opacity:1; transform:none; } to { opacity:0; transform:translateY(100%); } }
-    @keyframes field-commit { 0% { transform:scale(1); } 35% { transform:scale(1.025); box-shadow:0 0 0 3px var(--soft); } 100% { transform:scale(1); } }
     @media(max-width:350px) { .profile-card { padding:18px; gap:12px; } .profile-card .avatar { width:56px; height:56px; } .profile-card-name { font-size:18px; } .profile-edit { width:40px; height:40px; } .today-card { padding:18px; } .today-card h2 { font-size:22px; } #history-dialog>.dialog-body { padding:16px 12px; } }
     @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
     @media print { .bottom-nav,.activity-dock,.active-workout { display:none!important; } body.has-active-workout .shell { padding-top:0; } body.has-activity-dock .shell,.shell { padding-bottom:0; } }
@@ -2445,28 +2335,9 @@
     .history-totals>div { padding:0 5px; }
     .post-actions { display:grid; gap:8px; margin:18px 0 0; }
     .post-actions .button.primary { min-height:54px; }
-    .post-section-title { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:24px 0 12px; }
-    .post-section-title h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
-    .post-section-title span { color:var(--muted); font-size:12px; }
-    .post-exercises { border:1px solid var(--line); border-radius:22px; background:var(--bg); box-shadow:var(--shadow-card); overflow:hidden; }
-    .post-exercise+.post-exercise { border-top:1px solid var(--line); }
-    .post-exercise summary { list-style:none; display:flex; align-items:center; gap:14px; padding:17px; cursor:pointer; }
-    .post-exercise summary::-webkit-details-marker { display:none; }
-    .post-exercise summary>div { flex:1; min-width:0; }
-    .post-exercise summary strong { display:block; font-size:14px; font-weight:550; overflow-wrap:anywhere; }
-    .post-exercise summary small { display:block; font-size:12px; color:var(--muted); margin-top:4px; }
-    .post-exercise summary>.icon { width:18px; height:18px; color:var(--muted); }
-    .post-exercises .overview-group .post-exercise summary,.post-exercises .overview-group .post-stage { padding:14px; }
-    .post-exercise .post-set-list { margin:0 17px 15px; border-top:1px solid var(--line); }
-    .post-exercises .overview-group .post-set-list { margin-left:14px; margin-right:14px; }
-    .post-set-row { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:11px 0; font-size:13px; }
-    .post-set-row+.post-set-row { border-top:1px solid var(--line); }
-    .post-set-row>span { color:var(--muted); }
-    .post-set-row strong { font-size:13px; font-weight:500; text-align:right; font-variant-numeric:tabular-nums; }
-    .post-stage { display:flex; align-items:center; gap:14px; padding:17px; }
-    .post-stage>div { flex:1; min-width:0; }
-    .post-stage strong { display:block; font-size:14px; font-weight:550; overflow-wrap:anywhere; }
-    .post-stage small { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
+    .overview-title { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:24px 0 12px; }
+    .overview-title h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
+    .overview-title span { color:var(--muted); font-size:12px; }
     .post-notes { border-top:1px solid var(--line); padding-top:20px; margin-top:24px; }
     .post-notes h3 { font-size:14px; font-weight:550; margin-bottom:8px; }
     .post-notes p { color:var(--muted); white-space:pre-wrap; font-size:14px; overflow-wrap:anywhere; }
@@ -2482,8 +2353,31 @@
     .share-preview-frame canvas,.share-preview-frame img { display:block; width:100%; height:auto; max-height:42dvh; object-fit:contain; }
     .share-preview-frame .form-hint { margin:0; }
     .share-actions { display:grid; gap:10px; margin-top:18px; }
-    @media(max-width:350px) { .summary-heading h2,.post-heading h2 { font-size:29px; } .stat-strip dd { font-size:20px; } .stat-strip.is-long dd { font-size:18px; } .stat-strip.is-very-long dd { font-size:14px; } .stat-strip dt { font-size:11px; } .stat-strip>div { padding:0 5px; } .history-totals dd { font-size:18px; } .history-totals.is-long dd { font-size:14px; } .history-totals.is-very-long dd { font-size:12px; } .post-exercise summary,.post-stage { padding:15px 13px; } .share-settings { grid-template-columns:1fr; } }
-    @media print { .post-toolbar,.post-actions { display:none!important; } .stat-strip,.post-exercises { box-shadow:none; } }
+    @media(max-width:350px) { .summary-heading h2,.post-heading h2 { font-size:29px; } .stat-strip dd { font-size:20px; } .stat-strip.is-long dd { font-size:18px; } .stat-strip.is-very-long dd { font-size:14px; } .stat-strip dt { font-size:11px; } .stat-strip>div { padding:0 5px; } .history-totals dd { font-size:18px; } .history-totals.is-long dd { font-size:14px; } .history-totals.is-very-long dd { font-size:12px; } .overview-list { --row-x:13px; --row-y:15px; } .share-settings { grid-template-columns:1fr; } }
+    @media print { .post-toolbar,.post-actions { display:none!important; } .stat-strip,.overview-list { box-shadow:none; } }
+  
+    /* One exercise list for the plan, the post-workout summary, the history and the in-session list.
+       Same row everywhere: position, name and prescription, then what was done. */
+    .overview-disclosure>summary { list-style:none; }
+    .overview-disclosure>summary::-webkit-details-marker { display:none; }
+    button.overview-item,summary.overview-item { cursor:pointer; }
+    .overview-item:focus-visible { outline-offset:-3px; }
+    .overview-item>.icon[data-hugeicon=ArrowDown01Icon] { width:18px; height:18px; color:var(--muted); }
+    .overview-status { flex:none; font-size:13px; font-weight:400; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .overview-status.is-complete { color:var(--ink); }
+    .overview-item.is-skipped .overview-copy strong { color:var(--muted); font-weight:500; }
+    .overview-item.is-skipped .overview-status { font-size:12px; }
+    .overview-chevron-space { flex:none; width:18px; }
+    /* Confirmed sets sit under the exercise name, not under the position number. */
+    .overview-sets { margin:0 var(--row-x,17px) 0 calc(var(--row-x,17px) + 38px); padding-bottom:calc(var(--row-y,17px) - 5px); }
+    .overview-set { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:10px 0; border-top:1px solid var(--line); font-size:13px; }
+    .overview-set>span { color:var(--muted); }
+    .overview-set strong { font-weight:500; text-align:right; font-variant-numeric:tabular-nums; }
+    /* History: the same list without its own card, since it already lives inside a record card. */
+    .overview-list.is-compact { --row-x:0px; --row-y:13px; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; box-shadow:none; overflow:visible; }
+    .overview-list.is-compact .overview-group { --row-x:14px; --row-y:12px; margin:10px 0; }
+    .overview-list.is-compact>.overview-entry>summary.overview-item:hover { background:transparent; }
+    #exercise-picker-list .overview-entry+.overview-entry { border-top:0; }
   </style>
 </head>
 
@@ -3725,19 +3619,16 @@
         const done = session.logs[ex.id].done;
         return `<article class="exercise ${done ? 'is-done' : ''}"><div class="cardio-stage"><div class="stage-main"><h3>${esc(ex.name)}</h3><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div><label class="complete-set"><input type="checkbox" data-stage="${ex.id}" aria-label="Concluir etapa ${esc(ex.name)}" ${done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></div></article>`;
       }
-      function completionMark(done, partial = false) {
-        return `<span class="record-check ${done ? 'is-done' : partial ? 'is-partial' : ''}" role="img" aria-label="${done ? 'Realizado' : partial ? 'Parcialmente realizado' : 'Não realizado'}">${icon('check')}</span>`;
-      }
-      function renderExerciseBlocks(workout, render, history = false, session = null) {
+      function renderExerciseBlocks(workout, render, session = null) {
         return TrainingConfig.blocks(workout).map(block => {
           if (block.group && workout.kind === 'cardio') {
             const repeats = block.group.repeats, p = D.intervalProgress(session, block.group);
             const label = `Intervalado de ${repeats} ${repeats === 1 ? 'volta' : 'voltas'}`;
             const stages = block.exercises.map(ex => `<div class="interval-stage interval-stage-row"><div><h4>${esc(ex.name)}</h4><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div></div>`).join('');
-            return `<section class="${history ? 'history-superset' : 'superset'} interval-block ${p.complete ? 'is-done' : ''}" aria-label="${label}"><div class="interval-heading"><div><h3 class="superset-label">Intervalado</h3><span class="interval-count">${repeats} ${repeats === 1 ? 'volta' : 'voltas'}</span></div>${history ? completionMark(p.complete, p.done > 0) : `<label class="complete-set"><input type="checkbox" data-interval="${block.id}" aria-label="Concluir bloco: ${label.toLocaleLowerCase('pt-BR')}" ${p.complete ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</div>${stages}</section>`;
+            return `<section class="superset interval-block ${p.complete ? 'is-done' : ''}" aria-label="${label}"><div class="interval-heading"><div><h3 class="superset-label">Intervalado</h3><span class="interval-count">${repeats} ${repeats === 1 ? 'volta' : 'voltas'}</span></div><label class="complete-set"><input type="checkbox" data-interval="${block.id}" aria-label="Concluir bloco: ${label.toLocaleLowerCase('pt-BR')}" ${p.complete ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></div>${stages}</section>`;
           }
           const content = block.exercises.map(ex => render(ex, workout.exercises.indexOf(ex))).join('');
-          return block.group ? `<section class="${history ? 'history-superset' : 'superset'}" aria-label="${esc(block.name)}"><h3 class="superset-label">${esc(block.name)}</h3>${content}</section>` : content;
+          return block.group ? `<section class="superset" aria-label="${esc(block.name)}"><h3 class="superset-label">${esc(block.name)}</h3>${content}</section>` : content;
         }).join('');
       }
       function renderLegacySession() {
@@ -3754,7 +3645,7 @@
         $('workout').innerHTML = `${choices.length > 1 ? `<div class="workout-switcher" role="group" aria-label="Treinos de ${esc(D.weekdays[selectedWeekday - 1])}">${choices.map(item => `<button class="button" data-workout-choice="${item.id}" aria-pressed="${item.id === selectedDay}">${esc(item.title)}</button>`).join('')}</div>` : ''}
           <div class="workout-heading"><div class="session-meta">${icon(strength ? 'dumbbell' : 'run')}<span>${strength ? 'Força' : 'Corrida'} · ${esc(displayDate(selectedDate))}</span></div><h2 id="workout-title" tabindex="-1">${esc(w.title)}</h2></div>
           ${sessionProgress()}
-          <div id="exercise-list">${renderExerciseBlocks(w, (ex, i) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s), false, s)}</div>
+          <div id="exercise-list">${renderExerciseBlocks(w, (ex, i) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s), s)}</div>
           <p class="form-error" id="entry-error" role="alert" hidden></p>
           <div class="session-bottom"><div class="session-actions"><button type="button" class="button primary" id="finish-workout"></button>${locked ? '' : cancelWorkoutButton(s)}</div><span class="save-status" id="save-status" role="status" hidden></span></div>`;
         if (locked) $('exercise-list').querySelectorAll('button,input').forEach(el => el.disabled = true);
@@ -3886,11 +3777,49 @@
           return `<section class="overview-group" aria-label="${esc(block.name + ' · ' + detail)}"><div class="overview-group-heading"><h4>${esc(block.name)}</h4><span>${detail}</span></div><div class="overview-group-items">${content}</div></section>`;
         }).join('');
       }
+      // Pre-workout, post-workout, history and the in-session list share one exercise row:
+      // position, name and prescription on the left, what was done on the right.
+      // "Done" counts confirmed sets only, the same rule TrainingSummary uses.
+      function exerciseStatus(ex, session) {
+        const log = session?.logs?.[ex.id];
+        if (Array.isArray(log?.sets)) return { kind:'sets', done:log.sets.filter(set => set.done === true).length, total:log.sets.length };
+        if (Array.isArray(log?.rounds)) return { kind:'rounds', done:log.rounds.filter(Boolean).length, total:log.rounds.length };
+        return { kind:ex.sets ? 'sets' : 'stage', done:log?.done === true ? 1 : 0, total:ex.sets || 1 };
+      }
+      function exerciseStatusText(status) {
+        if (status.kind === 'stage') return status.done ? 'Etapa realizada' : 'Etapa não realizada';
+        const noun = status.kind === 'sets' ? (status.total === 1 ? 'série realizada' : 'séries realizadas') : (status.total === 1 ? 'volta realizada' : 'voltas realizadas');
+        return `${status.done} de ${status.total} ${noun}`;
+      }
+      const sessionHasProgress = session => !!session && (session.done || D.progress(session).done > 0);
+      function exerciseEntry(ex, number, session, options = {}) {
+        const { tag = 'div', attrs = '', progress = false, settled = false, details = false, trailing = '' } = options;
+        const status = exerciseStatus(ex, session), complete = status.done === status.total, skipped = settled && status.done === 0;
+        const classes = `overview-item${complete ? ' is-complete' : ''}${skipped ? ' is-skipped' : ''}`;
+        let state = '';
+        if (skipped) state = `<span class="overview-status">Não realizado</span>`;
+        else if (progress && status.kind !== 'stage') state = `<span class="overview-status${complete ? ' is-complete' : ''}" aria-hidden="true">${status.done}/${status.total}</span><span class="sr-only">${exerciseStatusText(status)}</span>`;
+        else if (progress && complete) state = `<span class="sr-only">${exerciseStatusText(status)}</span>`;
+        const body = `<span class="overview-number">${number}</span><span class="overview-copy"><strong>${esc(ex.name)}</strong><small>${ex.meta.map(esc).join(' · ')}</small></span>${state}${trailing}`;
+        const sets = details && status.kind === 'sets' ? session.logs[ex.id].sets.map((set, index) => ({ ...set, index })).filter(set => set.done === true) : [];
+        if (sets.length) return `<details class="overview-entry overview-disclosure"><summary class="${classes}">${body}${icon('chevron')}</summary><div class="overview-sets">${sets.map(set => `<div class="overview-set"><span>Série ${set.index + 1}</span><strong>${esc(completedSetText(set, ex.unit))}</strong></div>`).join('')}</div></details>`;
+        // Rows that cannot open keep the chevron column so their status lines up with the rows that can.
+        const spacer = details && ex.sets ? '<span class="overview-chevron-space" aria-hidden="true"></span>' : '';
+        return `<${tag} ${attrs} class="overview-entry ${classes}">${body}${spacer}</${tag}>`;
+      }
+      function exerciseOverview(workout, session, options = {}) {
+        return renderOverviewBlocks(workout, (ex, number) => exerciseEntry(ex, number, session, options));
+      }
+      function overviewTitle(workout, session, count = false) {
+        const strength = workout.kind === 'strength', performed = workout.exercises.filter(ex => exerciseStatus(ex, session).done > 0).length;
+        return `<div class="overview-title"><h3>${strength ? 'Exercícios' : 'Etapas'}</h3>${count ? `<span>${performed} de ${workout.exercises.length} ${strength ? 'realizados' : 'realizadas'}</span>` : ''}</div>`;
+      }
       function overviewRows(workout, session, navigation = false) {
+        const progress = sessionHasProgress(session), settled = session?.done === true;
         return renderOverviewBlocks(workout,(ex,number) => {
-          const done = exerciseComplete(ex,session);
           const media = exerciseMedia(ex), tag = navigation || media ? 'button' : 'div';
-          return `<${tag} ${tag === 'button' ? `type="button" ${navigation ? `data-focus-exercise="${ex.id}" aria-current="${focusExerciseId === ex.id}"` : `data-preview-exercise="${ex.id}" aria-label="Ver demonstração de ${esc(ex.name)}"`}` : ''} class="overview-item ${done ? 'is-complete' : ''}"><span class="overview-number">${number}</span><span class="overview-copy"><strong>${esc(ex.name)}</strong><small>${ex.meta.map(esc).join(' · ')}</small></span>${!navigation && media ? icon('image') : ''}</${tag}>`;
+          const attrs = tag === 'button' ? `type="button" ${navigation ? `data-focus-exercise="${ex.id}" aria-current="${focusExerciseId === ex.id}"` : `data-preview-exercise="${ex.id}" aria-label="Ver demonstração de ${esc(ex.name)}"`}` : '';
+          return exerciseEntry(ex, number, session, { tag, attrs, progress, settled, trailing:!navigation && media ? icon('image') : '' });
         });
       }
       function renderSummary(workout) {
@@ -3902,7 +3831,7 @@
             { value:String(strength ? progress.total : TrainingConfig.blocks(workout).length), label:strength ? 'séries' : 'blocos' },
             { value:`${Math.round(progress.done/(progress.total || 1)*100)}%`, label:'realizado' }
           ],'summary-stats','Visão geral do treino')}
-          <button type="button" class="button primary summary-start" ${locked ? `data-post-workout="${esc(session.key)}"` : 'data-start-session'} ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${locked ? 'Ver resumo' : currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}<div class="section-heading"><h3>${strength ? 'Exercícios' : 'Etapas do treino'}</h3></div><div class="summary-list">${overviewRows(workout,session)}</div>`;
+          <button type="button" class="button primary summary-start" ${locked ? `data-post-workout="${esc(session.key)}"` : 'data-start-session'} ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${locked ? 'Ver resumo' : currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}${overviewTitle(workout,session,sessionHasProgress(session))}<div class="overview-list">${overviewRows(workout,session)}</div>`;
       }
       function sessionProgress() {
         return `<section class="session-progress" aria-label="Progresso do treino"><div class="progress-label"><span>Progresso do treino</span><span id="progress-label"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div></section>`;
@@ -3942,16 +3871,6 @@
         if (set.load == null && set.value == null) return '—';
         return `${load} · ${set.value == null ? '—' : `${number(set.value)} reps`}`;
       }
-      function postWorkoutRows(session, summary) {
-        const recorded = new Map(summary.exercises.map(item => [item.exercise.id,item]));
-        return renderOverviewBlocks(session.workout,(ex,number) => {
-          const item = recorded.get(ex.id);
-          if (!item) return '';
-          const position = `<span class="overview-number">${number}</span>`;
-          if (item.completed) return `<details class="post-exercise"><summary>${position}<div><strong>${esc(ex.name)}</strong><small>${item.completed.length} de ${ex.sets} ${ex.sets === 1 ? 'série realizada' : 'séries realizadas'}</small></div>${icon('chevron')}</summary><div class="post-set-list">${item.completed.map(set=>`<div class="post-set-row"><span>Série ${set.index+1}</span><strong>${esc(completedSetText(set,ex.unit))}</strong></div>`).join('')}</div></details>`;
-          return `<div class="post-exercise post-stage">${position}<div><strong>${esc(ex.name)}</strong><small>${item.totalRounds ? `${item.rounds} de ${item.totalRounds} voltas realizadas` : 'Etapa realizada'}</small></div></div>`;
-        });
-      }
       function renderPostWorkout() {
         const session = store.sessions[viewingRecord], summary = TrainingSummary.build(session);
         if (!summary) return;
@@ -3961,8 +3880,8 @@
           <div class="post-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="post-workout-title" tabindex="-1">${esc(summary.title)}</h2><p>${esc(date)}</p></div>
           ${renderSummaryMetrics(summary)}
           <div class="post-actions"><button type="button" class="button primary full" data-share-record="${esc(session.key)}">${icon('share')}Compartilhar treino</button><button type="button" class="button full" data-post-history="${esc(session.key)}">Ver histórico</button></div>
-          <div class="post-section-title"><h3>${strength ? 'Exercícios realizados' : 'Etapas registradas'}</h3><span>${summary.exercises.length} de ${session.workout.exercises.length}</span></div>
-          ${summary.exercises.length ? `<div class="post-exercises">${postWorkoutRows(session,summary)}</div>` : `<p class="post-empty">${strength ? 'Nenhuma série foi marcada como realizada neste treino.' : 'Nenhuma etapa foi marcada como realizada. Os totais informados estão no resumo acima.'}</p>`}
+          ${overviewTitle(session.workout,session,true)}
+          ${summary.exercises.length ? `<div class="overview-list">${exerciseOverview(session.workout,session,{ progress:true, settled:true, details:true })}</div>` : `<p class="post-empty">${strength ? 'Nenhuma série foi marcada como realizada neste treino.' : 'Nenhuma etapa foi marcada como realizada. Os totais informados estão no resumo acima.'}</p>`}
           ${session.notes ? `<section class="post-notes"><h3>Suas observações</h3><p>${esc(session.notes)}</p></section>` : ''}`;
       }
       function openPostWorkout(recordKey, origin = null) {
@@ -4597,8 +4516,6 @@
         };
         dialog.addEventListener('close',()=>{
           if(!dialog.open) syncToastLayer();
-          const field=dialog._committedField;dialog._committedField=null;
-          if(field) animateField(field);
           queueNavigationSync();
         });
       });
@@ -4639,13 +4556,6 @@
         syncActivityLayout();
       }
       function setMiniVisible(visible) { setDockItemVisible('rest-mini', visible); }
-      function animateField(field) {
-        if(!field?.isConnected || reduceMotion()) return;
-        field.classList.remove('field-updated');
-        void field.offsetWidth;
-        field.classList.add('field-updated');
-        setTimeout(()=>field.classList.remove('field-updated'),450);
-      }
 
       function openDialog(id) {
         const page=Object.keys(pageIds).find(page=>pageIds[page] === id);
@@ -4705,11 +4615,6 @@
         const field = e.target.closest('button[data-field]'); if (field) { openValuePicker(field); return; }
       });
       $('theme-toggle').addEventListener('click', () => { preferences.theme = preferences.theme === 'dark' ? 'light' : 'dark'; applyTheme(); savePreferences(); });
-      function historyExercise(ex, log) {
-        if (!log.sets) return `<div class="history-stage"><div><h4>${esc(ex.name)}</h4><p>${ex.meta.map(esc).join(' · ')}</p></div>${completionMark(log.done)}</div>`;
-        const unit = 'kg total';
-        return `<section class="history-ex"><h4>${esc(ex.name)}</h4><table class="history-sets" aria-label="Registro de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col">${unit}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col"><span class="sr-only">Feita</span></th></tr></thead><tbody>${log.sets.map((set, i) => `<tr class="${set.done ? 'record-done' : ''}"><td>${i + 1}</td><td>${esc(number(set.load))}</td><td>${esc(number(set.value))}</td><td>${completionMark(set.done)}</td></tr>`).join('')}</tbody></table></section>`;
-      }
       let historyMonth = selectedDate.slice(0, 7), historyDate = selectedDate, monthPickerYear = +historyMonth.slice(0, 4);
       const expansionAnimations = new WeakMap();
       function toggleExpandable(entry) {
@@ -4736,8 +4641,17 @@
           };
         });
       }
+      function resetExpandable(entry, open = false) {
+        const state=expansionAnimations.get(entry);
+        state?.animation?.cancel();if(state?.frame)cancelAnimationFrame(state.frame);
+        expansionAnimations.delete(entry);entry.style.height='';
+        entry.classList.remove('is-collapsing','is-expanding');entry.open=open;
+      }
+      $('finish-notes-details').querySelector('summary').addEventListener('click',e=>{
+        e.preventDefault();toggleExpandable($('finish-notes-details'));
+      });
       ['history-list','post-workout'].forEach(id=>$(id).addEventListener('click',e=>{
-        const summary=e.target.closest('.history-entry>summary,.post-exercise>summary');
+        const summary=e.target.closest('.history-entry>summary,.overview-disclosure>summary');
         if(!summary || !$(id).contains(summary))return;
         e.preventDefault();toggleExpandable(summary.parentElement);
       }));
@@ -4819,7 +4733,7 @@
         const dayRecords = byDate.get(historyDate) || [];
         $('history-list').innerHTML = dayRecords.length ? dayRecords.map(s => {
           const p = D.progress(s);
-          return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${historyTotals(s)}${renderExerciseBlocks(s.workout, ex => historyExercise(ex, s.logs[ex.id]), true, s)}${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button type="button" class="button primary" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
+          return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${historyTotals(s)}<div class="overview-list is-compact">${exerciseOverview(s.workout, s, { progress:true, settled:true, details:true })}</div>${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button type="button" class="button primary" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
         }).join('') : '<p class="calendar-empty">Nenhum treino nesta data.</p>';
       }
       $('history-prev').addEventListener('click', () => shiftHistoryMonth(-1));
@@ -4970,7 +4884,7 @@
         if (!numericPicker) return;
         const active = numericPicker, error = active.apply(value, active.unit);
         if (error) { numericError(error); return; }
-        $('numeric-dialog')._committedField=active.trigger; $('numeric-dialog').close();
+        $('numeric-dialog').close();
       }
       $('numeric-form').addEventListener('submit', e => {
         e.preventDefault(); const parsed = readNumericValue(); if (!parsed) return;
@@ -5047,7 +4961,7 @@
         active.columns.forEach((c, i) => selectTicker(i, Math.round($('ticker-columns').querySelector(`[data-ticker-column="${i}"]`).scrollTop / 48)));
         const error = active.apply(active.columns.map(c => c.value));
         if (error) { reportError('ticker-error',error); return; }
-        $('ticker-dialog')._committedField=active.trigger; $('ticker-dialog').close();
+        $('ticker-dialog').close();
       });
       $('ticker-dialog').addEventListener('close', () => { if (!$('ticker-dialog').open) { const trigger = ticker?.trigger; ticker = null; if (trigger?.isConnected) trigger.focus({ preventScroll: true }); } });
 
@@ -5064,7 +4978,7 @@
       }
       $('selection-options').addEventListener('click', e => {
         const button = e.target.closest('[data-choice]'); if (!button || !selection) return;
-        const s = selection; s.apply(s.options[+button.dataset.choice].value); $('selection-dialog')._committedField=s.trigger; $('selection-dialog').close();
+        const s = selection; s.apply(s.options[+button.dataset.choice].value); $('selection-dialog').close();
       });
       $('selection-options').addEventListener('keydown', e => {
         if (!['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
@@ -5131,7 +5045,7 @@
       });
       $('date-apply').addEventListener('click', () => {
         if (!datePicker || !D.validDate(datePicker.date)) return;
-        datePicker.apply(datePicker.date, datePicker.mode); $('date-dialog')._committedField=datePicker.trigger; $('date-dialog').close();
+        datePicker.apply(datePicker.date, datePicker.mode); $('date-dialog').close();
       });
       $('date-dialog').addEventListener('close', () => { if ($('date-dialog').open) return; const trigger = datePicker?.trigger; datePicker = null; if (trigger?.isConnected) trigger.focus({ preventScroll: true }); });
 
@@ -5820,7 +5734,7 @@
         $('finish-progress').textContent = `${p.done} de ${p.total} ${cardio ? 'etapas' : 'séries'} realizadas`;
         $('finish-cardio').hidden = !cardio; renderFinishMetrics();
         $('finish-notes').value = session.notes || '';
-        $('finish-notes-details').open = false;
+        resetExpandable($('finish-notes-details'));
         $('finish-error').hidden = true;
         $('finish-form').querySelectorAll('[aria-invalid]').forEach(el => el.removeAttribute('aria-invalid'));
         openDialog('finish-dialog');
@@ -5950,7 +5864,7 @@
         const set = session.logs[exercise.id].sets[setIndex];
         set[field] = value; set.auto[field] = false;
         changed(); refreshSetValues(exercise.id);
-        $('value-dialog')._committedField=trigger; $('value-dialog').close();
+        $('value-dialog').close();
       }
       $('value-wheel').addEventListener('scroll', () => {
         if (picker) updateWheelSelection(TrainingPicker.indexAt($('value-wheel').scrollTop, picker.options.length));
