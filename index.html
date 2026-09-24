@@ -2207,14 +2207,18 @@
     .icon-button.back-button { width:44px; min-width:44px; min-height:44px; padding:0; border-radius:50%; }
     .back-button .icon { width:20px; height:20px; }
     .view-toolbar .icon-button { min-width:44px; width:44px; min-height:44px; border-radius:50%; }
-    .summary-heading { padding:4px 0 0; }
-    .summary-heading h2 { font-size:34px; line-height:1.15; letter-spacing:-1.2px; font-weight:600; margin:13px 0 10px; overflow-wrap:anywhere; }
-    .summary-heading>p { font-size:14px; color:var(--muted); }
-    .summary-stats { display:flex; gap:0; border:1px solid var(--line); border-radius:20px; background:var(--bg); box-shadow:var(--shadow-card); margin:24px 0 18px; padding:20px 0; }
-    .summary-stats>div { flex:1; text-align:center; border-right:1px solid var(--line); }
-    .summary-stats>div:last-child { border:0; }
-    .summary-stats dt { color:var(--muted); font-size:12px; }
-    .summary-stats dd { font-size:23px; letter-spacing:-.6px; font-weight:600; margin:0 0 3px; }
+    /* Plan (pre) and post-workout screens share one heading and one stat strip. */
+    .summary-heading,.post-heading { padding:4px 0 0; }
+    .summary-heading h2,.post-heading h2 { font-size:34px; line-height:1.15; letter-spacing:-1.2px; font-weight:600; margin:13px 0 10px; overflow-wrap:anywhere; }
+    .summary-heading>p,.post-heading>p { font-size:14px; color:var(--muted); }
+    .stat-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border:1px solid var(--line); border-radius:20px; background:var(--bg); box-shadow:var(--shadow-card); margin:24px 0 18px; padding:20px 0; }
+    .stat-strip>div { min-width:0; text-align:center; padding:0 8px; }
+    .stat-strip>div+div { border-left:1px solid var(--line); }
+    /* A fixed line box keeps every label on the same line whatever the value size. */
+    .stat-strip dd { margin:0 0 3px; font-size:23px; line-height:34px; font-weight:600; letter-spacing:-.6px; font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .stat-strip.is-long dd { font-size:20px; }
+    .stat-strip.is-very-long dd { font-size:16px; }
+    .stat-strip dt { font-size:12px; line-height:18px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .summary-start { width:100%; min-height:54px; }
     .summary-cancel { display:block; width:100%; margin-top:8px; }
     .overview-group { margin:12px; border:1px solid var(--line); border-radius:16px; overflow:hidden; }
@@ -2326,7 +2330,7 @@
     .today-card h2+.button { margin-top:18px; }
     .today-card-top { margin-bottom:14px; }
     .today-card-top .context-label { font-size:13px; }
-    .today-card .kind-badge,.post-heading>.kind-badge { padding:5px 10px; flex:none; }
+    .today-card .kind-badge { padding:5px 10px; flex:none; }
     .today-card .today-detail { font-size:13px; margin:7px 0 18px; }
     .today-card .button { min-height:44px; justify-content:center; font-size:14px; padding:9px 14px; border-radius:12px; }
     .overview-item[aria-current=true] .overview-number,.overview-item.is-complete .overview-number { color:var(--ink); background:var(--soft); }
@@ -2436,31 +2440,20 @@
     body[data-view=postworkout]>.shell>.header { display:none; }
     body[data-view=postworkout] { --nav-space:calc(12px + env(safe-area-inset-bottom,0px)); }
     #post-workout { padding-top:20px; }
-    .post-toolbar { display:flex; align-items:center; margin-bottom:24px; }
-    .post-heading>.kind-badge { margin-bottom:14px; }
-    .post-heading h2 { font-size:34px; font-weight:600; letter-spacing:-1.1px; line-height:1.15; overflow-wrap:anywhere; }
-    .post-date { color:var(--muted); font-size:13px; margin-top:10px; }
-    .post-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:26px 0 12px; padding:22px 0; border:1px solid var(--line); border-radius:22px; background:var(--bg); box-shadow:var(--shadow-card); }
-    .post-stats>div { min-width:0; text-align:center; padding:0 8px; }
-    .post-stats>div+div { border-left:1px solid var(--line); }
-    .post-stats dd { margin:0; font-size:27px; font-weight:600; line-height:1.2; letter-spacing:-.8px; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
-    .post-stats dd.is-long { font-size:20px; }
-    .post-stats dd.is-very-long { font-size:16px; }
-    .post-stats dt { font-size:12px; color:var(--muted); margin-top:7px; }
+    .post-toolbar { display:flex; align-items:center; margin-bottom:20px; }
     .history-totals { margin:0; padding:20px 0; border:0; border-bottom:1px solid var(--line); border-radius:0; box-shadow:none; }
-    .history-totals dd { font-size:23px; white-space:nowrap; }
     .history-totals>div { padding:0 5px; }
-    .post-actions { display:grid; gap:10px; margin:24px 0 28px; }
-    .post-actions .button { font-size:14px; }
+    .post-actions { display:grid; gap:8px; margin:18px 0 0; }
+    .post-actions .button.primary { min-height:54px; }
     .post-section-title { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:24px 0 12px; }
     .post-section-title h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
     .post-section-title span { color:var(--muted); font-size:12px; }
-    .post-exercises { border:1px solid var(--line); border-radius:20px; background:var(--bg); box-shadow:var(--shadow-card); overflow:hidden; }
+    .post-exercises { border:1px solid var(--line); border-radius:22px; background:var(--bg); box-shadow:var(--shadow-card); overflow:hidden; }
     .post-exercise+.post-exercise { border-top:1px solid var(--line); }
-    .post-exercise summary { list-style:none; display:flex; align-items:center; gap:12px; padding:17px; cursor:pointer; min-height:70px; }
+    .post-exercise summary { list-style:none; display:flex; align-items:center; gap:14px; padding:17px; cursor:pointer; }
     .post-exercise summary::-webkit-details-marker { display:none; }
     .post-exercise summary>div { flex:1; min-width:0; }
-    .post-exercise summary strong { display:block; font-size:14px; font-weight:550; line-height:1.4; overflow-wrap:anywhere; }
+    .post-exercise summary strong { display:block; font-size:14px; font-weight:550; overflow-wrap:anywhere; }
     .post-exercise summary small { display:block; font-size:12px; color:var(--muted); margin-top:4px; }
     .post-exercise summary>.icon { width:18px; height:18px; color:var(--muted); }
     .post-exercises .overview-group .post-exercise summary,.post-exercises .overview-group .post-stage { padding:14px; }
@@ -2470,7 +2463,7 @@
     .post-set-row+.post-set-row { border-top:1px solid var(--line); }
     .post-set-row>span { color:var(--muted); }
     .post-set-row strong { font-size:13px; font-weight:500; text-align:right; font-variant-numeric:tabular-nums; }
-    .post-stage { display:flex; align-items:center; gap:12px; padding:17px; }
+    .post-stage { display:flex; align-items:center; gap:14px; padding:17px; }
     .post-stage>div { flex:1; min-width:0; }
     .post-stage strong { display:block; font-size:14px; font-weight:550; overflow-wrap:anywhere; }
     .post-stage small { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
@@ -2489,8 +2482,8 @@
     .share-preview-frame canvas,.share-preview-frame img { display:block; width:100%; height:auto; max-height:42dvh; object-fit:contain; }
     .share-preview-frame .form-hint { margin:0; }
     .share-actions { display:grid; gap:10px; margin-top:18px; }
-    @media(max-width:350px) { .post-heading h2 { font-size:29px; } .post-stats dd { font-size:23px; } .post-stats dd.is-long { font-size:18px; } .post-stats dd.is-very-long { font-size:14px; } .post-stats dt { font-size:11px; } .post-stats>div { padding:0 5px; } .history-totals dd { font-size:18px; } .history-totals dd.is-long { font-size:14px; } .history-totals dd.is-very-long { font-size:12px; } .post-exercise summary,.post-stage { padding:15px 13px; } .share-settings { grid-template-columns:1fr; } }
-    @media print { .post-toolbar,.post-actions { display:none!important; } .post-stats,.post-exercises { box-shadow:none; } }
+    @media(max-width:350px) { .summary-heading h2,.post-heading h2 { font-size:29px; } .stat-strip dd { font-size:20px; } .stat-strip.is-long dd { font-size:18px; } .stat-strip.is-very-long dd { font-size:14px; } .stat-strip dt { font-size:11px; } .stat-strip>div { padding:0 5px; } .history-totals dd { font-size:18px; } .history-totals.is-long dd { font-size:14px; } .history-totals.is-very-long dd { font-size:12px; } .post-exercise summary,.post-stage { padding:15px 13px; } .share-settings { grid-template-columns:1fr; } }
+    @media print { .post-toolbar,.post-actions { display:none!important; } .stat-strip,.post-exercises { box-shadow:none; } }
   </style>
 </head>
 
@@ -3279,7 +3272,11 @@
           let cardio = null;
           if (s.cardio != null) {
             if (!obj(s.cardio) || w.kind !== 'cardio' || !Number.isInteger(s.cardio.durationSeconds) || s.cardio.durationSeconds <= 0 || s.cardio.durationSeconds > 604800 || !num(s.cardio.distanceKm) || !(s.cardio.distanceKm > 0)) bad();
-            cardio = { durationSeconds: s.cardio.durationSeconds, distanceKm: s.cardio.distanceKm };
+            let distanceKm = s.cardio.distanceKm;
+            // Older builds accepted meters typed in the km field (9490 instead of 9,49).
+            const fixedPace = s.cardio.durationSeconds / (distanceKm / 1000);
+            if (distanceKm >= 100 && s.cardio.durationSeconds / distanceKm < 60 && fixedPace >= 90 && fixedPace <= 1800) distanceKm = Math.round(distanceKm) / 1000;
+            cardio = { durationSeconds: s.cardio.durationSeconds, distanceKm };
           }
           // Version 9 adds session timing. Preserve it through reads, saves,
           // merges and backups, even when this screen does not display it.
@@ -3900,7 +3897,11 @@
         const session = currentSession(), strength = workout.kind === 'strength', locked = isReadOnly(), progress = D.progress(session);
         const running = activeWorkoutSession(), blocked = !locked && running && running.day !== workout.id;
         $('workout').innerHTML = `<div class="view-toolbar"><button type="button" class="icon-button back-button" data-summary-back aria-label="Voltar para ${esc(pageTitles[summaryOrigin])}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button>${PLAN.some(w=>w.id === workout.id) ? `<button type="button" class="icon-button" data-edit-current aria-label="Editar ${esc(workout.title)}">${icon('settings')}</button>` : ''}</div><div class="summary-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="workout-title" tabindex="-1">${esc(workout.title)}</h2><p>${esc(workout.day)}${locked ? ' · ' + esc(displayDate(session.date,true)) : ' · Resumo do treino'}</p></div>
-          <dl class="summary-stats"><div><dd>${workout.exercises.length}</dd><dt>${strength ? 'exercícios' : 'etapas'}</dt></div><div><dd>${strength ? progress.total : TrainingConfig.blocks(workout).length}</dd><dt>${strength ? 'séries' : 'blocos'}</dt></div><div><dd>${Math.round(progress.done/(progress.total || 1)*100)}%</dd><dt>realizado</dt></div></dl>
+          ${renderStatStrip([
+            { value:String(workout.exercises.length), label:strength ? 'exercícios' : 'etapas' },
+            { value:String(strength ? progress.total : TrainingConfig.blocks(workout).length), label:strength ? 'séries' : 'blocos' },
+            { value:`${Math.round(progress.done/(progress.total || 1)*100)}%`, label:'realizado' }
+          ],'summary-stats','Visão geral do treino')}
           <button type="button" class="button primary summary-start" ${locked ? `data-post-workout="${esc(session.key)}"` : 'data-start-session'} ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${locked ? 'Ver resumo' : currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}<div class="section-heading"><h3>${strength ? 'Exercícios' : 'Etapas do treino'}</h3></div><div class="summary-list">${overviewRows(workout,session)}</div>`;
       }
       function sessionProgress() {
@@ -3917,9 +3918,9 @@
       }
       function summaryMetrics(summary) {
         if (summary.kind === 'cardio') return [
-          { value:summary.distanceKm === null ? '—' : summary.distanceKm.toLocaleString('pt-BR',{ minimumFractionDigits:2, maximumFractionDigits:3 }), label:'distância', exact:summary.distanceKm === null ? 'Distância não informada' : `${number(summary.distanceKm)} quilômetros` },
+          { value:summary.distanceKm === null ? '—' : summary.distanceKm.toLocaleString('pt-BR',{ minimumFractionDigits:2, maximumFractionDigits:2 }), label:'distância (km)', exact:summary.distanceKm === null ? 'Distância não informada' : `${number(summary.distanceKm)} quilômetros` },
           { value:summaryClock(summary.durationSeconds,true), label:'tempo', exact:summary.durationSeconds === null ? 'Tempo não informado' : totalDuration(summary.durationSeconds) },
-          { value:summaryClock(summary.paceSeconds), label:'pace', exact:summary.paceSeconds === null ? 'Pace não disponível' : `${summaryClock(summary.paceSeconds)} minutos por quilômetro` }
+          { value:summaryClock(summary.paceSeconds), label:'pace (min/km)', exact:summary.paceSeconds === null ? 'Pace não disponível' : `${summaryClock(summary.paceSeconds)} minutos por quilômetro` }
         ];
         return [
           { value:number(summary.exercises.length), label:'exercícios', exact:`${summary.exercises.length} exercícios com séries realizadas` },
@@ -3927,8 +3928,13 @@
           { value:summaryNumber(summary.volume), label:'volume', exact:summary.volume === null ? 'Volume não disponível' : `${number(summary.volume)} quilogramas de volume${summary.partial ? ', parcial' : ''}` }
         ];
       }
+      function renderStatStrip(metrics, extraClass = '', label = 'Resumo do treino') {
+        const longest = Math.max(...metrics.map(metric => metric.value.length));
+        const size = longest > 10 ? ' is-very-long' : longest > 8 ? ' is-long' : '';
+        return `<dl class="stat-strip ${extraClass}${size}" aria-label="${esc(label)}">${metrics.map(metric=>`<div><dd${metric.exact ? ` aria-label="${esc(metric.exact)}" title="${esc(metric.exact)}"` : ''}>${esc(metric.value)}</dd><dt>${esc(metric.label)}</dt></div>`).join('')}</dl>`;
+      }
       function renderSummaryMetrics(summary,extraClass='') {
-        return `<dl class="post-stats ${extraClass}" aria-label="Resumo do treino">${summaryMetrics(summary).map(metric=>`<div><dd${metric.value.length > 8 ? ' class="is-very-long"' : metric.value.length > 5 ? ' class="is-long"' : ''} aria-label="${esc(metric.exact)}" title="${esc(metric.exact)}">${esc(metric.value)}</dd><dt>${esc(metric.label)}</dt></div>`).join('')}</dl>`;
+        return renderStatStrip(summaryMetrics(summary),`post-stats ${extraClass}`.trim());
       }
       function completedSetText(set, unit) {
         const load = set.load == null ? '—' : `${number(set.load)} kg`;
@@ -3950,9 +3956,9 @@
         const session = store.sessions[viewingRecord], summary = TrainingSummary.build(session);
         if (!summary) return;
         const strength = summary.kind === 'strength';
-        const date = new Date(summary.date+'T12:00:00').toLocaleDateString('pt-BR',{ weekday:'long', day:'numeric', month:'long', year:'numeric' });
+        const date = `${D.weekdays[(new Date(summary.date+'T12:00:00').getDay()+6)%7]} · ${displayDate(summary.date,true)}`;
         $('post-workout').innerHTML = `<div class="post-toolbar"><button type="button" class="icon-button back-button" data-post-back aria-label="Voltar para ${esc(postWorkoutOrigin === 'summary' ? 'o registro' : pageTitles[postWorkoutOrigin] || 'Início')}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button></div>
-          <div class="post-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="post-workout-title" tabindex="-1">${esc(summary.title)}</h2><p class="post-date">${esc(date)}</p></div>
+          <div class="post-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="post-workout-title" tabindex="-1">${esc(summary.title)}</h2><p>${esc(date)}</p></div>
           ${renderSummaryMetrics(summary)}
           <div class="post-actions"><button type="button" class="button primary full" data-share-record="${esc(session.key)}">${icon('share')}Compartilhar treino</button><button type="button" class="button full" data-post-history="${esc(session.key)}">Ver histórico</button></div>
           <div class="post-section-title"><h3>${strength ? 'Exercícios realizados' : 'Etapas registradas'}</h3><span>${summary.exercises.length} de ${session.workout.exercises.length}</span></div>
@@ -4940,6 +4946,13 @@
         if (!parsed.valid) { numericError(distance ? `Informe uma distância entre 0 e ${meters ? '10000000 m' : '10000 km'}.` : 'Informe uma carga entre 0 e 10000 kg.'); return null; }
         if (distance && parsed.value !== null && meters && !Number.isInteger(parsed.value)) { numericError('Informe a distância em metros inteiros.'); return null; }
         if (distance && required && !(parsed.value > 0)) { numericError('Informe uma distância maior que zero.'); return null; }
+        // No run reaches 1000 km: a number that large was typed in meters. Switch the
+        // unit and keep the digits, so one more tap on Aplicar saves the right distance.
+        if (distance && required && !meters && parsed.value >= 1000) {
+          if (Number.isInteger(parsed.value)) { numericPicker.unit = 'm'; numericControls(); numericError(`Esse valor parece estar em metros, então a unidade foi trocada para m (${number(parsed.value / 1000)} km). Confira e toque em Aplicar.`); }
+          else numericError('Informe a distância em km, como 9,49.');
+          return null;
+        }
         return parsed;
       }
       function openNumericPicker({ kind, title, subtitle, value, apply, trigger }) {
@@ -5868,6 +5881,7 @@
         if (draft.workout.kind === 'cardio') {
           if (!finishMetrics?.durationSeconds) { finishError('Selecione o tempo total da corrida.', $('cardio-duration')); return; }
           if (!finishMetrics?.distanceKm) { finishError('Informe a distância total percorrida.', $('cardio-distance')); return; }
+          if (finishMetrics.durationSeconds / finishMetrics.distanceKm < 90) { finishError('Distância e tempo não combinam: o pace ficaria abaixo de 1:30 min/km. Confira se a distância está em km.', $('cardio-distance')); return; }
           cardio = D.clone(finishMetrics);
         }
         const session = { ...D.clone(draft), date: finishDate, dateMode: finishDate === localDate() ? 'auto' : 'manual', cardio, notes: $('finish-notes').value.slice(0,2000), done: true, updatedAt: Math.max(Date.now(), draft.updatedAt + 1) };
