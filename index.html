@@ -2073,7 +2073,6 @@
     .rest-mini-title { font-size:14px; font-weight:500; color:var(--muted); overflow-wrap:anywhere; min-width:0; }
     .rest-mini-digits { font-size:30px; line-height:1.2; font-weight:550; font-variant-numeric:tabular-nums; letter-spacing:-.8px; }
     .rest-mini .timer-progress { height:3px; margin-top:10px; }
-    body.rest-minimized .shell { padding-bottom:calc(var(--rest-mini-height,90px) + 24px); }
     body.rest-minimized .toast { bottom:calc(var(--rest-mini-height,90px) + 12px); }
     .import-preview { border-color:var(--line); }
     .import-summary { list-style:none; margin:16px 0 4px; padding:0; }
@@ -2108,7 +2107,6 @@
     .media-square [data-media-status] { position:relative; margin:0; padding:12px; text-align:center; font-size:12px; color:var(--muted); background:var(--bg); }
     .media-square .icon-button { position:absolute; right:8px; width:40px; min-width:40px; min-height:40px; padding:9px; background:var(--bg); box-shadow:0 1px 5px rgb(0 0 0 / .12); }
     .media-square [data-remove-media] { top:8px; }
-    .media-square [data-expand-media] { top:8px; }
     .media-square .icon-button>.icon { width:20px; height:20px; }
     @media(max-width:350px) { .exercise-header { gap:10px; } }
     @media print { .exercise-media, .editor-media { display:none!important; } }
@@ -2253,7 +2251,6 @@
     .focus-exercise .media-square { width:100%; background:transparent; }
     .focus-exercise .media-square,#media-viewer .media-square { height:auto; aspect-ratio:1 / 1; border:0; border-radius:0; }
     .focus-exercise .media-square img,#media-viewer .media-square img { padding:0; object-fit:cover; object-position:center; }
-    .media-square [data-expand-media] { top:12px; bottom:auto; border-radius:50%; width:40px; min-width:40px; min-height:40px; }
     .focus-exercise .media-square img { -webkit-user-drag:none; }
     .focus-exercise .sets { width:calc(100% - 40px); margin:0 20px 20px; }
     .focus-exercise .sets td { padding-top:5px; padding-bottom:5px; }
@@ -2384,7 +2381,6 @@
     .toast[popover] { bottom:calc(var(--nav-space) + 12px); }
     body.rest-minimized .toast[popover] { bottom:calc(var(--nav-space) + var(--rest-mini-height,90px) + 20px); }
     .rest-mini { bottom:var(--nav-space); }
-    body.rest-minimized .shell { padding-bottom:calc(var(--nav-space) + var(--rest-mini-height,90px) + 24px); }
     dialog::backdrop { background:rgb(0 0 0 / .36); }
     dialog[open]:not(.value-dialog):not(.is-closing) { animation:dialog-in var(--motion-overlay) var(--ease-out); }
     dialog.value-dialog[open]:not(.is-closing) { animation:sheet-in var(--motion-page) var(--ease-out); }
@@ -2400,7 +2396,7 @@
     .form-field input:focus { border-color:var(--ink); box-shadow:0 0 0 3px var(--soft); }
     .set-row { transition:opacity .18s; }
     .check-box,.check-box>.icon { transition:background .18s,color .18s,opacity .18s; }
-    .activity-dock { position:fixed; z-index:25; left:0; right:0; bottom:var(--nav-space); width:min(560px,calc(100% - 32px)); margin:0 auto; border:1px solid var(--line); border-radius:22px; background:var(--bg); color:var(--ink); box-shadow:var(--shadow-float); overflow:hidden; }
+    .activity-dock { position:fixed; z-index:40; left:0; right:0; bottom:calc(12px + env(safe-area-inset-bottom,0px)); width:min(560px,calc(100% - 32px)); margin:0 auto; border:1px solid var(--line); border-radius:22px; background:var(--bg); color:var(--ink); box-shadow:var(--shadow-float); overflow:hidden; }
     .active-workout { position:fixed; z-index:25; top:calc(12px + env(safe-area-inset-top,0px)); left:0; right:0; width:min(560px,calc(100% - 32px)); margin:0 auto; border:1px solid var(--line); border-radius:22px; background:var(--bg); box-shadow:var(--shadow-float); }
     #resume-active-workout { display:flex; align-items:center; gap:16px; width:100%; min-height:94px; padding:14px 16px; border:0; border-radius:inherit; background:transparent; text-align:left; }
     #resume-active-workout:hover { background:var(--soft); }
@@ -2413,8 +2409,7 @@
     .active-workout-action .icon { width:20px; height:20px; }
     .activity-dock .rest-mini { position:static; width:100%; max-width:none; margin:0; border:0; border-radius:inherit; box-shadow:none; }
     .activity-dock #rest-expand { padding:12px 16px 14px; }
-    body.has-activity-dock .shell { padding-bottom:calc(var(--nav-space) + var(--activity-height,100px) + 24px); }
-    body.has-activity-dock .toast,body.has-activity-dock .toast[popover] { bottom:calc(var(--nav-space) + var(--activity-height,100px) + 12px); }
+    body.has-activity-dock .toast,body.has-activity-dock .toast[popover] { bottom:calc(24px + env(safe-area-inset-bottom,0px) + var(--activity-height,100px)); }
     .active-workout.is-entering { animation:activity-in var(--motion-overlay) var(--ease-out); }
     .active-workout.is-leaving { animation:activity-out .2s ease-in forwards; pointer-events:none; }
     @keyframes activity-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
@@ -3004,11 +2999,12 @@
     // Drafts, confirmed history and the recurring training cycle are independent.
     const TrainingData = (() => {
       const APP = 'treino-hibrido';
+      const SCHEMA = 9;
       const days = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
       const weekdays = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
       const shortDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
       const clone = value => JSON.parse(JSON.stringify(value));
-      const empty = () => ({ app: APP, schema: 8, profile: null, profileUpdatedAt: 0, sessions: {}, drafts: {}, plan: null, planUpdatedAt: 0, cycle: { number: 1, completed: {}, updatedAt: 0 } });
+      const empty = () => ({ app: APP, schema: SCHEMA, profile: null, profileUpdatedAt: 0, sessions: {}, drafts: {}, plan: null, planUpdatedAt: 0, cycle: { number: 1, completed: {}, updatedAt: 0 } });
       const validDate = text => {
         if (typeof text !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(text)) return false;
         const d = new Date(text + 'T12:00:00Z');
@@ -3031,7 +3027,7 @@
         // snapshot avoids duplicating large images in the training history.
         const sessionWorkout = clone(workout);
         sessionWorkout.exercises.forEach(ex => delete ex.media);
-        return { key: key(date, workout.id) + '_' + uid(), date, dateMode: 'auto', archived: false, day: workout.id, cycleNumber, workout: sessionWorkout, logs, notes: '', cardio: null, done: false, updatedAt: Date.now() };
+        return { key: key(date, workout.id) + '_' + uid(), date, dateMode: 'auto', archived: false, day: workout.id, cycleNumber, workout: sessionWorkout, logs, notes: '', cardio: null, timing: null, done: false, updatedAt: Date.now() };
       }
       function hasExerciseData(log) {
         return !!log && (log.sets ? log.sets.some(s => s.load !== null || s.value !== null || s.done) : log.done || log.rounds?.some(Boolean));
@@ -3210,10 +3206,18 @@
             if (!obj(s.cardio) || w.kind !== 'cardio' || !Number.isInteger(s.cardio.durationSeconds) || s.cardio.durationSeconds <= 0 || s.cardio.durationSeconds > 604800 || !num(s.cardio.distanceKm) || !(s.cardio.distanceKm > 0)) bad();
             cardio = { durationSeconds: s.cardio.durationSeconds, distanceKm: s.cardio.distanceKm };
           }
+          // Version 9 adds session timing. Preserve it through reads, saves,
+          // merges and backups, even when this screen does not display it.
+          let timing = null;
+          if (s.timing != null) {
+            const t = s.timing;
+            if (!obj(t) || !['startedAt','runningSince','pausedAt','finishedAt'].every(field => t[field] === null || stamp(t[field])) || !Number.isFinite(t.elapsedMs) || t.elapsedMs < 0 || t.elapsedMs > Number.MAX_SAFE_INTEGER) bad();
+            timing = { startedAt:t.startedAt, runningSince:t.runningSince, elapsedMs:t.elapsedMs, pausedAt:t.pausedAt, finishedAt:t.finishedAt };
+          }
           if (!legacy && (!Number.isSafeInteger(s.cycleNumber) || s.cycleNumber < 1)) bad();
-          return { key: id, date: s.date, dateMode: s.dateMode === 'manual' ? 'manual' : 'auto', archived: s.archived === true, day: s.day, cycleNumber: legacy ? 1 : s.cycleNumber, workout: w, logs, notes: s.notes, cardio, done: s.done, updatedAt: s.updatedAt };
+          return { key: id, date: s.date, dateMode: s.dateMode === 'manual' ? 'manual' : 'auto', archived: s.archived === true, day: s.day, cycleNumber: legacy ? 1 : s.cycleNumber, workout: w, logs, notes: s.notes, cardio, timing, done: s.done, updatedAt: s.updatedAt };
         };
-        if (!obj(raw) || raw.app !== APP || ![1, 2, 3, 4, 5, 6, 7, 8].includes(raw.schema) || !obj(raw.sessions) || Object.keys(raw.sessions).length > 10000) bad();
+        if (!obj(raw) || raw.app !== APP || !Number.isInteger(raw.schema) || raw.schema < 1 || raw.schema > SCHEMA || !obj(raw.sessions) || Object.keys(raw.sessions).length > 10000) bad();
         const result = empty();
         if (raw.profile != null) {
           if (!obj(raw.profile) || !str(raw.profile.name, 100) || !raw.profile.name.trim() || !(raw.profile.avatar === null || (str(raw.profile.avatar, 1500000) && /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(raw.profile.avatar))) || !stamp(raw.profileUpdatedAt)) bad();
@@ -3255,7 +3259,7 @@
       }
       function merge(current, incoming) {
         const result = clone(current); let added = 0, updated = 0, kept = 0;
-        result.schema = 8;
+        result.schema = SCHEMA;
         for (const field of ['sessions', 'drafts']) for (const [id, s] of Object.entries(incoming[field])) {
           if (field === 'sessions' && result.drafts[id]?.archived) continue;
           // Cancelling a draft is terminal, including when an older tab or backup is merged.
@@ -3360,6 +3364,26 @@
       return { values, indexAt };
     })();
 
+    // Read and validate before testing writes, so a quota error never discards a valid plan.
+    const TrainingStorage = (() => {
+      function load(getStorage, key) {
+        const result = { data:TrainingData.empty(), failure:null, error:null };
+        let storage, raw, parsed;
+        try { storage = getStorage(); raw = storage.getItem(key); }
+        catch (error) { return { ...result, failure:'access', error }; }
+        if (raw !== null) {
+          try { parsed = JSON.parse(raw); }
+          catch (error) { return { ...result, failure:'parse', error }; }
+          try { result.data = TrainingData.validate(parsed); }
+          catch (error) { return { ...result, failure:'validate', error }; }
+        }
+        try { storage.setItem(key + '.check', '1'); storage.removeItem(key + '.check'); }
+        catch (error) { result.failure = 'write'; result.error = error; }
+        return result;
+      }
+      return { load };
+    })();
+
     (() => {
       'use strict';
       const DEFAULT_PLAN = JSON.parse(document.getElementById('workout-plan').textContent).map((w, i) => ({ ...w, weekday: i + 1, subtitle: '' }));
@@ -3379,20 +3403,14 @@
       const localDate = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
       const displayDate = (date, year = false) => new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', ...(year ? { year: 'numeric' } : {}) });
       const number = value => value === null || value === undefined ? '—' : value.toLocaleString('pt-BR', { maximumFractionDigits: 3 });
-      let store = D.empty(), preferences = {}, storageOkay = true, loadBlocked = false, pendingImport = null, confirmAction = null, confirmReturn = null;
+      const initialStorage = TrainingStorage.load(() => localStorage, STORAGE_KEY);
+      let store = initialStorage.data, preferences = {}, storageOkay = !initialStorage.failure, loadBlocked = !!initialStorage.failure && initialStorage.failure !== 'write', pendingImport = null, confirmAction = null, confirmReturn = null;
+      let storageFailure = initialStorage.failure, storageError = initialStorage.error;
       let selectedDate = localDate();
       let selectedDay = PLAN[0]?.id || null, selectedWeekday = (new Date().getDay() + 6) % 7 + 1, viewingRecord = null;
       let toastTimeout = null, appView = 'home', focusExerciseId = null;
       let modalSequence=0;
       const modalOrder=new WeakMap();
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) store = D.validate(JSON.parse(raw));
-        localStorage.setItem(STORAGE_KEY + '.check', '1'); localStorage.removeItem(STORAGE_KEY + '.check');
-      } catch (error) {
-        storageOkay = false;
-        try { loadBlocked = !!localStorage.getItem(STORAGE_KEY); } catch { loadBlocked = false; }
-      }
       try { const p = JSON.parse(localStorage.getItem(PREF_KEY) || '{}'); if (p && typeof p === 'object') preferences = p; } catch { }
       function syncPlan() {
         // Older backups can keep the original workout only inside session snapshots.
@@ -3493,19 +3511,31 @@
       }
       function savePreferences() { try { localStorage.setItem(PREF_KEY, JSON.stringify(preferences)); } catch { } }
       function storageNotice() {
-        $('storage-alert').hidden = storageOkay;
-        if (!storageOkay) $('storage-alert').innerHTML = loadBlocked
-          ? `${icon('info')} Há registros salvos que esta versão não conseguiu ler. Eles foram preservados. Os novos registros estão apenas nesta aba; exporte um backup antes de fechar.`
-          : 'O navegador não permitiu salvar seus registros. Eles estão apenas nesta aba: exporte um backup antes de fechar.';
+        const alert = $('storage-alert');
+        alert.hidden = storageOkay;
+        if (storageOkay) return;
+        alert.textContent = loadBlocked
+          ? storageFailure === 'access'
+            ? 'O navegador não permitiu ler a ficha. Novas gravações foram suspensas para proteger seus registros.'
+            : 'Não foi possível carregar os registros salvos. Eles foram preservados e novas gravações estão bloqueadas.'
+          : storageError?.name === 'QuotaExceededError'
+            ? 'Não há espaço para salvar novas alterações. Exporte um backup antes de fechar.'
+            : 'O navegador não permitiu salvar suas alterações. Elas estão nesta aba: exporte um backup antes de fechar.';
       }
       function writeStore() {
         const wasOkay = storageOkay;
         if (loadBlocked) { storageOkay = false; updateSaveStatus(); storageNotice(); return false; }
+        let phase = 'access', onDisk = null;
         try {
-          const onDisk = localStorage.getItem(STORAGE_KEY);
-          if (onDisk) store = D.merge(D.validate(JSON.parse(onDisk)), store).data;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); storageOkay = true;
-        } catch { storageOkay = false; }
+          onDisk = localStorage.getItem(STORAGE_KEY); phase = 'validate';
+          if (onDisk !== null) store = D.merge(D.validate(JSON.parse(onDisk)), store).data;
+          phase = 'write';
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); storageOkay = true; storageFailure = null; storageError = null;
+        } catch (error) {
+          storageOkay = false; storageError = error;
+          storageFailure = phase === 'validate' && error instanceof SyntaxError ? 'parse' : phase;
+          if (phase !== 'write') loadBlocked = true;
+        }
         syncPlan(); renderProfile(); updateSaveStatus(); storageNotice(); renderActiveWorkout();
         if (!storageOkay && wasOkay) toast('Não foi possível salvar. Suas alterações estão nesta aba; exporte um backup antes de fechar.','error');
         return storageOkay;
@@ -3563,10 +3593,10 @@
       function exerciseMedia(ex) {
         return PLAN.find(workout => workout.id === selectedDay)?.exercises.find(item => item.id === ex.id)?.media || ex.media || null;
       }
-      function mediaFrame(ex, media = exerciseMedia(ex), editor = false, expanded = false) {
+      function mediaFrame(ex, media = exerciseMedia(ex), editor = false) {
         if (!media) return '';
         const preview = typeof media === 'object' ? media.preview : '';
-        return `<div class="exercise-media" data-inline-media="${esc(ex.id)}"><div class="media-square"><span class="media-placeholder" aria-hidden="true">${icon('image')}</span><img data-media-image ${preview ? `src="${esc(preview)}"` : 'hidden'} alt="Execução de ${esc(ex.name || 'exercício')}"><p data-media-status role="status" hidden></p>${editor ? `<button type="button" class="icon-button danger secondary" data-remove-media aria-label="Remover anexo de ${esc(ex.name || 'exercício')}">${icon('trash')}</button>` : expanded ? '' : `<button type="button" class="icon-button" data-expand-media="${esc(ex.id)}" aria-label="Ampliar demonstração de ${esc(ex.name)}" aria-haspopup="dialog" aria-controls="media-dialog">${icon('expand')}</button>`}</div></div>`;
+        return `<div class="exercise-media" data-inline-media="${esc(ex.id)}"><div class="media-square"><span class="media-placeholder" aria-hidden="true">${icon('image')}</span><img data-media-image ${preview ? `src="${esc(preview)}"` : 'hidden'} alt="Execução de ${esc(ex.name || 'exercício')}"><p data-media-status role="status" hidden></p>${editor ? `<button type="button" class="icon-button danger secondary" data-remove-media aria-label="Remover anexo de ${esc(ex.name || 'exercício')}">${icon('trash')}</button>` : ''}</div></div>`;
       }
       function renderStrength(ex, index, session, focused = false) {
         const log = session.logs[ex.id];
@@ -3616,7 +3646,7 @@
           <div id="exercise-list">${renderExerciseBlocks(w, (ex, i) => strength ? renderStrength(ex, i, s) : renderCardio(ex, i, s), false, s)}</div>
           <p class="form-error" id="entry-error" role="alert" hidden></p>
           <div class="session-bottom"><div class="session-actions"><button type="button" class="button primary" id="finish-workout"></button>${locked ? '' : cancelWorkoutButton(s)}</div><span class="save-status" id="save-status" role="status" hidden></span></div>`;
-        if (locked) $('exercise-list').querySelectorAll('button:not([data-expand-media]),input').forEach(el => el.disabled = true);
+        if (locked) $('exercise-list').querySelectorAll('button,input').forEach(el => el.disabled = true);
         if (strength) bindInlineMedia($('workout'), w.exercises, exerciseMedia);
         updateProgress(); updateSaveStatus(); timerUI();
       }
@@ -3777,13 +3807,98 @@
         if (!locked) rememberActiveWorkout(session, ex.id);
         $('workout').innerHTML = `<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-summary aria-label="Voltar ao resumo do treino">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${locked ? 'Registro' : 'Em execução'} · ${index+1} de ${exercises.length}</span><p class="session-workout-name">${esc(workout.title)}</p></div><button type="button" class="icon-button" data-review-exercises aria-label="Ver todos os exercícios" aria-haspopup="dialog" aria-controls="exercise-picker-dialog">${icon('reminder')}</button></div>
           ${sessionProgress()}<div data-exercise-swipe>${focusedSessionControls(workout,session,exercises,index)}<div id="exercise-list">${renderStrength(ex,index,session,true)}</div></div><div class="session-bottom"><div class="session-actions"><button type="button" class="button primary" id="finish-workout"></button>${locked ? '' : cancelWorkoutButton(session)}</div><span class="save-status" id="save-status" role="status" hidden></span></div>`;
-        if (locked) $('exercise-list').querySelectorAll('button:not([data-expand-media]),input').forEach(el => el.disabled = true);
+        if (locked) $('exercise-list').querySelectorAll('button,input').forEach(el => el.disabled = true);
         bindInlineMedia($('workout'),workout.exercises,exerciseMedia);
         updateProgress(); updateSaveStatus(); timerUI();
       }
       const pageIds = { workouts:'manager-dialog', history:'history-dialog', profile:'profile-page', timer:'timer-dialog', backup:'backup-dialog' };
       const pageTitles = { home:'Início',workouts:'Treinos',history:'Histórico',profile:'Perfil',timer:'Temporizador',backup:'Backup',summary:'Treino',session:'Treino' };
       let summaryOrigin = 'home';
+      let navigationReady = false, navigationQueued = false, navigationRestoring = false, navigationPopping = false, navigationCurrent = null;
+      const navigationKey = route => JSON.stringify([route.view, ...(['summary','session'].includes(route.view) ? [route.day, route.record] : [])]);
+      const navigationSnapshot = () => ({ view:appView, day:selectedDay, weekday:selectedWeekday, date:selectedDate, record:viewingRecord, exercise:focusExerciseId, origin:summaryOrigin, historyDate, historyMonth });
+      const topNavigationDialog = () => [...document.querySelectorAll('dialog[open]:not(.is-closing)')].sort((a,b) => (modalOrder.get(b) || 0) - (modalOrder.get(a) || 0))[0];
+      function writeNavigation(state, replace = false) {
+        try {
+          window.history[replace ? 'replaceState' : 'pushState']({ ...window.history.state, trainingNavigation:state }, '');
+          navigationCurrent = state;
+        } catch { navigationReady = false; }
+      }
+      function queueNavigationSync() {
+        if (!navigationReady || navigationQueued || navigationRestoring) return;
+        navigationQueued = true;
+        queueMicrotask(() => { navigationQueued = false; syncNavigation(); });
+      }
+      function syncNavigation() {
+        if (!navigationReady || navigationRestoring || navigationPopping) return;
+        const route = navigationSnapshot(), key = navigationKey(route), currentKey = navigationKey(navigationCurrent.route), dialog = topNavigationDialog();
+        // One temporary history entry dismisses the top dialog before leaving its page.
+        // Remove it on button/automatic closes as well, avoiding empty Back steps.
+        if (navigationCurrent.modal) {
+          if (!dialog || key !== currentKey) {
+            navigationPopping = true;
+            window.history.back();
+          } else writeNavigation({ ...navigationCurrent, route }, true);
+          return;
+        }
+        const state = { version:1, route, previousKey:key === currentKey ? navigationCurrent.previousKey : currentKey, modal:false };
+        writeNavigation(state, key === currentKey);
+        if (dialog && navigationReady) writeNavigation({ ...state, modal:true });
+      }
+      function applyNavigationRoute(route) {
+        appView = Object.hasOwn(pageTitles, route.view) ? route.view : 'home';
+        selectedDay = route.day; selectedWeekday = route.weekday;
+        selectedDate = D.validDate(route.date) ? route.date : localDate();
+        viewingRecord = store.sessions[route.record]?.done ? route.record : null;
+        focusExerciseId = route.exercise;
+        summaryOrigin = Object.hasOwn(pageIds, route.origin) || route.origin === 'home' ? route.origin : 'home';
+        historyDate = D.validDate(route.historyDate) ? route.historyDate : localDate();
+        historyMonth = /^\d{4}-\d{2}$/.test(route.historyMonth) ? route.historyMonth : historyDate.slice(0,7);
+        setMonthPickerOpen(false);
+        renderNav(); renderWorkout(); focusPage();
+      }
+      function initializeNavigation() {
+        const saved = window.history.state?.trainingNavigation;
+        if (saved?.version === 1 && saved.route) {
+          navigationRestoring = true;
+          try { applyNavigationRoute(saved.route); } finally { navigationRestoring = false; }
+        }
+        navigationReady = true;
+        writeNavigation({ version:1, route:navigationSnapshot(), previousKey:saved?.modal ? null : saved?.previousKey || null, modal:false }, true);
+      }
+      function navigateBack(fallback) {
+        if (!validInputs()) return;
+        const target = { ...navigationSnapshot(), view:fallback };
+        if (navigationReady && navigationCurrent?.previousKey === navigationKey(target)) {
+          window.history.back();
+        } else if (fallback === 'summary') {
+          appView = 'summary'; renderWorkout(); focusPage();
+        } else navigatePage(fallback, { preserveDay:true });
+      }
+      window.addEventListener('popstate', event => {
+        const target = event.state?.trainingNavigation;
+        if (!navigationReady || target?.version !== 1 || !target.route) return;
+        const dismissing = navigationCurrent?.modal, automatic = navigationPopping;
+        navigationPopping = false;
+        navigationCurrent = target;
+        if (dismissing) {
+          if (!automatic) {
+            const dialog = topNavigationDialog();
+            if (dialog) {
+              if (dialog.id === 'rest-dialog') dialog.dataset.closeMotion = 'minimize';
+              // Preserve each dialog's cancellation rules and cleanup listeners.
+              dialog.dispatchEvent(new Event('cancel', { cancelable:true }));
+            }
+          }
+          queueNavigationSync();
+          return;
+        }
+        navigationRestoring = true;
+        try { applyNavigationRoute(target.route); } finally { navigationRestoring = false; }
+        // Forward navigation restores the page, never an expired form or timer dialog.
+        writeNavigation({ ...target, route:navigationSnapshot(), modal:false }, true);
+        queueNavigationSync();
+      });
       function isPageOpen(id) { return pageIds[appView] === id; }
       function syncPageChrome() {
         document.body.dataset.view=appView;
@@ -3866,7 +3981,7 @@
             $('workout').insertAdjacentHTML('afterbegin',`<div class="view-toolbar"><button type="button" class="icon-button back-button" data-session-summary aria-label="Voltar ao resumo do treino">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button></div>`);
           }
         }
-        renderActiveWorkout(); syncViewMotion();
+        renderActiveWorkout(); syncViewMotion(); queueNavigationSync();
       }
       function focusPage() {
         window.scrollTo({top:0,behavior:'auto'});
@@ -3886,7 +4001,10 @@
       });
       document.addEventListener('click',e=>{
         const target=e.target.closest('[data-page]');
-        if(target?.tagName === 'BUTTON') navigatePage(target.dataset.page);
+        if(target?.tagName === 'BUTTON') {
+          if (target.classList.contains('back-button')) navigateBack(target.dataset.page);
+          else navigatePage(target.dataset.page);
+        }
       });
 
       function startSession(exerciseId = null) {
@@ -3945,7 +4063,7 @@
         if (!ex || !exerciseMedia(ex)) return;
         clearInlineMedia($('media-viewer'));
         $('media-title').textContent = ex.name;
-        $('media-viewer').innerHTML = mediaFrame(ex,exerciseMedia(ex),false,true);
+        $('media-viewer').innerHTML = mediaFrame(ex,exerciseMedia(ex));
         openDialog('media-dialog');
         bindInlineMedia($('media-viewer'),[ex],exerciseMedia);
       }
@@ -3954,15 +4072,14 @@
         if (target.hasAttribute('data-home')) goHome();
         else if (target.hasAttribute('data-view-history')) openWorkoutHistory(target.dataset.viewHistory);
         else if (target.hasAttribute('data-cancel-workout')) requestCancelWorkout(target.dataset.cancelWorkout);
-        else if(target.hasAttribute('data-summary-back')) navigatePage(summaryOrigin,{preserveDay:true});
+        else if(target.hasAttribute('data-summary-back')) navigateBack(summaryOrigin);
         else if (target.hasAttribute('data-overview-workout')) showOverview(target.dataset.overviewWorkout);
         else if (target.hasAttribute('data-resume-workout')) { summaryOrigin=appView; appView='summary'; chooseDay(target.dataset.resumeWorkout); startSession(); }
         else if (target.hasAttribute('data-start-session')) startSession();
-        else if (target.hasAttribute('data-session-summary')) { appView='summary'; renderWorkout(); focusPage(); }
+        else if (target.hasAttribute('data-session-summary')) navigateBack('summary');
         else if (target.hasAttribute('data-focus-exercise')) selectFocus(target.dataset.focusExercise);
         else if (target.hasAttribute('data-review-exercises')) showExerciseList();
         else if (target.hasAttribute('data-preview-exercise')) showMedia(target.dataset.previewExercise);
-        else if (target.hasAttribute('data-expand-media')) showMedia(target.dataset.expandMedia);
         else if (target.hasAttribute('data-edit-current')) openEditor(selectedDay);
         else if (target.hasAttribute('data-manage-plan')) openManager();
         else if (target.hasAttribute('data-home-history')) $('history-open').click();
@@ -4081,10 +4198,11 @@
           delete dialog.dataset.closeMotion;
           if(!dialog.open) return;
           if(pending) { if(minimizing) dialog.classList.add('is-minimizing'); return; }
-          if(reduceMotion()) { nativeClose(value); syncToastLayer(); return; }
+          if(reduceMotion()) { nativeClose(value); syncToastLayer(); queueNavigationSync(); return; }
           dialog.classList.add('is-closing');
           if(minimizing) dialog.classList.add('is-minimizing');
           dialog.inert=true;
+          queueNavigationSync();
           const finish=()=>{
             if(!pending) return;
             reset(); nativeClose(value);syncToastLayer();
@@ -4097,11 +4215,13 @@
           reset();
           if(!dialog.open) { nativeShow();modalOrder.set(dialog,++modalSequence); }
           syncToastLayer();
+          queueNavigationSync();
         };
         dialog.addEventListener('close',()=>{
           if(!dialog.open) syncToastLayer();
           const field=dialog._committedField;dialog._committedField=null;
           if(field) animateField(field);
+          queueNavigationSync();
         });
       });
       // The cancel event does not bubble in every browser; register the final
@@ -4260,6 +4380,7 @@
         selectHistoryMonth(dateKey(d).slice(0, 7));
       }
       function renderHistory() {
+        queueNavigationSync();
         const list = historySessions(), byDate = new Map();
         $('clear-history').disabled = list.length === 0;
         for (const session of list) {
@@ -4942,9 +5063,18 @@
         const group = session.workout.groups?.find(g => g.exerciseIds.includes(exId));
         return !group || group.exerciseIds.every(id => !session.logs[id]?.sets[index] || session.logs[id].sets[index].done);
       }
+      function nextPendingExercise(session, exId) {
+        const exercises = orderedExercises(session.workout), position = exercises.findIndex(ex => ex.id === exId);
+        // Wrap once so completing exercises out of order never strands pending sets.
+        for (let step = 1; step < exercises.length; step++) {
+          const ex = exercises[(position + step) % exercises.length];
+          if (!exerciseComplete(ex, session)) return ex.id;
+        }
+        return null;
+      }
       function nextSupersetExercise(session, exId, setIndex) {
         const group = session.workout.groups?.find(g => g.exerciseIds.includes(exId));
-        if (!group) return null;
+        if (!group) return session.logs[exId]?.sets.every(set => set.done) ? nextPendingExercise(session, exId) : null;
         const ids = group.exerciseIds, position = ids.indexOf(exId);
         // Finish this round first, even after manual navigation or an undo.
         for (let step = 1; step < ids.length; step++) {
@@ -4957,13 +5087,13 @@
           const round = Math.min(...pendingRounds);
           return ids.find(id => { const set = session.logs[id]?.sets[round]; return set && !set.done; });
         }
-        const exercises = orderedExercises(session.workout), last = exercises.findIndex(ex => ex.id === ids.at(-1));
-        return exercises[last + 1]?.id || null;
+        return nextPendingExercise(session, ids.at(-1));
       }
       function afterSetCompleted(session, exId, index, trigger) {
         if (appView !== 'session' || isReadOnly() || currentDraft()?.key !== session.key) return;
         const nextId = nextSupersetExercise(session, exId, index);
-        if (nextId && nextId !== focusExerciseId) { selectFocus(nextId); trigger = $('workout-title'); }
+        if (nextId && nextId !== focusExerciseId) selectFocus(nextId);
+        trigger = $('exercise-list').querySelector('[data-set]:not(:checked),[data-exercise-timer][aria-pressed="false"]') || $('workout-title');
         if (roundComplete(session, exId, index)) startRest(trigger);
         else {
           // Timed sets may still be closing their dialog when the exercise changes.
@@ -5441,12 +5571,17 @@
       }
       async function downloadBackup() {
         if (backupBusy) return;
+        // A rejected store must never be represented by a successful empty backup.
+        if (loadBlocked && !PLAN.length && !store.profile && !Object.keys(store.sessions).length && !Object.keys(store.drafts).length) {
+          reportError('import-error','Não foi possível gerar o backup porque os registros salvos ainda não foram carregados.'); return;
+        }
         backupBusyUI(true, 'Preparando backup com os anexos…'); $('import-error').hidden = true;
         try {
           const data = D.clone({ ...store, plan: PLAN, exportedAt: new Date().toISOString() });
           const { blob, extension } = await M.exportBackup(data), url = URL.createObjectURL(blob), a = document.createElement('a');
           a.href = url; a.download = `treino-hibrido-backup-${localDate()}.${extension}`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
-          preferences.lastBackup = Date.now(); savePreferences(); toast('Backup completo gerado.');
+          preferences.lastBackup = Date.now(); savePreferences();
+          toast(loadBlocked ? 'Backup dos dados desta aba gerado.' : 'Backup completo gerado.', loadBlocked ? 'info' : 'success');
         } catch (error) { reportError('import-error',M.errorText(error)); }
         finally { backupBusyUI(false); }
       }
@@ -5619,7 +5754,6 @@
         if (timer.workoutKey && current >= duration && !timer.finished) {
           if (!exercise) { endRest(true); return; }
           timer.elapsed = duration; timer.startedAt = null; timer.finished = true; persistTimer(); beep();
-          toast('Tempo concluído.');
         }
         const remaining = Math.max(0, duration - current), display = timeText(remaining), running = timer.startedAt !== null;
         const title = exercise ? 'Temporizador' : 'Descanso', subject = exercise ? 'temporizador' : 'descanso';
@@ -5841,6 +5975,7 @@
       window.addEventListener('beforeunload', e => { if ((!storageOkay && (Object.keys(store.sessions).length || Object.values(store.drafts).filter(s => !s.archived).length || store.plan)) || $('workout').querySelector('[aria-invalid="true"]')) { e.preventDefault(); e.returnValue = ''; } });
       restoreActiveWorkout(); installDialogCancelMotion();
       applyTheme(); renderProfile(); renderNav(); renderWorkout(); soundUI(); timerUI(); storageNotice(); setInterval(timerUI, 200);
+      initializeNavigation();
       // Persist migration once, keeping the original storage key and old backups readable.
       if (!loadBlocked && storageOkay) writeStore();
     })();
