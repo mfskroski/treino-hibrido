@@ -1834,9 +1834,6 @@
     .cardio-fields { margin:20px 0 0; padding:14px; border:1px solid var(--line); border-radius:16px; min-width:0; }
     .cardio-fields legend { padding:0 6px; font-size:16px; font-weight:550; }
     .cardio-fields .form-hint { margin-top:0; }
-    .cardio-totals { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:16px 0; margin:0; border-bottom:1px solid var(--line); }
-    .cardio-totals dt { font-size:14px; color:var(--muted); }
-    .cardio-totals dd { margin:4px 0 0; font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; }
     .complete-set input:disabled { cursor:default; }
     @media(max-width:350px) { .editor-exercise { padding:10px; } .form-grid { gap:8px; } .set-count { gap:4px; } .set-count .button { min-width:34px; } }
     @media print { #edit-workout, .cycle-label, .record-banner { display:none!important; } }
@@ -2329,7 +2326,7 @@
     .today-card h2+.button { margin-top:18px; }
     .today-card-top { margin-bottom:14px; }
     .today-card-top .context-label { font-size:13px; }
-    .today-card .kind-badge { padding:5px 10px; flex:none; }
+    .today-card .kind-badge,.post-heading>.kind-badge { padding:5px 10px; flex:none; }
     .today-card .today-detail { font-size:13px; margin:7px 0 18px; }
     .today-card .button { min-height:44px; justify-content:center; font-size:14px; padding:9px 14px; border-radius:12px; }
     .overview-item[aria-current=true] .overview-number,.overview-item.is-complete .overview-number { color:var(--ink); background:var(--soft); }
@@ -2427,6 +2424,73 @@
     @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
     @media print { .bottom-nav,.activity-dock,.active-workout { display:none!important; } body.has-active-workout .shell { padding-top:0; } body.has-activity-dock .shell,.shell { padding-bottom:0; } }
 
+    /* One rotation for expandable sections and calendar controls. */
+    details>summary>.icon[data-hugeicon=ArrowDown01Icon],
+    [aria-expanded] .icon[data-hugeicon=ArrowDown01Icon] { transition:transform .2s; transform-origin:center; }
+    details[open]>summary>.icon[data-hugeicon=ArrowDown01Icon],
+    [aria-expanded=true] .icon[data-hugeicon=ArrowDown01Icon] { transform:rotate(180deg); }
+    details.is-collapsing>summary>.icon[data-hugeicon=ArrowDown01Icon] { transform:rotate(0); }
+    details.is-expanding { overflow:hidden; overflow-anchor:none; }
+
+    /* Post-workout: the same monochrome surfaces and controls as the training flow. */
+    body[data-view=postworkout]>.shell>.header { display:none; }
+    body[data-view=postworkout] { --nav-space:calc(12px + env(safe-area-inset-bottom,0px)); }
+    #post-workout { padding-top:20px; }
+    .post-toolbar { display:flex; align-items:center; margin-bottom:24px; }
+    .post-heading>.kind-badge { margin-bottom:14px; }
+    .post-heading h2 { font-size:34px; font-weight:600; letter-spacing:-1.1px; line-height:1.15; overflow-wrap:anywhere; }
+    .post-date { color:var(--muted); font-size:13px; margin-top:10px; }
+    .post-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:26px 0 12px; padding:22px 0; border:1px solid var(--line); border-radius:22px; background:var(--bg); box-shadow:var(--shadow-card); }
+    .post-stats>div { min-width:0; text-align:center; padding:0 8px; }
+    .post-stats>div+div { border-left:1px solid var(--line); }
+    .post-stats dd { margin:0; font-size:27px; font-weight:600; line-height:1.2; letter-spacing:-.8px; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+    .post-stats dd.is-long { font-size:20px; }
+    .post-stats dd.is-very-long { font-size:16px; }
+    .post-stats dt { font-size:12px; color:var(--muted); margin-top:7px; }
+    .history-totals { margin:0; padding:20px 0; border:0; border-bottom:1px solid var(--line); border-radius:0; box-shadow:none; }
+    .history-totals dd { font-size:23px; white-space:nowrap; }
+    .history-totals>div { padding:0 5px; }
+    .post-actions { display:grid; gap:10px; margin:24px 0 28px; }
+    .post-actions .button { font-size:14px; }
+    .post-section-title { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:24px 0 12px; }
+    .post-section-title h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
+    .post-section-title span { color:var(--muted); font-size:12px; }
+    .post-exercises { border:1px solid var(--line); border-radius:20px; background:var(--bg); box-shadow:var(--shadow-card); overflow:hidden; }
+    .post-exercise+.post-exercise { border-top:1px solid var(--line); }
+    .post-exercise summary { list-style:none; display:flex; align-items:center; gap:12px; padding:17px; cursor:pointer; min-height:70px; }
+    .post-exercise summary::-webkit-details-marker { display:none; }
+    .post-exercise summary>div { flex:1; min-width:0; }
+    .post-exercise summary strong { display:block; font-size:14px; font-weight:550; line-height:1.4; overflow-wrap:anywhere; }
+    .post-exercise summary small { display:block; font-size:12px; color:var(--muted); margin-top:4px; }
+    .post-exercise summary>.icon { width:18px; height:18px; color:var(--muted); }
+    .post-exercises .overview-group .post-exercise summary,.post-exercises .overview-group .post-stage { padding:14px; }
+    .post-exercise .post-set-list { margin:0 17px 15px; border-top:1px solid var(--line); }
+    .post-exercises .overview-group .post-set-list { margin-left:14px; margin-right:14px; }
+    .post-set-row { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:11px 0; font-size:13px; }
+    .post-set-row+.post-set-row { border-top:1px solid var(--line); }
+    .post-set-row>span { color:var(--muted); }
+    .post-set-row strong { font-size:13px; font-weight:500; text-align:right; font-variant-numeric:tabular-nums; }
+    .post-stage { display:flex; align-items:center; gap:12px; padding:17px; }
+    .post-stage>div { flex:1; min-width:0; }
+    .post-stage strong { display:block; font-size:14px; font-weight:550; overflow-wrap:anywhere; }
+    .post-stage small { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
+    .post-notes { border-top:1px solid var(--line); padding-top:20px; margin-top:24px; }
+    .post-notes h3 { font-size:14px; font-weight:550; margin-bottom:8px; }
+    .post-notes p { color:var(--muted); white-space:pre-wrap; font-size:14px; overflow-wrap:anywhere; }
+    .post-empty { padding:20px; background:var(--soft); border-radius:18px; font-size:14px; color:var(--muted); }
+    #share-dialog { max-width:500px; }
+    .share-settings { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; }
+    .share-settings.is-opaque { grid-template-columns:1fr; }
+    .share-settings .form-field { margin:0; }
+    .share-settings .selection-field { font-size:14px; }
+    .share-preview-frame { display:grid; place-items:center; min-height:140px; background:var(--soft); padding:12px; border-radius:18px; }
+    .share-preview-frame[data-background=transparent] { background-color:#e8e8e8; background-image:conic-gradient(#dedede 25%,transparent 0 50%,#dedede 0 75%,transparent 0); background-size:20px 20px; }
+    .share-preview-frame[data-background=transparent][data-text=light] { background-color:#393939; background-image:conic-gradient(#333333 25%,transparent 0 50%,#333333 0 75%,transparent 0); }
+    .share-preview-frame canvas,.share-preview-frame img { display:block; width:100%; height:auto; max-height:42dvh; object-fit:contain; }
+    .share-preview-frame .form-hint { margin:0; }
+    .share-actions { display:grid; gap:10px; margin-top:18px; }
+    @media(max-width:350px) { .post-heading h2 { font-size:29px; } .post-stats dd { font-size:23px; } .post-stats dd.is-long { font-size:18px; } .post-stats dd.is-very-long { font-size:14px; } .post-stats dt { font-size:11px; } .post-stats>div { padding:0 5px; } .history-totals dd { font-size:18px; } .history-totals dd.is-long { font-size:14px; } .history-totals dd.is-very-long { font-size:12px; } .post-exercise summary,.post-stage { padding:15px 13px; } .share-settings { grid-template-columns:1fr; } }
+    @media print { .post-toolbar,.post-actions { display:none!important; } .post-stats,.post-exercises { box-shadow:none; } }
   </style>
 </head>
 
@@ -2489,6 +2553,7 @@
       <p class="form-error" id="import-error" role="alert" hidden></p>
     </div>
   </section>
+<section id="post-workout" class="app-page" data-page="postworkout" aria-labelledby="post-workout-title" hidden></section>
 <section id="profile-page" class="app-page" data-page="profile" aria-label="Perfil" hidden>
   <button type="button" class="profile-card" id="profile-open" aria-label="Editar perfil" aria-haspopup="dialog" aria-controls="profile-dialog"><span class="avatar" id="profile-avatar" aria-hidden="true"><i data-icon="profile"></i></span><span class="profile-card-copy"><span class="profile-card-name" id="profile-name">Seu perfil</span></span><span class="profile-edit" aria-hidden="true"><i data-icon="edit"></i></span></button>
   <div class="profile-settings"><button type="button" class="settings-link" id="rest-settings-open"><i data-icon="timer"></i><span>Temporizador</span><i data-icon="chevron" class="settings-chevron"></i></button><button type="button" class="settings-link" id="backup-open"><i data-icon="download"></i><span>Backup</span><i data-icon="chevron" class="settings-chevron"></i></button><div class="settings-row"><i data-icon="moon"></i><span>Tema escuro</span><button type="button" id="theme-toggle" class="settings-switch" role="switch" aria-label="Tema escuro" aria-checked="false"><span></span></button></div></div>
@@ -2624,6 +2689,14 @@
       <p id="profile-error" class="form-error" role="alert" hidden></p>
       <div class="session-actions"><button type="submit" class="button primary" id="profile-save">Salvar alterações</button><button type="button" class="button" data-close="profile-dialog">Cancelar</button></div>
     </form>
+  </dialog>
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <div class="dialog-header"><h2 id="share-title">Compartilhar treino</h2><button type="button" class="icon-button" data-close="share-dialog" aria-label="Fechar compartilhamento"><i data-icon="close"></i></button></div>
+    <div class="dialog-body">
+      <div class="share-settings" id="share-settings"><div class="form-field"><span id="share-background-label">Fundo</span><button type="button" class="selection-field" id="share-background" aria-labelledby="share-background-label share-background" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="form-field" id="share-text-field"><span id="share-text-label">Texto</span><button type="button" class="selection-field" id="share-text" aria-labelledby="share-text-label share-text" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div></div>
+      <div class="share-preview-frame" id="share-preview-frame" aria-busy="false"><p id="share-loading" class="form-hint" role="status" aria-live="polite">Preparando imagem…</p><canvas id="share-preview" role="img" aria-label="Prévia do resumo do treino" hidden></canvas><img id="share-save-image" alt="Imagem do treino para salvar pelo menu da imagem" hidden></div>
+      <div class="share-actions"><button type="button" class="button primary full" id="share-native" disabled hidden><i data-icon="share"></i>Compartilhar imagem</button><button type="button" class="button primary full" id="share-download" disabled><i data-icon="download"></i>Salvar imagem</button></div>
+    </div>
   </dialog>
   <dialog id="finish-dialog" aria-labelledby="finish-title">
     <div class="dialog-header"><h2 id="finish-title">Concluir treino</h2><button class="icon-button" data-close="finish-dialog" aria-label="Cancelar conclusão"><i data-icon="close"></i></button></div>
@@ -2776,6 +2849,8 @@
     HugeiconsSubset.home = {"name":"Home04Icon","body":"<path d=\"M3 11.9896V14.5C3 17.7998 3 19.4497 4.02513 20.4749C5.05025 21.5 6.70017 21.5 10 21.5H14C17.2998 21.5 18.9497 21.5 19.9749 20.4749C21 19.4497 21 17.7998 21 14.5V11.9896C21 10.3083 21 9.46773 20.6441 8.74005C20.2882 8.01237 19.6247 7.49628 18.2976 6.46411L16.2976 4.90855C14.2331 3.30285 13.2009 2.5 12 2.5C10.7991 2.5 9.76689 3.30285 7.70242 4.90855L5.70241 6.46411C4.37533 7.49628 3.71179 8.01237 3.3559 8.74005C3 9.46773 3 10.3083 3 11.9896Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path><path d=\"M16 17H8\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"};
     HugeiconsSubset.image = {"name": "Image01Icon", "body": "<circle cx=\"7.5\" cy=\"7.5\" r=\"1.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></circle><path d=\"M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M5 21C9.37246 15.775 14.2741 8.88406 21.4975 13.5424\" stroke=\"currentColor\" stroke-width=\"1.5\"></path>"};
     HugeiconsSubset.expand = {"name":"FullScreenIcon","body":"<path d=\"M15.5 21C16.8956 21 17.5933 21 18.1611 20.8278C19.4395 20.44 20.44 19.4395 20.8278 18.1611C21 17.5933 21 16.8956 21 15.5M21 8.5C21 7.10444 21 6.40666 20.8278 5.83886C20.44 4.56046 19.4395 3.56004 18.1611 3.17224C17.5933 3 16.8956 3 15.5 3M8.5 21C7.10444 21 6.40666 21 5.83886 20.8278C4.56046 20.44 3.56004 19.4395 3.17224 18.1611C3 17.5933 3 16.8956 3 15.5M3 8.5C3 7.10444 3 6.40666 3.17224 5.83886C3.56004 4.56046 4.56046 3.56004 5.83886 3.17224C6.40666 3 7.10444 3 8.5 3\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path>"};
+
+    HugeiconsSubset.share = {"name":"Share08Icon","body":"<path d=\"M21 6.5C21 8.15685 19.6569 9.5 18 9.5C16.3431 9.5 15 8.15685 15 6.5C15 4.84315 16.3431 3.5 18 3.5C19.6569 3.5 21 4.84315 21 6.5Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M9 12C9 13.6569 7.65685 15 6 15C4.34315 15 3 13.6569 3 12C3 10.3431 4.34315 9 6 9C7.65685 9 9 10.3431 9 12Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M21 17.5C21 19.1569 19.6569 20.5 18 20.5C16.3431 20.5 15 19.1569 15 17.5C15 15.8431 16.3431 14.5 18 14.5C19.6569 14.5 21 15.8431 21 17.5Z\" stroke=\"currentColor\" stroke-width=\"1.5\"></path><path d=\"M8.72852 10.7495L15.2285 7.75M8.72852 13.25L15.2285 16.2495\" stroke=\"currentColor\" stroke-width=\"1.5\"></path>"};
 
     // Large originals stay as Blobs in IndexedDB; only small references/previews
     // belong in localStorage. Nothing is uploaded to an external service.
@@ -3350,6 +3425,45 @@
       return { targetFor, syncMeta, durationText, paceText, valueText, activeWorkout, blocks, groupName, cleanGroups };
     })();
 
+    // Derive summaries from confirmed sets. Never substitute planned or suggested values.
+    // Both the screen and the exported image use this same result.
+    const TrainingSummary = (() => {
+      const finite = value => typeof value === 'number' && Number.isFinite(value);
+      function build(session) {
+        if (!session?.done) return null;
+        let sets = 0, volume = 0, eligible = 0, covered = 0, timed = 0;
+        const exercises = [];
+        for (const exercise of TrainingConfig.blocks(session.workout).flatMap(block => block.exercises)) {
+          const log = session.logs[exercise.id];
+          if (!log) continue;
+          if (Array.isArray(log.sets)) {
+            const completed = log.sets.map((set, index) => ({ ...set, index })).filter(set => set.done === true);
+            if (!completed.length) continue;
+            sets += completed.length;
+            for (const set of completed) {
+              if (exercise.unit === 's') { timed++; continue; }
+              eligible++;
+              if (finite(set.load) && set.load >= 0 && finite(set.value) && set.value > 0) {
+                covered++; volume += set.load * set.value;
+              }
+            }
+            exercises.push({ exercise, completed });
+          } else {
+            const rounds = Array.isArray(log.rounds) ? log.rounds.filter(Boolean).length : null;
+            if (rounds ? rounds > 0 : log.done === true) exercises.push({ exercise, rounds, totalRounds:log.rounds?.length || null });
+          }
+        }
+        const cardio = session.cardio;
+        const distanceKm = finite(cardio?.distanceKm) && cardio.distanceKm > 0 ? cardio.distanceKm : null;
+        const durationSeconds = finite(cardio?.durationSeconds) && cardio.durationSeconds > 0 ? cardio.durationSeconds : null;
+        return { title:session.workout.title, date:session.date, kind:session.workout.kind, exercises, sets,
+          progress:TrainingData.progress(session), hasIntervals:session.workout.kind === 'cardio' && !!session.workout.groups?.length, volume:covered ? Math.round(volume * 1000) / 1000 : null,
+          eligible, covered, timed, partial:covered < eligible, distanceKm, durationSeconds,
+          paceSeconds:distanceKm !== null && durationSeconds !== null ? durationSeconds / distanceKm : null };
+      }
+      return { build };
+    })();
+
     /* Pure value preparation shared by the in-document wheel and checks. */
     const TrainingPicker = (() => {
       function values(field, unit, current = null, previous = null) {
@@ -3765,30 +3879,266 @@
         const position = block.exercises.findIndex(ex => ex.id === id) + 1;
         return `<div class="session-superset"><span class="superset-tag">${esc(block.name)}</span><span class="superset-detail">Exercício ${position} de ${block.exercises.length}</span></div>`;
       }
-      function overviewRows(workout, session, navigation = false) {
+      function renderOverviewBlocks(workout, render) {
         let index = 0;
-        const row = ex => {
-          const done = exerciseComplete(ex,session), number = ++index;
-          const media = exerciseMedia(ex), tag = navigation || media ? 'button' : 'div';
-          return `<${tag} ${tag === 'button' ? `type="button" ${navigation ? `data-focus-exercise="${ex.id}" aria-current="${focusExerciseId === ex.id}"` : `data-preview-exercise="${ex.id}" aria-label="Ver demonstração de ${esc(ex.name)}"`}` : ''} class="overview-item ${done ? 'is-complete' : ''}"><span class="overview-number">${number}</span><span class="overview-copy"><strong>${esc(ex.name)}</strong><small>${ex.meta.map(esc).join(' · ')}</small></span>${!navigation && media ? icon('image') : ''}</${tag}>`;
-        };
         return C.blocks(workout).map(block => {
-          const content = block.exercises.map(row).join('');
-          if (!block.group) return content;
-          const detail = workout.kind === 'cardio' ? `${block.group.repeats} ${block.group.repeats === 1 ? 'volta' : 'voltas'}` : `${block.exercises.length} exercícios`;
+          const rows = block.exercises.map(ex => render(ex,++index)).filter(Boolean), content = rows.join('');
+          if (!content || !block.group) return content;
+          const count = rows.length === block.exercises.length ? String(rows.length) : `${rows.length} de ${block.exercises.length}`;
+          const detail = workout.kind === 'cardio' ? `${block.group.repeats} ${block.group.repeats === 1 ? 'volta' : 'voltas'}` : `${count} exercícios`;
           return `<section class="overview-group" aria-label="${esc(block.name + ' · ' + detail)}"><div class="overview-group-heading"><h4>${esc(block.name)}</h4><span>${detail}</span></div><div class="overview-group-items">${content}</div></section>`;
         }).join('');
+      }
+      function overviewRows(workout, session, navigation = false) {
+        return renderOverviewBlocks(workout,(ex,number) => {
+          const done = exerciseComplete(ex,session);
+          const media = exerciseMedia(ex), tag = navigation || media ? 'button' : 'div';
+          return `<${tag} ${tag === 'button' ? `type="button" ${navigation ? `data-focus-exercise="${ex.id}" aria-current="${focusExerciseId === ex.id}"` : `data-preview-exercise="${ex.id}" aria-label="Ver demonstração de ${esc(ex.name)}"`}` : ''} class="overview-item ${done ? 'is-complete' : ''}"><span class="overview-number">${number}</span><span class="overview-copy"><strong>${esc(ex.name)}</strong><small>${ex.meta.map(esc).join(' · ')}</small></span>${!navigation && media ? icon('image') : ''}</${tag}>`;
+        });
       }
       function renderSummary(workout) {
         const session = currentSession(), strength = workout.kind === 'strength', locked = isReadOnly(), progress = D.progress(session);
         const running = activeWorkoutSession(), blocked = !locked && running && running.day !== workout.id;
         $('workout').innerHTML = `<div class="view-toolbar"><button type="button" class="icon-button back-button" data-summary-back aria-label="Voltar para ${esc(pageTitles[summaryOrigin])}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button>${PLAN.some(w=>w.id === workout.id) ? `<button type="button" class="icon-button" data-edit-current aria-label="Editar ${esc(workout.title)}">${icon('settings')}</button>` : ''}</div><div class="summary-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="workout-title" tabindex="-1">${esc(workout.title)}</h2><p>${esc(workout.day)}${locked ? ' · ' + esc(displayDate(session.date,true)) : ' · Resumo do treino'}</p></div>
           <dl class="summary-stats"><div><dd>${workout.exercises.length}</dd><dt>${strength ? 'exercícios' : 'etapas'}</dt></div><div><dd>${strength ? progress.total : TrainingConfig.blocks(workout).length}</dd><dt>${strength ? 'séries' : 'blocos'}</dt></div><div><dd>${Math.round(progress.done/(progress.total || 1)*100)}%</dd><dt>realizado</dt></div></dl>
-          <button type="button" class="button primary summary-start" ${locked ? `data-view-history="${esc(session.key)}"` : 'data-start-session'} ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${locked ? 'Ver histórico' : currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}<div class="section-heading"><h3>${strength ? 'Exercícios' : 'Etapas do treino'}</h3></div><div class="summary-list">${overviewRows(workout,session)}</div>`;
+          <button type="button" class="button primary summary-start" ${locked ? `data-post-workout="${esc(session.key)}"` : 'data-start-session'} ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${locked ? 'Ver resumo' : currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}<div class="section-heading"><h3>${strength ? 'Exercícios' : 'Etapas do treino'}</h3></div><div class="summary-list">${overviewRows(workout,session)}</div>`;
       }
       function sessionProgress() {
         return `<section class="session-progress" aria-label="Progresso do treino"><div class="progress-label"><span>Progresso do treino</span><span id="progress-label"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div></section>`;
       }
+      function summaryClock(seconds, hours = false) {
+        if (seconds === null) return '—';
+        const total = Math.round(seconds), minutes = Math.floor(total / 60), rest = String(total % 60).padStart(2,'0');
+        return hours && minutes >= 60 ? `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2,'0')}:${rest}` : `${minutes}:${rest}`;
+      }
+      function summaryNumber(value) {
+        if (value === null) return '—';
+        return value >= 100000 ? value.toLocaleString('pt-BR',{ notation:'compact', maximumFractionDigits:1 }) : number(value);
+      }
+      function summaryMetrics(summary) {
+        if (summary.kind === 'cardio') return [
+          { value:summary.distanceKm === null ? '—' : summary.distanceKm.toLocaleString('pt-BR',{ minimumFractionDigits:2, maximumFractionDigits:3 }), label:'distância', exact:summary.distanceKm === null ? 'Distância não informada' : `${number(summary.distanceKm)} quilômetros` },
+          { value:summaryClock(summary.durationSeconds,true), label:'tempo', exact:summary.durationSeconds === null ? 'Tempo não informado' : totalDuration(summary.durationSeconds) },
+          { value:summaryClock(summary.paceSeconds), label:'pace', exact:summary.paceSeconds === null ? 'Pace não disponível' : `${summaryClock(summary.paceSeconds)} minutos por quilômetro` }
+        ];
+        return [
+          { value:number(summary.exercises.length), label:'exercícios', exact:`${summary.exercises.length} exercícios com séries realizadas` },
+          { value:number(summary.sets), label:'séries', exact:`${summary.sets} séries realizadas` },
+          { value:summaryNumber(summary.volume), label:'volume', exact:summary.volume === null ? 'Volume não disponível' : `${number(summary.volume)} quilogramas de volume${summary.partial ? ', parcial' : ''}` }
+        ];
+      }
+      function renderSummaryMetrics(summary,extraClass='') {
+        return `<dl class="post-stats ${extraClass}" aria-label="Resumo do treino">${summaryMetrics(summary).map(metric=>`<div><dd${metric.value.length > 8 ? ' class="is-very-long"' : metric.value.length > 5 ? ' class="is-long"' : ''} aria-label="${esc(metric.exact)}" title="${esc(metric.exact)}">${esc(metric.value)}</dd><dt>${esc(metric.label)}</dt></div>`).join('')}</dl>`;
+      }
+      function completedSetText(set, unit) {
+        const load = set.load == null ? '—' : `${number(set.load)} kg`;
+        if (unit === 's') return `${set.value == null ? '—' : `${number(set.value)} s`}${set.load != null ? ` · ${number(set.load)} kg` : ''}`;
+        if (set.load == null && set.value == null) return '—';
+        return `${load} · ${set.value == null ? '—' : `${number(set.value)} reps`}`;
+      }
+      function postWorkoutRows(session, summary) {
+        const recorded = new Map(summary.exercises.map(item => [item.exercise.id,item]));
+        return renderOverviewBlocks(session.workout,(ex,number) => {
+          const item = recorded.get(ex.id);
+          if (!item) return '';
+          const position = `<span class="overview-number">${number}</span>`;
+          if (item.completed) return `<details class="post-exercise"><summary>${position}<div><strong>${esc(ex.name)}</strong><small>${item.completed.length} de ${ex.sets} ${ex.sets === 1 ? 'série realizada' : 'séries realizadas'}</small></div>${icon('chevron')}</summary><div class="post-set-list">${item.completed.map(set=>`<div class="post-set-row"><span>Série ${set.index+1}</span><strong>${esc(completedSetText(set,ex.unit))}</strong></div>`).join('')}</div></details>`;
+          return `<div class="post-exercise post-stage">${position}<div><strong>${esc(ex.name)}</strong><small>${item.totalRounds ? `${item.rounds} de ${item.totalRounds} voltas realizadas` : 'Etapa realizada'}</small></div></div>`;
+        });
+      }
+      function renderPostWorkout() {
+        const session = store.sessions[viewingRecord], summary = TrainingSummary.build(session);
+        if (!summary) return;
+        const strength = summary.kind === 'strength';
+        const date = new Date(summary.date+'T12:00:00').toLocaleDateString('pt-BR',{ weekday:'long', day:'numeric', month:'long', year:'numeric' });
+        $('post-workout').innerHTML = `<div class="post-toolbar"><button type="button" class="icon-button back-button" data-post-back aria-label="Voltar para ${esc(postWorkoutOrigin === 'summary' ? 'o registro' : pageTitles[postWorkoutOrigin] || 'Início')}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button></div>
+          <div class="post-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="post-workout-title" tabindex="-1">${esc(summary.title)}</h2><p class="post-date">${esc(date)}</p></div>
+          ${renderSummaryMetrics(summary)}
+          <div class="post-actions"><button type="button" class="button primary full" data-share-record="${esc(session.key)}">${icon('share')}Compartilhar treino</button><button type="button" class="button full" data-post-history="${esc(session.key)}">Ver histórico</button></div>
+          <div class="post-section-title"><h3>${strength ? 'Exercícios realizados' : 'Etapas registradas'}</h3><span>${summary.exercises.length} de ${session.workout.exercises.length}</span></div>
+          ${summary.exercises.length ? `<div class="post-exercises">${postWorkoutRows(session,summary)}</div>` : `<p class="post-empty">${strength ? 'Nenhuma série foi marcada como realizada neste treino.' : 'Nenhuma etapa foi marcada como realizada. Os totais informados estão no resumo acima.'}</p>`}
+          ${session.notes ? `<section class="post-notes"><h3>Suas observações</h3><p>${esc(session.notes)}</p></section>` : ''}`;
+      }
+      function openPostWorkout(recordKey, origin = null) {
+        if (!validInputs()) return;
+        const session = store.sessions[recordKey];
+        if (!session?.done) { toast('Este registro não está mais disponível.','info'); return; }
+        postWorkoutOrigin = origin || (['home','workouts','history','summary'].includes(appView) ? appView : postWorkoutOrigin);
+        summaryOrigin = origin || (['home','workouts','history'].includes(appView) ? appView : summaryOrigin);
+        viewingRecord = session.key; selectedDay = session.day; selectedDate = session.date; selectedWeekday = session.workout.weekday;
+        appView = 'postworkout'; renderNav(); renderWorkout(); focusPage();
+      }
+      $('post-workout').addEventListener('click',e=>{
+        const button = e.target.closest('button'); if (!button) return;
+        if (button.hasAttribute('data-post-back')) navigateBack(postWorkoutOrigin);
+        else if (button.dataset.postHistory) openWorkoutHistory(button.dataset.postHistory);
+        else if (button.dataset.shareRecord) openShareWorkout(button.dataset.shareRecord);
+      });
+
+      let shareRecordKey = null, shareFile = null, shareBlob = null, shareRenderToken = 0;
+      const shareOptions = {
+        'share-background': { title:'Fundo', options:[{value:'transparent',label:'Transparente'},{value:'light',label:'Claro'},{value:'dark',label:'Escuro'}] },
+        'share-text': { title:'Texto', options:[{value:'light',label:'Branco'},{value:'dark',label:'Preto'}] }
+      };
+      const shareFont = 'system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+      function drawShareImage(summary, background, textColor) {
+        const canvas = document.createElement('canvas'); canvas.width=1080;
+        const context=canvas.getContext('2d'); if (!context) throw new Error('canvas-unavailable');
+        const transparent=background === 'transparent', lightText=transparent ? textColor === 'light' : background === 'dark';
+        const ink=lightText ? '#ffffff' : '#000000', muted=lightText ? 'rgba(255,255,255,.8)' : 'rgba(0,0,0,.65)';
+        const padding=48, width=canvas.width-padding*2, strength=summary.kind === 'strength';
+        function text(value,x,y,size=32,weight=400,color=ink,maxWidth=width) {
+          context.fillStyle=color;context.textBaseline='top';context.font=`${weight} ${size}px ${shareFont}`;
+          while(context.measureText(value).width>maxWidth && size>18) {size--;context.font=`${weight} ${size}px ${shareFont}`;}
+          context.fillText(value,x,y);return size;
+        }
+        function wrap(value,maxWidth,size,maxLines) {
+          context.font=`600 ${size}px ${shareFont}`;
+          const lines=[];let current='';
+          for(const word of value.split(/\s+/)) {
+            const next=current ? current+' '+word : word;
+            if(context.measureText(next).width<=maxWidth) {current=next;continue;}
+            if(current) {lines.push(current);current='';}
+            for(const char of word) {
+              if(context.measureText(current+char).width>maxWidth && current) {lines.push(current);current=char;}
+              else current+=char;
+            }
+          }
+          if(current)lines.push(current.trim());
+          if(lines.length>maxLines) return size>40 ? wrap(value,maxWidth,size-2,maxLines) : {lines:lines.slice(0,maxLines-1).concat(lines[maxLines-1].slice(0,-1)+'…'),size};
+          return {lines,size};
+        }
+        const title=wrap(summary.title,width,64,3),titleY=140;
+        const dateY=titleY+title.lines.length*(title.size+10)+10,metricsY=dateY+76;
+        canvas.height=metricsY+178;
+        // The checkerboard belongs to the preview UI; the PNG keeps the space around the badge and text transparent.
+        if(!transparent) {context.fillStyle=background === 'dark' ? '#000000' : '#ffffff';context.fillRect(0,0,canvas.width,canvas.height);}
+        const kindLabel=strength ? 'Força' : 'Corrida',badgeY=40,badgeHeight=68,iconSize=42;
+        context.save();
+        context.font=`550 30px ${shareFont}`;
+        const badgeWidth=26+iconSize+17+context.measureText(kindLabel).width+26;
+        context.fillStyle=lightText ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.04)';
+        context.beginPath();context.roundRect(padding,badgeY,badgeWidth,badgeHeight,badgeHeight/2);context.fill();
+        context.fillStyle=ink;context.textBaseline='middle';
+        context.fillText(kindLabel,padding+26+iconSize+17,badgeY+badgeHeight/2);
+        context.translate(padding+26,badgeY+(badgeHeight-iconSize)/2);context.scale(iconSize/24,iconSize/24);
+        context.strokeStyle=ink;context.lineWidth=1.5;context.lineCap='round';context.lineJoin='round';
+        // Reuse the app's vector paths without loading an image or creating a temporary URL.
+        const symbol=new DOMParser().parseFromString(`<svg xmlns="http://www.w3.org/2000/svg">${icons[strength ? 'dumbbell' : 'run'].body}</svg>`,'image/svg+xml');
+        symbol.querySelectorAll('path').forEach(path=>context.stroke(new Path2D(path.getAttribute('d'))));
+        context.restore();
+        title.lines.forEach((row,i)=>text(row,padding,titleY+i*(title.size+10),title.size,600));
+        text(displayDate(summary.date,true),padding,dateY,28,400,muted);
+        const metrics=summaryMetrics(summary);
+        const stats=strength ? metrics : [
+          {value:metrics[0].value,label:'distância (km)'},
+          {value:metrics[1].value,label:'tempo'},
+          {value:metrics[2].value,label:'pace (min/km)'}
+        ];
+        const col=width/3;
+        stats.forEach((metric,i)=>{text(metric.value,padding+i*col,metricsY,80,600,ink,col-24);text(metric.label,padding+i*col,metricsY+94,30,400,muted,col-24);});
+        return canvas;
+      }
+      function releaseShareImage() {
+        shareBlob=null;shareFile=null;
+      }
+      function supportsImageShare(file) {
+        try { return !!(file && window.isSecureContext && navigator.share && navigator.canShare?.({files:[file]})); } catch { return false; }
+      }
+      async function renderSharePreview() {
+        const token=++shareRenderToken, session=store.sessions[shareRecordKey], summary=TrainingSummary.build(session);
+        releaseShareImage();
+        $('share-save-image').onload=null;$('share-save-image').onerror=null;
+        $('share-save-image').hidden=true;$('share-save-image').removeAttribute('src');
+        $('share-native').disabled=true;$('share-native').hidden=true;$('share-download').disabled=true;
+        $('share-preview').hidden=true;$('share-loading').hidden=false;$('share-loading').textContent='Preparando imagem…';
+        $('share-preview-frame').setAttribute('aria-busy','true');
+        if (!summary) { $('share-loading').textContent='Este registro não está mais disponível.';$('share-preview-frame').setAttribute('aria-busy','false');releaseShareImage();return; }
+        try {
+          const background=$('share-background').value,textColor=$('share-text').value,transparent=background === 'transparent';
+          $('share-text-field').hidden=!transparent;$('share-settings').classList.toggle('is-opaque',!transparent);
+          $('share-preview-frame').dataset.background=background;$('share-preview-frame').dataset.text=textColor;
+          const canvas=drawShareImage(summary,background,textColor);
+          const blob=await new Promise((resolve,reject)=>canvas.toBlob(value=>value ? resolve(value) : reject(new Error('export-failed')),'image/png'));
+          if(token !== shareRenderToken || !$('share-dialog').open) return;
+          const style=transparent ? `transparente-${textColor === 'light' ? 'branco' : 'preto'}` : background === 'light' ? 'claro' : 'escuro';
+          const filename=`treino-${summary.date}-${style}.png`;
+          // Draw the generated bitmap directly so the preview does not depend on a temporary image URL.
+          const preview=$('share-preview');preview.width=canvas.width;preview.height=canvas.height;
+          const context=preview.getContext('2d');if(!context)throw new Error('preview-unavailable');
+          context.drawImage(canvas,0,0);
+          shareBlob=blob;
+          shareFile=typeof File === 'function' ? new File([blob],filename,{type:'image/png'}) : null;
+          preview.setAttribute('aria-label',`Resumo de ${summary.title}, ${displayDate(summary.date,true)}. ${summaryMetrics(summary).map(metric=>metric.exact).join('. ')}.`);
+          preview.hidden=false;$('share-loading').hidden=true;
+          const supported=supportsImageShare(shareFile);
+          $('share-native').hidden=!supported;$('share-native').disabled=!supported;
+          $('share-download').classList.toggle('primary',!supported);$('share-download').disabled=false;$('share-download').dataset.filename=filename;
+          preferences.shareBackground=background;preferences.shareText=textColor;savePreferences();
+        } catch {
+          if(token !== shareRenderToken) return;
+          releaseShareImage();$('share-loading').textContent='Não foi possível gerar a imagem. Selecione o fundo para tentar novamente.';
+        } finally { if(token === shareRenderToken) $('share-preview-frame').setAttribute('aria-busy','false'); }
+      }
+      function openShareWorkout(recordKey) {
+        if (!store.sessions[recordKey]?.done) return;
+        shareRecordKey=recordKey;
+        const background=['transparent','light','dark'].includes(preferences.shareBackground) ? preferences.shareBackground : 'transparent';
+        const textColor=preferences.shareText === 'dark' ? 'dark' : 'light';
+        setSelectionField('share-background',background,shareOptions['share-background'].options.find(option=>option.value===background).label);
+        setSelectionField('share-text',textColor,shareOptions['share-text'].options.find(option=>option.value===textColor).label);
+        if (openDialog('share-dialog')) renderSharePreview();
+      }
+      Object.entries(shareOptions).forEach(([id,{title,options}])=>{
+        $(id).addEventListener('click',()=>{
+          const recordKey=shareRecordKey,trigger=$(id);
+          openSelection(title,options,trigger.value,value=>{
+            if(shareRecordKey !== recordKey || !$('share-dialog').open)return;
+            setSelectionField(id,value,options.find(option=>option.value===value).label);
+            renderSharePreview();
+          },trigger);
+        });
+      });
+      function showSaveableShareImage() {
+        const image=$('share-save-image');
+        image.onload=()=>{$('share-preview').hidden=true;image.hidden=false;};
+        image.onerror=()=>{image.hidden=true;$('share-preview').hidden=false;};
+        image.src=$('share-preview').toDataURL('image/png');
+      }
+      $('share-download').addEventListener('click',async()=>{
+        if (!shareBlob || !store.sessions[shareRecordKey]?.done) return;
+        const blob=shareBlob,filename=$('share-download').dataset.filename;
+        if(!embeddedPreview && typeof window.showSaveFilePicker === 'function') {
+          try {
+            const handle=await window.showSaveFilePicker({suggestedName:filename,types:[{description:'Imagem PNG',accept:{'image/png':['.png']}}]});
+            const writable=await handle.createWritable();await writable.write(blob);await writable.close();
+            toast('Imagem salva.','success');return;
+          } catch(error) { if(error?.name === 'AbortError')return; }
+        }
+        try {
+          const url=URL.createObjectURL(blob),link=document.createElement('a');
+          link.href=url;link.download=filename;
+          document.body.appendChild(link);link.click();link.remove();
+          setTimeout(()=>URL.revokeObjectURL(url),60000);
+          // Browsers do not report whether a download was accepted by an embedded viewer.
+          if(embeddedPreview)showSaveableShareImage();
+        } catch { showSaveableShareImage(); }
+      });
+      $('share-native').addEventListener('click',async()=>{
+        if (!shareFile || !store.sessions[shareRecordKey]?.done) return;
+        const file=shareFile;$('share-native').disabled=true;
+        try { await navigator.share({files:[file]}); }
+        catch(error) { if(error?.name !== 'AbortError') toast('Não foi possível compartilhar. Use Salvar imagem para continuar.','info'); }
+        finally { if(file === shareFile) $('share-native').disabled=false; }
+      });
+      $('share-dialog').addEventListener('close',()=>{
+        if($('share-dialog').open)return;
+        shareRenderToken++;shareRecordKey=null;
+        $('share-save-image').onload=null;$('share-save-image').onerror=null;
+        $('share-save-image').removeAttribute('src');$('share-save-image').hidden=true;
+        $('share-preview').hidden=true;$('share-preview').width=1;$('share-preview').height=1;releaseShareImage();
+        if(appView === 'postworkout') $('post-workout').querySelector('[data-share-record]')?.focus({preventScroll:true});
+      });
       function focusNavigation(exercises, index) {
         const ex = exercises[index], previous = exercises[index-1], next = exercises[index+1];
         return `<nav class="exercise-navigation" aria-label="Navegar pelos exercícios"><button type="button" class="icon-button" data-focus-exercise="${previous?.id || ''}" aria-label="Exercício anterior" ${previous ? '' : 'disabled'}>${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="current-exercise-copy"><h2 id="workout-title" tabindex="-1" aria-describedby="exercise-target">${esc(ex.name)}</h2><p class="target" id="exercise-target">${ex.meta.map(esc).join(' · ')}</p></div><button type="button" class="icon-button" data-focus-exercise="${next?.id || ''}" aria-label="Próximo exercício" ${next ? '' : 'disabled'}>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></nav>`;
@@ -3811,12 +4161,14 @@
         bindInlineMedia($('workout'),workout.exercises,exerciseMedia);
         updateProgress(); updateSaveStatus(); timerUI();
       }
-      const pageIds = { workouts:'manager-dialog', history:'history-dialog', profile:'profile-page', timer:'timer-dialog', backup:'backup-dialog' };
-      const pageTitles = { home:'Início',workouts:'Treinos',history:'Histórico',profile:'Perfil',timer:'Temporizador',backup:'Backup',summary:'Treino',session:'Treino' };
-      let summaryOrigin = 'home';
+      const pageIds = { workouts:'manager-dialog', history:'history-dialog', profile:'profile-page', timer:'timer-dialog', backup:'backup-dialog', postworkout:'post-workout' };
+      const pageTitles = { home:'Início',workouts:'Treinos',history:'Histórico',profile:'Perfil',timer:'Temporizador',backup:'Backup',summary:'Treino',session:'Treino',postworkout:'Pós-treino' };
+      let summaryOrigin = 'home', postWorkoutOrigin = 'home';
+      const embeddedPreview = window.self !== window.top;
       let navigationReady = false, navigationQueued = false, navigationRestoring = false, navigationPopping = false, navigationCurrent = null;
-      const navigationKey = route => JSON.stringify([route.view, ...(['summary','session'].includes(route.view) ? [route.day, route.record] : [])]);
-      const navigationSnapshot = () => ({ view:appView, day:selectedDay, weekday:selectedWeekday, date:selectedDate, record:viewingRecord, exercise:focusExerciseId, origin:summaryOrigin, historyDate, historyMonth });
+      let navigationBackTimer = null;
+      const navigationKey = route => JSON.stringify([route.view, ...(['summary','session','postworkout'].includes(route.view) ? [route.day, route.record] : [])]);
+      const navigationSnapshot = () => ({ view:appView, day:selectedDay, weekday:selectedWeekday, date:selectedDate, record:viewingRecord, exercise:focusExerciseId, origin:summaryOrigin, postOrigin:postWorkoutOrigin, historyDate, historyMonth });
       const topNavigationDialog = () => [...document.querySelectorAll('dialog[open]:not(.is-closing)')].sort((a,b) => (modalOrder.get(b) || 0) - (modalOrder.get(a) || 0))[0];
       function writeNavigation(state, replace = false) {
         try {
@@ -3832,12 +4184,14 @@
       function syncNavigation() {
         if (!navigationReady || navigationRestoring || navigationPopping) return;
         const route = navigationSnapshot(), key = navigationKey(route), currentKey = navigationKey(navigationCurrent.route), dialog = topNavigationDialog();
+        // Embedded previews own the outer browser history. Keep the app's Back actions local.
+        if(embeddedPreview) { writeNavigation({version:1,route,previousKey:null,modal:false},true);return; }
         // One temporary history entry dismisses the top dialog before leaving its page.
         // Remove it on button/automatic closes as well, avoiding empty Back steps.
         if (navigationCurrent.modal) {
           if (!dialog || key !== currentKey) {
             navigationPopping = true;
-            window.history.back();
+            requestNavigationBack();
           } else writeNavigation({ ...navigationCurrent, route }, true);
           return;
         }
@@ -3851,7 +4205,8 @@
         selectedDate = D.validDate(route.date) ? route.date : localDate();
         viewingRecord = store.sessions[route.record]?.done ? route.record : null;
         focusExerciseId = route.exercise;
-        summaryOrigin = Object.hasOwn(pageIds, route.origin) || route.origin === 'home' ? route.origin : 'home';
+        summaryOrigin = ['home','workouts','history'].includes(route.origin) ? route.origin : 'home';
+        postWorkoutOrigin = ['home','workouts','history','summary'].includes(route.postOrigin) ? route.postOrigin : summaryOrigin;
         historyDate = D.validDate(route.historyDate) ? route.historyDate : localDate();
         historyMonth = /^\d{4}-\d{2}$/.test(route.historyMonth) ? route.historyMonth : historyDate.slice(0,7);
         setMonthPickerOpen(false);
@@ -3866,18 +4221,32 @@
         navigationReady = true;
         writeNavigation({ version:1, route:navigationSnapshot(), previousKey:saved?.modal ? null : saved?.previousKey || null, modal:false }, true);
       }
+      function requestNavigationBack(onUnavailable) {
+        const unavailable=()=>{
+          clearTimeout(navigationBackTimer);navigationBackTimer=null;navigationPopping=false;
+          writeNavigation({version:1,route:navigationSnapshot(),previousKey:null,modal:false},true);
+          navigationReady=false;
+          onUnavailable?.();
+        };
+        clearTimeout(navigationBackTimer);
+        navigationBackTimer=setTimeout(unavailable,300);
+        try { window.history.back(); } catch { unavailable(); }
+      }
       function navigateBack(fallback) {
         if (!validInputs()) return;
         const target = { ...navigationSnapshot(), view:fallback };
-        if (navigationReady && navigationCurrent?.previousKey === navigationKey(target)) {
-          window.history.back();
-        } else if (fallback === 'summary') {
-          appView = 'summary'; renderWorkout(); focusPage();
-        } else navigatePage(fallback, { preserveDay:true });
+        const returnInsideApp=()=>{
+          if(fallback === 'summary') { appView='summary';renderNav();renderWorkout();focusPage(); }
+          else navigatePage(fallback,{preserveDay:true});
+          if(!navigationReady) writeNavigation({version:1,route:navigationSnapshot(),previousKey:null,modal:false},true);
+        };
+        if (!embeddedPreview && navigationReady && navigationCurrent?.previousKey === navigationKey(target)) requestNavigationBack(returnInsideApp);
+        else returnInsideApp();
       }
       window.addEventListener('popstate', event => {
         const target = event.state?.trainingNavigation;
-        if (!navigationReady || target?.version !== 1 || !target.route) return;
+        if (embeddedPreview || !navigationReady || target?.version !== 1 || !target.route) return;
+        clearTimeout(navigationBackTimer);navigationBackTimer=null;
         const dismissing = navigationCurrent?.modal, automatic = navigationPopping;
         navigationPopping = false;
         navigationCurrent = target;
@@ -3905,8 +4274,8 @@
         $('app-title').textContent=pageTitles[appView] || 'Treino';
         $('app-title').classList.toggle('sr-only',appView === 'home');
         $('home-profile').hidden=appView !== 'home';
-        const active=appView === 'session' ? 'workouts' : appView === 'summary' ? summaryOrigin : ['timer','backup'].includes(appView) ? 'profile' : appView;
-        $('bottom-nav').hidden=appView === 'summary' || appView === 'session';
+        const active=appView === 'session' ? 'workouts' : ['summary','postworkout'].includes(appView) ? summaryOrigin : ['timer','backup'].includes(appView) ? 'profile' : appView;
+        $('bottom-nav').hidden=['summary','session','postworkout'].includes(appView);
         $('bottom-nav').querySelectorAll('[data-nav]').forEach(button=>{
           if(button.dataset.nav === active) button.setAttribute('aria-current','page');
           else button.removeAttribute('aria-current');
@@ -3943,13 +4312,13 @@
         entranceTimers.set(element,setTimeout(()=>element.classList.remove('view-entering'),280));
       }
       function syncViewMotion() {
-        const route=['summary','session'].includes(appView) ? `${appView}:${selectedDay}:${viewingRecord || ''}` : appView;
+        const route=['summary','session','postworkout'].includes(appView) ? `${appView}:${selectedDay}:${viewingRecord || ''}` : appView;
         const detail=appView === 'home' ? selectedWeekday : appView === 'session' ? focusExerciseId : null;
         if(route !== motionRoute) {
           document.querySelectorAll('.view-entering').forEach(element=>{
             clearTimeout(entranceTimers.get(element));element.classList.remove('view-entering');
           });
-          if(!['summary','session'].includes(appView)) enterView(document.querySelector('.header'));
+          if(!['summary','session','postworkout'].includes(appView)) enterView(document.querySelector('.header'));
           enterView($('app-main'));
         } else if(detail !== motionDetail) {
           if(appView === 'home') enterView($('home'));
@@ -3963,6 +4332,7 @@
       function renderWorkout() {
         clearInlineMedia($('workout'));
         const workout=currentWorkout();
+        if(appView === 'postworkout' && !store.sessions[viewingRecord]?.done) appView='history';
         if(!workout && ['summary','session'].includes(appView)) appView='home';
         if(appView === 'session' && !isReadOnly() && !currentDraft()) appView='summary';
         if(appView === 'session' && !isReadOnly() && activeWorkoutSession() && activeWorkoutSession().day !== selectedDay) appView='summary';
@@ -3970,6 +4340,7 @@
         if(appView === 'home') renderHome();
         else if(appView === 'workouts') renderManager();
         else if(appView === 'history') renderHistory();
+        else if(appView === 'postworkout') renderPostWorkout();
         else if(appView === 'profile') renderProfile();
         else if(appView === 'timer') { timerUI(); soundUI(); }
         else if(['summary','session'].includes(appView)) {
@@ -3985,7 +4356,7 @@
       }
       function focusPage() {
         window.scrollTo({top:0,behavior:'auto'});
-        (['summary','session'].includes(appView) ? $('workout-title') : $('app-title'))?.focus({preventScroll:true});
+        (appView === 'postworkout' ? $('post-workout-title') : ['summary','session'].includes(appView) ? $('workout-title') : $('app-title'))?.focus({preventScroll:true});
       }
       function goHome() { navigatePage('home'); }
       function showOverview(id) {
@@ -4070,6 +4441,7 @@
       function handleNavigation(e) {
         const target = e.target.closest('button'); if (!target || target.disabled) return;
         if (target.hasAttribute('data-home')) goHome();
+        else if (target.hasAttribute('data-post-workout')) openPostWorkout(target.dataset.postWorkout);
         else if (target.hasAttribute('data-view-history')) openWorkoutHistory(target.dataset.viewHistory);
         else if (target.hasAttribute('data-cancel-workout')) requestCancelWorkout(target.dataset.cancelWorkout);
         else if(target.hasAttribute('data-summary-back')) navigateBack(summaryOrigin);
@@ -4333,6 +4705,36 @@
         return `<section class="history-ex"><h4>${esc(ex.name)}</h4><table class="history-sets" aria-label="Registro de ${esc(ex.name)}"><thead><tr><th scope="col">Série</th><th scope="col">${unit}</th><th scope="col">${ex.unit === 's' ? 'Seg.' : 'Reps'}</th><th scope="col"><span class="sr-only">Feita</span></th></tr></thead><tbody>${log.sets.map((set, i) => `<tr class="${set.done ? 'record-done' : ''}"><td>${i + 1}</td><td>${esc(number(set.load))}</td><td>${esc(number(set.value))}</td><td>${completionMark(set.done)}</td></tr>`).join('')}</tbody></table></section>`;
       }
       let historyMonth = selectedDate.slice(0, 7), historyDate = selectedDate, monthPickerYear = +historyMonth.slice(0, 4);
+      const expansionAnimations = new WeakMap();
+      function toggleExpandable(entry) {
+        const previous=expansionAnimations.get(entry),expanded=!(previous ? previous.expanded : entry.open);
+        const from=entry.getBoundingClientRect().height;
+        previous?.animation?.cancel();if(previous?.frame)cancelAnimationFrame(previous.frame);
+        expansionAnimations.delete(entry);entry.style.height='';
+        entry.classList.remove('is-collapsing','is-expanding');
+        entry.open=expanded;
+        if(reduceMotion() || !entry.animate)return;
+        const to=entry.getBoundingClientRect().height;
+        // Pin the first frame before exposing the content, then animate after layout has settled.
+        entry.style.height=`${from}px`;entry.open=true;
+        entry.classList.add('is-expanding');entry.classList.toggle('is-collapsing',!expanded);
+        const state={expanded,animation:null,frame:0};expansionAnimations.set(entry,state);
+        state.frame=requestAnimationFrame(()=>{
+          if(expansionAnimations.get(entry)!==state)return;
+          state.frame=0;
+          state.animation=entry.animate([{height:`${from}px`},{height:`${to}px`}],{duration:300,easing:'ease-in-out',fill:'both'});
+          state.animation.onfinish=()=>{
+            if(expansionAnimations.get(entry)!==state)return;
+            entry.open=expanded;entry.style.height='';entry.classList.remove('is-collapsing','is-expanding');
+            expansionAnimations.delete(entry);state.animation.cancel();
+          };
+        });
+      }
+      ['history-list','post-workout'].forEach(id=>$(id).addEventListener('click',e=>{
+        const summary=e.target.closest('.history-entry>summary,.post-exercise>summary');
+        if(!summary || !$(id).contains(summary))return;
+        e.preventDefault();toggleExpandable(summary.parentElement);
+      }));
       const monthNames = Array.from({ length: 12 }, (_, i) => new Date(2026, i, 1, 12).toLocaleDateString('pt-BR', { month: 'long' }));
       const dateKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       function historySessions() {
@@ -4411,7 +4813,7 @@
         const dayRecords = byDate.get(historyDate) || [];
         $('history-list').innerHTML = dayRecords.length ? dayRecords.map(s => {
           const p = D.progress(s);
-          return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${cardioTotals(s)}${renderExerciseBlocks(s.workout, ex => historyExercise(ex, s.logs[ex.id]), true, s)}${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button class="button" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
+          return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${historyTotals(s)}${renderExerciseBlocks(s.workout, ex => historyExercise(ex, s.logs[ex.id]), true, s)}${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button type="button" class="button primary" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
         }).join('') : '<p class="calendar-empty">Nenhum treino nesta data.</p>';
       }
       $('history-prev').addEventListener('click', () => shiftHistoryMonth(-1));
@@ -5384,9 +5786,9 @@
           finishDate = date; renderFinishDate(); $('finish-date').removeAttribute('aria-invalid'); $('finish-error').hidden = true;
         });
       });
-      function cardioTotals(session) {
-        if (!session.cardio) return '';
-        return `<dl class="cardio-totals"><div><dt>Tempo total</dt><dd>${esc(totalDuration(session.cardio.durationSeconds))}</dd></div><div><dt>Distância total</dt><dd>${esc(number(session.cardio.distanceKm))} km</dd></div></dl>`;
+      function historyTotals(session) {
+        const summary=TrainingSummary.build(session);
+        return summary ? renderSummaryMetrics(summary,'history-totals') : '';
       }
       function totalDuration(seconds) {
         const hours = Math.floor(seconds / 3600), minutes = Math.floor(seconds / 60) % 60;
@@ -5472,11 +5874,10 @@
         store.sessions[session.key] = session; delete store.drafts[session.key];
         D.markCycleComplete(store, session, PLAN); const saved = writeStore();
         $('finish-dialog').close(); syncRestContext();
-        appView='home'; goToToday(); renderNav(); renderWorkout();
-        $('workout').scrollIntoView({ block: 'start' }); $('workout').querySelector('h2')?.focus({ preventScroll: true });
-        toast(saved ? 'Treino salvo no histórico.' : 'Treino registrado nesta aba. Exporte um backup antes de fechar.',saved ? 'success' : 'error');
+        openPostWorkout(session.key,'home');
+        if (!saved) toast('Treino registrado nesta aba. Exporte um backup antes de fechar.','error');
       });
-      $('finish-dialog').addEventListener('close', () => { if (!$('finish-dialog').open) { finishTarget = null; finishMetrics = null; finishDate = null; } });
+      $('finish-dialog').addEventListener('close', () => { if (!$('finish-dialog').open) { finishTarget = null; finishMetrics = null; finishDate = null; if(appView === 'postworkout') $('post-workout-title')?.focus({preventScroll:true}); } });
 
       let picker = null;
       function updateWheelSelection(index) {
@@ -5965,6 +6366,7 @@
           if ($('numeric-dialog').open) $('numeric-dialog').close();
           if ($('ticker-dialog').open) $('ticker-dialog').close();
           if ($('finish-dialog').open) $('finish-dialog').close();
+          if ($('share-dialog').open) $('share-dialog').close();
           if (viewingRecord && !store.sessions[viewingRecord]) goToToday();
           else if (!viewingRecord && ((!selectedDay && PLAN.length) || store.cycle.completed[selectedDay] || (selectedDay && !PLAN.some(w => w.id === selectedDay)))) goToToday();
           renderNav(); renderWorkout();
