@@ -2378,6 +2378,42 @@
     .overview-list.is-compact .overview-group { --row-x:14px; --row-y:12px; margin:10px 0; }
     .overview-list.is-compact>.overview-entry>summary.overview-item:hover { background:transparent; }
     #exercise-picker-list .overview-entry+.overview-entry { border-top:0; }
+
+    /* Pre-workout without the completion stat: two values share the strip. */
+    .stat-strip.is-pair { grid-template-columns:repeat(2,minmax(0,1fr)); }
+
+    /* Post-workout actions: share, then the destructive action last. */
+    .post-actions .button.danger { margin-top:2px; }
+
+    /* History: each record is a row that opens its post-workout page. */
+    .history-record { display:grid; grid-template-columns:36px minmax(0,1fr) 18px; align-items:center; gap:12px; width:100%; min-height:72px; margin:0 0 12px; padding:14px 14px 14px 12px; border:1px solid var(--line); border-radius:16px; background:var(--bg); box-shadow:var(--shadow-card); text-align:left; cursor:pointer; transition:background .18s; }
+    .history-record:hover { background:var(--soft); }
+    .history-record:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+    .history-record .history-kind { align-self:center; height:36px; }
+    .history-record .history-session strong { display:block; font-size:17px; line-height:1.3; font-weight:600; letter-spacing:-.3px; overflow-wrap:anywhere; }
+    .history-record .history-session small { display:block; margin-top:4px; font-size:14px; color:var(--muted); }
+    .history-record>.icon { width:18px; height:18px; color:var(--muted); }
+
+    /* Execution: an interval is one repeated sequence, so it gets its own card —
+       the heading band matches the interval group on the pre-workout list. */
+    .interval-card { margin:0 0 16px; border:1px solid var(--line); border-radius:22px; background:var(--bg); box-shadow:var(--shadow-card); overflow:hidden; }
+    .interval-card-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 12px 12px 16px; background:var(--soft); border-bottom:1px solid var(--line); }
+    .interval-card-title { flex:1; min-width:0; }
+    .interval-card-title h3 { margin:0; font-size:18px; line-height:1.3; font-weight:600; letter-spacing:-.3px; }
+    .interval-card .interval-count { margin-top:2px; font-size:14px; font-variant-numeric:tabular-nums; }
+    .interval-card .complete-set { flex:none; }
+    .interval-sequence { margin:0; padding:2px 16px; list-style:none; }
+    .interval-sequence li { padding:14px 0; }
+    .interval-sequence li+li { border-top:1px solid var(--line); }
+    .interval-sequence strong { display:block; font-size:16px; line-height:1.35; font-weight:550; overflow-wrap:anywhere; }
+    .interval-sequence .cardio-spec { margin-top:4px; font-size:14px; }
+    .interval-rounds { display:flex; flex-wrap:wrap; gap:8px; padding:14px 16px 16px; border-top:1px solid var(--line); }
+    .interval-round { width:44px; height:44px; padding:0; border:1px solid var(--line); border-radius:12px; background:var(--bg); color:var(--muted); font-size:15px; font-weight:600; font-variant-numeric:tabular-nums; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:background .18s,border-color .18s,color .18s; }
+    .interval-round:hover { background:var(--soft); }
+    .interval-round[aria-pressed=true] { background:var(--ink); border-color:var(--ink); color:var(--inverse); }
+    .interval-round:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+    .interval-round:disabled { cursor:default; }
+    @media(min-width:700px) { .interval-card-head { padding-left:22px; } .interval-sequence { padding-left:22px; padding-right:22px; } .interval-rounds { padding-left:22px; padding-right:22px; } }
   </style>
 </head>
 
@@ -3619,13 +3655,34 @@
         const done = session.logs[ex.id].done;
         return `<article class="exercise ${done ? 'is-done' : ''}"><div class="cardio-stage"><div class="stage-main"><h3>${esc(ex.name)}</h3><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div><label class="complete-set"><input type="checkbox" data-stage="${ex.id}" aria-label="Concluir etapa ${esc(ex.name)}" ${done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></div></article>`;
       }
+      function intervalRounds(session, group) {
+        return Array.from({ length: group.repeats }, (_, i) => group.exerciseIds.every(id => session?.logs[id]?.rounds?.[i] === true));
+      }
+      function roundsNoun(count) { return count === 1 ? 'volta' : 'voltas'; }
+      function intervalCountText(rounds, repeats) { return `${rounds.filter(Boolean).length} de ${repeats} ${roundsNoun(repeats)}`; }
+      function toggleIntervalRound(groupId, index) {
+        const session = ensureSession(), group = session.workout.groups.find(g => g.id === groupId);
+        if (!group || !(index >= 0 && index < group.repeats)) return;
+        const done = !intervalRounds(session, group)[index];
+        for (const id of group.exerciseIds) {
+          const log = session.logs[id];
+          const rounds = Array.from({ length: group.repeats }, (_, i) => Array.isArray(log?.rounds) ? log.rounds[i] === true : log?.done === true);
+          rounds[index] = done;
+          // Same backup format as the block checkbox: done only when every round is.
+          session.logs[id] = { done: rounds.every(Boolean), rounds };
+        }
+        changed();
+      }
       function renderExerciseBlocks(workout, render, session = null) {
         return TrainingConfig.blocks(workout).map(block => {
           if (block.group && workout.kind === 'cardio') {
-            const repeats = block.group.repeats, p = D.intervalProgress(session, block.group);
-            const label = `Intervalado de ${repeats} ${repeats === 1 ? 'volta' : 'voltas'}`;
-            const stages = block.exercises.map(ex => `<div class="interval-stage interval-stage-row"><div><h4>${esc(ex.name)}</h4><div class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</div></div></div>`).join('');
-            return `<section class="superset interval-block ${p.complete ? 'is-done' : ''}" aria-label="${label}"><div class="interval-heading"><div><h3 class="superset-label">Intervalado</h3><span class="interval-count">${repeats} ${repeats === 1 ? 'volta' : 'voltas'}</span></div><label class="complete-set"><input type="checkbox" data-interval="${block.id}" aria-label="Concluir bloco: ${label.toLocaleLowerCase('pt-BR')}" ${p.complete ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></div>${stages}</section>`;
+            // An interval is one sequence repeated N times: its own card, with the
+            // sequence once and one toggle per round (stored in each stage's rounds).
+            const repeats = block.group.repeats, p = D.intervalProgress(session, block.group), rounds = intervalRounds(session, block.group);
+            const label = `Intervalado de ${repeats} ${roundsNoun(repeats)}`;
+            const stages = block.exercises.map(ex => `<li><strong>${esc(ex.name)}</strong><span class="cardio-spec">${ex.meta.map(m => `<span>${esc(m)}</span>`).join('')}</span></li>`).join('');
+            const toggles = rounds.map((done, i) => `<button type="button" class="interval-round" data-interval-round="${esc(block.id)}" data-round="${i}" aria-pressed="${done}" aria-label="Volta ${i + 1} de ${repeats}">${i + 1}</button>`).join('');
+            return `<section class="interval-block interval-card ${p.complete ? 'is-done' : ''}" aria-label="${esc(label)}"><div class="interval-card-head"><div class="interval-card-title"><h3>${esc(block.name)}</h3><span class="interval-count">${intervalCountText(rounds, repeats)}</span></div><label class="complete-set"><input type="checkbox" data-interval="${block.id}" aria-label="Concluir todas as voltas do intervalado" ${p.complete ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label></div><ol class="interval-sequence" aria-label="Sequência de cada volta">${stages}</ol><div class="interval-rounds" role="group" aria-label="Voltas">${toggles}</div></section>`;
           }
           const content = block.exercises.map(ex => render(ex, workout.exercises.indexOf(ex))).join('');
           return block.group ? `<section class="superset" aria-label="${esc(block.name)}"><h3 class="superset-label">${esc(block.name)}</h3>${content}</section>` : content;
@@ -3690,7 +3747,8 @@
           const blocks = C.blocks(session.workout);
           const pending = blocks.find(block => block.group ? !D.intervalProgress(session, block.group).complete : !exerciseComplete(block.exercises[0], session));
           const block = pending || blocks.at(-1), exercise = block.exercises[0];
-          return { exerciseId: exercise.id, groupId: block.group?.id, name: block.group ? block.name : exercise.name, detail: !pending ? 'Etapas concluídas' : block.group ? `${block.exercises.length} etapas · ${block.group.repeats} ${block.group.repeats === 1 ? 'volta' : 'voltas'}` : `Etapa ${exercises.indexOf(exercise) + 1} de ${exercises.length}` };
+          const roundsDone = block.group ? intervalRounds(session, block.group).filter(Boolean).length : 0;
+          return { exerciseId: exercise.id, groupId: block.group?.id, name: block.group ? block.name : exercise.name, detail: !pending ? 'Etapas concluídas' : block.group ? (roundsDone ? `${roundsDone} de ${block.group.repeats} ${roundsNoun(block.group.repeats)}` : `${block.exercises.length} etapas · ${block.group.repeats} ${roundsNoun(block.group.repeats)}`) : `Etapa ${exercises.indexOf(exercise) + 1} de ${exercises.length}` };
         }
         const owner = exerciseTimerOwner(), timed = owner?.session.key === session.key;
         const exercise = (timed && owner.exercise) || exercises.find(ex => ex.id === preferences.activeWorkout?.exerciseId) || exercises.find(ex => !exerciseComplete(ex, session)) || exercises.at(-1);
@@ -3822,16 +3880,17 @@
           return exerciseEntry(ex, number, session, { tag, attrs, progress, settled, trailing:!navigation && media ? icon('image') : '' });
         });
       }
+      // Pre-workout only exists before a workout is done: renderWorkout sends a
+      // completed workout to its post-workout page instead.
       function renderSummary(workout) {
-        const session = currentSession(), strength = workout.kind === 'strength', locked = isReadOnly(), progress = D.progress(session);
-        const running = activeWorkoutSession(), blocked = !locked && running && running.day !== workout.id;
-        $('workout').innerHTML = `<div class="view-toolbar"><button type="button" class="icon-button back-button" data-summary-back aria-label="Voltar para ${esc(pageTitles[summaryOrigin])}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button>${PLAN.some(w=>w.id === workout.id) ? `<button type="button" class="icon-button" data-edit-current aria-label="Editar ${esc(workout.title)}">${icon('settings')}</button>` : ''}</div><div class="summary-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="workout-title" tabindex="-1">${esc(workout.title)}</h2><p>${esc(workout.day)}${locked ? ' · ' + esc(displayDate(session.date,true)) : ' · Resumo do treino'}</p></div>
+        const session = currentSession(), strength = workout.kind === 'strength', progress = D.progress(session);
+        const running = activeWorkoutSession(), blocked = running && running.day !== workout.id;
+        $('workout').innerHTML = `<div class="view-toolbar"><button type="button" class="icon-button back-button" data-summary-back aria-label="Voltar para ${esc(pageTitles[summaryOrigin])}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button>${PLAN.some(w=>w.id === workout.id) ? `<button type="button" class="icon-button" data-edit-current aria-label="Editar ${esc(workout.title)}">${icon('settings')}</button>` : ''}</div><div class="summary-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="workout-title" tabindex="-1">${esc(workout.title)}</h2><p>${esc(workout.day)} · Resumo do treino</p></div>
           ${renderStatStrip([
             { value:String(workout.exercises.length), label:strength ? 'exercícios' : 'etapas' },
-            { value:String(strength ? progress.total : TrainingConfig.blocks(workout).length), label:strength ? 'séries' : 'blocos' },
-            { value:`${Math.round(progress.done/(progress.total || 1)*100)}%`, label:'realizado' }
+            { value:String(strength ? progress.total : TrainingConfig.blocks(workout).length), label:strength ? 'séries' : 'blocos' }
           ],'summary-stats','Visão geral do treino')}
-          <button type="button" class="button primary summary-start" ${locked ? `data-post-workout="${esc(session.key)}"` : 'data-start-session'} ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${locked ? 'Ver resumo' : currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}${overviewTitle(workout,session,sessionHasProgress(session))}<div class="overview-list">${overviewRows(workout,session)}</div>`;
+          <button type="button" class="button primary summary-start" data-start-session ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}${overviewTitle(workout,session,sessionHasProgress(session))}<div class="overview-list">${overviewRows(workout,session)}</div>`;
       }
       function sessionProgress() {
         return `<section class="session-progress" aria-label="Progresso do treino"><div class="progress-label"><span>Progresso do treino</span><span id="progress-label"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div></section>`;
@@ -3841,6 +3900,12 @@
         const total = Math.round(seconds), minutes = Math.floor(total / 60), rest = String(total % 60).padStart(2,'0');
         return hours && minutes >= 60 ? `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2,'0')}:${rest}` : `${minutes}:${rest}`;
       }
+      // Under an hour: minutes and seconds (45min 12s). From one hour: hours and minutes (1h 5min).
+      function workoutDuration(seconds) {
+        if (seconds === null) return '—';
+        const total = Math.round(seconds), hours = Math.floor(total / 3600), minutes = Math.floor(total % 3600 / 60);
+        return hours ? `${hours}h ${minutes}min` : `${minutes}min ${total % 60}s`;
+      }
       function summaryNumber(value) {
         if (value === null) return '—';
         return value >= 100000 ? value.toLocaleString('pt-BR',{ notation:'compact', maximumFractionDigits:1 }) : number(value);
@@ -3848,7 +3913,7 @@
       function summaryMetrics(summary) {
         if (summary.kind === 'cardio') return [
           { value:summary.distanceKm === null ? '—' : summary.distanceKm.toLocaleString('pt-BR',{ minimumFractionDigits:2, maximumFractionDigits:2 }), label:'distância (km)', exact:summary.distanceKm === null ? 'Distância não informada' : `${number(summary.distanceKm)} quilômetros` },
-          { value:summaryClock(summary.durationSeconds,true), label:'tempo', exact:summary.durationSeconds === null ? 'Tempo não informado' : totalDuration(summary.durationSeconds) },
+          { value:workoutDuration(summary.durationSeconds), label:'tempo', exact:summary.durationSeconds === null ? 'Tempo não informado' : totalDuration(summary.durationSeconds) },
           { value:summaryClock(summary.paceSeconds), label:'pace (min/km)', exact:summary.paceSeconds === null ? 'Pace não disponível' : `${summaryClock(summary.paceSeconds)} minutos por quilômetro` }
         ];
         return [
@@ -3860,7 +3925,17 @@
       function renderStatStrip(metrics, extraClass = '', label = 'Resumo do treino') {
         const longest = Math.max(...metrics.map(metric => metric.value.length));
         const size = longest > 10 ? ' is-very-long' : longest > 8 ? ' is-long' : '';
-        return `<dl class="stat-strip ${extraClass}${size}" aria-label="${esc(label)}">${metrics.map(metric=>`<div><dd${metric.exact ? ` aria-label="${esc(metric.exact)}" title="${esc(metric.exact)}"` : ''}>${esc(metric.value)}</dd><dt>${esc(metric.label)}</dt></div>`).join('')}</dl>`;
+        return `<dl class="stat-strip ${extraClass}${size}${metrics.length === 2 ? ' is-pair' : ''}" data-size="${size.trim()}" aria-label="${esc(label)}">${metrics.map(metric=>`<div><dd${metric.exact ? ` aria-label="${esc(metric.exact)}" title="${esc(metric.exact)}"` : ''}>${esc(metric.value)}</dd><dt>${esc(metric.label)}</dt></div>`).join('')}</dl>`;
+      }
+      // Character counts only estimate width: step the strip down while any value is still cut off.
+      function fitStatStrips(root) {
+        for (const strip of root.querySelectorAll('.stat-strip')) {
+          const overflows = () => [...strip.querySelectorAll('dd')].some(dd => dd.scrollWidth > dd.clientWidth + 1);
+          strip.classList.remove('is-long','is-very-long');
+          if (strip.dataset.size) strip.classList.add(strip.dataset.size);
+          if (!strip.classList.contains('is-long') && !strip.classList.contains('is-very-long') && overflows()) strip.classList.add('is-long');
+          if (strip.classList.contains('is-long') && overflows()) strip.classList.replace('is-long','is-very-long');
+        }
       }
       function renderSummaryMetrics(summary,extraClass='') {
         return renderStatStrip(summaryMetrics(summary),`post-stats ${extraClass}`.trim());
@@ -3876,19 +3951,27 @@
         if (!summary) return;
         const strength = summary.kind === 'strength';
         const date = `${D.weekdays[(new Date(summary.date+'T12:00:00').getDay()+6)%7]} · ${displayDate(summary.date,true)}`;
-        $('post-workout').innerHTML = `<div class="post-toolbar"><button type="button" class="icon-button back-button" data-post-back aria-label="Voltar para ${esc(postWorkoutOrigin === 'summary' ? 'o registro' : pageTitles[postWorkoutOrigin] || 'Início')}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button></div>
+        $('post-workout').innerHTML = `<div class="post-toolbar"><button type="button" class="icon-button back-button" data-post-back aria-label="Voltar para ${esc(pageTitles[postWorkoutOrigin] || 'Início')}">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button></div>
           <div class="post-heading"><span class="kind-badge">${icon(strength ? 'dumbbell' : 'run')}${strength ? 'Força' : 'Corrida'}</span><h2 id="post-workout-title" tabindex="-1">${esc(summary.title)}</h2><p>${esc(date)}</p></div>
           ${renderSummaryMetrics(summary)}
-          <div class="post-actions"><button type="button" class="button primary full" data-share-record="${esc(session.key)}">${icon('share')}Compartilhar treino</button><button type="button" class="button full" data-post-history="${esc(session.key)}">Ver histórico</button></div>
+          <div class="post-actions"><button type="button" class="button primary full" data-share-record="${esc(session.key)}">${icon('share')}Compartilhar treino</button><button type="button" class="button danger secondary full" data-delete-record="${esc(session.key)}">${icon('trash')}Excluir registro</button></div>
           ${overviewTitle(session.workout,session,true)}
           ${summary.exercises.length ? `<div class="overview-list">${exerciseOverview(session.workout,session,{ progress:true, settled:true, details:true })}</div>` : `<p class="post-empty">${strength ? 'Nenhuma série foi marcada como realizada neste treino.' : 'Nenhuma etapa foi marcada como realizada. Os totais informados estão no resumo acima.'}</p>`}
           ${session.notes ? `<section class="post-notes"><h3>Suas observações</h3><p>${esc(session.notes)}</p></section>` : ''}`;
+        fitStatStrips($('post-workout'));
       }
+      let statStripWidth = window.innerWidth;
+      window.addEventListener('resize', () => {
+        // Mobile toolbars change the height while scrolling; only a new width can change the fit.
+        if (window.innerWidth === statStripWidth) return;
+        statStripWidth = window.innerWidth;
+        if (appView === 'postworkout') fitStatStrips($('post-workout'));
+      });
       function openPostWorkout(recordKey, origin = null) {
         if (!validInputs()) return;
         const session = store.sessions[recordKey];
         if (!session?.done) { toast('Este registro não está mais disponível.','info'); return; }
-        postWorkoutOrigin = origin || (['home','workouts','history','summary'].includes(appView) ? appView : postWorkoutOrigin);
+        postWorkoutOrigin = origin || (['home','workouts','history'].includes(appView) ? appView : ['summary','session'].includes(appView) ? summaryOrigin : postWorkoutOrigin);
         summaryOrigin = origin || (['home','workouts','history'].includes(appView) ? appView : summaryOrigin);
         viewingRecord = session.key; selectedDay = session.day; selectedDate = session.date; selectedWeekday = session.workout.weekday;
         appView = 'postworkout'; renderNav(); renderWorkout(); focusPage();
@@ -3896,7 +3979,7 @@
       $('post-workout').addEventListener('click',e=>{
         const button = e.target.closest('button'); if (!button) return;
         if (button.hasAttribute('data-post-back')) navigateBack(postWorkoutOrigin);
-        else if (button.dataset.postHistory) openWorkoutHistory(button.dataset.postHistory);
+        else if (button.dataset.deleteRecord) requestDeleteRecord(button.dataset.deleteRecord);
         else if (button.dataset.shareRecord) openShareWorkout(button.dataset.shareRecord);
       });
 
@@ -3933,9 +4016,17 @@
           if(lines.length>maxLines) return size>40 ? wrap(value,maxWidth,size-2,maxLines) : {lines:lines.slice(0,maxLines-1).concat(lines[maxLines-1].slice(0,-1)+'…'),size};
           return {lines,size};
         }
+        const metrics=summaryMetrics(summary);
+        const stats=strength ? metrics : [
+          {value:metrics[0].value,label:'distância (km)'},
+          {value:metrics[1].value,label:'tempo'},
+          {value:metrics[2].value,label:'pace (min/km)'}
+        ];
+        // One metric per row, so each value can use the full width at a large size.
+        const labelSize=34,valueSize=148,labelGap=6,rowGap=40,rowHeight=labelSize+labelGap+valueSize;
         const title=wrap(summary.title,width,64,3),titleY=140;
-        const dateY=titleY+title.lines.length*(title.size+10)+10,metricsY=dateY+76;
-        canvas.height=metricsY+178;
+        const dateY=titleY+title.lines.length*(title.size+10)+10,metricsY=dateY+84;
+        canvas.height=metricsY+stats.length*rowHeight+(stats.length-1)*rowGap+36;
         // The checkerboard belongs to the preview UI; the PNG keeps the space around the badge and text transparent.
         if(!transparent) {context.fillStyle=background === 'dark' ? '#000000' : '#ffffff';context.fillRect(0,0,canvas.width,canvas.height);}
         const kindLabel=strength ? 'Força' : 'Corrida',badgeY=40,badgeHeight=68,iconSize=42;
@@ -3953,15 +4044,12 @@
         symbol.querySelectorAll('path').forEach(path=>context.stroke(new Path2D(path.getAttribute('d'))));
         context.restore();
         title.lines.forEach((row,i)=>text(row,padding,titleY+i*(title.size+10),title.size,600));
-        text(displayDate(summary.date,true),padding,dateY,28,400,muted);
-        const metrics=summaryMetrics(summary);
-        const stats=strength ? metrics : [
-          {value:metrics[0].value,label:'distância (km)'},
-          {value:metrics[1].value,label:'tempo'},
-          {value:metrics[2].value,label:'pace (min/km)'}
-        ];
-        const col=width/3;
-        stats.forEach((metric,i)=>{text(metric.value,padding+i*col,metricsY,80,600,ink,col-24);text(metric.label,padding+i*col,metricsY+94,30,400,muted,col-24);});
+        text(displayDate(summary.date,true),padding,dateY,30,400,muted);
+        stats.forEach((metric,i)=>{
+          const y=metricsY+i*(rowHeight+rowGap);
+          text(metric.label,padding,y,labelSize,400,muted);
+          text(metric.value,padding,y+labelSize+labelGap,valueSize,650,ink);
+        });
         return canvas;
       }
       function releaseShareImage() {
@@ -4131,7 +4219,7 @@
         viewingRecord = store.sessions[route.record]?.done ? route.record : null;
         focusExerciseId = route.exercise;
         summaryOrigin = ['home','workouts','history'].includes(route.origin) ? route.origin : 'home';
-        postWorkoutOrigin = ['home','workouts','history','summary'].includes(route.postOrigin) ? route.postOrigin : summaryOrigin;
+        postWorkoutOrigin = ['home','workouts','history'].includes(route.postOrigin) ? route.postOrigin : summaryOrigin;
         historyDate = D.validDate(route.historyDate) ? route.historyDate : localDate();
         historyMonth = /^\d{4}-\d{2}$/.test(route.historyMonth) ? route.historyMonth : historyDate.slice(0,7);
         setMonthPickerOpen(false);
@@ -4257,6 +4345,9 @@
       function renderWorkout() {
         clearInlineMedia($('workout'));
         const workout=currentWorkout();
+        if(['summary','session'].includes(appView) && isReadOnly()) {
+          viewingRecord=currentRecord().key; postWorkoutOrigin=summaryOrigin; appView='postworkout';
+        }
         if(appView === 'postworkout' && !store.sessions[viewingRecord]?.done) appView='history';
         if(!workout && ['summary','session'].includes(appView)) appView='home';
         if(appView === 'session' && !isReadOnly() && !currentDraft()) appView='summary';
@@ -4305,7 +4396,7 @@
 
       function startSession(exerciseId = null) {
         if (!currentWorkout() || !validInputs()) return;
-        if (isReadOnly()) return openWorkoutHistory(currentRecord().key);
+        if (isReadOnly()) return openPostWorkout(currentRecord().key);
         const requestedDay = selectedDay, requestedRecord = viewingRecord, requestedView = appView;
         if (!isReadOnly() && navigator.locks?.request) {
           return navigator.locks.request('treino-hibrido.start-session', () => {
@@ -4327,7 +4418,7 @@
           } catch { }
         }
         const running = activeWorkoutSession();
-        if (isReadOnly()) return openWorkoutHistory(currentRecord().key);
+        if (isReadOnly()) return openPostWorkout(currentRecord().key);
         if (!isReadOnly() && running && running.day !== selectedDay) {
           toast(`Conclua ou cancele ${running.workout.title} antes de iniciar outro treino.`,'info');
           renderWorkout(); return false;
@@ -4439,8 +4530,10 @@
         $('exercise-list').querySelectorAll('[data-interval]').forEach(el => {
           const group = s.workout.groups.find(g => g.id === el.dataset.interval), progress = D.intervalProgress(s, group);
           el.checked = progress.complete; el.indeterminate = progress.done > 0 && !progress.complete;
-          const block = el.closest('.interval-block');
+          const block = el.closest('.interval-block'), rounds = intervalRounds(s, group);
           block.classList.toggle('is-done', progress.complete);
+          block.querySelectorAll('[data-interval-round]').forEach(button => button.setAttribute('aria-pressed', String(rounds[+button.dataset.round] === true)));
+          const count = block.querySelector('.interval-count'); if (count) count.textContent = intervalCountText(rounds, group.repeats);
         });
         $('exercise-list').querySelectorAll('[data-exercise-timer]').forEach(button => {
           const exercise = s.workout.exercises.find(ex => ex.id === button.dataset.exerciseTimer), index = +button.dataset.index;
@@ -4611,6 +4704,7 @@
         const choice = e.target.closest('[data-workout-choice]'); if (choice) { chooseDay(choice.dataset.workoutChoice); return; }
         if (e.target.closest('#finish-workout')) { if (validInputs()) openFinish(); return; }
         if (isReadOnly()) return;
+        const round = e.target.closest('[data-interval-round]'); if (round) { toggleIntervalRound(round.dataset.intervalRound, +round.dataset.round); return; }
         const timed = e.target.closest('[data-exercise-timer]'); if (timed) { openExerciseTimer(timed); return; }
         const field = e.target.closest('button[data-field]'); if (field) { openValuePicker(field); return; }
       });
@@ -4669,9 +4763,8 @@
         if (appView !== 'history') return;
         const entry = [...$('history-list').querySelectorAll('[data-history-record]')].find(item => item.dataset.historyRecord === recordKey);
         if (!entry) return;
-        entry.open = true;
-        entry.querySelector('summary').focus({ preventScroll:true });
-        entry.scrollIntoView({ block:'start', behavior:reduceMotion() ? 'auto' : 'smooth' });
+        entry.focus({ preventScroll:true });
+        entry.scrollIntoView({ block:'center', behavior:reduceMotion() ? 'auto' : 'smooth' });
       }
       function setMonthPickerOpen(open) {
         $('history-month-picker').hidden = !open;
@@ -4733,7 +4826,7 @@
         const dayRecords = byDate.get(historyDate) || [];
         $('history-list').innerHTML = dayRecords.length ? dayRecords.map(s => {
           const p = D.progress(s);
-          return `<details class="history-entry" data-history-record="${esc(s.key)}"><summary><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><div class="history-session"><h3>${esc(s.workout.title)}</h3><p>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</p></div>${icon('chevron')}</summary><div class="history-content">${historyTotals(s)}<div class="overview-list is-compact">${exerciseOverview(s.workout, s, { progress:true, settled:true, details:true })}</div>${s.notes ? `<p class="history-notes-label">Observações</p><p class="history-notes">${esc(s.notes)}</p>` : ''}<div class="record-actions"><button type="button" class="button primary" data-open-record="${esc(s.key)}">Abrir registro</button><button class="button danger secondary" data-delete-record="${esc(s.key)}">${icon('trash')}Excluir registro</button></div></div></details>`;
+          return `<button type="button" class="history-record" data-history-record="${esc(s.key)}"><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><span class="history-session"><strong>${esc(s.workout.title)}</strong><small>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</small></span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
         }).join('') : '<p class="calendar-empty">Nenhum treino nesta data.</p>';
       }
       $('history-prev').addEventListener('click', () => shiftHistoryMonth(-1));
@@ -4772,12 +4865,12 @@
         if (!$('history-month-picker').hidden) { e.preventDefault(); setMonthPickerOpen(false); $('history-month-toggle').focus(); }
       });
       $('history-list').addEventListener('click', e => {
-        const b = e.target.closest('[data-open-record]'); if (!b || !validInputs()) return;
-        const s = store.sessions[b.dataset.openRecord]; if (!s) return;
-        summaryOrigin='history'; appView='summary'; viewingRecord = s.key; selectedDate = s.date; selectedDay = s.day; selectedWeekday = s.workout.weekday; renderNav(); renderWorkout(); $('workout').scrollIntoView({ block: 'start', behavior: 'smooth' });
+        const b = e.target.closest('[data-history-record]'); if (!b) return;
+        openPostWorkout(b.dataset.historyRecord, 'history');
       });
 
       function deleteHistory(recordKey = null) {
+        const leavingRecord = appView === 'postworkout' && (!recordKey || recordKey === viewingRecord);
         if (loadBlocked) {
           toast('Não foi possível ler os registros salvos. Exporte os dados disponíveis antes de continuar.','error');
           return;
@@ -4807,6 +4900,10 @@
           viewingRecord = null;
           if (!PLAN.some(w => w.id === selectedDay)) goToToday();
         }
+        if (leavingRecord && !store.sessions[viewingRecord]) {
+          appView = ['workouts','history'].includes(postWorkoutOrigin) ? postWorkoutOrigin : 'home';
+          if (appView === 'home') goToToday();
+        }
         renderNav(); renderWorkout(); renderHistory(); storageNotice();
         toast(removed ? (recordKey ? 'Registro excluído.' : 'Histórico apagado.') : 'Nenhum registro para apagar.');
       }
@@ -4817,15 +4914,17 @@
           `Isso exclui ${count} ${count === 1 ? 'treino' : 'treinos'} deste navegador, incluindo cargas, repetições, marcações e observações. Não é possível desfazer.`,
           'Apagar histórico', () => deleteHistory(), 'history-dialog');
       });
-      $('history-list').addEventListener('click', e => {
-        const button = e.target.closest('[data-delete-record]');
-        if (!button) return;
-        const session = store.sessions[button.dataset.deleteRecord];
+      function requestDeleteRecord(recordKey) {
+        const session = store.sessions[recordKey];
         if (!session) return;
         confirm('Excluir este registro?',
           `${session.workout.title} · ${displayDate(session.date, true)}. As cargas, repetições, marcações e observações deste treino serão apagadas.`,
-          'Excluir registro', () => deleteHistory(session.key), 'history-dialog');
-      });
+          'Excluir registro', () => {
+            deleteHistory(session.key);
+            // Focus the page the user lands on once the confirmation has closed.
+            $('confirm-dialog').addEventListener('close', focusPage, { once:true });
+          });
+      }
 
       let numericPicker = null;
       const numericText = value => value == null ? '' : value.toLocaleString('pt-BR', { useGrouping: false, maximumFractionDigits: 3 });
@@ -5713,10 +5812,6 @@
           finishDate = date; renderFinishDate(); $('finish-date').removeAttribute('aria-invalid'); $('finish-error').hidden = true;
         });
       });
-      function historyTotals(session) {
-        const summary=TrainingSummary.build(session);
-        return summary ? renderSummaryMetrics(summary,'history-totals') : '';
-      }
       function totalDuration(seconds) {
         const hours = Math.floor(seconds / 3600), minutes = Math.floor(seconds / 60) % 60;
         return `${hours ? hours + 'h ' : ''}${minutes}min${seconds % 60 ? ' ' + seconds % 60 + 's' : ''}`;
