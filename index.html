@@ -15,7 +15,17 @@
       --inverse: #fff;
       --line: rgb(0 0 0 / .16);
       --soft: rgb(0 0 0 / .04);
-      --muted: rgb(0 0 0 / .65)
+      --muted: rgb(0 0 0 / .65);
+      --control-height: 48px;
+      --control-height-compact: 44px;
+      --control-height-action: 52px;
+      --control-radius: 14px;
+      --control-radius-compact: 12px;
+      --control-font-size: 16px;
+      --control-font-size-compact: 14px;
+      --control-disabled-opacity: .4;
+      --card-radius: 24px;
+      --card-padding: 20px
     }
 
     :root[data-theme=dark] {
@@ -69,7 +79,7 @@
     }
 
     button:disabled {
-      opacity: .4;
+      opacity: var(--control-disabled-opacity);
       cursor: default
     }
 
@@ -78,7 +88,8 @@
     input,
     select,
     textarea,
-    summary {
+    summary,
+    .evo-plot {
       outline-offset: 3px
     }
 
@@ -87,7 +98,8 @@
     input:focus-visible,
     select:focus-visible,
     textarea:focus-visible,
-    summary:focus-visible {
+    summary:focus-visible,
+    .evo-plot:focus-visible {
       outline: 2px solid var(--ink)
     }
 
@@ -183,18 +195,18 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      min-height: 48px;
+      min-height: var(--control-height);
       padding: 10px 16px;
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: var(--control-radius);
       background: var(--bg);
-      font-size: 16px;
+      font-size: var(--control-font-size);
       font-weight: 550;
       text-decoration: none
     }
 
-    .button:hover,
-    .icon-button:hover {
+    .button:hover:where(:not(:disabled)),
+    .icon-button:hover:where(:not(:disabled)) {
       background: var(--soft)
     }
 
@@ -211,7 +223,7 @@
       color: var(--inverse)
     }
 
-    .button.primary:hover {
+    .button.primary:hover:not(:disabled) {
       opacity: .85
     }
 
@@ -605,7 +617,7 @@
 
     .session-actions .button {
       width: 100%;
-      min-height: 52px
+      min-height: var(--control-height-action)
     }
 
     .form-error {
@@ -1315,7 +1327,7 @@
 
     .picker-actions .button {
       width: 100%;
-      min-height: 52px
+      min-height: var(--control-height-action)
     }
 
     .sound-controls {
@@ -1803,15 +1815,16 @@
     :root { --danger:#a34f4b; --danger-soft:#fbefed; --danger-line:#eed3cf; }
     :root[data-theme=dark] { --danger:#e4a39d; --danger-soft:#382827; --danger-line:#63413d; }
     .button.danger, .icon-button.danger { color:var(--danger); background:var(--danger-soft); border-color:var(--danger-line); }
-    .button.danger:hover, .icon-button.danger:hover { color:var(--danger); background:var(--danger-soft); border-color:var(--danger); }
+    .button.danger:hover:not(:disabled), .icon-button.danger:hover:not(:disabled) { color:var(--danger); background:var(--danger-soft); border-color:var(--danger); }
     .button.danger:focus-visible, .icon-button.danger:focus-visible { outline-color:var(--danger); }
-    .button.compact { min-height:40px; padding:8px 12px; font-size:13px; border-radius:12px; }
-    .selection-field { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; min-width:0; min-height:50px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; margin-top:7px; background:var(--soft); color:var(--ink); font-size:16px; text-align:left; }
+    .button.compact { min-height:var(--control-height-compact); padding:8px 12px; font-size:var(--control-font-size-compact); border-radius:var(--control-radius-compact); }
+    .selection-field { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; min-width:0; min-height:var(--control-height); padding:10px 12px; border:1px solid var(--line); border-radius:var(--control-radius-compact); margin-top:7px; background:var(--soft); color:var(--ink); font-size:var(--control-font-size); text-align:left; }
+    .selection-field.compact { width:auto; min-height:var(--control-height-compact); margin-top:0; padding:8px 12px; gap:8px; font-size:var(--control-font-size-compact); }
     .selection-field>span,.number-ticker>span { min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
     .editor-identity-grid { grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); }
     @media(max-width:480px) { .editor-identity-grid { grid-template-columns:minmax(0,1fr); gap:0; } }
     .selection-field>.icon, .number-ticker>.icon { width:18px; height:18px; flex:none; }
-    .selection-field:disabled { opacity:.65; cursor:default; }
+    .selection-field:disabled { opacity:var(--control-disabled-opacity); cursor:default; }
     .selection-options { display:grid; gap:6px; }
     .selection-option { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:52px; padding:12px 14px; border:1px solid transparent; border-radius:12px; background:transparent; font-size:16px; text-align:left; }
     .selection-option[aria-selected=true] { background:var(--soft); border-color:var(--line); font-weight:550; }
@@ -1869,7 +1882,7 @@
     .group-choice:has(input:disabled) { opacity:.5; cursor:default; }
     .group-choice input:disabled { cursor:default; }
     .group-config-actions { position:sticky; bottom:0; z-index:1; margin:0; padding:16px 20px 20px; background:var(--bg); border-top:1px solid var(--line); }
-    .group-config-actions .button { min-width:0; padding:10px 12px; font-size:14px; }
+    .group-config-actions .button { min-width:0; padding:10px 12px; }
     [data-sort-id].is-dragging { opacity:.3; }
     @media(max-width:380px) { .editor-superset { padding:8px; } .editor-superset .editor-exercise { padding:12px; } .superset { padding:12px; } .selection-field { padding:10px; font-size:15px; } }
     @media(prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto!important; transition:none!important; animation:none!important; } }
@@ -1879,9 +1892,9 @@
     @media(max-width:350px) { .editor-identity-grid { grid-template-columns:1fr; gap:0; } }
     /* Destructive actions retain the same primary / secondary hierarchy. */
     .button.danger, .icon-button.danger { color:var(--danger); background:transparent; border-color:var(--danger-line); }
-    .button.danger:hover, .icon-button.danger:hover { color:var(--danger); background:var(--danger-soft); border-color:var(--danger-line); }
+    .button.danger:hover:not(:disabled), .icon-button.danger:hover:not(:disabled) { color:var(--danger); background:var(--danger-soft); border-color:var(--danger-line); }
     .button.danger.primary { background:var(--danger-soft); border-color:var(--danger-line); font-weight:600; }
-    .button.danger.primary:hover { border-color:var(--danger); }
+    .button.danger.primary:hover:not(:disabled) { border-color:var(--danger); }
     .button.danger.secondary, .icon-button.danger.secondary { border-color:transparent; }
     .day-check .day-partial { font-size:11px; font-weight:550; letter-spacing:.01em; }
     .profile h1 { min-width:0; overflow-wrap:anywhere; }
@@ -1890,7 +1903,6 @@
     .profile-photo-editor { display:flex; align-items:center; gap:20px; margin:4px 0 24px; }
     .profile-preview { width:96px; height:96px; border:1px solid var(--line); font-size:30px; }
     .profile-photo-actions { display:grid; gap:8px; flex:1; min-width:0; }
-    .profile-photo-actions .button { min-height:44px; padding:8px 12px; font-size:14px; }
     #finish-cardio .form-field { margin-top:10px; }
     #finish-cardio .number-ticker { font-size:16px; }
     .finish-date-field { margin-top:20px; }
@@ -1919,7 +1931,8 @@
     .avatar>.icon { width:23px; height:23px; }
     .profile-preview>.icon { width:38px; height:38px; }
     .editor-footer-secondary { display:flex; gap:8px; }
-    .editor-footer-secondary>.button { flex:1; min-width:0; padding:10px 8px; font-size:14px; white-space:nowrap; }
+    .editor-footer .button { min-height:var(--control-height-action); }
+    .editor-footer-secondary>.button { flex:1; min-width:0; }
     #editor-exercises.sort-compact .sort-summary-text { display:flex; gap:10px; align-items:center; align-self:stretch; border:0; background:transparent; color:var(--ink); padding:0; text-align:left; font:inherit; font-size:14px; cursor:pointer; }
     .sort-summary-text .sort-item-name { min-width:0; flex:1; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; line-height:1.35; }
     .sort-summary-text>.icon { width:15px; height:15px; flex:none; color:var(--muted); }
@@ -1929,13 +1942,13 @@
     #editor-exercises.sort-compact [data-sort-id]>.editor-exercise-head,
     #editor-exercises.sort-compact [data-sort-id]>.superset-heading { gap:6px; }
     #editor-exercises.sort-compact { padding-bottom:4px; }
-    @media(max-width:350px) { #editor-exercises.sort-compact .sort-summary-text { gap:7px; font-size:13px; } .editor-footer-secondary>.button { padding-left:8px; padding-right:8px; font-size:14px; } }
+    @media(max-width:350px) { #editor-exercises.sort-compact .sort-summary-text { gap:7px; font-size:13px; } }
     /* Expanded and minimized views of an active rest share the same timer. */
     .complete-set { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
     .rest-sheet .dialog-body { padding-left:20px; padding-right:20px; }
     .rest-readout { padding:14px 0 26px; text-align:center; }
     .rest-adjustments { display:flex; justify-content:center; gap:12px; margin-top:18px; }
-    .rest-adjustments .button { min-width:96px; min-height:44px; font-size:15px; font-variant-numeric:tabular-nums; }
+    .rest-adjustments .button { min-width:96px; font-variant-numeric:tabular-nums; }
     .timer-digits { display:block; font-size:68px; line-height:1.15; font-weight:550; font-variant-numeric:tabular-nums; letter-spacing:-2px; }
     .timer-digits.is-long { font-size:54px; }
     .timer-context { text-align:center; margin-bottom:12px; overflow-wrap:anywhere; }
@@ -2083,7 +2096,7 @@
     .arrow-left { transform:rotate(90deg); }
     .section-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:24px 0 12px; }
     .section-heading h2,.section-heading h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
-    .section-heading .button { min-height:40px; font-size:13px; padding:7px 10px; }
+    .section-heading .button { min-height:var(--control-height-compact); font-size:var(--control-font-size-compact); padding:8px 12px; border-radius:var(--control-radius-compact); }
     .workout-row { display:flex; align-items:center; gap:13px; width:100%; border:1px solid var(--line); border-radius:18px; padding:17px; background:var(--bg); text-align:left; margin-bottom:10px; box-shadow:var(--shadow-card); }
     .workout-row:hover,button.overview-item:hover,summary.overview-item:hover { background:var(--soft); }
     .workout-row .row-icon { display:grid; place-items:center; width:43px; height:43px; flex:none; border-radius:14px; background:var(--soft); color:var(--accent); }
@@ -2094,7 +2107,7 @@
     .workout-row>.icon { width:18px; height:18px; color:var(--muted); }
     .rest-day { padding:20px; border:1px solid var(--line); border-radius:20px; background:var(--bg); color:var(--muted); font-size:14px; }
     .home-footer { display:flex; justify-content:center; gap:14px; padding-top:18px; }
-    .home-footer .button { font-size:13px; min-height:44px; color:var(--muted); }
+    .home-footer .button { font-size:var(--control-font-size-compact); min-height:var(--control-height-compact); color:var(--muted); }
     .resume-card { margin:16px 0 0; }
     .view-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 20px; }
     .icon-button.back-button { width:44px; min-width:44px; min-height:44px; padding:0; border-radius:50%; }
@@ -2112,7 +2125,7 @@
     .stat-strip.is-long dd { font-size:20px; }
     .stat-strip.is-very-long dd { font-size:16px; }
     .stat-strip dt { font-size:12px; line-height:18px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .summary-start { width:100%; min-height:54px; }
+    .summary-start { width:100%; min-height:var(--control-height-action); }
     .summary-cancel { display:block; width:100%; margin-top:8px; }
     .overview-group { --row-x:14px; --row-y:14px; margin:12px; border:1px solid var(--line); border-radius:16px; overflow:hidden; }
     .overview-group-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:var(--soft); }
@@ -2215,7 +2228,7 @@
     body[data-view=summary],body[data-view=session] { --nav-space:calc(12px + env(safe-area-inset-bottom,0px)); }
     .week-panel { margin:0 0 22px; padding:22px 20px 18px; }
     .week-panel .weekly-overview { padding:0 0 18px; }
-    .today-card { margin-bottom:16px; padding:20px; border-radius:24px; }
+    .today-card { margin-bottom:16px; padding:var(--card-padding); border-radius:var(--card-radius); }
     .today-card::before { display:none; }
     .today-card h2 { font-size:24px; font-weight:600; letter-spacing:-.6px; line-height:1.25; overflow-wrap:anywhere; }
     .today-card h2+.button { margin-top:18px; }
@@ -2223,7 +2236,7 @@
     .today-card-top .context-label { font-size:13px; }
     .today-card .kind-badge { padding:5px 10px; flex:none; }
     .today-card .today-detail { font-size:13px; margin:7px 0 18px; }
-    .today-card .button { min-height:44px; justify-content:center; font-size:14px; padding:9px 14px; border-radius:12px; }
+    .today-card .button { justify-content:center; }
     .overview-item[aria-current=true] .overview-number { color:var(--ink); background:var(--soft); }
     .record-banner { color:var(--ink); background:var(--soft); border-color:var(--line); }
     .bottom-nav { position:fixed; z-index:30; left:0; right:0; bottom:calc(14px + env(safe-area-inset-bottom,0px)); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); align-items:center; justify-items:center; width:min(380px,calc(100% - 32px)); min-height:66px; padding:8px; gap:8px; border:1px solid var(--line); border-radius:40px; background:var(--nav-surface); box-shadow:var(--shadow-float); }
@@ -2235,7 +2248,6 @@
     .app-page { min-width:0; }
     .view-entering { animation:page-in var(--motion-page) var(--ease-out) both; }
     .app-page>.dialog-body { padding:0; }
-    .app-page .page-toolbar { margin:0 0 16px; }
     #manager-dialog .managed-day { margin:0 0 20px; }
     #manager-dialog .managed-empty { padding:22px 0; }
     .managed-workout { padding:8px; gap:2px; }
@@ -2247,8 +2259,8 @@
     .managed-delete.icon-button.danger:hover,.managed-delete.icon-button.danger:active { background:var(--danger-soft); }
     .managed-workout-main { min-width:0; }
     .managed-workout-main strong { font-size:15px; }
-    #history-dialog>.dialog-body,#timer-dialog>.dialog-body,#backup-dialog>.dialog-body { padding:20px; border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow-card); background:var(--bg); }
-    .profile-card { display:flex; align-items:center; gap:16px; width:100%; border:1px solid var(--line); border-radius:24px; background:var(--bg); box-shadow:var(--shadow-card); padding:20px; margin-bottom:22px; text-align:left; transition:border-color .18s,box-shadow .18s,transform .18s; }
+    #history-dialog>.dialog-body,#timer-dialog>.dialog-body,#backup-dialog>.dialog-body { padding:var(--card-padding); border:1px solid var(--line); border-radius:var(--card-radius); box-shadow:var(--shadow-card); background:var(--bg); }
+    .profile-card { display:flex; align-items:center; gap:16px; width:100%; border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); padding:var(--card-padding); margin-bottom:22px; text-align:left; transition:border-color .18s,box-shadow .18s,transform .18s; }
     .profile-card .avatar { width:64px; height:64px; font-size:22px; }
     .profile-card-copy { flex:1; min-width:0; }
     .profile-card-name { display:block; font-size:20px; font-weight:600; letter-spacing:-.5px; line-height:1.3; overflow-wrap:anywhere; }
@@ -2334,7 +2346,7 @@
     .history-totals { margin:0; padding:20px 0; border:0; border-bottom:1px solid var(--line); border-radius:0; box-shadow:none; }
     .history-totals>div { padding:0 5px; }
     .post-actions { display:grid; gap:8px; margin:18px 0 0; }
-    .post-actions .button.primary { min-height:54px; }
+    .post-actions .button.primary { min-height:var(--control-height-action); }
     .overview-title { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:24px 0 12px; }
     .overview-title h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
     .overview-title span { color:var(--muted); font-size:12px; }
@@ -2417,18 +2429,27 @@
     .interval-round:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
     .interval-round:disabled { cursor:default; }
     @media(min-width:700px) { .interval-card-head { padding-left:22px; } .interval-sequence { padding-left:22px; padding-right:22px; } .interval-rounds { padding-left:22px; padding-right:22px; } }
-    /* Progress shares the existing spacing, controls, palette and motion system. */
-    .evo-kinds { display:flex; gap:8px; margin-bottom:14px; }
-    .evo-kinds button { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:40px; padding:8px 14px; border:1px solid var(--line); border-radius:24px; background:var(--bg); font-size:13px; color:var(--muted); transition:color .18s,background .18s; }
+    /* Back controls always precede the title, with one shared top inset. */
+    :root { --page-top-space:calc(20px + env(safe-area-inset-top,0px)); }
+    .header.has-page-back { display:block; padding-top:var(--page-top-space); }
+    .page-toolbar,.view-toolbar,.post-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; margin:0 0 20px; }
+    body[data-view=summary] #workout,body[data-view=session] #workout,#post-workout { padding-top:var(--page-top-space); }
+    @media print { .page-toolbar { display:none!important; } }
+
+    /* Shadcn-inspired chart surfaces, keeping the app's monochrome palette. */
+    #evolution-page { --chart-ink:#27272a; --chart-border:#e4e4e7; --chart-grid:#ededf0; --chart-muted:#71717a; --chart-fill-top:.24; --chart-fill-bottom:.015; }
+    :root[data-theme=dark] #evolution-page { --chart-ink:#e4e4e7; --chart-border:#27272a; --chart-grid:#242427; --chart-muted:#a1a1aa; --chart-fill-top:.28; --chart-fill-bottom:.015; }
+    .evo-kinds { display:flex; gap:4px; padding:4px; margin-bottom:16px; border:1px solid var(--line); border-radius:var(--control-radius); background:var(--bg); }
+    .evo-kinds button { display:inline-flex; flex:1; min-width:0; align-items:center; justify-content:center; gap:7px; min-height:var(--control-height-compact); padding:8px; border:0; border-radius:10px; background:transparent; font-size:var(--control-font-size-compact); color:var(--muted); transition:color .18s,background .18s; }
     .evo-kinds button[aria-pressed=true] { background:var(--ink); border-color:var(--ink); color:var(--inverse); }
     .evo-kinds .icon { width:18px; height:18px; }
     .evo-period-field { margin:16px 0 0; }
     .evo-range-caption { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0 10px; margin:5px 0 14px; color:var(--muted); font-size:11px; line-height:1.5; }
     .evo-range-caption>span { padding:8px 0; }
-    .evo-text-button { display:inline-flex; justify-content:center; align-items:center; gap:6px; min-height:40px; padding:6px 0; border:0; border-radius:8px; background:transparent; color:var(--ink); font-size:12px; font-weight:500; text-decoration:none; }
+    .evo-text-button { display:inline-flex; justify-content:center; align-items:center; gap:6px; min-height:var(--control-height-compact); padding:8px 0; border:0; border-radius:8px; background:transparent; color:var(--ink); font-size:var(--control-font-size-compact); font-weight:500; text-decoration:none; }
     .evo-text-button .icon { width:16px; height:16px; }
     .evo-text-button:hover { text-decoration:underline; text-underline-offset:3px; }
-    .evo-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0; margin:0 0 20px; border:1px solid var(--line); border-radius:24px; overflow:hidden; background:var(--bg); box-shadow:var(--shadow-card); }
+    .evo-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0; margin:0 0 20px; border:1px solid var(--line); border-radius:var(--card-radius); overflow:hidden; background:var(--bg); box-shadow:var(--shadow-card); }
     .evo-stat { display:flex; flex-direction:column; min-width:0; padding:18px 20px; }
     .evo-stat:nth-child(odd) { border-right:1px solid var(--line); }
     .evo-stat:nth-child(-n+2) { border-bottom:1px solid var(--line); }
@@ -2436,7 +2457,7 @@
     .evo-stat dd { display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 6px; margin:auto 0 0; padding-top:7px; font-size:clamp(23px,6.5vw,30px); line-height:1.25; letter-spacing:-.75px; font-weight:550; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
     .evo-stat dd.is-long { font-size:21px; }
     .evo-stat dd span { color:var(--muted); font-size:12px; letter-spacing:0; font-weight:400; }
-    .evo-card { border:1px solid var(--line); border-radius:24px; padding:20px; margin-bottom:20px; background:var(--bg); box-shadow:var(--shadow-card); min-width:0; }
+    .evo-card { border:1px solid var(--line); border-radius:var(--card-radius); padding:var(--card-padding); margin-bottom:20px; background:var(--bg); box-shadow:var(--shadow-card); min-width:0; }
     .evo-card-heading,.evo-section-title { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; }
     .evo-card-heading>div,.evo-section-title>div { min-width:0; }
     .evo-section-title h2 { display:flex; align-items:center; gap:8px; }
@@ -2445,28 +2466,43 @@
     .evo-card h2,.evo-section-title h2 { font-size:16px; font-weight:600; line-height:1.4; letter-spacing:-.2px; }
     .evo-card-heading p,.evo-section-title p { color:var(--muted); font-size:12px; line-height:1.5; margin:3px 0 0; }
     .evo-card-heading>.icon { flex:none; width:23px; height:23px; color:var(--muted); }
-    .evo-metric-select.selection-field { width:auto; max-width:52%; min-height:40px; padding:8px 10px; gap:6px; font-size:12px; border-color:transparent; background:var(--soft); border-radius:10px; }
+    .evo-metric-select.selection-field { max-width:52%; }
     .evo-metric-select .icon { width:16px; height:16px; flex:none; }
     .evo-metric-select>span { overflow-wrap:anywhere; text-align:left; }
-    .evo-exercise-select { font-size:14px; min-height:48px; }
     .evo-exercise-select>span { min-width:0; overflow-wrap:anywhere; text-align:left; white-space:normal; text-overflow:clip; }
     .evo-exercise-select>.icon { flex:none; }
     .evo-exercise-controls { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:12px 0 16px; }
     .evo-exercise-controls>span { color:var(--muted); font-size:11px; }
     .evo-chart { min-width:0; }
-    .evo-chart-readout { min-height:66px; margin-bottom:8px; }
-    .evo-chart-readout strong { display:block; font-size:26px; font-weight:550; letter-spacing:-.6px; line-height:1.25; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
-    .evo-chart-readout span { display:block; margin-top:6px; font-size:12px; color:var(--muted); }
+    .evo-chart-readout { min-height:74px; margin:2px 0 18px; }
+    .evo-chart-readout strong { display:block; font-size:30px; font-weight:600; letter-spacing:-1px; line-height:1.25; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+    .evo-chart-readout span { display:block; margin-top:6px; font-size:12px; color:var(--chart-muted); }
+    .evo-plot-wrap { position:relative; }
     .evo-plot { display:block; width:100%; height:auto; overflow:visible; touch-action:pan-y; border-radius:8px; }
-    .evo-gridline { stroke:var(--line); stroke-width:1; stroke-dasharray:3 4; }
-    .evo-axis { fill:var(--muted); font-size:11px; font-family:inherit; }
-    .evo-line { fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-    .evo-mark { fill:var(--muted); opacity:.35; transition:opacity .14s; }
-    .evo-mark.is-active { fill:var(--ink); opacity:1; }
-    .evo-line~.evo-mark { stroke:var(--bg); stroke-width:1.5; opacity:1; fill:var(--ink); }
-    .evo-line~.evo-mark.is-active { stroke:var(--ink); stroke-width:2; fill:var(--bg); r:5px; }
-    .evo-guide { stroke:var(--muted); opacity:.3; stroke-width:1; stroke-dasharray:3 4; pointer-events:none; }
-    .evo-chart-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:40px; font-size:11px; color:var(--muted); }
+    .evo-gridline { stroke:var(--chart-grid); stroke-width:1; }
+    .evo-axis { fill:var(--chart-muted); font-size:11px; font-family:inherit; }
+    .evo-gradient-stop { stop-color:var(--chart-ink); }
+    .evo-area-start { stop-opacity:var(--chart-fill-top); }
+    .evo-area-end { stop-opacity:var(--chart-fill-bottom); }
+    .evo-line { fill:none; stroke:var(--chart-ink); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
+    .evo-mark { opacity:.55; transition:opacity .16s; }
+    .evo-mark.is-active { opacity:1; }
+    circle.evo-mark { fill:var(--chart-ink); stroke:var(--bg); stroke-width:2; opacity:0; }
+    circle.evo-mark.is-single { opacity:1; }
+    circle.evo-mark.is-active { opacity:1; r:4.5px; }
+    .evo-guide { stroke:var(--chart-ink); opacity:.22; stroke-width:1; stroke-dasharray:4 4; pointer-events:none; }
+    .evo-focus-halo { fill:var(--chart-ink); opacity:.09; pointer-events:none; }
+    .evo-tooltip { position:absolute; z-index:2; width:max-content; max-width:calc(100% - 16px); min-width:124px; padding:10px 12px; border:1px solid var(--chart-border); border-radius:10px; background:var(--bg); box-shadow:0 4px 16px rgb(0 0 0 / .09); pointer-events:none; opacity:0; visibility:hidden; transition:opacity .12s; font-size:11px; line-height:1.5; }
+    .evo-plot-wrap.is-inspecting .evo-tooltip { opacity:1; visibility:visible; }
+    .evo-tooltip-date { display:block; margin-bottom:6px; color:var(--chart-muted); }
+    .evo-tooltip-row { display:flex; align-items:center; gap:8px; }
+    .evo-tooltip-label { color:var(--chart-muted); }
+    .evo-tooltip strong { min-width:0; margin-left:auto; font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; text-align:right; }
+    .evo-chart-footer { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; min-height:48px; margin-top:6px; font-size:11px; color:var(--chart-muted); }
+    .evo-chart-legend { display:inline-flex; align-items:center; gap:7px; }
+    .evo-chart-swatch { flex:none; display:inline-block; width:8px; height:8px; border-radius:2px; background:var(--chart-ink); }
+    .evo-chart .evo-data { border-color:var(--chart-border); }
+    .evo-chart .evo-data>summary { color:var(--chart-muted); }
     .evo-data { margin-top:2px; border-top:1px solid var(--line); overflow:hidden; }
     .evo-data>summary { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:44px; list-style:none; cursor:pointer; color:var(--muted); font-size:12px; font-weight:500; }
     .evo-data>summary::-webkit-details-marker { display:none; }
@@ -2479,16 +2515,16 @@
     .evo-data td:last-child,.evo-data th:last-child { text-align:right; padding-left:12px; }
     .evo-data td .evo-text-button { padding:0; text-align:left; justify-content:flex-start; }
     .evo-note { margin:12px 0 0; color:var(--muted); font-size:12px; line-height:1.6; }
-    .evo-empty { display:flex; flex-direction:column; align-items:center; text-align:center; padding:34px 22px; border:1px solid var(--line); border-radius:24px; background:var(--bg); }
-    .evo-empty>.icon { width:32px; height:32px; color:var(--muted); margin-bottom:18px; }
-    .evo-empty h2,.evo-empty h3 { font-size:18px; font-weight:550; line-height:1.4; margin:0; }
-    .evo-empty p { font-size:13px; color:var(--muted); line-height:1.7; margin:9px 0 0; max-width:300px; }
-    .evo-empty .button { margin-top:20px; font-size:13px; }
+    .empty-state { display:flex; flex-direction:column; align-items:center; width:100%; min-width:0; text-align:center; padding:28px var(--card-padding); border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); }
+    .empty-state>.icon { width:32px; height:32px; color:var(--muted); margin-bottom:16px; }
+    .empty-state h2,.empty-state h3 { font-size:18px; font-weight:600; line-height:1.4; margin:0; overflow-wrap:anywhere; }
+    .empty-state p { font-size:14px; color:var(--muted); line-height:1.6; margin:8px 0 0; max-width:34ch; }
+    .empty-state .empty-actions { display:grid; gap:10px; width:100%; margin-top:24px; }
     .evo-chart-empty { min-height:180px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:24px 0; gap:8px; color:var(--muted); font-size:13px; line-height:1.6; }
     .evo-chart-empty span { font-size:12px; }
     .evo-count { display:grid; place-items:center; min-width:34px; height:34px; padding:0 10px; border-radius:12px; background:var(--soft); font-size:14px; }
-    .evo-pr-card { border:1px solid var(--line); border-radius:24px; overflow:hidden; background:var(--bg); box-shadow:var(--shadow-card); margin-bottom:18px; }
-    .evo-pr-card h3 { display:flex; gap:10px; align-items:center; padding:18px 20px; font-size:14px; font-weight:550; line-height:1.5; background:var(--soft); overflow-wrap:anywhere; }
+    .evo-pr-card { border:1px solid var(--line); border-radius:var(--card-radius); overflow:hidden; background:var(--bg); box-shadow:var(--shadow-card); margin-bottom:20px; }
+    .evo-pr-card h3 { display:flex; gap:10px; align-items:center; padding:18px var(--card-padding); font-size:14px; font-weight:600; line-height:1.5; background:var(--soft); overflow-wrap:anywhere; }
     .evo-pr-card h3>.icon { width:20px; height:20px; flex:none; }
     .evo-pr-card h3>span { min-width:0; }
     .evo-pr-row { display:flex; justify-content:space-between; gap:14px; align-items:center; width:100%; padding:20px; border:0; border-top:1px solid var(--line); background:transparent; text-align:left; color:var(--ink); }
@@ -2514,8 +2550,7 @@
       .evo-stat dt { font-size:11px; }
       .evo-stat dd { font-size:23px; }
       .evo-stat dd.is-long { font-size:18px; }
-      .evo-kinds { gap:6px; }
-      .evo-kinds button { padding:8px 12px; }
+      .evo-kinds button { gap:5px; padding:8px 6px; }
       .evo-card-heading { gap:8px; }
       .evo-card h2 { font-size:15px; }
       .evo-card-heading p { font-size:11px; }
@@ -2529,7 +2564,7 @@
 <body>
   <a class="skip" href="#app-main">Pular para o conteúdo</a>
   <div class="shell">
-<header class="header"><h1 id="app-title" tabindex="-1">Início</h1><button type="button" id="home-profile" class="home-profile" data-page="profile" aria-label="Abrir perfil" hidden><span class="avatar" id="home-avatar" aria-hidden="true"><i data-icon="profile"></i></span><span class="home-profile-name" id="home-name">Seu perfil</span></button></header>
+<header class="header"><div class="page-toolbar" id="page-back-toolbar" hidden><button type="button" class="icon-button back-button" data-page="profile" aria-label="Voltar ao perfil"><i data-icon="chevron" class="arrow-left"></i></button></div><h1 id="app-title" tabindex="-1">Início</h1><button type="button" id="home-profile" class="home-profile" data-page="profile" aria-label="Abrir perfil" hidden><span class="avatar" id="home-avatar" aria-hidden="true"><i data-icon="profile"></i></span><span class="home-profile-name" id="home-name">Seu perfil</span></button></header>
     <main id="app-main" tabindex="-1">
       <section id="week-panel" class="week-panel" aria-label="Acompanhamento da semana">
         <div class="weekly-overview" id="weekly-overview" aria-live="polite"></div>
@@ -2564,7 +2599,7 @@
       <div class="history-actions"><button class="button danger secondary full" id="clear-history"><i data-icon="trash"></i>Apagar histórico</button></div>
     </div>
   </section>
-<section id="timer-dialog" class="app-page" data-page="timer" aria-labelledby="timer-title" hidden><h2 id="timer-title" class="sr-only">Temporizador</h2><div class="page-toolbar"><button type="button" class="icon-button back-button" data-page="profile" aria-label="Voltar ao perfil"><i data-icon="chevron" class="arrow-left"></i></button></div>    <div class="dialog-body">
+<section id="timer-dialog" class="app-page" data-page="timer" aria-labelledby="timer-title" hidden><h2 id="timer-title" class="sr-only">Temporizador</h2>    <div class="dialog-body">
       <div class="form-field rest-duration-field"><span id="rest-duration-label">Duração de descanso</span><button type="button" class="number-ticker" id="rest-duration" aria-labelledby="rest-duration-label rest-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
       <div class="setting-row"><span id="auto-rest-label">Abrir descanso ao completar uma série</span><button type="button" class="settings-switch" id="auto-rest-toggle" role="switch" aria-labelledby="auto-rest-label" aria-checked="true"><span></span></button></div>
       <div class="setting-row"><span>Som ao terminar</span><button class="icon-button" id="sound-toggle"
@@ -2576,7 +2611,7 @@
       </div>
     </div>
   </section>
-<section id="backup-dialog" class="app-page" data-page="backup" aria-labelledby="backup-title" hidden><h2 id="backup-title" class="sr-only">Backup</h2><div class="page-toolbar"><button type="button" class="icon-button back-button" data-page="profile" aria-label="Voltar ao perfil"><i data-icon="chevron" class="arrow-left"></i></button></div>    <div class="dialog-body">
+<section id="backup-dialog" class="app-page" data-page="backup" aria-labelledby="backup-title" hidden><h2 id="backup-title" class="sr-only">Backup</h2>    <div class="dialog-body">
       <div class="backup-actions"><button class="button full" id="export-backup"><i data-icon="download"></i>Exportar
           backup</button><button class="button full" id="import-backup"><i data-icon="upload"></i>Importar
           backup</button><input id="import-file" type="file" accept=".json,.treino,application/json,application/octet-stream" hidden></div>
@@ -2616,8 +2651,8 @@
       <div class="rest-readout">
         <span class="timer-digits" id="timer-display" role="timer" aria-label="Tempo restante de descanso">01:30</span>
         <div class="rest-adjustments" id="rest-adjustments" role="group" aria-label="Ajustar o descanso atual">
-          <button type="button" class="button" id="rest-minus" aria-label="Retirar 30 segundos do descanso atual">− 30 s</button>
-          <button type="button" class="button" id="rest-plus" aria-label="Adicionar 30 segundos ao descanso atual">+ 30 s</button>
+          <button type="button" class="button compact" id="rest-minus" aria-label="Retirar 30 segundos do descanso atual">− 30 s</button>
+          <button type="button" class="button compact" id="rest-plus" aria-label="Adicionar 30 segundos ao descanso atual">+ 30 s</button>
         </div>
       </div>
       <div class="timer-progress" aria-hidden="true"><span id="timer-progress"></span></div>
@@ -2721,7 +2756,7 @@
   <dialog id="profile-dialog" aria-labelledby="profile-title">
     <div class="dialog-header"><h2 id="profile-title">Perfil</h2><button type="button" class="icon-button" data-close="profile-dialog" aria-label="Fechar perfil"><i data-icon="close"></i></button></div>
     <form id="profile-form" class="dialog-body" novalidate>
-      <div class="profile-photo-editor"><div class="avatar profile-preview" id="profile-preview"></div><div class="profile-photo-actions"><button type="button" class="button" id="profile-upload-photo">Alterar foto</button><button type="button" class="button danger secondary" id="profile-remove-photo">Remover foto</button></div></div>
+      <div class="profile-photo-editor"><div class="avatar profile-preview" id="profile-preview"></div><div class="profile-photo-actions"><button type="button" class="button compact" id="profile-upload-photo">Alterar foto</button><button type="button" class="button compact danger secondary" id="profile-remove-photo">Remover foto</button></div></div>
       <input type="file" id="profile-file" accept="image/*" hidden>
       <p id="profile-upload-status" class="form-hint" role="status" hidden>Preparando foto…</p>
       <label class="form-field">Nome<input id="profile-name-input" type="text" maxlength="100" autocomplete="name" required></label>
@@ -2756,7 +2791,7 @@
       </fieldset>
       <details class="disclosure notes" id="finish-notes-details">
         <summary>Observações<svg class="icon" data-hugeicon="ArrowDown01Icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9"></path></svg></summary>
-        <label class="sr-only" for="finish-notes">Observações do treino</label><textarea id="finish-notes" rows="3" maxlength="2000" placeholder="Como foi o treino?"></textarea>
+        <label class="sr-only" for="finish-notes">Observações do treino</label><textarea id="finish-notes" rows="3" maxlength="2000" placeholder="Observações sobre o treino"></textarea>
       </details>
       <p class="form-error" id="finish-error" role="alert" hidden></p>
       <div class="session-actions"><button type="submit" class="button primary" id="finish-confirm">Confirmar conclusão</button><button type="button" class="button" data-close="finish-dialog">Continuar treino</button></div>
@@ -3936,7 +3971,7 @@
         syncRestContext();
         $('workout').setAttribute('aria-labelledby', 'workout-title');
         if (!w) {
-          $('workout').innerHTML = `<div class="empty-workout">${icon(PLAN.length ? 'calendar' : 'reminder')}<h2 id="workout-title" tabindex="-1">${PLAN.length ? esc(D.weekdays[selectedWeekday - 1]) : 'Monte sua ficha'}</h2>${PLAN.length ? '<p>Nenhum treino cadastrado para este dia.</p>' : ''}<div class="empty-actions"><button type="button" class="button primary" data-setup-workout>${PLAN.length ? 'Novo treino' : 'Criar primeiro treino'}</button>${!store.profile ? '<button type="button" class="button" data-setup-profile>Configurar perfil</button>' : ''}</div></div>`;
+          $('workout').innerHTML = `<div class="empty-workout empty-state">${icon(PLAN.length ? 'calendar' : 'reminder')}<h2 id="workout-title" tabindex="-1">${PLAN.length ? esc(D.weekdays[selectedWeekday - 1]) : 'Nenhum treino cadastrado'}</h2>${PLAN.length ? '<p>Nenhum treino cadastrado para este dia.</p>' : ''}<div class="empty-actions"><button type="button" class="button primary" data-setup-workout>Criar treino</button>${!store.profile ? '<button type="button" class="button" data-setup-profile>Configurar perfil</button>' : ''}</div></div>`;
           return;
         }
         const s = currentSession(), strength = w.kind === 'strength', locked = isReadOnly(), choices = PLAN.filter(item => item.weekday === selectedWeekday);
@@ -4505,12 +4540,18 @@
         const text=value>=100000&&!['duration','time','pace'].includes(metric)?summaryNumber(value):evolutionValue(value,metric),unit=['workouts','sets','exerciseCount'].includes(metric)?'':evolutionMetrics[metric]?.unit||'';
         return `<div class="evo-stat"><dt>${esc(label)}</dt><dd class="${text.length>8?'is-long':''}" aria-label="${esc(evolutionValue(value,metric)+(unit?' '+unit:''))}">${esc(text)}${unit&&value!==null?`<span>${esc(unit)}</span>`:''}</dd></div>`;
       }
+      function renderEvolutionEmptyState(hasHistory,records=false) {
+        const heading=records?'h3':'h2';
+        const title=records?(hasHistory?'Nenhum recorde no período':'Nenhum recorde registrado'):(hasHistory?'Nenhum treino encontrado':'Nenhum treino concluído');
+        const description=hasHistory?(records?'Nenhum recorde corresponde ao período e à modalidade selecionados.':'Não há treinos concluídos para o período e a modalidade selecionados.'):(records?'Os recordes são calculados a partir dos treinos concluídos.':'Os gráficos de evolução são calculados a partir dos treinos concluídos.');
+        const action=hasHistory?(records?'Ver todos os recordes':'Ver todo o histórico'):'Ver treinos';
+        return `<div class="empty-state evo-empty">${icon(records?'award':'progress')}<${heading}>${title}</${heading}><p>${description}</p><div class="empty-actions"><button type="button" class="button primary full" ${hasHistory?'data-evo-reset':'data-page="workouts"'}>${action}</button></div></div>`;
+      }
       function renderEvolution() {
         evolutionModel=P.build(store.sessions,localDate());
         const range=P.range(evolutionState,localDate(),evolutionModel.rows),rows=P.filter(evolutionModel.rows,range,evolutionState.mode),totals=P.totals(rows),metrics=evolutionChoices();
         if(!metrics.some(m=>m.value===evolutionState.metric))evolutionState.metric=metrics[0].value;
-        $('evolution-page').innerHTML=`<div class="page-toolbar"><button type="button" class="icon-button back-button" data-page="profile" aria-label="Voltar ao perfil">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button></div>
-          <div class="evo-filters"><div class="evo-kinds" role="group" aria-label="Modalidade">${[['all','Todos'],['strength','Força'],['cardio','Corrida']].map(([value,label])=>`<button type="button" id="evo-kind-${value}" data-evo-kind="${value}" aria-pressed="${evolutionState.mode===value}">${value==='all'?'':icon(value==='strength'?'dumbbell':'run')}${label}</button>`).join('')}</div>
+        $('evolution-page').innerHTML=`<div class="evo-filters"><div class="evo-kinds" role="group" aria-label="Modalidade">${[['all','Todos'],['strength','Força'],['cardio','Corrida']].map(([value,label])=>`<button type="button" id="evo-kind-${value}" data-evo-kind="${value}" aria-pressed="${evolutionState.mode===value}">${value==='all'?'':icon(value==='strength'?'dumbbell':'run')}${label}</button>`).join('')}</div>
           <div class="form-field evo-period-field"><span id="evo-period-label">Período</span><button type="button" class="selection-field" id="evo-period" aria-labelledby="evo-period-label evo-period" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div>
           <div class="evo-range-caption"><span>${esc(evolutionDates(range.start,range.end))}</span></div></div>
           <div id="evo-panel"></div>`;
@@ -4523,18 +4564,18 @@
           [[totals.workouts,'Treinos','workouts'],[totals.sets,'Séries realizadas','sets'],[totals.volume,'Volume de força','volume'],[totals.distance,'Distância de corrida','distance']];
         let html=`<dl class="evo-stats" aria-label="Totais do período">${stats.map(([value,label,metric])=>evolutionCard(value,label,metric)).join('')}</dl>`;
         if(!rows.length) {
-          $('evo-panel').innerHTML=html+`<div class="evo-empty">${icon('progress')}<h2>${evolutionModel.rows.length?'Nenhum treino neste período':'Sua evolução começa aqui'}</h2><p>${evolutionModel.rows.length?'Experimente outro período ou modalidade.':'Conclua um treino para acompanhar seus resultados e primeiras marcas.'}</p>${evolutionModel.rows.length?'<button type="button" class="button" data-evo-reset>Ver todo o histórico</button>':'<button type="button" class="button" data-page="workouts">Ver treinos</button>'}</div>`;
+          $('evo-panel').innerHTML=html+renderEvolutionEmptyState(evolutionModel.rows.length>0);
           return;
         }
         const series=P.buckets(rows,range),frequency={day:'por dia',week:'por semana',month:'por mês',year:'por ano'}[series.unit];
-        html+=`<section class="evo-card" aria-labelledby="evo-volume-title"><div class="evo-card-heading"><div><h2 id="evo-volume-title">Ritmo de treino</h2><p>Totais ${frequency}</p></div><button type="button" class="selection-field evo-metric-select" id="evo-metric" aria-label="Métrica do gráfico" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div id="evo-overview-chart" class="evo-chart"></div>${totals.partial&&evolutionState.metric==='volume'?'<p class="evo-note">Volume parcial: algumas séries estão sem carga ou repetições.</p>':''}</section>`;
+        html+=`<section class="evo-card" aria-labelledby="evo-volume-title"><div class="evo-card-heading"><div><h2 id="evo-volume-title">Ritmo de treino</h2><p>Totais ${frequency}</p></div><button type="button" class="selection-field compact evo-metric-select" id="evo-metric" aria-label="Métrica do gráfico" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div id="evo-overview-chart" class="evo-chart"></div>${totals.partial&&evolutionState.metric==='volume'?'<p class="evo-note">Volume parcial: algumas séries estão sem carga ou repetições.</p>':''}</section>`;
         const catalog=evolutionModel.exercises;
         let selected=catalog.find(ex=>ex.key===evolutionState.exercise);
         if(!selected){selected=[...catalog].sort((a,b)=>b.points.filter(p=>p.date>=range.start&&p.date<=range.end).length-a.points.filter(p=>p.date>=range.start&&p.date<=range.end).length||Number(a.unit==='s')-Number(b.unit==='s')||b.points.at(-1).date.localeCompare(a.points.at(-1).date))[0];evolutionState.exercise=selected?.key||null;evolutionState.exerciseMetric=defaultExerciseMetric(selected);}
         if(evolutionState.mode!=='cardio'&&selected) {
           const choices=evolutionExerciseChoices(selected);
           if(!choices.some(m=>m.value===evolutionState.exerciseMetric))evolutionState.exerciseMetric=choices[0].value;
-          html+=`<section class="evo-card" aria-labelledby="evo-exercise-title"><div class="evo-card-heading"><div><h2 id="evo-exercise-title">Por exercício</h2><p>Uma marca por treino</p></div>${icon('dumbbell')}</div><button type="button" class="selection-field evo-exercise-select" id="evo-exercise" aria-label="Selecionar exercício" aria-haspopup="dialog" aria-controls="selection-dialog"></button><div class="evo-exercise-controls"><span>${selected.unit==='s'?'Tempo registrado':'Séries registradas'}</span><button type="button" class="selection-field evo-metric-select" id="evo-exercise-metric" aria-label="Métrica do exercício" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div id="evo-exercise-chart" class="evo-chart"></div></section>`;
+          html+=`<section class="evo-card" aria-labelledby="evo-exercise-title"><div class="evo-card-heading"><div><h2 id="evo-exercise-title">Por exercício</h2><p>Um registro por treino</p></div>${icon('dumbbell')}</div><button type="button" class="selection-field evo-exercise-select" id="evo-exercise" aria-label="Selecionar exercício" aria-haspopup="dialog" aria-controls="selection-dialog"></button><div class="evo-exercise-controls"><span>${selected.unit==='s'?'Tempo registrado':'Séries registradas'}</span><button type="button" class="selection-field compact evo-metric-select" id="evo-exercise-metric" aria-label="Métrica do exercício" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div id="evo-exercise-chart" class="evo-chart"></div></section>`;
         }
         $('evo-panel').innerHTML=html;
         setSelectionField('evo-metric',evolutionState.metric,evolutionMetrics[evolutionState.metric].label);
@@ -4552,55 +4593,116 @@
       function renderEvolutionRecords(range) {
         const records=P.records(evolutionModel,range,evolutionState.mode),groups=new Map();
         for(const record of records){const key=record.exerciseKey||'cardio';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(record);}
-        $('evo-panel').innerHTML=`<div class="evo-section-title"><div><h2>${icon('award')}Suas marcas</h2><p>Recordes alcançados neste período</p></div><span class="evo-count">${records.length}</span></div>${records.length?`<div class="evo-records">${[...groups.values()].map(items=>{
+        $('evo-panel').innerHTML=`<div class="evo-section-title"><div><h2>${icon('award')}Recordes do período</h2><p>Resultados registrados no período selecionado</p></div><span class="evo-count" aria-label="${records.length} ${records.length===1?'recorde':'recordes'} no período">${records.length}</span></div>${records.length?`<div class="evo-records">${[...groups.values()].map(items=>{
           const first=items[0],exercise=first.exerciseKey&&evolutionModel.exercises.find(ex=>ex.key===first.exerciseKey);
           return `<section class="evo-pr-card"><h3>${icon(first.kind==='cardio'?'run':'dumbbell')}<span>${esc(exercise?evolutionExerciseLabel(exercise):'Corrida')}</span></h3>${items.map(record=>{
             const definition=P.recordDefinitions[record.metric];
-            const delta=record.initial?'Primeira marca':record.metric==='pace'?`${summaryClock(record.previous-record.value)} min/km mais rápido`:`+${evolutionMetricText(record.value-record.previous,record.metric)}`;
+            const delta=record.initial?'Registro inicial':record.metric==='pace'?`Redução de ${summaryClock(record.previous-record.value)} min/km`:`+${evolutionMetricText(record.value-record.previous,record.metric)}`;
             return `<button type="button" class="evo-pr-row" data-evo-record="${esc(record.recordKey)}" aria-label="${esc(`${definition.label}: ${evolutionMetricText(record.value,record.metric)}. ${displayDate(record.date,true)}. Abrir treino ${record.workoutTitle}`)}"><span class="evo-pr-copy"><span>${definition.label}</span><strong>${esc(evolutionValue(record.value,record.metric))}${definition.unit&&record.metric!=='time'?`<small>${esc(definition.unit)}</small>`:''}</strong><span class="evo-pr-date">${esc(displayDate(record.date,true))}${record.context?` · ${esc(record.context)}`:''}</span><span class="evo-pr-delta">${esc(delta)}</span></span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
           }).join('')}</section>`;
-        }).join('')}</div>`:`<div class="evo-empty">${icon('award')}<h3>${evolutionModel.rows.length?'Nenhum PR neste período':'Suas primeiras marcas vêm aí'}</h3><p>${evolutionModel.rows.length?'Seus recordes anteriores continuam no histórico.':'Registre carga e repetições nas séries realizadas ou conclua uma corrida.'}</p>${evolutionModel.rows.length?'<button type="button" class="button" data-evo-reset>Ver todos os PRs</button>':''}</div>`}`;
+        }).join('')}</div>`:renderEvolutionEmptyState(evolutionModel.rows.length>0,true)}`;
+      }
+      // Monotone curves stay within adjacent recorded values and never bridge missing data.
+      function evolutionCurve(segment) {
+        if(!segment.length)return '';
+        const coord=value=>value.toFixed(2);
+        let path=`M${coord(segment[0].x)} ${coord(segment[0].y)}`;
+        if(segment.length===1)return path;
+        const slopes=segment.slice(1).map((point,i)=>(point.y-segment[i].y)/(point.x-segment[i].x));
+        const tangents=segment.map((point,i)=>i===0?slopes[0]:i===segment.length-1?slopes.at(-1):slopes[i-1]*slopes[i]<=0?0:(slopes[i-1]+slopes[i])/2);
+        slopes.forEach((slope,i)=>{
+          if(slope===0){tangents[i]=0;tangents[i+1]=0;return;}
+          const a=tangents[i]/slope,b=tangents[i+1]/slope,length=Math.hypot(a,b);
+          if(length>3){tangents[i]=3*a*slope/length;tangents[i+1]=3*b*slope/length;}
+        });
+        for(let i=1;i<segment.length;i++) {
+          const a=segment[i-1],b=segment[i],third=(b.x-a.x)/3;
+          path+=` C${coord(a.x+third)} ${coord(a.y+tangents[i-1]*third)} ${coord(b.x-third)} ${coord(b.y-tangents[i]*third)} ${coord(b.x)} ${coord(b.y)}`;
+        }
+        return path;
       }
       function mountEvolutionChart(id,points,metric,type,unit) {
-        const root=$(id),valid=points.filter(point=>point.value!=null);
+        const root=$(id),valid=points.filter(point=>Number.isFinite(point.value));
         if(!valid.length) {
-          root.innerHTML=`<div class="evo-chart-empty"><p>${points.length?'Ainda não há valores para esta métrica.':'Nenhum registro deste exercício no período.'}</p>${points.length&&['load','volume'].includes(metric)?'<span>Preencha carga e repetições nas séries realizadas.</span>':''}</div>`;return;
+          root.innerHTML=`<div class="evo-chart-empty"><p>${points.length?'Nenhum valor registrado para esta métrica.':'Nenhum registro deste exercício no período.'}</p>${points.length&&['load','volume'].includes(metric)?'<span>Preencha carga e repetições nas séries realizadas.</span>':''}</div>`;return;
         }
-        const width=Math.max(220,root.clientWidth),height=206,left=48,right=width-12,top=16,bottom=172;
+        const previous=evolutionCharts.get(id),restore=previous?.root===root;
+        const dataOpen=restore&&root.querySelector('.evo-data')?.open,plotFocused=restore&&document.activeElement===root.querySelector('.evo-plot');
+        const width=Math.max(220,root.clientWidth),height=224,left=46,right=width-10,top=18,bottom=190;
         const maximum=Math.max(...valid.map(point=>point.value),1),step=Math.pow(10,Math.floor(Math.log10(maximum)))/2,max=Math.ceil(maximum/step)*step;
         const band=(right-left)/Math.max(points.length,1);
         const x=i=>type==='bar'?left+band*(i+.5):points.length===1?(left+right)/2:left+(right-left)*i/(points.length-1);
         const y=value=>bottom-(value/max)*(bottom-top);
         const axis=value=>metric==='pace'?summaryClock(value):evolutionNumber(['duration','time'].includes(metric)?value/60:value,1);
         const axisShort=value=>{const scaled=['duration','time'].includes(metric)?value/60:value;return metric!=='pace'&&scaled>=10000?scaled.toLocaleString('pt-BR',{notation:'compact',maximumFractionDigits:1}):axis(value);};
-        let path='',connected=false;
-        points.forEach((point,i)=>{if(point.value==null){connected=false;return;}path+=`${connected?'L':'M'}${x(i).toFixed(2)} ${y(point.value).toFixed(2)} `;connected=true;});
+        const segments=[];let segment=[];
+        points.forEach((point,i)=>{
+          if(!Number.isFinite(point.value)){if(segment.length)segments.push(segment);segment=[];return;}
+          segment.push({x:x(i),y:y(point.value),index:i});
+        });
+        if(segment.length)segments.push(segment);
+        const isolated=new Set(segments.filter(items=>items.length===1).map(items=>items[0].index));
+        const curves=segments.map(items=>({items,path:evolutionCurve(items)}));
         const ticks=['workouts','sets','reps'].includes(metric)?[...new Set([0,Math.round(max/2),max])]:[0,max/2,max];
         const tickIndexes=[...new Set([0,Math.floor((points.length-1)/2),points.length-1])];
         const tick=date=>unit==='year'?date.slice(0,4):unit==='month'?new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{month:'short'}):date.slice(8,10)+'/'+date.slice(5,7);
-        const selected=points.findLastIndex(point=>point.value!=null&&(point.value>0||type==='line'));
-        const state={root,points,metric,type,unit,width,left,right,band,x,selected:Math.max(0,selected)};evolutionCharts.set(id,state);
-        root.innerHTML=`<div class="evo-chart-readout" aria-live="polite" aria-atomic="true"><strong data-chart-value></strong><span data-chart-date></span></div><svg class="evo-plot" viewBox="0 0 ${width} ${height}" role="img" tabindex="0" aria-label="${esc(evolutionMetrics[metric].label)}. Use as setas para consultar os valores." aria-describedby="${id}-hint">${ticks.map(value=>`<line class="evo-gridline" x1="${left}" x2="${right}" y1="${y(value)}" y2="${y(value)}"/><text class="evo-axis" x="${left-9}" y="${y(value)+4}" text-anchor="end">${esc(axisShort(value))}</text>`).join('')}${type==='line'?`<path class="evo-line" d="${path}"/>`:''}<line class="evo-guide" x1="0" x2="0" y1="${top}" y2="${bottom}"/>${points.map((point,i)=>point.value==null?'':type==='bar'?`<rect class="evo-mark" data-chart-index="${i}" x="${x(i)-Math.min(22,band*.62)/2}" y="${y(point.value)}" width="${Math.min(22,band*.62)}" height="${Math.max(1,bottom-y(point.value))}" rx="3"/>`:`<circle class="evo-mark" data-chart-index="${i}" cx="${x(i)}" cy="${y(point.value)}" r="3.5"/>`).join('')}${tickIndexes.map(i=>`<text class="evo-axis" x="${x(i)}" y="198" text-anchor="${i===0&&points.length>1?'start':i===points.length-1&&points.length>1?'end':'middle'}">${esc(tick(points[i].date))}</text>`).join('')}</svg><div class="evo-chart-footer"><span id="${id}-hint">${metric==='pace'?'min/km':['duration','time'].includes(metric)?'Escala em minutos':evolutionMetrics[metric].unit}</span><button type="button" class="evo-text-button" data-chart-record hidden>Ver treino</button></div><details class="evo-data"><summary>Ver dados${icon('chevron')}</summary><div class="evo-table-scroll"><table><caption class="sr-only">${esc(evolutionMetrics[metric].label)} no período</caption><thead><tr><th scope="col">${unit==='session'?'Treino':'Período'}</th><th scope="col">${esc(evolutionMetrics[metric].label)}</th></tr></thead><tbody>${points.map(point=>`<tr><td>${point.key?`<button type="button" class="evo-text-button" data-evo-record="${esc(point.key)}" aria-label="${esc('Abrir '+point.title+', '+displayDate(point.date,true))}">${esc(displayDate(point.date,true))}</button>`:esc(evolutionDates(point.date,point.end))}</td><td>${esc(evolutionMetricText(point.value,metric))}${point.partial&&metric==='volume'?' *':''}</td></tr>`).join('')}</tbody></table></div>${metric==='volume'&&points.some(point=>point.partial)?'<p class="evo-note">* Volume parcial.</p>':''}</details>`;
-        const plot=root.querySelector('svg');
+        const selected=restore?previous.selected:points.findLastIndex(point=>Number.isFinite(point.value)&&(point.value>0||type==='line'));
+        const state={root,points,metric,type,unit,width,height,left,right,band,x,y,selected:Math.max(0,Math.min(points.length-1,selected))};evolutionCharts.set(id,state);
+        const areaId=id+'-area-fill',barId=id+'-bar-fill';
+        const unitLabel=metric==='pace'?'min/km':['duration','time'].includes(metric)?'minutos':evolutionMetrics[metric].unit;
+        const marks=points.map((point,i)=>{
+          if(!Number.isFinite(point.value))return '';
+          if(type!=='bar')return `<circle class="evo-mark${isolated.has(i)?' is-single':''}" data-chart-index="${i}" cx="${x(i)}" cy="${y(point.value)}" r="3.5"/>`;
+          if(point.value===0)return '';
+          const w=Math.min(28,band*.64),l=x(i)-w/2,r=l+w,t=y(point.value),radius=Math.min(4,w/2,(bottom-t)/2);
+          return `<path class="evo-mark" data-chart-index="${i}" fill="url(#${barId})" d="M${l} ${bottom} V${t+radius} Q${l} ${t} ${l+radius} ${t} H${r-radius} Q${r} ${t} ${r} ${t+radius} V${bottom} Z"/>`;
+        }).join('');
+        root.innerHTML=`<div class="evo-chart-readout" aria-live="polite" aria-atomic="true"><strong data-chart-value></strong><span data-chart-date></span></div>
+          <div class="evo-plot-wrap"><svg class="evo-plot" viewBox="0 0 ${width} ${height}" role="img" tabindex="0" aria-label="${esc(evolutionMetrics[metric].label)}. Use as setas para consultar os valores." aria-describedby="${id}-hint">
+            <defs><linearGradient id="${areaId}" x1="0" y1="${top}" x2="0" y2="${bottom}" gradientUnits="userSpaceOnUse"><stop class="evo-gradient-stop evo-area-start" offset="0%"/><stop class="evo-gradient-stop evo-area-end" offset="100%"/></linearGradient><linearGradient id="${barId}" x1="0" y1="0" x2="0" y2="1"><stop class="evo-gradient-stop" offset="0%" stop-opacity=".95"/><stop class="evo-gradient-stop" offset="100%" stop-opacity=".3"/></linearGradient></defs>
+            ${ticks.map(value=>`<line class="evo-gridline" x1="${left}" x2="${right}" y1="${y(value)}" y2="${y(value)}"/><text class="evo-axis" x="${left-9}" y="${y(value)+4}" text-anchor="end">${esc(axisShort(value))}</text>`).join('')}
+            ${type==='line'?curves.map(({items,path})=>`${items.length>1?`<path class="evo-area" fill="url(#${areaId})" d="${path} L${items.at(-1).x.toFixed(2)} ${bottom} L${items[0].x.toFixed(2)} ${bottom} Z"/>`:''}<path class="evo-line" d="${path}"/>`).join(''):''}
+            <line class="evo-guide" x1="0" x2="0" y1="${top}" y2="${bottom}"/>
+            ${type==='line'?'<circle class="evo-focus-halo" r="10"/>':''}${marks}
+            ${tickIndexes.map(i=>`<text class="evo-axis" x="${x(i)}" y="217" text-anchor="${i===0&&points.length>1?'start':i===points.length-1&&points.length>1?'end':'middle'}">${esc(tick(points[i].date))}</text>`).join('')}
+          </svg><div class="evo-tooltip" aria-hidden="true"><span class="evo-tooltip-date" data-tooltip-date></span><div class="evo-tooltip-row"><span class="evo-chart-swatch"></span><span class="evo-tooltip-label">${esc(evolutionMetrics[metric].label)}</span><strong data-tooltip-value></strong></div></div></div>
+          <div class="evo-chart-footer"><span class="evo-chart-legend" id="${id}-hint"><span class="evo-chart-swatch" aria-hidden="true"></span>${esc(evolutionMetrics[metric].label)}${unitLabel&&unitLabel!==evolutionMetrics[metric].unit?' · '+esc(unitLabel):unitLabel&& !['workouts','sets','reps'].includes(metric)?' ('+esc(unitLabel)+')':''}<span class="sr-only">. Toque no gráfico ou use as setas, Home e End para consultar cada valor.</span></span><button type="button" class="evo-text-button" data-chart-record hidden>Ver treino${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></div>
+          <details class="evo-data"${dataOpen?' open':''}><summary>Ver dados${icon('chevron')}</summary><div class="evo-table-scroll"><table><caption class="sr-only">${esc(evolutionMetrics[metric].label)} no período</caption><thead><tr><th scope="col">${unit==='session'?'Treino':'Período'}</th><th scope="col">${esc(evolutionMetrics[metric].label)}</th></tr></thead><tbody>${points.map(point=>`<tr><td>${point.key?`<button type="button" class="evo-text-button" data-evo-record="${esc(point.key)}" aria-label="${esc('Abrir '+point.title+', '+displayDate(point.date,true))}">${esc(displayDate(point.date,true))}</button>`:esc(evolutionDates(point.date,point.end))}</td><td>${esc(evolutionMetricText(point.value,metric))}${point.partial&&metric==='volume'?' *':''}</td></tr>`).join('')}</tbody></table></div>${metric==='volume'&&points.some(point=>point.partial)?'<p class="evo-note">* Volume parcial.</p>':''}</details>`;
+        const plot=root.querySelector('.evo-plot'),wrap=root.querySelector('.evo-plot-wrap');
         function choose(event) {
           const rect=plot.getBoundingClientRect(),position=(event.clientX-rect.left)*width/rect.width;
           selectEvolutionPoint(id,Math.max(0,Math.min(points.length-1,type==='bar'?Math.floor((position-left)/band):Math.round((position-left)/(right-left)*Math.max(points.length-1,0)))));
+          wrap.classList.add('is-inspecting');
         }
         plot.addEventListener('pointerdown',choose);
         plot.addEventListener('pointermove',event=>{if(event.pointerType==='mouse'||event.buttons)choose(event);});
+        plot.addEventListener('pointerleave',()=>wrap.classList.remove('is-inspecting'));
+        plot.addEventListener('pointercancel',()=>wrap.classList.remove('is-inspecting'));
+        plot.addEventListener('focus',()=>wrap.classList.add('is-inspecting'));
+        plot.addEventListener('blur',()=>wrap.classList.remove('is-inspecting'));
         plot.addEventListener('keydown',event=>{
+          if(event.key==='Escape'){wrap.classList.remove('is-inspecting');return;}
           if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
           event.preventDefault();selectEvolutionPoint(id,event.key==='Home'?0:event.key==='End'?points.length-1:Math.max(0,Math.min(points.length-1,state.selected+(event.key==='ArrowLeft'?-1:1))));
+          wrap.classList.add('is-inspecting');
         });
         selectEvolutionPoint(id,state.selected);
+        if(plotFocused)plot.focus({preventScroll:true});
       }
       function selectEvolutionPoint(id,index) {
         const state=evolutionCharts.get(id);if(!state)return;
         state.selected=index;const point=state.points[index],root=state.root;
-        root.querySelector('[data-chart-value]').textContent=evolutionMetricText(point.value,state.metric);
-        root.querySelector('[data-chart-date]').textContent=evolutionDates(point.date,point.end||point.date)+(point.partial&&state.metric==='volume'?' · volume parcial':'');
+        const value=evolutionMetricText(point.value,state.metric),date=evolutionDates(point.date,point.end||point.date)+(point.partial&&state.metric==='volume'?' · volume parcial':'');
+        for(const [selector,text] of [['[data-chart-value]',value],['[data-chart-date]',date],['[data-tooltip-value]',value],['[data-tooltip-date]',date]]) {
+          const element=root.querySelector(selector);if(element.textContent!==text)element.textContent=text;
+        }
         root.querySelectorAll('[data-chart-index]').forEach(mark=>mark.classList.toggle('is-active',+mark.dataset.chartIndex===index));
         const guide=root.querySelector('.evo-guide');guide.setAttribute('x1',state.x(index));guide.setAttribute('x2',state.x(index));
+        const halo=root.querySelector('.evo-focus-halo');
+        if(halo){halo.style.display=Number.isFinite(point.value)?'':'none';halo.setAttribute('cx',state.x(index));halo.setAttribute('cy',Number.isFinite(point.value)?state.y(point.value):0);}
+        const tooltip=root.querySelector('.evo-tooltip'),scale=root.clientWidth/state.width,anchorX=state.x(index)*scale,anchorY=(Number.isFinite(point.value)?state.y(point.value):18)*scale;
+        tooltip.style.left=Math.max(8,Math.min(root.clientWidth-tooltip.offsetWidth-8,anchorX+tooltip.offsetWidth+16<root.clientWidth?anchorX+16:anchorX-tooltip.offsetWidth-16))+'px';
+        tooltip.style.top=Math.max(8,Math.min(state.height*scale-tooltip.offsetHeight-28,anchorY-tooltip.offsetHeight/2))+'px';
         const link=root.querySelector('[data-chart-record]');link.hidden=!point.key;if(point.key)link.dataset.evoRecord=point.key;else delete link.dataset.evoRecord;
       }
       function openEvolutionRange() {
@@ -4642,7 +4744,7 @@
       function renderWorkoutPRs(recordKey) {
         const records=P.build(store.sessions,localDate()).events.filter(record=>record.recordKey===recordKey);
         if(!records.length)return '';
-        const item=record=>`<div class="post-pr-item"><span><strong>${esc(record.name)}</strong><small>${esc(P.recordDefinitions[record.metric].label)}${record.initial?' · Primeira marca':''}</small></span><b>${esc(evolutionMetricText(record.value,record.metric))}</b></div>`;
+        const item=record=>`<div class="post-pr-item"><span><strong>${esc(record.name)}</strong><small>${esc(P.recordDefinitions[record.metric].label)}${record.initial?' · Registro inicial':''}</small></span><b>${esc(evolutionMetricText(record.value,record.metric))}</b></div>`;
         return `<section class="post-prs" aria-label="Recordes pessoais deste treino">${overviewHeading('Recordes pessoais','','award')}<div class="overview-list post-pr-list">${records.slice(0,3).map(item).join('')}${records.length>3?`<details class="evo-data post-pr-more"><summary>Mais ${records.length-3} ${records.length===4?'recorde':'recordes'}${icon('chevron')}</summary><div>${records.slice(3).map(item).join('')}</div></details>`:''}</div></section>`;
       }
       $('post-workout').addEventListener('click',event=>{
@@ -4650,10 +4752,13 @@
         if(summary){event.preventDefault();toggleExpandable(summary.parentElement);return;}
 
       });
-      let evolutionWidth=window.innerWidth;
+      let evolutionResizeTimer;
       window.addEventListener('resize',()=>{
-        if(evolutionWidth===window.innerWidth)return;evolutionWidth=window.innerWidth;
-        if(appView==='progress')refreshEvolution();
+        clearTimeout(evolutionResizeTimer);
+        evolutionResizeTimer=setTimeout(()=>{
+          if(appView!=='progress')return;
+          for(const [id,state] of evolutionCharts)if(state.root.isConnected&&Math.abs(state.root.clientWidth-state.width)>1)mountEvolutionChart(id,state.points,state.metric,state.type,state.unit);
+        },120);
       });
 
       const pageIds = { progress:'evolution-page', workouts:'manager-dialog', history:'history-dialog', profile:'profile-page', timer:'timer-dialog', backup:'backup-dialog', postworkout:'post-workout' };
@@ -4815,6 +4920,9 @@
       function isPageOpen(id) { return pageIds[appView] === id; }
       function syncPageChrome() {
         document.body.dataset.view=appView;
+        const hasPageBack=['progress','timer','backup'].includes(appView);
+        $('page-back-toolbar').hidden=!hasPageBack;
+        document.querySelector('.header').classList.toggle('has-page-back',hasPageBack);
         $('app-title').textContent=appView==='progress'?(evolutionState.tab==='records'?'Recordes pessoais':'Visão geral'):pageTitles[appView] || 'Treino';
         if(appView==='progress')$('evolution-page').setAttribute('aria-label',$('app-title').textContent);
         $('app-title').classList.toggle('sr-only',appView === 'home');
@@ -4843,8 +4951,8 @@
         const label=D.weekdays[weekday-1];
         $('home').innerHTML=workouts.length ? workouts.map(w=>{
           const state=workoutState(w);
-          return `<section class="today-card" aria-label="${esc(label)}"><div class="today-card-top"><span class="context-label">${esc(label)}</span><span class="kind-badge">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}${w.kind === 'strength' ? 'Força' : 'Corrida'}</span></div><h2>${esc(w.title)}</h2><p class="today-detail">${workoutDetail(w)}</p><button type="button" class="button primary" ${state.record ? `data-post-workout="${esc(state.record.key)}"` : `${state.draft ? 'data-resume-workout' : 'data-overview-workout'}="${w.id}"`}>${state.record ? 'Ver resumo' : state.draft ? 'Retomar treino' : 'Ver treino'}</button></section>`;
-        }).join('') : `<section class="today-card"><div class="today-card-top"><span class="context-label">${esc(label)}</span></div><h2>${PLAN.length ? 'Dia livre' : 'Nenhum treino'}</h2><button type="button" class="button primary" data-setup-workout>Criar treino</button></section>`;
+          return `<section class="today-card" aria-label="${esc(label)}"><div class="today-card-top"><span class="context-label">${esc(label)}</span><span class="kind-badge">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}${w.kind === 'strength' ? 'Força' : 'Corrida'}</span></div><h2>${esc(w.title)}</h2><p class="today-detail">${workoutDetail(w)}</p><button type="button" class="button primary compact" ${state.record ? `data-post-workout="${esc(state.record.key)}"` : `${state.draft ? 'data-resume-workout' : 'data-overview-workout'}="${w.id}"`}>${state.record ? 'Ver resumo' : state.draft ? 'Retomar treino' : 'Ver treino'}</button></section>`;
+        }).join('') : `<section class="today-card"><div class="today-card-top"><span class="context-label">${esc(label)}</span></div><h2>${PLAN.length ? 'Dia livre' : 'Nenhum treino'}</h2><button type="button" class="button primary compact" data-setup-workout>Criar treino</button></section>`;
         $('workout').replaceChildren();
       }
       let motionRoute=null, motionDetail=null;
