@@ -2296,7 +2296,7 @@
     dialog[open].is-closing::backdrop { animation:backdrop-out .2s ease-in forwards; }
     .rest-mini.is-entering { animation:mini-in var(--motion-overlay) var(--ease-out); }
     .rest-mini.is-leaving { animation:mini-out .2s ease-in forwards; pointer-events:none; }
-    .form-field input,.number-ticker,.selection-field { transition:box-shadow .18s,border-color .18s,background .18s; }
+    .form-field input,.number-ticker,.selection-field { transition:box-shadow .18s,border-color .18s,background .18s,transform .18s; }
     .form-field input:focus { border-color:var(--ink); box-shadow:0 0 0 3px var(--soft); }
     .set-row { transition:opacity .18s; }
     .check-box,.check-box>.icon { transition:background .18s,color .18s,opacity .18s; }
@@ -2437,11 +2437,13 @@
     @media print { .page-toolbar { display:none!important; } }
 
     /* Shadcn-inspired chart surfaces, keeping the app's monochrome palette. */
-    #evolution-page { --chart-ink:#27272a; --chart-border:#e4e4e7; --chart-grid:#ededf0; --chart-muted:#71717a; --chart-fill-top:.24; --chart-fill-bottom:.015; }
-    :root[data-theme=dark] #evolution-page { --chart-ink:#e4e4e7; --chart-border:#27272a; --chart-grid:#242427; --chart-muted:#a1a1aa; --chart-fill-top:.28; --chart-fill-bottom:.015; }
-    .evo-kinds { display:flex; gap:4px; padding:4px; margin-bottom:16px; border:1px solid var(--line); border-radius:var(--control-radius); background:var(--bg); }
-    .evo-kinds button { display:inline-flex; flex:1; min-width:0; align-items:center; justify-content:center; gap:7px; min-height:var(--control-height-compact); padding:8px; border:0; border-radius:10px; background:transparent; font-size:var(--control-font-size-compact); color:var(--muted); transition:color .18s,background .18s; }
-    .evo-kinds button[aria-pressed=true] { background:var(--ink); border-color:var(--ink); color:var(--inverse); }
+    #evolution-page { --chart-ink:#27272a; --chart-border:#e4e4e7; --chart-grid:#ededf0; --chart-muted:#71717a; --chart-area-opacity:.09; }
+    :root[data-theme=dark] #evolution-page { --chart-ink:#e4e4e7; --chart-border:#27272a; --chart-grid:#242427; --chart-muted:#a1a1aa; --chart-area-opacity:.12; }
+    .evo-kinds { position:relative; display:flex; gap:4px; padding:4px; margin-bottom:16px; border:1px solid var(--line); border-radius:var(--control-radius); background:var(--bg); }
+    .evo-kinds::before { content:''; position:absolute; left:4px; top:4px; bottom:4px; width:calc((100% - 16px) / 3); border-radius:10px; background:var(--ink); transform:translateX(calc(var(--evo-kind-position,0) * (100% + 4px))); transition:transform .24s var(--ease-out); pointer-events:none; }
+    .evo-kinds button { position:relative; z-index:1; display:inline-flex; flex:1; min-width:0; align-items:center; justify-content:center; gap:7px; min-height:var(--control-height-compact); padding:8px; border:0; border-radius:10px; background:transparent; font-size:var(--control-font-size-compact); color:var(--muted); transition:color .18s,transform .18s; }
+    .evo-kinds button[aria-pressed=true] { color:var(--inverse); }
+    .evo-kinds button:active { transform:scale(.97); }
     .evo-kinds .icon { width:18px; height:18px; }
     .evo-period-field { margin:16px 0 0; }
     .evo-range-caption { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0 10px; margin:5px 0 14px; color:var(--muted); font-size:11px; line-height:1.5; }
@@ -2481,10 +2483,15 @@
     .evo-plot { display:block; width:100%; height:auto; overflow:visible; touch-action:pan-y; border-radius:8px; }
     .evo-gridline { stroke:var(--chart-grid); stroke-width:1; }
     .evo-axis { fill:var(--chart-muted); font-size:11px; font-family:inherit; }
-    .evo-gradient-stop { stop-color:var(--chart-ink); }
-    .evo-area-start { stop-opacity:var(--chart-fill-top); }
-    .evo-area-end { stop-opacity:var(--chart-fill-bottom); }
+    .evo-area { fill:var(--chart-ink); opacity:var(--chart-area-opacity); }
+    .evo-bar { fill:var(--chart-ink); }
     .evo-line { fill:none; stroke:var(--chart-ink); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
+    .evo-chart.is-chart-entering .evo-line { stroke-dasharray:1; animation:chart-line-in .38s var(--ease-out) both; }
+    .evo-chart.is-chart-entering .evo-bar { transform-box:fill-box; transform-origin:center bottom; animation:chart-bar-in .3s var(--ease-out) both; }
+    .evo-chart.is-chart-entering .evo-area { animation:chart-area-in .32s var(--ease-out) both; }
+    @keyframes chart-line-in { from { stroke-dashoffset:1; } to { stroke-dashoffset:0; } }
+    @keyframes chart-bar-in { from { transform:scaleY(0); } to { transform:scaleY(1); } }
+    @keyframes chart-area-in { from { opacity:0; } to { opacity:var(--chart-area-opacity); } }
     .evo-mark { opacity:.55; transition:opacity .16s; }
     .evo-mark.is-active { opacity:1; }
     circle.evo-mark { fill:var(--chart-ink); stroke:var(--bg); stroke-width:2; opacity:0; }
@@ -2536,6 +2543,30 @@
     .evo-pr-date { color:var(--muted); font-size:12px; line-height:1.5; }
     .evo-pr-delta { font-size:11px; color:var(--ink); }
     .evo-pr-row>.icon { flex:none; color:var(--muted); width:18px; height:18px; }
+    .evo-record-search { margin:0 0 12px; }
+    .evo-record-count { margin:0 0 16px; color:var(--muted); font-size:12px; line-height:1.5; }
+    .evo-record-card { margin-bottom:12px; }
+    .evo-record-summary { display:grid; grid-template-columns:minmax(0,1fr) auto 18px; align-items:center; gap:12px; min-height:88px; padding:16px; list-style:none; cursor:pointer; }
+    .evo-record-summary::-webkit-details-marker { display:none; }
+    .evo-record-summary:hover { background:var(--soft); }
+    .evo-record-summary:focus-visible { outline:2px solid var(--ink); outline-offset:-3px; }
+    .evo-record-name,.evo-record-best { display:grid; gap:5px; min-width:0; overflow-wrap:anywhere; }
+    .evo-record-name>strong { font-size:14px; line-height:1.4; font-weight:600; }
+    .evo-record-name>span,.evo-record-best>span { color:var(--muted); font-size:11px; line-height:1.5; }
+    .evo-record-best { max-width:140px; text-align:right; }
+    .evo-record-best>strong { font-size:18px; line-height:1.3; font-weight:600; font-variant-numeric:tabular-nums; }
+    .evo-record-summary>.icon { width:18px; height:18px; color:var(--muted); transition:transform .3s ease-in-out; }
+    .evo-record-card[open]:not(.is-collapsing)>.evo-record-summary>.icon { transform:rotate(180deg); }
+    .evo-record-details .evo-pr-row { padding:14px 16px; }
+    .evo-record-details .evo-pr-copy { gap:4px; }
+    .evo-record-details .evo-pr-copy strong { font-size:18px; letter-spacing:0; }
+    .evo-record-pagination { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:16px; }
+    .evo-record-pagination>span { color:var(--muted); font-size:12px; }
+    .day,.selection-option,.calendar-day,.calendar-month-options button,.settings-link,.workout-row,.history-record,.managed-workout-main,.interval-round,.evo-pr-row,.evo-record-summary,.evo-text-button { transition:background .18s,border-color .18s,color .18s,box-shadow .18s,transform .18s; }
+    :where(.day,.selection-option,.calendar-day,.calendar-month-options button,.settings-link,.workout-row,.history-record,.managed-workout-main,.interval-round,.number-ticker,.selection-field,.evo-pr-row,.evo-record-summary,.evo-text-button):active:not(:disabled) { transform:translateY(1px); }
+    .settings-link:hover,.managed-workout-main:hover { background:var(--soft); }
+    .settings-link>.settings-chevron .icon { transition:transform .18s; }
+    .settings-link:hover>.settings-chevron .icon { transform:translateX(2px) rotate(-90deg); }
     .post-pr-list { padding:4px var(--row-x) var(--row-y); }
     .post-pr-item { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 0; border-bottom:1px solid var(--line); }
     .post-pr-item>span { min-width:0; }
@@ -2556,6 +2587,9 @@
       .evo-card-heading p { font-size:11px; }
       .evo-chart-readout strong { font-size:24px; }
       .evo-pr-row { padding:18px 16px; }
+      .evo-record-summary { gap:8px; padding:14px; }
+      .evo-record-best { max-width:94px; }
+      .evo-record-best>strong { font-size:16px; }
     }
 
   </style>
@@ -3551,6 +3585,15 @@
       return { build };
     })();
 
+    // One source for the weekly badges, workout actions and execution guards.
+    const TrainingStatus = (() => {
+      function completed(sessions,start,end) {
+        return Object.values(sessions).filter(session=>session.done&&!session.archived&&session.date>=start&&session.date<=end)
+          .sort((a,b)=>b.date.localeCompare(a.date)||b.updatedAt-a.updatedAt||a.key.localeCompare(b.key));
+      }
+      return {completed};
+    })();
+
     // Derived from completed records; no parallel store or migration is needed.
     const TrainingProgress = (() => {
       const DAY=86400000;
@@ -3754,7 +3797,10 @@
         return draft;
       }
       const currentDraft = () => { const drafts = Object.values(store.drafts).filter(s => !s.archived && s.day === selectedDay && s.cycleNumber === store.cycle.number).sort((a,b) => b.updatedAt-a.updatedAt); return drafts.find(s => s.key === preferences.activeWorkout?.sessionKey) || drafts[0] || null; };
-      const currentRecord = () => store.sessions[viewingRecord || store.cycle.completed[selectedDay]] || null;
+      const currentRecord = () => {
+        const record=viewingRecord?store.sessions[viewingRecord]:recordFor({id:selectedDay});
+        return record?.done&&!record.archived?record:null;
+      };
       const isReadOnly = () => !!currentRecord();
       const key = () => currentRecord()?.key || currentDraft()?.key || '';
       const currentWorkout = () => currentRecord()?.workout || currentDraft()?.workout || PLAN.find(w => w.id === selectedDay);
@@ -3770,7 +3816,7 @@
       }
       function goToNext() {
         syncPlan(); viewingRecord = null;
-        const next = PLAN.find(w => !store.cycle.completed[w.id]) || PLAN[0];
+        const next = PLAN.find(w => !recordFor(w)) || PLAN[0];
         selectedDay = next?.id || null; selectedWeekday = next?.weekday || selectedWeekday;
         selectedDate = effectiveDate(currentDraft());
       }
@@ -3778,10 +3824,9 @@
         syncPlan(); viewingRecord = null;
         selectedWeekday = (new Date().getDay() + 6) % 7 + 1;
         const choices = PLAN.filter(w => w.weekday === selectedWeekday);
-        const records = Object.values(store.sessions).filter(s => s.done && s.date === localDate()).sort((a, b) => b.updatedAt - a.updatedAt);
-        const next = choices.find(w => !store.cycle.completed[w.id] && !records.some(s => s.day === w.id)) || choices[0];
+        const next = choices.find(w => !recordFor(w)) || choices[0];
         selectedDay = next?.id || null;
-        viewingRecord = records.find(s => s.day === selectedDay)?.key || null;
+        viewingRecord = recordFor(next)?.key || null;
         selectedDate = effectiveDate(currentRecord() || currentDraft());
       }
       goToToday();
@@ -3881,13 +3926,24 @@
         const start = new Date(localDate() + 'T12:00:00'); start.setDate(start.getDate() - (start.getDay() + 6) % 7);
         return Array.from({ length: 7 }, (_, i) => { const d = new Date(start); d.setDate(d.getDate() + i); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; });
       }
+      function completedWeekRecords() {
+        const dates=weekDates(),today=localDate();
+        return TrainingStatus.completed(store.sessions,dates[0],today<dates[6]?today:dates[6]);
+      }
+      function recordFor(workout) {
+        return workout?.id?completedWeekRecords().find(session=>session.day===workout.id)||null:null;
+      }
       function renderNav() {
-        $('week-nav').innerHTML = D.shortDays.map((day, i) => `<button type="button" class="day" id="tab-weekday-${i + 1}" role="tab" aria-controls="home" aria-selected="${i + 1 === selectedWeekday}" tabindex="${i + 1 === selectedWeekday ? 0 : -1}" data-weekday="${i + 1}"><span>${esc(day)}</span><span class="day-number"></span><span class="day-check"></span></button>`).join('');
+        if(!$('week-nav').querySelector('[data-weekday]'))$('week-nav').innerHTML = D.shortDays.map((day, i) => `<button type="button" class="day" id="tab-weekday-${i + 1}" role="tab" aria-controls="home" aria-selected="${i + 1 === selectedWeekday}" tabindex="${i + 1 === selectedWeekday ? 0 : -1}" data-weekday="${i + 1}"><span>${esc(day)}</span><span class="day-number"></span><span class="day-check"></span></button>`).join('');
+        $('week-nav').querySelectorAll('[data-weekday]').forEach(button=>{
+          const selected=+button.dataset.weekday===selectedWeekday;
+          button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;
+        });
         $('home').setAttribute('aria-labelledby','tab-weekday-' + selectedWeekday);
         updateDayChecks();
       }
       function updateDayChecks() {
-        const dates = weekDates(), sessions = Object.values(store.sessions).filter(s => s.done && s.date >= dates[0] && s.date <= dates[6]);
+        const dates = weekDates(), sessions = completedWeekRecords();
         const completed = new Set(sessions.map(s => s.day)), total = PLAN.length, done = PLAN.filter(w => completed.has(w.id)).length, extra = sessions.length - done;
         $('weekly-overview').innerHTML = `<div class="weekly-heading"><div><strong>Esta semana</strong><span class="weekly-range">${esc(displayDate(dates[0]))} – ${esc(displayDate(dates[6]))}</span></div><p class="weekly-count" aria-label="${done} de ${total} treinos programados concluídos nesta semana"><strong>${done} <span>/ ${total}</span></strong><span>treinos concluídos</span></p></div><div class="weekly-progress" role="progressbar" aria-label="Treinos programados concluídos na semana" aria-valuemin="0" aria-valuemax="${total || 1}" aria-valuenow="${done}" aria-valuetext="${total ? done + ' de ' + total + ' treinos' : 'Nenhum treino programado'}"><span style="width:${total ? done / total * 100 : 0}%"></span></div>${extra ? `<p class="weekly-extra">+ ${extra} ${extra === 1 ? 'treino extra registrado' : 'treinos extras registrados'} na semana</p>` : ''}`;
         $('week-nav').querySelectorAll('[data-weekday]').forEach(el => {
@@ -3904,7 +3960,7 @@
         if (weekday === (new Date().getDay() + 6) % 7 + 1) { goToToday(); renderNav(); renderWorkout(); return; }
         viewingRecord = null; selectedWeekday = weekday;
         const choices = PLAN.filter(w => w.weekday === weekday);
-        const next = choices.find(w => !store.cycle.completed[w.id]) || choices[0];
+        const next = choices.find(w => !recordFor(w)) || choices[0];
         selectedDay = next?.id || null; selectedDate = effectiveDate(currentRecord() || currentDraft());
         renderNav(); renderWorkout();
       }
@@ -3989,13 +4045,12 @@
       // Navigation is independent of the saved workout schema and its backups.
       const orderedExercises = workout => TrainingConfig.blocks(workout).flatMap(block => block.exercises);
       const draftFor = workout => { const drafts = Object.values(store.drafts).filter(s => !s.archived && s.day === workout.id && s.cycleNumber === store.cycle.number).sort((a,b) => b.updatedAt-a.updatedAt); return drafts.find(s => s.key === preferences.activeWorkout?.sessionKey) || drafts[0]; };
-      const recordFor = workout => Object.values(store.sessions).filter(s => s.done && s.day === workout.id && s.date === localDate()).sort((a,b) => b.updatedAt-a.updatedAt)[0] || store.sessions[store.cycle.completed[workout.id]];
       const workoutDetail = workout => `${workout.exercises.length} ${workout.kind === 'strength' ? 'exercícios · ' + workout.exercises.reduce((sum,ex) => sum + ex.sets,0) + ' séries' : 'etapas'}`;
       function exerciseComplete(ex, session) {
         const log = session?.logs[ex.id];
         return !!log && (log.sets ? log.sets.every(set => set.done) : log.done);
       }
-      const isOngoingDraft = session => !!session && !session.done && !session.archived && session.cycleNumber === store.cycle.number && !store.cycle.completed[session.day] && PLAN.some(workout => workout.id === session.day);
+      const isOngoingDraft = session => !!session && !session.done && !session.archived && session.cycleNumber === store.cycle.number && !recordFor({id:session.day}) && PLAN.some(workout => workout.id === session.day);
       const activeWorkoutSession = () => {
         const session = store.drafts[preferences.activeWorkout?.sessionKey];
         return isOngoingDraft(session) ? session : null;
@@ -4094,7 +4149,7 @@
       }
       function workoutRow(workout, resume = false) {
         const state = workoutState(workout), progress = state.draft && D.progress(state.draft);
-        return `<button type="button" class="workout-row" ${resume ? 'data-resume-workout' : 'data-overview-workout'}="${esc(workout.id)}"><span class="row-icon">${icon(state.record ? 'check' : workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><span><strong>${esc(workout.title)}</strong><small>${resume ? 'Retomar · ' : ''}${progress ? `${progress.done}/${progress.total} ${workout.kind === 'strength' ? 'séries' : 'etapas'}` : workoutDetail(workout)}${state.record ? ' · Concluído' : ''}</small></span><span class="sr-only">${resume ? 'Retomar treino' : 'Ver resumo'}</span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
+        return `<button type="button" class="workout-row" ${state.record?`data-post-workout="${esc(state.record.key)}"`:`${resume?'data-resume-workout':'data-overview-workout'}="${esc(workout.id)}"`}><span class="row-icon">${icon(state.record ? 'check' : workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><span><strong>${esc(workout.title)}</strong><small>${resume ? 'Retomar · ' : ''}${progress ? `${progress.done}/${progress.total} ${workout.kind === 'strength' ? 'séries' : 'etapas'}` : workoutDetail(workout)}${state.record ? ' · Concluído' : ''}</small></span><span class="sr-only">${state.record?'Ver resumo':resume?'Retomar treino':'Ver treino'}</span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
       }
       function supersetNotice(workout, id) {
         const block = TrainingConfig.blocks(workout).find(block => block.group && block.exercises.some(ex => ex.id === id));
@@ -4493,8 +4548,8 @@
       const evolutionPeriods=[{value:'week',label:'Semana'},{value:'month',label:'Mês'},{value:'quarter',label:'3 meses'},{value:'year',label:'Ano'},{value:'all',label:'Todo o histórico'},{value:'custom',label:'Personalizado'}];
       const evolutionMetrics={workouts:{label:'Treinos',unit:'treinos'},sets:{label:'Séries',unit:'séries'},volume:{label:'Volume',unit:'kg'},distance:{label:'Distância',unit:'km'},duration:{label:'Tempo',unit:''},pace:{label:'Pace',unit:'min/km'},load:{label:'Carga',unit:'kg'},reps:{label:'Repetições',unit:'reps'},time:{label:'Tempo',unit:''}};
       const savedEvolution=preferences.evolution||{};
-      let evolutionState={period:evolutionPeriods.some(p=>p.value===savedEvolution.period)?savedEvolution.period:'month',anchor:D.validDate(savedEvolution.anchor)&&savedEvolution.anchor<=localDate()?savedEvolution.anchor:localDate(),mode:['all','strength','cardio'].includes(savedEvolution.mode)?savedEvolution.mode:'all',tab:savedEvolution.tab==='records'?'records':'overview',from:D.validDate(savedEvolution.from)?savedEvolution.from:localDate(),to:D.validDate(savedEvolution.to)?savedEvolution.to:localDate(),metric:savedEvolution.metric||'workouts',exercise:savedEvolution.exercise||null,exerciseMetric:savedEvolution.exerciseMetric||'load'};
-      let evolutionModel=null,evolutionRangeDraft=null;
+      let evolutionState={period:evolutionPeriods.some(p=>p.value===savedEvolution.period)?savedEvolution.period:'month',anchor:D.validDate(savedEvolution.anchor)&&savedEvolution.anchor<=localDate()?savedEvolution.anchor:localDate(),mode:['all','strength','cardio'].includes(savedEvolution.mode)?savedEvolution.mode:'all',tab:savedEvolution.tab==='records'?'records':'overview',from:D.validDate(savedEvolution.from)?savedEvolution.from:localDate(),to:D.validDate(savedEvolution.to)?savedEvolution.to:localDate(),metric:savedEvolution.metric||'workouts',exercise:savedEvolution.exercise||null,exerciseMetric:savedEvolution.exerciseMetric||'load',recordsMode:['all','strength','cardio'].includes(savedEvolution.recordsMode)?savedEvolution.recordsMode:'all',recordsQuery:typeof savedEvolution.recordsQuery==='string'?savedEvolution.recordsQuery.slice(0,120):'',recordsPage:0,recordOpen:null};
+      let evolutionModel=null,evolutionRangeDraft=null,recordSearchTimer;
       const evolutionCharts=new Map();
       const evolutionNumber=(value,decimals=1)=>value==null?'—':value.toLocaleString('pt-BR',{maximumFractionDigits:decimals});
       const evolutionDate=date=>new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
@@ -4518,6 +4573,7 @@
           const root=$('evolution-page'),minHeight=root.style.minHeight;
           root.style.minHeight=root.offsetHeight+'px';
           renderEvolution();
+          enterView($('evo-panel'));
           root.style.minHeight=minHeight;
           if(focusId)$(focusId)?.focus({preventScroll:true});
           window.scrollTo({top:scrollTop,behavior:'instant'});
@@ -4540,24 +4596,36 @@
         const text=value>=100000&&!['duration','time','pace'].includes(metric)?summaryNumber(value):evolutionValue(value,metric),unit=['workouts','sets','exerciseCount'].includes(metric)?'':evolutionMetrics[metric]?.unit||'';
         return `<div class="evo-stat"><dt>${esc(label)}</dt><dd class="${text.length>8?'is-long':''}" aria-label="${esc(evolutionValue(value,metric)+(unit?' '+unit:''))}">${esc(text)}${unit&&value!==null?`<span>${esc(unit)}</span>`:''}</dd></div>`;
       }
-      function renderEvolutionEmptyState(hasHistory,records=false) {
-        const heading=records?'h3':'h2';
-        const title=records?(hasHistory?'Nenhum recorde no período':'Nenhum recorde registrado'):(hasHistory?'Nenhum treino encontrado':'Nenhum treino concluído');
-        const description=hasHistory?(records?'Nenhum recorde corresponde ao período e à modalidade selecionados.':'Não há treinos concluídos para o período e a modalidade selecionados.'):(records?'Os recordes são calculados a partir dos treinos concluídos.':'Os gráficos de evolução são calculados a partir dos treinos concluídos.');
-        const action=hasHistory?(records?'Ver todos os recordes':'Ver todo o histórico'):'Ver treinos';
-        return `<div class="empty-state evo-empty">${icon(records?'award':'progress')}<${heading}>${title}</${heading}><p>${description}</p><div class="empty-actions"><button type="button" class="button primary full" ${hasHistory?'data-evo-reset':'data-page="workouts"'}>${action}</button></div></div>`;
+      function renderEvolutionEmptyState(hasHistory) {
+        const title=hasHistory?'Nenhum treino encontrado':'Nenhum treino concluído';
+        const description=hasHistory?'Não há treinos concluídos para o período e a modalidade selecionados.':'Os gráficos de evolução são calculados a partir dos treinos concluídos.';
+        return `<div class="empty-state evo-empty">${icon('progress')}<h2>${title}</h2><p>${description}</p><div class="empty-actions"><button type="button" class="button primary full" ${hasHistory?'data-evo-reset':'data-page="workouts"'}>${hasHistory?'Ver todo o histórico':'Ver treinos'}</button></div></div>`;
+      }
+      function syncEvolutionFilters() {
+        const root=$('evolution-page'),records=evolutionState.tab==='records',mode=records?evolutionState.recordsMode:evolutionState.mode;
+        // Keep these buttons mounted so selection and focus can animate in place.
+        if(root.dataset.evolutionTab!==evolutionState.tab||!$('evo-panel')) {
+          root.dataset.evolutionTab=evolutionState.tab;
+          root.innerHTML=`<div class="evo-filters"><div class="evo-kinds" role="group" aria-label="Modalidade">${[['all','Todos'],['strength','Força'],['cardio','Corrida']].map(([value,label])=>`<button type="button" id="evo-kind-${value}" data-evo-kind="${value}" aria-pressed="false">${value==='all'?'':icon(value==='strength'?'dumbbell':'run')}${label}</button>`).join('')}</div>
+            ${records?'':`<div class="form-field evo-period-field"><span id="evo-period-label">Período</span><button type="button" class="selection-field" id="evo-period" aria-labelledby="evo-period-label evo-period" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="evo-range-caption"><span id="evo-range-caption"></span></div>`}</div><div id="evo-panel"></div>`;
+        }
+        root.querySelector('.evo-kinds').style.setProperty('--evo-kind-position',String(['all','strength','cardio'].indexOf(mode)));
+        root.querySelectorAll('[data-evo-kind]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.evoKind===mode)));
+      }
+      function evolutionChartType(metric) {
+        if(['workouts','sets','reps'].includes(metric))return 'bar';
+        if(['volume','distance','duration'].includes(metric))return 'area';
+        return 'line';
       }
       function renderEvolution() {
+        clearTimeout(recordSearchTimer);
         evolutionModel=P.build(store.sessions,localDate());
+        syncEvolutionFilters();evolutionCharts.clear();
+        if(evolutionState.tab==='records'){renderEvolutionRecords();return;}
         const range=P.range(evolutionState,localDate(),evolutionModel.rows),rows=P.filter(evolutionModel.rows,range,evolutionState.mode),totals=P.totals(rows),metrics=evolutionChoices();
         if(!metrics.some(m=>m.value===evolutionState.metric))evolutionState.metric=metrics[0].value;
-        $('evolution-page').innerHTML=`<div class="evo-filters"><div class="evo-kinds" role="group" aria-label="Modalidade">${[['all','Todos'],['strength','Força'],['cardio','Corrida']].map(([value,label])=>`<button type="button" id="evo-kind-${value}" data-evo-kind="${value}" aria-pressed="${evolutionState.mode===value}">${value==='all'?'':icon(value==='strength'?'dumbbell':'run')}${label}</button>`).join('')}</div>
-          <div class="form-field evo-period-field"><span id="evo-period-label">Período</span><button type="button" class="selection-field" id="evo-period" aria-labelledby="evo-period-label evo-period" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div>
-          <div class="evo-range-caption"><span>${esc(evolutionDates(range.start,range.end))}</span></div></div>
-          <div id="evo-panel"></div>`;
         setSelectionField('evo-period',evolutionState.period,evolutionPeriods.find(p=>p.value===evolutionState.period).label);
-        evolutionCharts.clear();
-        if(evolutionState.tab==='records'){renderEvolutionRecords(range);return;}
+        $('evo-range-caption').textContent=evolutionDates(range.start,range.end);
         const stats=evolutionState.mode==='strength'?
           [[totals.workouts,'Treinos','workouts'],[totals.sets,'Séries realizadas','sets'],[totals.volume,'Volume','volume'],[totals.exercises,'Exercícios diferentes','exerciseCount']]:evolutionState.mode==='cardio'?
           [[totals.workouts,'Treinos','workouts'],[totals.distance,'Distância','distance'],[totals.duration,'Tempo','duration'],[totals.pace,'Pace médio','pace']]:
@@ -4575,32 +4643,71 @@
         if(evolutionState.mode!=='cardio'&&selected) {
           const choices=evolutionExerciseChoices(selected);
           if(!choices.some(m=>m.value===evolutionState.exerciseMetric))evolutionState.exerciseMetric=choices[0].value;
-          html+=`<section class="evo-card" aria-labelledby="evo-exercise-title"><div class="evo-card-heading"><div><h2 id="evo-exercise-title">Por exercício</h2><p>Um registro por treino</p></div>${icon('dumbbell')}</div><button type="button" class="selection-field evo-exercise-select" id="evo-exercise" aria-label="Selecionar exercício" aria-haspopup="dialog" aria-controls="selection-dialog"></button><div class="evo-exercise-controls"><span>${selected.unit==='s'?'Tempo registrado':'Séries registradas'}</span><button type="button" class="selection-field compact evo-metric-select" id="evo-exercise-metric" aria-label="Métrica do exercício" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div id="evo-exercise-chart" class="evo-chart"></div></section>`;
+          html+=`<section class="evo-card" aria-labelledby="evo-exercise-title"><div class="evo-card-heading"><div><h2 id="evo-exercise-title">Por exercício</h2><p>Um registro por treino</p></div></div><button type="button" class="selection-field evo-exercise-select" id="evo-exercise" aria-label="Selecionar exercício" aria-haspopup="dialog" aria-controls="selection-dialog"></button><div class="evo-exercise-controls"><span>${selected.unit==='s'?'Tempo registrado':'Séries registradas'}</span><button type="button" class="selection-field compact evo-metric-select" id="evo-exercise-metric" aria-label="Métrica do exercício" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div id="evo-exercise-chart" class="evo-chart"></div></section>`;
         }
         $('evo-panel').innerHTML=html;
         setSelectionField('evo-metric',evolutionState.metric,evolutionMetrics[evolutionState.metric].label);
-        mountEvolutionChart('evo-overview-chart',series.points.map(point=>({...point,value:point[evolutionState.metric]})),evolutionState.metric,evolutionState.metric==='pace'?'line':'bar',series.unit);
+        mountEvolutionChart('evo-overview-chart',series.points.map(point=>({...point,value:point[evolutionState.metric]})),evolutionState.metric,evolutionChartType(evolutionState.metric),series.unit);
         if($('evo-exercise')) {
           setSelectionField('evo-exercise',selected.key,evolutionExerciseLabel(selected));
           setSelectionField('evo-exercise-metric',evolutionState.exerciseMetric,evolutionMetrics[evolutionState.exerciseMetric].label);
-          mountEvolutionChart('evo-exercise-chart',selected.points.filter(point=>point.date>=range.start&&point.date<=range.end).map(point=>({...point,end:point.date,value:point[evolutionState.exerciseMetric]})),evolutionState.exerciseMetric,'line','session');
+          mountEvolutionChart('evo-exercise-chart',selected.points.filter(point=>point.date>=range.start&&point.date<=range.end).map(point=>({...point,end:point.date,value:point[evolutionState.exerciseMetric]})),evolutionState.exerciseMetric,evolutionChartType(evolutionState.exerciseMetric),'session');
         }
       }
       function evolutionExerciseLabel(exercise) {
         const duplicates=evolutionModel.exercises.filter(item=>item.name===exercise.name).length>1;
         return exercise.name+(duplicates?` · ${exercise.unit==='s'?'tempo':exercise.loadLabel||'repetições'}`:'');
       }
-      function renderEvolutionRecords(range) {
-        const records=P.records(evolutionModel,range,evolutionState.mode),groups=new Map();
-        for(const record of records){const key=record.exerciseKey||'cardio';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(record);}
-        $('evo-panel').innerHTML=`<div class="evo-section-title"><div><h2>${icon('award')}Recordes do período</h2><p>Resultados registrados no período selecionado</p></div><span class="evo-count" aria-label="${records.length} ${records.length===1?'recorde':'recordes'} no período">${records.length}</span></div>${records.length?`<div class="evo-records">${[...groups.values()].map(items=>{
-          const first=items[0],exercise=first.exerciseKey&&evolutionModel.exercises.find(ex=>ex.key===first.exerciseKey);
-          return `<section class="evo-pr-card"><h3>${icon(first.kind==='cardio'?'run':'dumbbell')}<span>${esc(exercise?evolutionExerciseLabel(exercise):'Corrida')}</span></h3>${items.map(record=>{
+      const recordPageSize=4;
+      const normalizeRecordSearch=text=>String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim();
+      function evolutionRecordGroups(model,mode,query='') {
+        const groups=new Map(),terms=normalizeRecordSearch(query).split(/\s+/).filter(Boolean);
+        // model.best contains only the current lifetime best of each metric.
+        for(const record of model.best) {
+          if(mode!=='all'&&record.kind!==mode)continue;
+          const key=record.exerciseKey||'cardio';
+          if(!groups.has(key)) {
+            const exercise=model.exercises.find(item=>item.key===key),duplicate=exercise&&model.exercises.filter(item=>item.name===exercise.name).length>1;
+            const label=(exercise?.name||record.name)+(duplicate?` · ${exercise.unit==='s'?'tempo':exercise.loadLabel||'repetições'}`:'');
+            groups.set(key,{key,label,kind:record.kind,items:[]});
+          }
+          groups.get(key).items.push(record);
+        }
+        return [...groups.values()].map(group=>{
+          const priority=['load','time','distance','reps','pace','volume'];
+          group.items.sort((a,b)=>priority.indexOf(a.metric)-priority.indexOf(b.metric));
+          group.latest=group.items.reduce((date,record)=>record.date>date?record.date:date,'');
+          return group;
+        }).filter(group=>{
+          const text=normalizeRecordSearch([group.label,group.kind==='cardio'?'corrida':'força',...group.items.map(record=>P.recordDefinitions[record.metric].label)].join(' '));
+          return terms.every(term=>text.includes(term));
+        }).sort((a,b)=>b.latest.localeCompare(a.latest)||a.label.localeCompare(b.label,'pt-BR')||a.key.localeCompare(b.key));
+      }
+      function renderEvolutionRecords() {
+        const panel=$('evo-panel');
+        if(!$('evo-record-search'))panel.innerHTML=`<label class="form-field evo-record-search" for="evo-record-search">Buscar recorde<input type="search" id="evo-record-search" placeholder="Exercício ou modalidade" maxlength="120" autocomplete="off" spellcheck="false" aria-controls="evo-record-results" value="${esc(evolutionState.recordsQuery)}"></label><p class="evo-record-count" id="evo-record-count" role="status" aria-live="polite" aria-atomic="true" hidden></p><div id="evo-record-results"></div>`;
+        if($('evo-record-search').value!==evolutionState.recordsQuery)$('evo-record-search').value=evolutionState.recordsQuery;
+        renderEvolutionRecordResults();
+      }
+      function renderEvolutionRecordResults(animate=false) {
+        const root=$('evo-record-results');if(!root)return;
+        const groups=evolutionRecordGroups(evolutionModel,evolutionState.recordsMode,evolutionState.recordsQuery),pages=Math.max(1,Math.ceil(groups.length/recordPageSize));
+        evolutionState.recordsPage=Math.max(0,Math.min(pages-1,Number.isInteger(evolutionState.recordsPage)?evolutionState.recordsPage:0));
+        const start=evolutionState.recordsPage*recordPageSize,visible=groups.slice(start,start+recordPageSize),count=groups.reduce((total,group)=>total+group.items.length,0);
+        $('evo-record-count').hidden=!groups.length;
+        $('evo-record-count').textContent=groups.length?`${count} ${count===1?'recorde':'recordes'} · ${start+1}–${start+visible.length} de ${groups.length} ${groups.length===1?'resultado':'resultados'}`:'';
+        if(!groups.length) {
+          const filtered=evolutionModel.best.length>0;
+          root.innerHTML=`<div class="empty-state evo-empty">${icon('award')}<h3>${filtered?'Nenhum recorde encontrado':'Nenhum recorde registrado'}</h3><p>${filtered?'Altere a busca ou a modalidade para consultar os recordes.':evolutionModel.rows.length?'Os recordes dependem de carga, repetições, tempo ou distância nos treinos concluídos.':'Os recordes são calculados a partir dos treinos concluídos.'}</p><div class="empty-actions"><button type="button" class="button primary full" ${filtered?'data-record-clear':'data-page="workouts"'}>${filtered?'Limpar filtros':'Ver treinos'}</button></div></div>`;
+        } else root.innerHTML=`<div class="evo-records">${visible.map(group=>{
+          const primary=group.items[0];
+          return `<details class="evo-pr-card evo-record-card" data-record-group="${esc(group.key)}"${evolutionState.recordOpen===group.key?' open':''}><summary class="evo-record-summary"><span class="evo-record-name"><strong>${esc(group.label)}</strong><span>${group.items.length} ${group.items.length===1?'recorde':'recordes'} · ${esc(displayDate(group.latest,true))}</span></span><span class="evo-record-best"><strong>${esc(evolutionMetricText(primary.value,primary.metric))}</strong><span>${esc(P.recordDefinitions[primary.metric].label)}</span></span>${icon('chevron')}</summary><div class="evo-record-details">${group.items.map(record=>{
             const definition=P.recordDefinitions[record.metric];
-            const delta=record.initial?'Registro inicial':record.metric==='pace'?`Redução de ${summaryClock(record.previous-record.value)} min/km`:`+${evolutionMetricText(record.value-record.previous,record.metric)}`;
-            return `<button type="button" class="evo-pr-row" data-evo-record="${esc(record.recordKey)}" aria-label="${esc(`${definition.label}: ${evolutionMetricText(record.value,record.metric)}. ${displayDate(record.date,true)}. Abrir treino ${record.workoutTitle}`)}"><span class="evo-pr-copy"><span>${definition.label}</span><strong>${esc(evolutionValue(record.value,record.metric))}${definition.unit&&record.metric!=='time'?`<small>${esc(definition.unit)}</small>`:''}</strong><span class="evo-pr-date">${esc(displayDate(record.date,true))}${record.context?` · ${esc(record.context)}`:''}</span><span class="evo-pr-delta">${esc(delta)}</span></span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
-          }).join('')}</section>`;
-        }).join('')}</div>`:renderEvolutionEmptyState(evolutionModel.rows.length>0,true)}`;
+            return `<button type="button" class="evo-pr-row" data-evo-record="${esc(record.recordKey)}" aria-label="${esc(`${definition.label}: ${evolutionMetricText(record.value,record.metric)}. ${displayDate(record.date,true)}. Ver resumo de ${record.workoutTitle}`)}"><span class="evo-pr-copy"><span>${esc(definition.label)}</span><strong>${esc(evolutionMetricText(record.value,record.metric))}</strong><span class="evo-pr-date">${esc(displayDate(record.date,true))}${record.context?` · ${esc(record.context)}`:''}</span></span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
+          }).join('')}</div></details>`;
+        }).join('')}</div>${pages>1?`<nav class="evo-record-pagination" aria-label="Páginas de recordes"><button type="button" class="button compact" data-record-page="-1"${evolutionState.recordsPage===0?' disabled':''}>Anterior</button><span aria-label="Página ${evolutionState.recordsPage+1} de ${pages}">${evolutionState.recordsPage+1} de ${pages}</span><button type="button" class="button compact" data-record-page="1"${evolutionState.recordsPage===pages-1?' disabled':''}>Próximos</button></nav>`:''}`;
+        persistEvolution();
+        if(animate)enterView(root);
       }
       // Monotone curves stay within adjacent recorded values and never bridge missing data.
       function evolutionCurve(segment) {
@@ -4627,6 +4734,8 @@
           root.innerHTML=`<div class="evo-chart-empty"><p>${points.length?'Nenhum valor registrado para esta métrica.':'Nenhum registro deste exercício no período.'}</p>${points.length&&['load','volume'].includes(metric)?'<span>Preencha carga e repetições nas séries realizadas.</span>':''}</div>`;return;
         }
         const previous=evolutionCharts.get(id),restore=previous?.root===root;
+        root.classList.toggle('is-chart-entering',!restore&&!reduceMotion());
+        root.dataset.chartType=type;
         const dataOpen=restore&&root.querySelector('.evo-data')?.open,plotFocused=restore&&document.activeElement===root.querySelector('.evo-plot');
         const width=Math.max(220,root.clientWidth),height=224,left=46,right=width-10,top=18,bottom=190;
         const maximum=Math.max(...valid.map(point=>point.value),1),step=Math.pow(10,Math.floor(Math.log10(maximum)))/2,max=Math.ceil(maximum/step)*step;
@@ -4646,27 +4755,25 @@
         const ticks=['workouts','sets','reps'].includes(metric)?[...new Set([0,Math.round(max/2),max])]:[0,max/2,max];
         const tickIndexes=[...new Set([0,Math.floor((points.length-1)/2),points.length-1])];
         const tick=date=>unit==='year'?date.slice(0,4):unit==='month'?new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{month:'short'}):date.slice(8,10)+'/'+date.slice(5,7);
-        const selected=restore?previous.selected:points.findLastIndex(point=>Number.isFinite(point.value)&&(point.value>0||type==='line'));
+        const selected=restore?previous.selected:points.findLastIndex(point=>Number.isFinite(point.value)&&(point.value>0||type!=='bar'));
         const state={root,points,metric,type,unit,width,height,left,right,band,x,y,selected:Math.max(0,Math.min(points.length-1,selected))};evolutionCharts.set(id,state);
-        const areaId=id+'-area-fill',barId=id+'-bar-fill';
         const unitLabel=metric==='pace'?'min/km':['duration','time'].includes(metric)?'minutos':evolutionMetrics[metric].unit;
         const marks=points.map((point,i)=>{
           if(!Number.isFinite(point.value))return '';
           if(type!=='bar')return `<circle class="evo-mark${isolated.has(i)?' is-single':''}" data-chart-index="${i}" cx="${x(i)}" cy="${y(point.value)}" r="3.5"/>`;
           if(point.value===0)return '';
           const w=Math.min(28,band*.64),l=x(i)-w/2,r=l+w,t=y(point.value),radius=Math.min(4,w/2,(bottom-t)/2);
-          return `<path class="evo-mark" data-chart-index="${i}" fill="url(#${barId})" d="M${l} ${bottom} V${t+radius} Q${l} ${t} ${l+radius} ${t} H${r-radius} Q${r} ${t} ${r} ${t+radius} V${bottom} Z"/>`;
+          return `<path class="evo-mark evo-bar" data-chart-index="${i}" d="M${l} ${bottom} V${t+radius} Q${l} ${t} ${l+radius} ${t} H${r-radius} Q${r} ${t} ${r} ${t+radius} V${bottom} Z"/>`;
         }).join('');
         root.innerHTML=`<div class="evo-chart-readout" aria-live="polite" aria-atomic="true"><strong data-chart-value></strong><span data-chart-date></span></div>
           <div class="evo-plot-wrap"><svg class="evo-plot" viewBox="0 0 ${width} ${height}" role="img" tabindex="0" aria-label="${esc(evolutionMetrics[metric].label)}. Use as setas para consultar os valores." aria-describedby="${id}-hint">
-            <defs><linearGradient id="${areaId}" x1="0" y1="${top}" x2="0" y2="${bottom}" gradientUnits="userSpaceOnUse"><stop class="evo-gradient-stop evo-area-start" offset="0%"/><stop class="evo-gradient-stop evo-area-end" offset="100%"/></linearGradient><linearGradient id="${barId}" x1="0" y1="0" x2="0" y2="1"><stop class="evo-gradient-stop" offset="0%" stop-opacity=".95"/><stop class="evo-gradient-stop" offset="100%" stop-opacity=".3"/></linearGradient></defs>
             ${ticks.map(value=>`<line class="evo-gridline" x1="${left}" x2="${right}" y1="${y(value)}" y2="${y(value)}"/><text class="evo-axis" x="${left-9}" y="${y(value)+4}" text-anchor="end">${esc(axisShort(value))}</text>`).join('')}
-            ${type==='line'?curves.map(({items,path})=>`${items.length>1?`<path class="evo-area" fill="url(#${areaId})" d="${path} L${items.at(-1).x.toFixed(2)} ${bottom} L${items[0].x.toFixed(2)} ${bottom} Z"/>`:''}<path class="evo-line" d="${path}"/>`).join(''):''}
+            ${type!=='bar'?curves.map(({items,path})=>`${type==='area'&&items.length>1?`<path class="evo-area" d="${path} L${items.at(-1).x.toFixed(2)} ${bottom} L${items[0].x.toFixed(2)} ${bottom} Z"/>`:''}<path class="evo-line" pathLength="1" d="${path}"/>`).join(''):''}
             <line class="evo-guide" x1="0" x2="0" y1="${top}" y2="${bottom}"/>
-            ${type==='line'?'<circle class="evo-focus-halo" r="10"/>':''}${marks}
+            ${type!=='bar'?'<circle class="evo-focus-halo" r="10"/>':''}${marks}
             ${tickIndexes.map(i=>`<text class="evo-axis" x="${x(i)}" y="217" text-anchor="${i===0&&points.length>1?'start':i===points.length-1&&points.length>1?'end':'middle'}">${esc(tick(points[i].date))}</text>`).join('')}
           </svg><div class="evo-tooltip" aria-hidden="true"><span class="evo-tooltip-date" data-tooltip-date></span><div class="evo-tooltip-row"><span class="evo-chart-swatch"></span><span class="evo-tooltip-label">${esc(evolutionMetrics[metric].label)}</span><strong data-tooltip-value></strong></div></div></div>
-          <div class="evo-chart-footer"><span class="evo-chart-legend" id="${id}-hint"><span class="evo-chart-swatch" aria-hidden="true"></span>${esc(evolutionMetrics[metric].label)}${unitLabel&&unitLabel!==evolutionMetrics[metric].unit?' · '+esc(unitLabel):unitLabel&& !['workouts','sets','reps'].includes(metric)?' ('+esc(unitLabel)+')':''}<span class="sr-only">. Toque no gráfico ou use as setas, Home e End para consultar cada valor.</span></span><button type="button" class="evo-text-button" data-chart-record hidden>Ver treino${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></div>
+          <div class="evo-chart-footer"><span class="evo-chart-legend" id="${id}-hint"><span class="evo-chart-swatch" aria-hidden="true"></span>${esc(evolutionMetrics[metric].label)}${unitLabel&&unitLabel!==evolutionMetrics[metric].unit?' · '+esc(unitLabel):unitLabel&& !['workouts','sets','reps'].includes(metric)?' ('+esc(unitLabel)+')':''}<span class="sr-only">. Toque no gráfico ou use as setas, Home e End para consultar cada valor.</span></span><button type="button" class="evo-text-button" data-chart-record hidden>Ver resumo${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></div>
           <details class="evo-data"${dataOpen?' open':''}><summary>Ver dados${icon('chevron')}</summary><div class="evo-table-scroll"><table><caption class="sr-only">${esc(evolutionMetrics[metric].label)} no período</caption><thead><tr><th scope="col">${unit==='session'?'Treino':'Período'}</th><th scope="col">${esc(evolutionMetrics[metric].label)}</th></tr></thead><tbody>${points.map(point=>`<tr><td>${point.key?`<button type="button" class="evo-text-button" data-evo-record="${esc(point.key)}" aria-label="${esc('Abrir '+point.title+', '+displayDate(point.date,true))}">${esc(displayDate(point.date,true))}</button>`:esc(evolutionDates(point.date,point.end))}</td><td>${esc(evolutionMetricText(point.value,metric))}${point.partial&&metric==='volume'?' *':''}</td></tr>`).join('')}</tbody></table></div>${metric==='volume'&&points.some(point=>point.partial)?'<p class="evo-note">* Volume parcial.</p>':''}</details>`;
         const plot=root.querySelector('.evo-plot'),wrap=root.querySelector('.evo-plot-wrap');
         function choose(event) {
@@ -4711,10 +4818,34 @@
         $('evo-range-error').hidden=true;openDialog('evolution-range-dialog');
       }
       $('evolution-page').addEventListener('click',event=>{
+        const recordSummary=event.target.closest('.evo-record-card>summary');
+        if(recordSummary) {
+          event.preventDefault();
+          const entry=recordSummary.parentElement,willOpen=!(expansionAnimations.get(entry)?.expanded??entry.open);
+          $('evo-record-results').querySelectorAll('.evo-record-card').forEach(other=>{
+            if(other!==entry&&(expansionAnimations.get(other)?.expanded??other.open))toggleExpandable(other);
+          });
+          toggleExpandable(entry);evolutionState.recordOpen=willOpen?entry.dataset.recordGroup:null;persistEvolution();return;
+        }
         const summary=event.target.closest('.evo-data>summary');
         if(summary){event.preventDefault();toggleExpandable(summary.parentElement);return;}
         const button=event.target.closest('button');if(!button)return;
-        if(button.dataset.evoKind){evolutionState.mode=button.dataset.evoKind;evolutionState.metric=evolutionChoices()[0].value;refreshEvolution(button.id);}
+        if(button.dataset.evoKind){
+          if(evolutionState.tab==='records'){evolutionState.recordsMode=button.dataset.evoKind;evolutionState.recordsPage=0;evolutionState.recordOpen=null;}
+          else {evolutionState.mode=button.dataset.evoKind;evolutionState.metric=evolutionChoices()[0].value;}
+          refreshEvolution(button.id);
+        }
+        else if(button.hasAttribute('data-record-page')) {
+          evolutionState.recordsPage+=Number(button.dataset.recordPage);evolutionState.recordOpen=null;
+          renderEvolutionRecordResults(true);
+          const first=$('evo-record-results').querySelector('summary');
+          first?.focus({preventScroll:true});first?.scrollIntoView({block:'nearest',behavior:reduceMotion()?'instant':'smooth'});
+          queueNavigationSync();
+        }
+        else if(button.hasAttribute('data-record-clear')) {
+          evolutionState.recordsQuery='';evolutionState.recordsMode='all';evolutionState.recordsPage=0;evolutionState.recordOpen=null;
+          syncEvolutionFilters();renderEvolutionRecords();enterView($('evo-record-results'));$('evo-record-search').focus({preventScroll:true});
+        }
         else if(button.dataset.evoRecord)openPostWorkout(button.dataset.evoRecord,'progress');
         else if(button.hasAttribute('data-evo-reset')){evolutionState.period='all';evolutionState.mode='all';refreshEvolution('evo-period');}
         else if(button.id==='evo-period')openSelection('Período',evolutionPeriods,evolutionState.period,value=>{
@@ -4727,6 +4858,14 @@
           const exercise=evolutionModel.exercises.find(ex=>ex.key===evolutionState.exercise);
           if(exercise)openSelection('Métrica do exercício',evolutionExerciseChoices(exercise),evolutionState.exerciseMetric,value=>{evolutionState.exerciseMetric=value;refreshEvolution('evo-exercise-metric');},button);
         }
+      });
+      $('evolution-page').addEventListener('input',event=>{
+        if(event.target.id!=='evo-record-search')return;
+        evolutionState.recordsQuery=event.target.value.slice(0,120);evolutionState.recordsPage=0;evolutionState.recordOpen=null;
+        clearTimeout(recordSearchTimer);
+        recordSearchTimer=setTimeout(()=>{
+          if(appView==='progress'&&evolutionState.tab==='records'){renderEvolutionRecordResults(true);queueNavigationSync();}
+        },120);
       });
       for(const field of ['from','to'])$('evo-range-'+field).addEventListener('click',()=>{
         if(!evolutionRangeDraft)return;
@@ -5221,7 +5360,7 @@
         if (!validInputs()) return;
         if (appView === 'session' && day !== selectedDay) appView = 'summary';
         selectedDay = day; selectedWeekday = PLAN.find(w => w.id === day)?.weekday || selectedWeekday;
-        viewingRecord = Object.values(store.sessions).filter(s => s.done && s.day === day && s.date === localDate()).sort((a, b) => b.updatedAt - a.updatedAt)[0]?.key || null;
+        viewingRecord = recordFor({id:day})?.key || null;
         selectedDate = effectiveDate(currentRecord() || currentDraft());
         renderNav(); renderWorkout();
       }
@@ -6066,7 +6205,7 @@
           }
           const nextPlan = D.clone(PLAN), index = nextPlan.findIndex(w => w.id === editorDraft.id);
           if (index === -1) nextPlan.push(D.clone(editorDraft)); else nextPlan[index] = D.clone(editorDraft);
-          for (const [id, draft] of Object.entries(store.drafts)) if (!draft.archived && draft.day === editorDraft.id && draft.cycleNumber === store.cycle.number && !store.cycle.completed[editorDraft.id]) store.drafts[id] = D.adaptSession(draft, editorDraft);
+          for (const [id, draft] of Object.entries(store.drafts)) if (!draft.archived && draft.day === editorDraft.id && draft.cycleNumber === store.cycle.number && !recordFor({id:editorDraft.id})) store.drafts[id] = D.adaptSession(draft, editorDraft);
           const saved = savePlan(nextPlan);
           if (!saved) { editorError('Não foi possível salvar a ficha no navegador. Suas alterações continuam nesta aba; exporte um backup antes de fechar.'); return; }
           $('editor-dialog').close(); toast('Treino salvo.');
@@ -6484,7 +6623,7 @@
       }
       function saveFinishNotes() {
         const draft = store.drafts[finishTarget];
-        if (!draft || draft.done || draft.archived || draft.cycleNumber !== store.cycle.number || store.cycle.completed[draft.day]) return;
+        if (!draft || draft.done || draft.archived || draft.cycleNumber !== store.cycle.number || recordFor({id:draft.day})) return;
         const notes = $('finish-notes').value.slice(0,2000);
         if (draft.notes === notes) return;
         draft.notes = notes; draft.updatedAt = Math.max(Date.now(), draft.updatedAt + 1);
@@ -6531,7 +6670,7 @@
         if (draft?.archived) {
           $('finish-dialog').close(); syncRestContext(); goHome(); toast('Este treino foi cancelado.','info'); return;
         }
-        if (!draft || draft.done || draft.cycleNumber !== store.cycle.number || store.cycle.completed[draft.day]) return;
+        if (!draft || draft.done || draft.cycleNumber !== store.cycle.number || recordFor({id:draft.day})) return;
         if (!D.validDate(finishDate)) { finishError('Selecione a data em que o treino foi realizado.', $('finish-date')); return; }
         let cardio = null;
         if (draft.workout.kind === 'cardio') {
@@ -6792,7 +6931,7 @@
       const activeTimerDuration = () => timer.exercise?.duration ?? timer.duration + timer.adjustment;
       const restAvailable = () => currentWorkout()?.kind === 'strength' && !isReadOnly();
       const restScope = () => restAvailable() ? `${store.cycle.number}:${currentWorkout().id}` : null;
-      const restOwner = () => PLAN.find(w => w.kind === 'strength' && `${store.cycle.number}:${w.id}` === timer.workoutKey && !store.cycle.completed[w.id] && Object.values(store.drafts).some(s => s.day === w.id && isOngoingDraft(s)));
+      const restOwner = () => PLAN.find(w => w.kind === 'strength' && `${store.cycle.number}:${w.id}` === timer.workoutKey && !recordFor(w) && Object.values(store.drafts).some(s => s.day === w.id && isOngoingDraft(s)));
       function exerciseTimerOwner() {
         const target = timer.exercise, session = target && store.drafts[target.sessionKey];
         if (!session || session.archived || session.done || session.cycleNumber !== store.cycle.number || `${session.cycleNumber}:${session.day}` !== timer.workoutKey || !restOwner()) return null;
@@ -7041,7 +7180,7 @@
           if ($('finish-dialog').open) $('finish-dialog').close();
           if ($('share-dialog').open) $('share-dialog').close();
           if (viewingRecord && !store.sessions[viewingRecord]) goToToday();
-          else if (!viewingRecord && ((!selectedDay && PLAN.length) || store.cycle.completed[selectedDay] || (selectedDay && !PLAN.some(w => w.id === selectedDay)))) goToToday();
+          else if (!viewingRecord && ((!selectedDay && PLAN.length) || recordFor({id:selectedDay}) || (selectedDay && !PLAN.some(w => w.id === selectedDay)))) goToToday();
           renderNav(); renderWorkout();
           if (isPageOpen('history-dialog')) renderHistory();
           if (isPageOpen('manager-dialog')) renderManager();
