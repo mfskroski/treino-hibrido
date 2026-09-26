@@ -2437,8 +2437,8 @@
     @media print { .page-toolbar { display:none!important; } }
 
     /* Shadcn-inspired chart surfaces, keeping the app's monochrome palette. */
-    #evolution-page { --chart-ink:#27272a; --chart-border:#e4e4e7; --chart-grid:#ededf0; --chart-muted:#71717a; --chart-area-opacity:.09; }
-    :root[data-theme=dark] #evolution-page { --chart-ink:#e4e4e7; --chart-border:#27272a; --chart-grid:#242427; --chart-muted:#a1a1aa; --chart-area-opacity:.12; }
+    #evolution-page { --chart-ink:#71717a; --chart-border:#e4e4e7; --chart-grid:#f0f0f2; --chart-muted:#71717a; --chart-area-opacity:.045; }
+    :root[data-theme=dark] #evolution-page { --chart-ink:#a1a1aa; --chart-border:#27272a; --chart-grid:#242427; --chart-muted:#a1a1aa; --chart-area-opacity:.075; }
     .evo-kinds { position:relative; display:flex; gap:4px; padding:4px; margin-bottom:16px; border:1px solid var(--line); border-radius:var(--control-radius); background:var(--bg); }
     .evo-kinds::before { content:''; position:absolute; left:4px; top:4px; bottom:4px; width:calc((100% - 16px) / 3); border-radius:10px; background:var(--ink); transform:translateX(calc(var(--evo-kind-position,0) * (100% + 4px))); transition:transform .24s var(--ease-out); pointer-events:none; }
     .evo-kinds button { position:relative; z-index:1; display:inline-flex; flex:1; min-width:0; align-items:center; justify-content:center; gap:7px; min-height:var(--control-height-compact); padding:8px; border:0; border-radius:10px; background:transparent; font-size:var(--control-font-size-compact); color:var(--muted); transition:color .18s,transform .18s; }
@@ -2481,24 +2481,26 @@
     .evo-chart-readout span { display:block; margin-top:6px; font-size:12px; color:var(--chart-muted); }
     .evo-plot-wrap { position:relative; }
     .evo-plot { display:block; width:100%; height:auto; overflow:visible; touch-action:pan-y; border-radius:8px; }
-    .evo-gridline { stroke:var(--chart-grid); stroke-width:1; }
+    .evo-gridline { stroke:var(--chart-grid); stroke-width:.8; vector-effect:non-scaling-stroke; }
     .evo-axis { fill:var(--chart-muted); font-size:11px; font-family:inherit; }
     .evo-area { fill:var(--chart-ink); opacity:var(--chart-area-opacity); }
     .evo-bar { fill:var(--chart-ink); }
-    .evo-line { fill:none; stroke:var(--chart-ink); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
+    .evo-line { fill:none; stroke:var(--chart-ink); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
     .evo-chart.is-chart-entering .evo-line { stroke-dasharray:1; animation:chart-line-in .38s var(--ease-out) both; }
     .evo-chart.is-chart-entering .evo-bar { transform-box:fill-box; transform-origin:center bottom; animation:chart-bar-in .3s var(--ease-out) both; }
     .evo-chart.is-chart-entering .evo-area { animation:chart-area-in .32s var(--ease-out) both; }
     @keyframes chart-line-in { from { stroke-dashoffset:1; } to { stroke-dashoffset:0; } }
     @keyframes chart-bar-in { from { transform:scaleY(0); } to { transform:scaleY(1); } }
     @keyframes chart-area-in { from { opacity:0; } to { opacity:var(--chart-area-opacity); } }
-    .evo-mark { opacity:.55; transition:opacity .16s; }
-    .evo-mark.is-active { opacity:1; }
-    circle.evo-mark { fill:var(--chart-ink); stroke:var(--bg); stroke-width:2; opacity:0; }
-    circle.evo-mark.is-single { opacity:1; }
-    circle.evo-mark.is-active { opacity:1; r:4.5px; }
-    .evo-guide { stroke:var(--chart-ink); opacity:.22; stroke-width:1; stroke-dasharray:4 4; pointer-events:none; }
-    .evo-focus-halo { fill:var(--chart-ink); opacity:.09; pointer-events:none; }
+    .evo-mark { opacity:.75; transition:opacity .18s; }
+    .evo-plot-wrap.is-inspecting .evo-mark.is-active { opacity:.95; }
+    circle.evo-mark { fill:var(--chart-ink); stroke:var(--bg); stroke-width:1.5; opacity:0; }
+    circle.evo-mark.is-single { opacity:.85; }
+    .evo-plot-wrap.is-inspecting circle.evo-mark.is-active { opacity:1; }
+    .evo-guide { stroke:var(--chart-ink); opacity:0; stroke-width:.8; stroke-dasharray:3 5; pointer-events:none; transition:opacity .18s; }
+    .evo-focus-halo { fill:var(--chart-ink); opacity:0; pointer-events:none; transition:opacity .18s; }
+    .evo-plot-wrap.is-inspecting .evo-guide { opacity:.18; }
+    .evo-plot-wrap.is-inspecting .evo-focus-halo { opacity:.06; }
     .evo-tooltip { position:absolute; z-index:2; width:max-content; max-width:calc(100% - 16px); min-width:124px; padding:10px 12px; border:1px solid var(--chart-border); border-radius:10px; background:var(--bg); box-shadow:0 4px 16px rgb(0 0 0 / .09); pointer-events:none; opacity:0; visibility:hidden; transition:opacity .12s; font-size:11px; line-height:1.5; }
     .evo-plot-wrap.is-inspecting .evo-tooltip { opacity:1; visibility:visible; }
     .evo-tooltip-date { display:block; margin-bottom:6px; color:var(--chart-muted); }
@@ -2543,6 +2545,31 @@
     .evo-pr-date { color:var(--muted); font-size:12px; line-height:1.5; }
     .evo-pr-delta { font-size:11px; color:var(--ink); }
     .evo-pr-row>.icon { flex:none; color:var(--muted); width:18px; height:18px; }
+    .evo-record-highlights { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:0 0 24px; }
+    .evo-highlight { display:grid; grid-template-columns:28px minmax(0,1fr); align-items:start; gap:8px; min-width:0; padding:16px; border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); text-align:left; color:var(--ink); transition:background .18s,border-color .18s,transform .18s; }
+    .evo-highlight.is-lead { grid-column:1 / -1; display:grid; grid-template-columns:42px minmax(0,1fr) 18px; column-gap:14px; padding:20px; }
+    .evo-highlight-icon { display:grid; place-items:center; width:28px; height:28px; border-radius:9px; background:var(--soft); color:var(--muted); }
+    .evo-highlight-icon>.icon { width:20px; height:20px; }
+    .evo-highlight.is-lead>.evo-highlight-icon { grid-column:1; grid-row:1 / 5; align-self:start; width:42px; height:42px; border-radius:14px; }
+    .evo-highlight.is-lead>.evo-highlight-icon>.icon { width:23px; height:23px; }
+    .evo-highlight-label { align-self:center; font-size:12px; color:var(--muted); line-height:1.4; }
+    .evo-highlight-value,.evo-highlight-context,.evo-highlight-date { grid-column:1 / -1; }
+    .evo-highlight-value { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 6px; font-size:27px; line-height:1.15; letter-spacing:-.7px; font-weight:600; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+    .evo-highlight-value>small { color:var(--muted); font-size:12px; letter-spacing:0; font-weight:400; }
+    .evo-highlight-context { min-width:0; font-size:12px; line-height:1.5; overflow-wrap:anywhere; }
+    .evo-highlight-date { margin-top:auto; font-size:11px; line-height:1.5; color:var(--muted); overflow-wrap:anywhere; }
+    .evo-highlight.is-lead>.evo-highlight-label,.evo-highlight.is-lead>.evo-highlight-value,.evo-highlight.is-lead>.evo-highlight-context,.evo-highlight.is-lead>.evo-highlight-date { grid-column:2; }
+    .evo-highlight.is-lead>.evo-highlight-value { font-size:32px; }
+    .evo-highlight.is-lead>.evo-highlight-arrow { grid-column:3; grid-row:1 / 5; align-self:center; width:18px; height:18px; color:var(--muted); }
+    .evo-highlight:hover { background:var(--soft); border-color:var(--chart-border); }
+    .evo-highlight:active { transform:translateY(1px); }
+    .evo-highlight:focus-visible { outline:2px solid var(--ink); outline-offset:3px; }
+    .evo-record-browser { padding:var(--card-padding); margin-bottom:16px; border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); }
+    .evo-record-browser .evo-kinds { margin:16px 0 0; }
+    .evo-record-browser .evo-record-search { margin:0; }
+    .evo-record-browse { justify-content:space-between; margin-top:16px; gap:12px; }
+    .evo-record-browse>.icon { width:18px; height:18px; transition:transform .24s var(--ease-out); }
+    .evo-record-browse[aria-expanded=true]>.icon { transform:rotate(180deg); }
     .evo-record-search { margin:0 0 12px; }
     .evo-record-count { margin:0 0 16px; color:var(--muted); font-size:12px; line-height:1.5; }
     .evo-record-card { margin-bottom:12px; }
@@ -2590,6 +2617,11 @@
       .evo-record-summary { gap:8px; padding:14px; }
       .evo-record-best { max-width:94px; }
       .evo-record-best>strong { font-size:16px; }
+      .evo-record-highlights { gap:10px; }
+      .evo-highlight { padding:14px; }
+      .evo-highlight.is-lead { padding:16px; column-gap:10px; }
+      .evo-highlight-value { font-size:24px; }
+      .evo-record-browser { padding:16px; }
     }
 
   </style>
@@ -4548,7 +4580,7 @@
       const evolutionPeriods=[{value:'week',label:'Semana'},{value:'month',label:'Mês'},{value:'quarter',label:'3 meses'},{value:'year',label:'Ano'},{value:'all',label:'Todo o histórico'},{value:'custom',label:'Personalizado'}];
       const evolutionMetrics={workouts:{label:'Treinos',unit:'treinos'},sets:{label:'Séries',unit:'séries'},volume:{label:'Volume',unit:'kg'},distance:{label:'Distância',unit:'km'},duration:{label:'Tempo',unit:''},pace:{label:'Pace',unit:'min/km'},load:{label:'Carga',unit:'kg'},reps:{label:'Repetições',unit:'reps'},time:{label:'Tempo',unit:''}};
       const savedEvolution=preferences.evolution||{};
-      let evolutionState={period:evolutionPeriods.some(p=>p.value===savedEvolution.period)?savedEvolution.period:'month',anchor:D.validDate(savedEvolution.anchor)&&savedEvolution.anchor<=localDate()?savedEvolution.anchor:localDate(),mode:['all','strength','cardio'].includes(savedEvolution.mode)?savedEvolution.mode:'all',tab:savedEvolution.tab==='records'?'records':'overview',from:D.validDate(savedEvolution.from)?savedEvolution.from:localDate(),to:D.validDate(savedEvolution.to)?savedEvolution.to:localDate(),metric:savedEvolution.metric||'workouts',exercise:savedEvolution.exercise||null,exerciseMetric:savedEvolution.exerciseMetric||'load',recordsMode:['all','strength','cardio'].includes(savedEvolution.recordsMode)?savedEvolution.recordsMode:'all',recordsQuery:typeof savedEvolution.recordsQuery==='string'?savedEvolution.recordsQuery.slice(0,120):'',recordsPage:0,recordOpen:null};
+      let evolutionState={period:evolutionPeriods.some(p=>p.value===savedEvolution.period)?savedEvolution.period:'month',anchor:D.validDate(savedEvolution.anchor)&&savedEvolution.anchor<=localDate()?savedEvolution.anchor:localDate(),mode:['all','strength','cardio'].includes(savedEvolution.mode)?savedEvolution.mode:'all',tab:savedEvolution.tab==='records'?'records':'overview',from:D.validDate(savedEvolution.from)?savedEvolution.from:localDate(),to:D.validDate(savedEvolution.to)?savedEvolution.to:localDate(),metric:savedEvolution.metric||'workouts',exercise:savedEvolution.exercise||null,exerciseMetric:savedEvolution.exerciseMetric||'load',recordsMode:['all','strength','cardio'].includes(savedEvolution.recordsMode)?savedEvolution.recordsMode:'all',recordsQuery:typeof savedEvolution.recordsQuery==='string'?savedEvolution.recordsQuery.slice(0,120):'',recordsPage:0,recordOpen:null,recordsBrowse:false};
       let evolutionModel=null,evolutionRangeDraft=null,recordSearchTimer;
       const evolutionCharts=new Map();
       const evolutionNumber=(value,decimals=1)=>value==null?'—':value.toLocaleString('pt-BR',{maximumFractionDigits:decimals});
@@ -4573,7 +4605,7 @@
           const root=$('evolution-page'),minHeight=root.style.minHeight;
           root.style.minHeight=root.offsetHeight+'px';
           renderEvolution();
-          enterView($('evo-panel'));
+          enterView($(evolutionState.tab==='records'?'evo-record-results':'evo-panel'));
           root.style.minHeight=minHeight;
           if(focusId)$(focusId)?.focus({preventScroll:true});
           window.scrollTo({top:scrollTop,behavior:'instant'});
@@ -4603,11 +4635,11 @@
       }
       function syncEvolutionFilters() {
         const root=$('evolution-page'),records=evolutionState.tab==='records',mode=records?evolutionState.recordsMode:evolutionState.mode;
-        // Keep these buttons mounted so selection and focus can animate in place.
+        // Keep the selector and search field mounted during filtering.
         if(root.dataset.evolutionTab!==evolutionState.tab||!$('evo-panel')) {
           root.dataset.evolutionTab=evolutionState.tab;
-          root.innerHTML=`<div class="evo-filters"><div class="evo-kinds" role="group" aria-label="Modalidade">${[['all','Todos'],['strength','Força'],['cardio','Corrida']].map(([value,label])=>`<button type="button" id="evo-kind-${value}" data-evo-kind="${value}" aria-pressed="false">${value==='all'?'':icon(value==='strength'?'dumbbell':'run')}${label}</button>`).join('')}</div>
-            ${records?'':`<div class="form-field evo-period-field"><span id="evo-period-label">Período</span><button type="button" class="selection-field" id="evo-period" aria-labelledby="evo-period-label evo-period" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="evo-range-caption"><span id="evo-range-caption"></span></div>`}</div><div id="evo-panel"></div>`;
+          const kinds=`<div class="evo-kinds" role="group" aria-label="${records?'Filtrar a busca por modalidade':'Modalidade'}">${[['all','Todos'],['strength','Força'],['cardio','Corrida']].map(([value,label])=>`<button type="button" id="evo-kind-${value}" data-evo-kind="${value}" aria-pressed="false">${value==='all'?'':icon(value==='strength'?'dumbbell':'run')}${label}</button>`).join('')}</div>`;
+          root.innerHTML=records?`<div id="evo-panel"><section class="evo-record-highlights" id="evo-record-highlights" aria-label="Recordes em destaque"></section><div class="evo-record-browser" id="evo-record-browser"><label class="form-field evo-record-search" for="evo-record-search">Buscar outros recordes<input type="search" id="evo-record-search" placeholder="Exercício, modalidade ou recorde" maxlength="120" autocomplete="off" spellcheck="false" aria-controls="evo-record-results" value="${esc(evolutionState.recordsQuery)}"></label>${kinds}<button type="button" class="button full evo-record-browse" id="evo-record-browse" data-record-browse aria-expanded="false" aria-controls="evo-record-results"></button></div><p class="evo-record-count" id="evo-record-count" role="status" aria-live="polite" aria-atomic="true" hidden></p><div id="evo-record-results"></div></div>`:`<div class="evo-filters">${kinds}<div class="form-field evo-period-field"><span id="evo-period-label">Período</span><button type="button" class="selection-field" id="evo-period" aria-labelledby="evo-period-label evo-period" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="evo-range-caption"><span id="evo-range-caption"></span></div></div><div id="evo-panel"></div>`;
         }
         root.querySelector('.evo-kinds').style.setProperty('--evo-kind-position',String(['all','strength','cardio'].indexOf(mode)));
         root.querySelectorAll('[data-evo-kind]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.evoKind===mode)));
@@ -4683,14 +4715,37 @@
           return terms.every(term=>text.includes(term));
         }).sort((a,b)=>b.latest.localeCompare(a.latest)||a.label.localeCompare(b.label,'pt-BR')||a.key.localeCompare(b.key));
       }
+      function evolutionRecordHighlights(model) {
+        // Compare current lifetime records only. A lower pace is the better result.
+        const choices=[['load','Maior carga','dumbbell'],['distance','Maior distância','run'],['pace','Melhor pace','timer'],['time','Maior tempo em série','timer'],['reps','Mais repetições','reset']];
+        return choices.map(([metric,label,symbol])=>{
+          const candidates=model.best.filter(record=>record.metric===metric&&Number.isFinite(record.value)&&record.value>0);
+          candidates.sort((a,b)=>(P.recordDefinitions[metric].lower?a.value-b.value:b.value-a.value)||a.date.localeCompare(b.date)||a.recordKey.localeCompare(b.recordKey));
+          return candidates.length?{record:candidates[0],label,symbol}:null;
+        }).filter(Boolean).slice(0,3);
+      }
+      function renderEvolutionRecordHighlights() {
+        const root=$('evo-record-highlights'),highlights=evolutionRecordHighlights(evolutionModel);
+        root.hidden=!highlights.length;
+        root.innerHTML=highlights.map(({record,label,symbol},index)=>{
+          const lead=index===0&&(highlights.length!==2),exercise=evolutionModel.exercises.find(item=>item.key===record.exerciseKey),context=exercise?evolutionExerciseLabel(exercise):record.workoutTitle;
+          const unit=evolutionMetrics[record.metric].unit,details=[record.context,displayDate(record.date,true)].filter(Boolean).join(' · ');
+          return `<button type="button" class="evo-highlight${lead?' is-lead':''}" data-evo-record="${esc(record.recordKey)}" aria-label="${esc(`${label}: ${evolutionMetricText(record.value,record.metric)}. ${context}. ${details}. Ver resumo do treino.`)}"><span class="evo-highlight-icon">${icon(symbol)}</span><span class="evo-highlight-label">${esc(label)}</span><strong class="evo-highlight-value">${esc(evolutionValue(record.value,record.metric))}${unit?`<small>${esc(unit)}</small>`:''}</strong><span class="evo-highlight-context">${esc(context)}</span><span class="evo-highlight-date">${esc(details)}</span>${lead?icon('chevron').replace('class="icon"','class="icon arrow-right evo-highlight-arrow"'):''}</button>`;
+        }).join('');
+      }
       function renderEvolutionRecords() {
-        const panel=$('evo-panel');
-        if(!$('evo-record-search'))panel.innerHTML=`<label class="form-field evo-record-search" for="evo-record-search">Buscar recorde<input type="search" id="evo-record-search" placeholder="Exercício ou modalidade" maxlength="120" autocomplete="off" spellcheck="false" aria-controls="evo-record-results" value="${esc(evolutionState.recordsQuery)}"></label><p class="evo-record-count" id="evo-record-count" role="status" aria-live="polite" aria-atomic="true" hidden></p><div id="evo-record-results"></div>`;
+        renderEvolutionRecordHighlights();
+        $('evo-record-browser').hidden=!evolutionModel.best.length;
         if($('evo-record-search').value!==evolutionState.recordsQuery)$('evo-record-search').value=evolutionState.recordsQuery;
         renderEvolutionRecordResults();
       }
       function renderEvolutionRecordResults(animate=false) {
         const root=$('evo-record-results');if(!root)return;
+        const hasQuery=!!normalizeRecordSearch(evolutionState.recordsQuery),hasRecords=evolutionModel.best.length>0,showResults=hasQuery||evolutionState.recordsMode!=='all'||evolutionState.recordsBrowse;
+        const browse=$('evo-record-browse');browse.hidden=hasQuery||!hasRecords;browse.setAttribute('aria-expanded',String(!!showResults));
+        browse.innerHTML=`${showResults?'Ocultar lista':'Ver todos os recordes'}${icon('chevron')}`;
+        root.hidden=hasRecords&&!showResults;
+        if(root.hidden){root.innerHTML='';$('evo-record-count').hidden=true;$('evo-record-count').textContent='';persistEvolution();return;}
         const groups=evolutionRecordGroups(evolutionModel,evolutionState.recordsMode,evolutionState.recordsQuery),pages=Math.max(1,Math.ceil(groups.length/recordPageSize));
         evolutionState.recordsPage=Math.max(0,Math.min(pages-1,Number.isInteger(evolutionState.recordsPage)?evolutionState.recordsPage:0));
         const start=evolutionState.recordsPage*recordPageSize,visible=groups.slice(start,start+recordPageSize),count=groups.reduce((total,group)=>total+group.items.length,0);
@@ -4770,7 +4825,7 @@
             ${ticks.map(value=>`<line class="evo-gridline" x1="${left}" x2="${right}" y1="${y(value)}" y2="${y(value)}"/><text class="evo-axis" x="${left-9}" y="${y(value)+4}" text-anchor="end">${esc(axisShort(value))}</text>`).join('')}
             ${type!=='bar'?curves.map(({items,path})=>`${type==='area'&&items.length>1?`<path class="evo-area" d="${path} L${items.at(-1).x.toFixed(2)} ${bottom} L${items[0].x.toFixed(2)} ${bottom} Z"/>`:''}<path class="evo-line" pathLength="1" d="${path}"/>`).join(''):''}
             <line class="evo-guide" x1="0" x2="0" y1="${top}" y2="${bottom}"/>
-            ${type!=='bar'?'<circle class="evo-focus-halo" r="10"/>':''}${marks}
+            ${type!=='bar'?'<circle class="evo-focus-halo" r="7"/>':''}${marks}
             ${tickIndexes.map(i=>`<text class="evo-axis" x="${x(i)}" y="217" text-anchor="${i===0&&points.length>1?'start':i===points.length-1&&points.length>1?'end':'middle'}">${esc(tick(points[i].date))}</text>`).join('')}
           </svg><div class="evo-tooltip" aria-hidden="true"><span class="evo-tooltip-date" data-tooltip-date></span><div class="evo-tooltip-row"><span class="evo-chart-swatch"></span><span class="evo-tooltip-label">${esc(evolutionMetrics[metric].label)}</span><strong data-tooltip-value></strong></div></div></div>
           <div class="evo-chart-footer"><span class="evo-chart-legend" id="${id}-hint"><span class="evo-chart-swatch" aria-hidden="true"></span>${esc(evolutionMetrics[metric].label)}${unitLabel&&unitLabel!==evolutionMetrics[metric].unit?' · '+esc(unitLabel):unitLabel&& !['workouts','sets','reps'].includes(metric)?' ('+esc(unitLabel)+')':''}<span class="sr-only">. Toque no gráfico ou use as setas, Home e End para consultar cada valor.</span></span><button type="button" class="evo-text-button" data-chart-record hidden>Ver resumo${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></div>
@@ -4831,9 +4886,14 @@
         if(summary){event.preventDefault();toggleExpandable(summary.parentElement);return;}
         const button=event.target.closest('button');if(!button)return;
         if(button.dataset.evoKind){
-          if(evolutionState.tab==='records'){evolutionState.recordsMode=button.dataset.evoKind;evolutionState.recordsPage=0;evolutionState.recordOpen=null;}
+          if(evolutionState.tab==='records'){evolutionState.recordsMode=button.dataset.evoKind;evolutionState.recordsPage=0;evolutionState.recordOpen=null;evolutionState.recordsBrowse=true;}
           else {evolutionState.mode=button.dataset.evoKind;evolutionState.metric=evolutionChoices()[0].value;}
           refreshEvolution(button.id);
+        }
+        else if(button.hasAttribute('data-record-browse')) {
+          evolutionState.recordsBrowse=!(evolutionState.recordsBrowse||evolutionState.recordsMode!=='all');
+          evolutionState.recordsMode='all';evolutionState.recordsPage=0;evolutionState.recordOpen=null;
+          syncEvolutionFilters();renderEvolutionRecordResults(true);queueNavigationSync();
         }
         else if(button.hasAttribute('data-record-page')) {
           evolutionState.recordsPage+=Number(button.dataset.recordPage);evolutionState.recordOpen=null;
@@ -4843,7 +4903,7 @@
           queueNavigationSync();
         }
         else if(button.hasAttribute('data-record-clear')) {
-          evolutionState.recordsQuery='';evolutionState.recordsMode='all';evolutionState.recordsPage=0;evolutionState.recordOpen=null;
+          evolutionState.recordsQuery='';evolutionState.recordsMode='all';evolutionState.recordsPage=0;evolutionState.recordOpen=null;evolutionState.recordsBrowse=false;
           syncEvolutionFilters();renderEvolutionRecords();enterView($('evo-record-results'));$('evo-record-search').focus({preventScroll:true});
         }
         else if(button.dataset.evoRecord)openPostWorkout(button.dataset.evoRecord,'progress');
