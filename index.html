@@ -25,7 +25,12 @@
       --control-font-size-compact: 14px;
       --control-disabled-opacity: .4;
       --card-radius: 24px;
-      --card-padding: 20px
+      --card-padding: 20px;
+      --section-gap: 20px;
+      --page-title-size: 26px;
+      --section-title-size: 16px;
+      --motion-feedback: 180ms;
+      --motion-disclosure: 300ms
     }
 
     :root[data-theme=dark] {
@@ -69,13 +74,17 @@
     input,
     select,
     textarea,
-    a {
+    a,
+    summary,
+    label {
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation
     }
 
     button {
-      cursor: pointer
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none
     }
 
     button:disabled {
@@ -204,11 +213,9 @@
       font-weight: 550;
       text-decoration: none
     }
-
-    .button:hover:where(:not(:disabled)),
-    .icon-button:hover:where(:not(:disabled)) {
+    @media(hover:hover) { .button:hover:where(:not(:disabled)),.icon-button:hover:where(:not(:disabled)) {
       background: var(--soft)
-    }
+    } }
 
     .icon-button {
       width: 48px;
@@ -222,10 +229,9 @@
       border-color: var(--ink);
       color: var(--inverse)
     }
-
-    .button.primary:hover:not(:disabled) {
+    @media(hover:hover) { .button.primary:hover:not(:disabled) {
       opacity: .85
-    }
+    } }
 
     .button.ghost {
       background: transparent;
@@ -271,10 +277,9 @@
       position: relative;
       white-space: nowrap
     }
-
-    .day:hover {
+    @media(hover:hover) { .day:hover:where(:not(:disabled)) {
       background: var(--soft)
-    }
+    } }
 
     .day[aria-selected=true] {
       background: var(--ink);
@@ -842,10 +847,9 @@
       width: 100%;
       background: transparent
     }
-
-    .menu-list .button:hover {
+    @media(hover:hover) { .menu-list .button:hover:where(:not(:disabled)) {
       background: var(--soft)
-    }
+    } }
 
     .backup-actions {
       display: grid;
@@ -1505,10 +1509,9 @@
       font-variant-numeric: tabular-nums;
       line-height: 1.2
     }
-
-    .calendar-day:hover {
+    @media(hover:hover) { .calendar-day:hover:where(:not(:disabled)) {
       background: var(--soft)
-    }
+    } }
 
     .calendar-day[aria-current=date] {
       border-color: var(--line)
@@ -1794,7 +1797,7 @@
     .number-ticker>span { overflow-wrap:anywhere; }
     .compact-check { display:flex; align-items:center; gap:10px; min-height:44px; font-size:14px; margin:10px 0; }
     .compact-check input { width:20px; height:20px; accent-color:var(--ink); }
-    .speed-mode { display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; border:1px solid var(--line); border-radius:14px; margin-top:18px; }
+    .speed-mode { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); gap:4px; padding:4px; border:1px solid var(--line); border-radius:14px; margin-top:18px; }
     .speed-mode button { min-width:0; min-height:44px; font-size:14px; border:0; border-radius:10px; background:transparent; }
     .speed-mode [aria-pressed=true] { color:var(--inverse); background:var(--ink); }
     .ticker-columns { display:grid; gap:12px; }
@@ -1815,7 +1818,7 @@
     :root { --danger:#a34f4b; --danger-soft:#fbefed; --danger-line:#eed3cf; }
     :root[data-theme=dark] { --danger:#e4a39d; --danger-soft:#382827; --danger-line:#63413d; }
     .button.danger, .icon-button.danger { color:var(--danger); background:var(--danger-soft); border-color:var(--danger-line); }
-    .button.danger:hover:not(:disabled), .icon-button.danger:hover:not(:disabled) { color:var(--danger); background:var(--danger-soft); border-color:var(--danger); }
+    @media(hover:hover) { .button.danger:hover:not(:disabled),.icon-button.danger:hover:not(:disabled) { color:var(--danger); background:var(--danger-soft); border-color:var(--danger); } }
     .button.danger:focus-visible, .icon-button.danger:focus-visible { outline-color:var(--danger); }
     .button.compact { min-height:var(--control-height-compact); padding:8px 12px; font-size:var(--control-font-size-compact); border-radius:var(--control-radius-compact); }
     .selection-field { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; min-width:0; min-height:var(--control-height); padding:10px 12px; border:1px solid var(--line); border-radius:var(--control-radius-compact); margin-top:7px; background:var(--soft); color:var(--ink); font-size:var(--control-font-size); text-align:left; }
@@ -1828,7 +1831,7 @@
     .selection-options { display:grid; gap:6px; }
     .selection-option { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:52px; padding:12px 14px; border:1px solid transparent; border-radius:12px; background:transparent; font-size:16px; text-align:left; }
     .selection-option[aria-selected=true] { background:var(--soft); border-color:var(--line); font-weight:550; }
-    .selection-option:hover { background:var(--soft); }
+    @media(hover:hover) { .selection-option:hover:where(:not(:disabled)) { background:var(--soft); } }
     .selection-option>.icon { width:20px; height:20px; flex:none; }
     .calendar-weekdays { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); margin:16px 0 6px; text-align:center; color:var(--muted); font-size:12px; }
     #date-calendar .calendar-day { min-height:44px; }
@@ -1870,7 +1873,7 @@
     .group-config-heading>span { font-size:12px; color:var(--muted); white-space:nowrap; }
     .group-config-body #groups-empty { margin:0 0 12px; }
     #group-choices { display:grid; gap:8px; }
-    .group-choice { position:relative; display:flex; align-items:center; gap:12px; padding:12px; min-height:60px; border:1px solid var(--line); border-radius:16px; font-size:15px; cursor:pointer; transition:background .18s,border-color .18s,opacity .18s; }
+    .group-choice { position:relative; display:flex; align-items:center; gap:12px; padding:12px; min-height:60px; border:1px solid var(--line); border-radius:16px; font-size:15px; cursor:pointer; transition:background var(--motion-feedback),border-color var(--motion-feedback),opacity var(--motion-feedback); }
     .group-choice>span:last-child { min-width:0; overflow-wrap:anywhere; }
     .group-choice input { position:absolute; inset:0; opacity:0; width:100%; height:100%; margin:0; z-index:1; cursor:pointer; }
     .group-choice .check-box { flex:none; width:30px; height:30px; border-radius:9px; }
@@ -1892,9 +1895,9 @@
     @media(max-width:350px) { .editor-identity-grid { grid-template-columns:1fr; gap:0; } }
     /* Destructive actions retain the same primary / secondary hierarchy. */
     .button.danger, .icon-button.danger { color:var(--danger); background:transparent; border-color:var(--danger-line); }
-    .button.danger:hover:not(:disabled), .icon-button.danger:hover:not(:disabled) { color:var(--danger); background:var(--danger-soft); border-color:var(--danger-line); }
+    @media(hover:hover) { .button.danger:hover:not(:disabled),.icon-button.danger:hover:not(:disabled) { color:var(--danger); background:var(--danger-soft); border-color:var(--danger-line); } }
     .button.danger.primary { background:var(--danger-soft); border-color:var(--danger-line); font-weight:600; }
-    .button.danger.primary:hover:not(:disabled) { border-color:var(--danger); }
+    @media(hover:hover) { .button.danger.primary:hover:not(:disabled) { border-color:var(--danger); } }
     .button.danger.secondary, .icon-button.danger.secondary { border-color:transparent; }
     .day-check .day-partial { font-size:11px; font-weight:550; letter-spacing:.01em; }
     .profile h1 { min-width:0; overflow-wrap:anywhere; }
@@ -1970,7 +1973,7 @@
     .rest-controls .icon { width:21px; height:21px; }
     .rest-mini { position:fixed; z-index:25; left:0; right:0; bottom:0; width:100%; max-width:620px; margin:0 auto; border:1px solid var(--line); border-bottom:0; border-radius:22px 22px 0 0; background:var(--bg); color:var(--ink); }
     #rest-expand { display:block; width:100%; min-height:76px; border:0; border-radius:inherit; padding:12px 20px max(14px,env(safe-area-inset-bottom,0px)); background:transparent; text-align:left; }
-    #rest-expand:hover { background:var(--soft); }
+    @media(hover:hover) { #rest-expand:hover:where(:not(:disabled)) { background:var(--soft); } }
     #rest-expand:focus-visible { outline-offset:-4px; }
     .rest-mini-readout { display:flex; align-items:center; justify-content:space-between; gap:16px; }
     .rest-mini-title { font-size:14px; font-weight:500; color:var(--muted); overflow-wrap:anywhere; min-width:0; }
@@ -2043,7 +2046,7 @@
     .profile-copy>span { display:block; font-size:12px; color:var(--muted); margin-bottom:2px; }
     .header-actions .icon-button { background:var(--bg); width:44px; min-width:44px; min-height:44px; border-radius:50%; box-shadow:0 2px 6px rgb(0 0 0 / .025); }
     .avatar { background:var(--accent-soft); color:var(--accent); }
-    .button,.icon-button,.set-input { transition:background .18s,border-color .18s,box-shadow .18s,transform .18s; }
+    .button,.icon-button,.set-input { transition:background var(--motion-feedback),border-color var(--motion-feedback),box-shadow var(--motion-feedback),transform var(--motion-feedback),opacity var(--motion-feedback); }
     .button.primary { box-shadow:0 3px 8px rgb(0 0 0 / .1); }
     .button:active:not(:disabled),.icon-button:active:not(:disabled) { transform:translateY(1px); }
     .week-panel,.exercise,.managed-workout,.editor-exercise,.editor-superset,.history-entry { box-shadow:var(--shadow-card); background:var(--bg); }
@@ -2059,7 +2062,7 @@
     .editor-footer { box-shadow:0 -10px 24px var(--bg); }
     .rest-mini { box-shadow:var(--shadow-float); }
     @keyframes dialog-in { from { opacity:0; transform:translateY(10px) scale(.985); } to { opacity:1; transform:none; } }
-    [data-sort-id] { position:relative; transition:box-shadow .18s,border-color .18s; }
+    [data-sort-id] { position:relative; transition:box-shadow var(--motion-feedback),border-color var(--motion-feedback); }
     .editor-exercise.drop-before,[data-sort-id].drop-before { box-shadow:0 -6px 16px -7px var(--drop-color),var(--shadow-card); }
     .editor-exercise.drop-after,[data-sort-id].drop-after { box-shadow:0 6px 16px -7px var(--drop-color),var(--shadow-card); }
     .drag-preview { background:var(--bg); color:var(--ink); border:1px solid var(--line); box-shadow:var(--shadow-float); padding:15px 18px; border-radius:16px; }
@@ -2098,7 +2101,7 @@
     .section-heading h2,.section-heading h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
     .section-heading .button { min-height:var(--control-height-compact); font-size:var(--control-font-size-compact); padding:8px 12px; border-radius:var(--control-radius-compact); }
     .workout-row { display:flex; align-items:center; gap:13px; width:100%; border:1px solid var(--line); border-radius:18px; padding:17px; background:var(--bg); text-align:left; margin-bottom:10px; box-shadow:var(--shadow-card); }
-    .workout-row:hover,button.overview-item:hover,summary.overview-item:hover { background:var(--soft); }
+    @media(hover:hover) { .workout-row:hover:where(:not(:disabled)),button.overview-item:hover:where(:not(:disabled)),summary.overview-item:hover:where(:not(:disabled)) { background:var(--soft); } }
     .workout-row .row-icon { display:grid; place-items:center; width:43px; height:43px; flex:none; border-radius:14px; background:var(--soft); color:var(--accent); }
     .workout-row>span:nth-child(2) { flex:1; min-width:0; }
     .workout-row strong,.workout-row small { display:block; overflow-wrap:anywhere; }
@@ -2240,8 +2243,8 @@
     .overview-item[aria-current=true] .overview-number { color:var(--ink); background:var(--soft); }
     .record-banner { color:var(--ink); background:var(--soft); border-color:var(--line); }
     .bottom-nav { position:fixed; z-index:30; left:0; right:0; bottom:calc(14px + env(safe-area-inset-bottom,0px)); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); align-items:center; justify-items:center; width:min(380px,calc(100% - 32px)); min-height:66px; padding:8px; gap:8px; border:1px solid var(--line); border-radius:40px; background:var(--nav-surface); box-shadow:var(--shadow-float); }
-    .nav-item { display:grid; place-items:center; width:48px; min-height:48px; border:0; border-radius:50%; padding:12px; background:transparent; color:var(--muted); transition:background .2s,color .2s,transform .2s; }
-    .nav-item:hover { color:var(--ink); background:var(--soft); }
+    .nav-item { display:grid; place-items:center; width:48px; min-height:48px; border:0; border-radius:50%; padding:12px; background:transparent; color:var(--muted); transition:background var(--motion-feedback),color var(--motion-feedback),transform var(--motion-feedback),opacity var(--motion-feedback); }
+    @media(hover:hover) { .nav-item:hover:where(:not(:disabled)) { color:var(--ink); background:var(--soft); } }
     .nav-item[aria-current=page] { color:var(--inverse); background:var(--ink); box-shadow:0 2px 8px rgb(0 0 0 / .1); }
     .nav-item:active { transform:scale(.94); }
     .nav-item .icon { width:23px; height:23px; }
@@ -2255,31 +2258,32 @@
     .managed-edit,.managed-delete { align-self:center; width:48px; min-width:48px; height:48px; min-height:48px; border:1px solid transparent; border-radius:14px; background:transparent; }
     .managed-edit .icon,.managed-delete .icon { width:24px; height:24px; }
     .managed-delete.icon-button.danger { border-color:transparent; }
-    .managed-edit:hover,.managed-edit:active { background:var(--soft); }
-    .managed-delete.icon-button.danger:hover,.managed-delete.icon-button.danger:active { background:var(--danger-soft); }
+    @media(hover:hover) { .managed-edit:hover:where(:not(:disabled)) { background:var(--soft); } }
+    .managed-edit:active { background:var(--soft); }
+    @media(hover:hover) { .managed-delete.icon-button.danger:hover:where(:not(:disabled)) { background:var(--danger-soft); } }
+    .managed-delete.icon-button.danger:active { background:var(--danger-soft); }
     .managed-workout-main { min-width:0; }
     .managed-workout-main strong { font-size:15px; }
-    #history-dialog>.dialog-body,#timer-dialog>.dialog-body,#backup-dialog>.dialog-body { padding:var(--card-padding); border:1px solid var(--line); border-radius:var(--card-radius); box-shadow:var(--shadow-card); background:var(--bg); }
-    .profile-card { display:flex; align-items:center; gap:16px; width:100%; border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); padding:var(--card-padding); margin-bottom:22px; text-align:left; transition:border-color .18s,box-shadow .18s,transform .18s; }
+    #timer-dialog>.dialog-body,#backup-dialog>.dialog-body { padding:var(--card-padding); border:1px solid var(--line); border-radius:var(--card-radius); box-shadow:var(--shadow-card); background:var(--bg); }
+    .profile-card { display:flex; align-items:center; gap:16px; width:100%; border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); padding:var(--card-padding); margin-bottom:22px; text-align:left; transition:border-color var(--motion-feedback),box-shadow var(--motion-feedback),transform var(--motion-feedback); }
     .profile-card .avatar { width:64px; height:64px; font-size:22px; }
     .profile-card-copy { flex:1; min-width:0; }
     .profile-card-name { display:block; font-size:20px; font-weight:600; letter-spacing:-.5px; line-height:1.3; overflow-wrap:anywhere; }
-    .profile-edit { display:grid; place-items:center; flex:none; width:44px; height:44px; border:1px solid var(--line); border-radius:50%; background:var(--soft); transition:background .18s,color .18s; }
+    .profile-edit { display:grid; place-items:center; flex:none; width:44px; height:44px; border:1px solid var(--line); border-radius:50%; background:var(--soft); transition:background var(--motion-feedback),color var(--motion-feedback),opacity var(--motion-feedback); }
     .profile-edit .icon { width:20px; height:20px; }
-    .profile-card:hover { border-color:var(--muted); }
-    .profile-card:hover .profile-edit { background:var(--ink); color:var(--inverse); }
+    @media(hover:hover) { .profile-card:hover:where(:not(:disabled)) { background:var(--soft); border-color:var(--muted); } }
+    @media(hover:hover) { .profile-card:hover:where(:not(:disabled)) .profile-edit { background:var(--ink); color:var(--inverse); } }
     .profile-card:active { transform:translateY(1px); }
-    .profile-section { margin-top:26px; }
-    .profile-section h2 { margin:0 0 12px; font-size:16px; font-weight:600; letter-spacing:-.2px; }
-    .profile-settings { padding:0 18px; background:var(--bg); border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow-card); }
-    .settings-link,.settings-row { display:flex; align-items:center; gap:14px; min-height:70px; width:100%; padding:14px 0; border:0; border-bottom:1px solid var(--line); background:transparent; text-align:left; font-size:15px; }
+    .profile-section { margin:0 0 var(--section-gap); }
+    .profile-settings { padding:0; }
+    .settings-link,.settings-row { display:flex; align-items:center; gap:14px; min-height:70px; width:100%; padding:14px var(--card-padding); border:0; border-bottom:1px solid var(--line); background:transparent; text-align:left; font-size:15px; }
     .settings-link:last-child,.settings-row:last-child { border-bottom:0; }
     .settings-link>span,.settings-row>span { flex:1; }
     .settings-link>.settings-chevron .icon { width:18px; height:18px; transform:rotate(-90deg); color:var(--muted); }
     .settings-row>[data-icon] .icon,.settings-link>[data-icon]:first-child .icon { width:22px; height:22px; }
-    .settings-switch { position:relative; width:50px; min-width:50px; height:32px; padding:3px; border:1px solid var(--ink); border-radius:99px; background:var(--bg); transition:background var(--motion-overlay),border-color var(--motion-overlay); }
+    .settings-switch { position:relative; width:50px; min-width:50px; height:32px; padding:3px; border:1px solid var(--ink); border-radius:99px; background:var(--bg); transition:background var(--motion-overlay),border-color var(--motion-overlay),opacity var(--motion-feedback); }
     .settings-switch::after { content:''; position:absolute; inset:-6px 0; }
-    .settings-switch>span { display:block; width:24px; height:24px; border-radius:50%; background:var(--ink); transition:transform var(--motion-overlay) var(--ease-out),background var(--motion-overlay); }
+    .settings-switch>span { display:block; width:24px; height:24px; border-radius:50%; background:var(--ink); transition:transform var(--motion-overlay) var(--ease-out),background var(--motion-overlay),opacity var(--motion-feedback); }
     .settings-switch[aria-checked=true] { background:var(--ink); border-color:var(--ink); }
     .settings-switch[aria-checked=true]>span { transform:translateX(18px); background:var(--inverse); }
     .toast { text-align:left; padding:15px 18px; gap:14px; }
@@ -2296,14 +2300,14 @@
     dialog[open].is-closing::backdrop { animation:backdrop-out .2s ease-in forwards; }
     .rest-mini.is-entering { animation:mini-in var(--motion-overlay) var(--ease-out); }
     .rest-mini.is-leaving { animation:mini-out .2s ease-in forwards; pointer-events:none; }
-    .form-field input,.number-ticker,.selection-field { transition:box-shadow .18s,border-color .18s,background .18s,transform .18s; }
+    .form-field input,.number-ticker,.selection-field { transition:box-shadow var(--motion-feedback),border-color var(--motion-feedback),background var(--motion-feedback),transform var(--motion-feedback),opacity var(--motion-feedback); }
     .form-field input:focus { border-color:var(--ink); box-shadow:0 0 0 3px var(--soft); }
-    .set-row { transition:opacity .18s; }
-    .check-box,.check-box>.icon { transition:background .18s,color .18s,opacity .18s; }
+    .set-row { transition:opacity var(--motion-feedback); }
+    .check-box,.check-box>.icon { transition:background var(--motion-feedback),color var(--motion-feedback),opacity var(--motion-feedback); }
     .activity-dock { position:fixed; z-index:40; left:0; right:0; bottom:calc(12px + env(safe-area-inset-bottom,0px)); width:min(560px,calc(100% - 32px)); margin:0 auto; border:1px solid var(--line); border-radius:22px; background:var(--bg); color:var(--ink); box-shadow:var(--shadow-float); overflow:hidden; }
     .active-workout { position:fixed; z-index:25; top:calc(12px + env(safe-area-inset-top,0px)); left:0; right:0; width:min(560px,calc(100% - 32px)); margin:0 auto; border:1px solid var(--line); border-radius:22px; background:var(--bg); box-shadow:var(--shadow-float); }
     #resume-active-workout { display:flex; align-items:center; gap:16px; width:100%; min-height:94px; padding:14px 16px; border:0; border-radius:inherit; background:transparent; text-align:left; }
-    #resume-active-workout:hover { background:var(--soft); }
+    @media(hover:hover) { #resume-active-workout:hover:where(:not(:disabled)) { background:var(--soft); } }
     #resume-active-workout:focus-visible { outline-offset:-4px; }
     .active-workout-copy { display:grid; gap:3px; flex:1; min-width:0; }
     .active-workout-title { font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -2332,7 +2336,7 @@
 
     /* One rotation for expandable sections and calendar controls. */
     details>summary>.icon[data-hugeicon=ArrowDown01Icon],
-    [aria-expanded] .icon[data-hugeicon=ArrowDown01Icon] { transition:transform .2s; transform-origin:center; }
+    [aria-expanded] .icon[data-hugeicon=ArrowDown01Icon] { transition:transform var(--motion-feedback); transform-origin:center; }
     details[open]>summary>.icon[data-hugeicon=ArrowDown01Icon],
     [aria-expanded=true] .icon[data-hugeicon=ArrowDown01Icon] { transform:rotate(180deg); }
     details.is-collapsing>summary>.icon[data-hugeicon=ArrowDown01Icon] { transform:rotate(0); }
@@ -2351,8 +2355,8 @@
     .overview-title h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; }
     .overview-title span { color:var(--muted); font-size:12px; }
     #post-workout .overview-title { align-items:center; flex-wrap:wrap; gap:8px 12px; }
-    #post-workout .overview-title h3 { display:flex; align-items:center; gap:8px; }
-    #post-workout .overview-title h3>.icon { width:21px; height:21px; flex:none; }
+    .overview-title h3 { display:flex; align-items:center; gap:8px; }
+    .overview-title h3>.icon { width:21px; height:21px; flex:none; }
     .post-notes { border-top:1px solid var(--line); padding-top:20px; margin-top:24px; }
     .post-notes h3 { font-size:14px; font-weight:550; margin-bottom:8px; }
     .post-notes p { color:var(--muted); white-space:pre-wrap; font-size:14px; overflow-wrap:anywhere; }
@@ -2391,7 +2395,7 @@
     /* History: the same list without its own card, since it already lives inside a record card. */
     .overview-list.is-compact { --row-x:0px; --row-y:13px; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; box-shadow:none; overflow:visible; }
     .overview-list.is-compact .overview-group { --row-x:14px; --row-y:12px; margin:10px 0; }
-    .overview-list.is-compact>.overview-entry>summary.overview-item:hover { background:transparent; }
+    @media(hover:hover) { .overview-list.is-compact>.overview-entry>summary.overview-item:hover:where(:not(:disabled)) { background:transparent; } }
     #exercise-picker-list .overview-entry+.overview-entry { border-top:0; }
 
     /* Pre-workout without the completion stat: two values share the strip. */
@@ -2401,8 +2405,8 @@
     .post-actions .button.danger { margin-top:2px; }
 
     /* History: each record is a row that opens its post-workout page. */
-    .history-record { display:grid; grid-template-columns:36px minmax(0,1fr) 18px; align-items:center; gap:12px; width:100%; min-height:72px; margin:0 0 12px; padding:14px 14px 14px 12px; border:1px solid var(--line); border-radius:16px; background:var(--bg); box-shadow:var(--shadow-card); text-align:left; cursor:pointer; transition:background .18s; }
-    .history-record:hover { background:var(--soft); }
+    .history-record { display:grid; grid-template-columns:36px minmax(0,1fr) 18px; align-items:center; gap:12px; width:100%; min-height:72px; margin:0 0 12px; padding:14px 14px 14px 12px; border:1px solid var(--line); border-radius:16px; background:var(--bg); box-shadow:var(--shadow-card); text-align:left; cursor:pointer; transition:background var(--motion-feedback),opacity var(--motion-feedback); }
+    @media(hover:hover) { .history-record:hover:where(:not(:disabled)) { background:var(--soft); } }
     .history-record:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
     .history-record .history-kind { align-self:center; height:36px; }
     .history-record .history-session strong { display:block; font-size:17px; line-height:1.3; font-weight:600; letter-spacing:-.3px; overflow-wrap:anywhere; }
@@ -2423,8 +2427,8 @@
     .interval-sequence strong { display:block; font-size:16px; line-height:1.35; font-weight:550; overflow-wrap:anywhere; }
     .interval-sequence .cardio-spec { margin-top:4px; font-size:14px; }
     .interval-rounds { display:flex; flex-wrap:wrap; gap:8px; padding:14px 16px 16px; border-top:1px solid var(--line); }
-    .interval-round { width:44px; height:44px; padding:0; border:1px solid var(--line); border-radius:12px; background:var(--bg); color:var(--muted); font-size:15px; font-weight:600; font-variant-numeric:tabular-nums; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:background .18s,border-color .18s,color .18s; }
-    .interval-round:hover { background:var(--soft); }
+    .interval-round { width:44px; height:44px; padding:0; border:1px solid var(--line); border-radius:12px; background:var(--bg); color:var(--muted); font-size:15px; font-weight:600; font-variant-numeric:tabular-nums; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:background var(--motion-feedback),border-color var(--motion-feedback),color var(--motion-feedback),opacity var(--motion-feedback); }
+    @media(hover:hover) { .interval-round:hover:where(:not(:disabled)) { background:var(--soft); } }
     .interval-round[aria-pressed=true] { background:var(--ink); border-color:var(--ink); color:var(--inverse); }
     .interval-round:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
     .interval-round:disabled { cursor:default; }
@@ -2437,12 +2441,12 @@
     @media print { .page-toolbar { display:none!important; } }
 
     /* Shadcn-inspired chart surfaces, keeping the app's monochrome palette. */
-    #evolution-page { --chart-ink:#71717a; --chart-bar-ink:#27272a; --chart-border:#e4e4e7; --chart-grid:#f0f0f2; --chart-muted:#71717a; --chart-fill-top:.2; }
-    :root[data-theme=dark] #evolution-page { --chart-ink:#a1a1aa; --chart-bar-ink:#e4e4e7; --chart-border:#27272a; --chart-grid:#242427; --chart-muted:#a1a1aa; --chart-fill-top:.24; }
+    #evolution-page { --chart-ink:#71717a; --chart-bar-ink:#27272a; --chart-border:#e4e4e7; --chart-grid:#f0f0f2; --chart-muted:#71717a; --chart-fill-top:.88; --chart-fill-middle:.3; }
+    :root[data-theme=dark] #evolution-page { --chart-ink:#a1a1aa; --chart-bar-ink:#e4e4e7; --chart-border:#27272a; --chart-grid:#242427; --chart-muted:#a1a1aa; --chart-fill-top:.88; --chart-fill-middle:.32; }
     .evo-chart[data-chart-type=bar] { --chart-ink:var(--chart-bar-ink); }
     .evo-kinds { position:relative; display:flex; gap:4px; padding:4px; margin-bottom:16px; border:1px solid var(--line); border-radius:var(--control-radius); background:var(--bg); }
     .evo-kinds::before { content:''; position:absolute; left:4px; top:4px; bottom:4px; width:calc((100% - 16px) / 3); border-radius:10px; background:var(--ink); transform:translateX(calc(var(--evo-kind-position,0) * (100% + 4px))); transition:transform .24s var(--ease-out); pointer-events:none; }
-    .evo-kinds button { position:relative; z-index:1; display:inline-flex; flex:1; min-width:0; align-items:center; justify-content:center; gap:7px; min-height:var(--control-height-compact); padding:8px; border:0; border-radius:10px; background:transparent; font-size:var(--control-font-size-compact); color:var(--muted); transition:color .18s,transform .18s; }
+    .evo-kinds button { position:relative; z-index:1; display:inline-flex; flex:1; min-width:0; align-items:center; justify-content:center; gap:7px; min-height:var(--control-height-compact); padding:8px; border:0; border-radius:10px; background:transparent; font-size:var(--control-font-size-compact); color:var(--muted); transition:color var(--motion-feedback),transform var(--motion-feedback); }
     .evo-kinds button[aria-pressed=true] { color:var(--inverse); }
     .evo-kinds button:active { transform:scale(.97); }
     .evo-kinds .icon { width:18px; height:18px; }
@@ -2451,7 +2455,7 @@
     .evo-range-caption>span { padding:8px 0; }
     .evo-text-button { display:inline-flex; justify-content:center; align-items:center; gap:6px; min-height:var(--control-height-compact); padding:8px 0; border:0; border-radius:8px; background:transparent; color:var(--ink); font-size:var(--control-font-size-compact); font-weight:500; text-decoration:none; }
     .evo-text-button .icon { width:16px; height:16px; }
-    .evo-text-button:hover { text-decoration:underline; text-underline-offset:3px; }
+    @media(hover:hover) { .evo-text-button:hover:where(:not(:disabled)) { text-decoration:underline; text-underline-offset:3px; } }
     .evo-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0; margin:0 0 20px; border:1px solid var(--line); border-radius:var(--card-radius); overflow:hidden; background:var(--bg); box-shadow:var(--shadow-card); }
     .evo-stat { display:flex; flex-direction:column; min-width:0; padding:18px 20px; }
     .evo-stat:nth-child(odd) { border-right:1px solid var(--line); }
@@ -2487,6 +2491,7 @@
     .evo-area { opacity:1; }
     .evo-area-stop { stop-color:var(--chart-ink); }
     .evo-area-stop.is-top { stop-opacity:var(--chart-fill-top); }
+    .evo-area-stop.is-middle { stop-opacity:var(--chart-fill-middle); }
     .evo-area-stop.is-bottom { stop-opacity:0; }
     .evo-bar { fill:var(--chart-ink); }
     .evo-line { fill:none; stroke:var(--chart-ink); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
@@ -2496,15 +2501,15 @@
     @keyframes chart-line-in { from { stroke-dashoffset:1; } to { stroke-dashoffset:0; } }
     @keyframes chart-bar-in { from { transform:scaleY(0); } to { transform:scaleY(1); } }
     @keyframes chart-area-in { from { opacity:0; } to { opacity:1; } }
-    .evo-mark { opacity:.75; transition:opacity .18s; }
+    .evo-mark { opacity:.75; transition:opacity var(--motion-feedback); }
     .evo-plot-wrap.is-inspecting .evo-mark.is-active { opacity:.95; }
     .evo-bar { opacity:.55; }
     .evo-bar.is-active,.evo-plot-wrap.is-inspecting .evo-bar.is-active { opacity:1; }
     circle.evo-mark { fill:var(--chart-ink); stroke:var(--bg); stroke-width:1.5; opacity:0; }
     circle.evo-mark.is-single { opacity:.85; }
     .evo-plot-wrap.is-inspecting circle.evo-mark.is-active { opacity:1; }
-    .evo-guide { stroke:var(--chart-ink); opacity:0; stroke-width:.8; stroke-dasharray:3 5; pointer-events:none; transition:opacity .18s; }
-    .evo-focus-halo { fill:var(--chart-ink); opacity:0; pointer-events:none; transition:opacity .18s; }
+    .evo-guide { stroke:var(--chart-ink); opacity:0; stroke-width:.8; stroke-dasharray:3 5; pointer-events:none; transition:opacity var(--motion-feedback); }
+    .evo-focus-halo { fill:var(--chart-ink); opacity:0; pointer-events:none; transition:opacity var(--motion-feedback); }
     .evo-plot-wrap.is-inspecting .evo-guide { opacity:.18; }
     .evo-plot-wrap.is-inspecting .evo-focus-halo { opacity:.06; }
     .evo-tooltip { position:absolute; z-index:2; width:max-content; max-width:calc(100% - 16px); min-width:124px; padding:10px 12px; border:1px solid var(--chart-border); border-radius:10px; background:var(--bg); box-shadow:0 4px 16px rgb(0 0 0 / .09); pointer-events:none; opacity:0; visibility:hidden; transition:opacity .12s; font-size:11px; line-height:1.5; }
@@ -2516,8 +2521,8 @@
     .evo-chart-footer { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; min-height:48px; margin-top:6px; font-size:11px; color:var(--chart-muted); }
     .evo-chart-legend { display:inline-flex; align-items:center; gap:7px; }
     .evo-chart-swatch { flex:none; display:inline-block; width:8px; height:8px; border-radius:2px; background:var(--chart-ink); }
-    .evo-chart .evo-data { border-color:var(--chart-border); }
-    .evo-chart .evo-data>summary { color:var(--chart-muted); }
+    .evo-chart .evo-data { margin-top:8px; border-color:var(--chart-border); }
+    .evo-chart .evo-data>summary { min-height:var(--control-height); padding:12px; color:var(--chart-muted); font-size:var(--control-font-size-compact); line-height:1.5; }
     .evo-data { margin-top:2px; border-top:1px solid var(--line); overflow:hidden; }
     .evo-data>summary { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:44px; list-style:none; cursor:pointer; color:var(--muted); font-size:12px; font-weight:500; }
     .evo-data>summary::-webkit-details-marker { display:none; }
@@ -2528,7 +2533,14 @@
     .evo-data th { color:var(--muted); font-weight:500; background:var(--bg); position:sticky; top:0; }
     .evo-data td,.evo-data th { padding:10px 0; border-bottom:1px solid var(--line); text-align:left; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
     .evo-data td:last-child,.evo-data th:last-child { text-align:right; padding-left:12px; }
-    .evo-data td .evo-text-button { padding:0; text-align:left; justify-content:flex-start; }
+    .evo-chart .evo-data table { table-layout:fixed; }
+    .evo-chart .evo-data td,.evo-chart .evo-data th { height:var(--control-height); padding:12px; vertical-align:middle; line-height:1.5; }
+    .evo-chart .evo-data th:first-child { width:60%; }
+    .evo-chart .evo-data td:first-child { padding:0; }
+    .evo-data-date { display:flex; align-items:center; width:100%; min-height:var(--control-height); margin:0; padding:12px; border:0; border-radius:8px; background:transparent; color:inherit; font:inherit; text-align:left; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+    .evo-data-link:focus-visible { outline-offset:-4px; }
+    .evo-data-link:active { background:var(--soft); }
+    @media(hover:hover) { .evo-data-link:hover { background:var(--soft); text-decoration:underline; text-underline-offset:3px; } }
     .evo-note { margin:12px 0 0; color:var(--muted); font-size:12px; line-height:1.6; }
     .empty-state { display:flex; flex-direction:column; align-items:center; width:100%; min-width:0; text-align:center; padding:28px var(--card-padding); border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); }
     .empty-state>.icon { width:32px; height:32px; color:var(--muted); margin-bottom:16px; }
@@ -2543,7 +2555,7 @@
     .evo-pr-card h3>.icon { width:20px; height:20px; flex:none; }
     .evo-pr-card h3>span { min-width:0; }
     .evo-pr-row { display:flex; justify-content:space-between; gap:14px; align-items:center; width:100%; padding:20px; border:0; border-top:1px solid var(--line); background:transparent; text-align:left; color:var(--ink); }
-    .evo-pr-row:hover { background:var(--soft); }
+    @media(hover:hover) { .evo-pr-row:hover:where(:not(:disabled)) { background:var(--soft); } }
     .evo-pr-copy { min-width:0; display:flex; flex-direction:column; gap:6px; }
     .evo-pr-copy>span:first-child { color:var(--muted); font-size:12px; }
     .evo-pr-copy strong { font-size:27px; line-height:1.3; letter-spacing:-.5px; font-weight:550; overflow-wrap:anywhere; }
@@ -2552,7 +2564,7 @@
     .evo-pr-delta { font-size:11px; color:var(--ink); }
     .evo-pr-row>.icon { flex:none; color:var(--muted); width:18px; height:18px; }
     .evo-record-highlights { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:0 0 24px; }
-    .evo-highlight { display:grid; grid-template-columns:28px minmax(0,1fr); grid-template-rows:minmax(34px,auto) auto 1fr auto; align-items:start; gap:8px; min-width:0; padding:16px; border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); text-align:left; color:var(--ink); transition:background .18s,border-color .18s,transform .18s; }
+    .evo-highlight { display:grid; grid-template-columns:28px minmax(0,1fr); grid-template-rows:minmax(34px,auto) auto 1fr auto; align-items:start; gap:8px; min-width:0; padding:16px; border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); text-align:left; color:var(--ink); transition:background var(--motion-feedback),border-color var(--motion-feedback),transform var(--motion-feedback),opacity var(--motion-feedback); }
     .evo-highlight-icon { display:grid; place-items:center; width:28px; height:28px; border-radius:9px; background:var(--soft); color:var(--muted); }
     .evo-highlight-icon>.icon { width:20px; height:20px; }
     .evo-highlight-label { align-self:center; font-size:12px; color:var(--muted); line-height:1.4; }
@@ -2561,17 +2573,23 @@
     .evo-highlight-value>small { color:var(--muted); font-size:12px; letter-spacing:0; font-weight:400; }
     .evo-highlight-context { min-width:0; font-size:12px; line-height:1.5; overflow-wrap:anywhere; }
     .evo-highlight-date { margin-top:auto; font-size:11px; line-height:1.5; color:var(--muted); overflow-wrap:anywhere; }
-    .evo-highlight:hover { background:var(--soft); border-color:var(--chart-border); }
+    @media(hover:hover) { .evo-highlight:hover:where(:not(:disabled)) { background:var(--soft); border-color:var(--chart-border); } }
     .evo-highlight:active { transform:translateY(1px); }
     .evo-highlight:focus-visible { outline:2px solid var(--ink); outline-offset:3px; }
-    .evo-record-browser { padding:var(--card-padding); margin-bottom:16px; border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); }
-    .evo-record-browser .evo-record-search { margin:0; }
+    .evo-record-browser { padding:0; margin-bottom:16px; border:1px solid var(--line); border-radius:var(--card-radius); overflow:hidden; background:var(--bg); box-shadow:var(--shadow-card); }
+    .evo-record-tools { padding:var(--card-padding); }
+    .evo-record-tools h2 { font-size:16px; line-height:1.4; font-weight:600; }
+    .evo-record-browser .evo-record-search { margin:16px 0 0; }
+    .evo-record-browser .evo-record-card { margin:0; border:0; border-top:1px solid var(--line); border-radius:0; box-shadow:none; }
+    .evo-record-browser .evo-record-summary { min-height:76px; padding:14px var(--card-padding); }
+    .evo-record-browser .evo-record-pagination { margin:0; padding:16px var(--card-padding); border-top:1px solid var(--line); }
+    .evo-record-browser .empty-state { border:0; border-top:1px solid var(--line); border-radius:0; box-shadow:none; }
+    .evo-record-tools[hidden]~#evo-record-results .empty-state { border-top:0; }
     .evo-record-search { margin:0 0 12px; }
-    .evo-record-count { margin:0 0 16px; color:var(--muted); font-size:12px; line-height:1.5; }
     .evo-record-card { margin-bottom:12px; }
     .evo-record-summary { display:grid; grid-template-columns:minmax(0,1fr) auto 18px; align-items:center; gap:12px; min-height:88px; padding:16px; list-style:none; cursor:pointer; }
     .evo-record-summary::-webkit-details-marker { display:none; }
-    .evo-record-summary:hover { background:var(--soft); }
+    @media(hover:hover) { .evo-record-summary:hover:where(:not(:disabled)) { background:var(--soft); } }
     .evo-record-summary:focus-visible { outline:2px solid var(--ink); outline-offset:-3px; }
     .evo-record-name,.evo-record-best { display:grid; gap:5px; min-width:0; overflow-wrap:anywhere; }
     .evo-record-name>strong { font-size:14px; line-height:1.4; font-weight:600; }
@@ -2585,11 +2603,9 @@
     .evo-record-details .evo-pr-copy strong { font-size:18px; letter-spacing:0; }
     .evo-record-pagination { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:16px; }
     .evo-record-pagination>span { color:var(--muted); font-size:12px; }
-    .day,.selection-option,.calendar-day,.calendar-month-options button,.settings-link,.workout-row,.history-record,.managed-workout-main,.interval-round,.evo-pr-row,.evo-record-summary,.evo-text-button { transition:background .18s,border-color .18s,color .18s,box-shadow .18s,transform .18s; }
-    :where(.day,.selection-option,.calendar-day,.calendar-month-options button,.settings-link,.workout-row,.history-record,.managed-workout-main,.interval-round,.number-ticker,.selection-field,.evo-pr-row,.evo-record-summary,.evo-text-button):active:not(:disabled) { transform:translateY(1px); }
-    .settings-link:hover,.managed-workout-main:hover { background:var(--soft); }
-    .settings-link>.settings-chevron .icon { transition:transform .18s; }
-    .settings-link:hover>.settings-chevron .icon { transform:translateX(2px) rotate(-90deg); }
+    .day,.selection-option,.calendar-day,.calendar-month-options button,.settings-link,.workout-row,.history-record,.interval-round,.evo-pr-row,.evo-record-summary,.evo-text-button { transition:background var(--motion-feedback),border-color var(--motion-feedback),color var(--motion-feedback),box-shadow var(--motion-feedback),transform var(--motion-feedback),opacity var(--motion-feedback); }
+    :where(.day,.selection-option,.calendar-day,.calendar-month-options button,.workout-row,.interval-round,.number-ticker,.selection-field,.evo-text-button):active:not(:disabled) { transform:translateY(1px); }
+    @media(hover:hover) { .settings-link:hover:where(:not(:disabled)) { background:var(--soft); } }
     .post-pr-list { padding:4px var(--row-x) var(--row-y); }
     .post-pr-item { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 0; border-bottom:1px solid var(--line); }
     .post-pr-item>span { min-width:0; }
@@ -2616,9 +2632,82 @@
       .evo-record-highlights { gap:10px; }
       .evo-highlight { padding:14px; }
       .evo-highlight-value { font-size:24px; }
-      .evo-record-browser { padding:16px; }
+      .evo-record-tools { padding:16px; }
+      .evo-record-browser .evo-record-summary,.evo-record-browser .evo-record-pagination { padding-left:16px; padding-right:16px; }
     }
 
+    /* Shared composition: page heading, then cards with their own section heading. */
+    .header h1,.summary-heading h2,.post-heading h2 { font-size:var(--page-title-size); line-height:1.2; font-weight:600; letter-spacing:-.8px; }
+    .section-card { min-width:0; margin:0 0 var(--section-gap); border:1px solid var(--line); border-radius:var(--card-radius); background:var(--bg); box-shadow:var(--shadow-card); overflow:hidden; }
+    .section-card-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 12px; min-width:0; margin:0; padding:var(--card-padding); border-bottom:1px solid var(--line); }
+    .section-card-heading h2,.section-card-heading h3 { min-width:0; margin:0; font-size:var(--section-title-size); line-height:1.4; font-weight:600; letter-spacing:-.2px; overflow-wrap:anywhere; }
+    .section-card>.overview-title { margin:0; align-items:center; }
+    .section-card>.overview-list { border:0; border-radius:0; box-shadow:none; --row-x:var(--card-padding); --row-y:16px; }
+    .overview-section,.post-prs { margin-top:var(--section-gap); }
+    .post-notes { margin-top:var(--section-gap); padding:0; }
+    .post-notes>p { padding:var(--card-padding); }
+    .post-empty { margin:0; padding:var(--card-padding); border-radius:0; background:transparent; }
+    .profile-card { margin-bottom:var(--section-gap); }
+    .profile-card { transition:background var(--motion-feedback),border-color var(--motion-feedback),box-shadow var(--motion-feedback),opacity var(--motion-feedback),transform var(--motion-feedback); }
+    .profile-card:active:not(:disabled) { background:var(--soft); }
+    .settings-link,.settings-row { border-radius:0; }
+    .manager-empty { margin-bottom:var(--section-gap); }
+    .week-panel,.exercise,.focus-exercise,.interval-card,.stat-strip,.overview-list { border-radius:var(--card-radius); }
+    .managed-day>.managed-day-heading { padding:12px var(--card-padding); }
+    .managed-day>.managed-workout { margin:0; padding:10px var(--card-padding); border:0; border-radius:0; box-shadow:none; }
+    .managed-day>.managed-workout+.managed-workout { border-top:1px solid var(--line); }
+    .managed-day .managed-workout-main { padding:8px 0; }
+    #manager-dialog .managed-empty { padding:var(--card-padding); }
+    #history-dialog>.dialog-body { padding:0; }
+    .history-calendar-card { padding:var(--card-padding); }
+    .history-calendar-card .calendar-footer { margin-bottom:0; }
+    .history-actions { border:0; padding:0; margin:0; }
+    .history-day-card .history-record { min-height:72px; margin:0; padding:14px var(--card-padding); border:0; border-radius:0; box-shadow:none; }
+    .history-day-card .history-record+.history-record { border-top:1px solid var(--line); }
+    .history-day-card .history-session strong { font-size:15px; font-weight:550; letter-spacing:0; }
+    .history-day-card .history-session small { font-size:13px; }
+    .history-day-card .calendar-empty { margin:0; padding:var(--card-padding); font-size:14px; }
+    .post-pr-list { padding:0; }
+    .post-pr-item,.post-pr-item:last-child { padding:14px var(--card-padding); border:0; }
+    .post-pr-item+.post-pr-item,.post-pr-more.evo-data,.post-pr-more>div { border-top:1px solid var(--line); }
+    .post-pr-more>summary { min-height:var(--control-height); padding:12px var(--card-padding); }
+    .evo-record-details .evo-pr-row { padding:14px var(--card-padding); }
+    .evo-record-tools h2,.evo-card h2 { font-size:var(--section-title-size); }
+    #timer-dialog .rest-duration-field { margin-top:0; }
+    #backup-dialog .backup-actions { margin:0; }
+    .form-field input,.form-field select,.form-field textarea,.number-ticker,.selection-field { border-radius:var(--control-radius); }
+    .number-ticker,.selection-field { min-height:var(--control-height); background:var(--bg); }
+    .selection-field.compact { min-height:var(--control-height-compact); border-radius:var(--control-radius-compact); }
+    .calendar-month-toggle { border-radius:var(--control-radius-compact); }
+    .toast-dismiss { flex-basis:44px; width:44px; height:44px; }
+
+    /* Whole-row feedback stays within the card; only standalone controls move on press. */
+    button,a[href],summary,input,select,textarea,.check-box,.profile-edit { transition-property:background-color,border-color,color,opacity,box-shadow,transform; transition-duration:var(--motion-feedback); transition-timing-function:var(--ease-out); }
+    .settings-link:active:not(:disabled),button.overview-item:active:not(:disabled),summary.overview-item:active,.history-record:active:not(:disabled),.evo-pr-row:active:not(:disabled),.evo-record-summary:active,.post-pr-more>summary:active { background:var(--soft); transform:none; }
+    #rest-expand:active:not(:disabled),#resume-active-workout:active:not(:disabled) { background:var(--soft); }
+    .settings-link:focus-visible,.history-record:focus-visible,.evo-pr-row:focus-visible,.overview-item:focus-visible,.evo-data>summary:focus-visible { outline-offset:-4px; }
+    .calendar-month-toggle:active:not(:disabled),.calendar-today:active:not(:disabled),.drag-handle:active,.toast-dismiss:active,.home-profile:active { background:var(--soft); }
+    .number-ticker:active:not(:disabled),.selection-field:active:not(:disabled) { border-color:var(--muted); }
+    .disclosure>summary { padding:12px; border-radius:var(--control-radius-compact); }
+    .evo-data>summary { transition:background-color var(--motion-feedback) var(--ease-out),color var(--motion-feedback) var(--ease-out),opacity var(--motion-feedback); }
+    .evo-data:not(.post-pr-more)>summary { border-radius:8px; }
+    .evo-data>summary:active,.disclosure>summary:active { background:var(--soft); }
+    .focus-dot { min-height:var(--control-height-compact); padding-top:20px; padding-bottom:20px; }
+    .focus-dot::after,.weekly-progress>span,.progress-line>span { transition:background-color var(--motion-feedback) var(--ease-out),width var(--motion-page) var(--ease-out),opacity var(--motion-feedback); }
+    .check-box,.check-box>.icon,.switch>span,.switch>span::after { transition:background-color var(--motion-feedback) var(--ease-out),border-color var(--motion-feedback) var(--ease-out),color var(--motion-feedback) var(--ease-out),opacity var(--motion-feedback) var(--ease-out),transform var(--motion-feedback) var(--ease-out); }
+    details>summary>.icon[data-hugeicon=ArrowDown01Icon],.evo-data>summary .icon,.evo-record-summary>.icon { transition:transform var(--motion-disclosure) ease-in-out; }
+    button:disabled { transform:none; }
+    .content-entering { animation:content-in var(--motion-feedback) var(--ease-out) both; }
+    @keyframes content-in { from { opacity:.35; } to { opacity:1; } }
+    @media(hover:hover) {
+      .calendar-month-toggle:hover:not(:disabled),.calendar-today:hover:not(:disabled),.drag-handle:hover,.toast-dismiss:hover,.home-profile:hover,.evo-data>summary:hover,.disclosure>summary:hover,.button.ghost:hover:not(:disabled) { background:var(--soft); }
+      .number-ticker:hover:not(:disabled),.selection-field:hover:not(:disabled) { border-color:var(--muted); }
+      .focus-dot:hover { background:var(--soft); }
+      .speed-mode button:not([aria-pressed=true]):hover { background:var(--soft); }
+    }
+    @media(max-width:380px) { :root { --card-padding:16px; } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+    @media print { .section-card { box-shadow:none; } }
   </style>
 </head>
 
@@ -2637,6 +2726,7 @@
 <section id="manager-dialog" class="app-page" data-page="workouts" aria-labelledby="manager-title" hidden><h2 id="manager-title" class="sr-only">Treinos</h2>    <div class="dialog-body"><div id="managed-workouts"></div><button class="button primary full" id="new-workout">Novo treino</button></div>
   </section>
 <section id="history-dialog" class="app-page" data-page="history" aria-labelledby="history-title" hidden><h2 id="history-title" class="sr-only">Histórico</h2>    <div class="dialog-body">
+      <section class="section-card history-calendar-card" aria-label="Calendário de treinos">
       <div class="calendar-toolbar"><button class="icon-button calendar-prev" id="history-prev"
           aria-label="Mês anterior"><i data-icon="chevron"></i></button><button class="calendar-month-toggle"
           id="history-month-toggle" aria-expanded="false" aria-controls="history-month-picker"><span
@@ -2655,8 +2745,11 @@
         <p class="history-count" id="history-count" role="status"></p><button class="calendar-today"
           id="history-today">Hoje</button>
       </div>
-      <h3 class="history-day-heading" id="history-date-title" aria-live="polite"></h3>
+      </section>
+      <section class="section-card history-day-card" aria-labelledby="history-date-title">
+      <div class="section-card-heading"><h3 id="history-date-title" aria-live="polite"></h3></div>
       <div id="history-list"></div>
+      </section>
       <div class="history-actions"><button class="button danger secondary full" id="clear-history"><i data-icon="trash"></i>Apagar histórico</button></div>
     </div>
   </section>
@@ -2685,11 +2778,11 @@
 <section id="evolution-page" class="app-page" data-page="progress" aria-label="Evolução" hidden></section>
 <section id="profile-page" class="app-page" data-page="profile" aria-label="Perfil" hidden>
   <button type="button" class="profile-card" id="profile-open" aria-label="Editar perfil" aria-haspopup="dialog" aria-controls="profile-dialog"><span class="avatar" id="profile-avatar" aria-hidden="true"><i data-icon="profile"></i></span><span class="profile-card-copy"><span class="profile-card-name" id="profile-name">Seu perfil</span></span><span class="profile-edit" aria-hidden="true"><i data-icon="edit"></i></span></button>
-  <section class="profile-section" aria-labelledby="profile-evolution-title"><h2 id="profile-evolution-title">Evolução</h2><div class="profile-settings">
+  <section class="section-card profile-section" aria-labelledby="profile-evolution-title"><div class="section-card-heading"><h2 id="profile-evolution-title">Evolução</h2></div><div class="profile-settings">
     <button type="button" class="settings-link" id="evolution-overview-open" data-open-evolution="overview"><i data-icon="progress"></i><span>Visão geral</span><i data-icon="chevron" class="settings-chevron"></i></button>
     <button type="button" class="settings-link" id="evolution-records-open" data-open-evolution="records"><i data-icon="award"></i><span>Recordes pessoais</span><i data-icon="chevron" class="settings-chevron"></i></button>
   </div></section>
-  <section class="profile-section" aria-labelledby="profile-settings-title"><h2 id="profile-settings-title">Configuração</h2>
+  <section class="section-card profile-section" aria-labelledby="profile-settings-title"><div class="section-card-heading"><h2 id="profile-settings-title">Configuração</h2></div>
   <div class="profile-settings"><button type="button" class="settings-link" id="rest-settings-open"><i data-icon="timer"></i><span>Temporizador</span><i data-icon="chevron" class="settings-chevron"></i></button><button type="button" class="settings-link" id="backup-open"><i data-icon="download"></i><span>Backup</span><i data-icon="chevron" class="settings-chevron"></i></button><div class="settings-row"><i data-icon="moon"></i><span>Tema escuro</span><button type="button" id="theme-toggle" class="settings-switch" role="switch" aria-label="Tema escuro" aria-checked="false"><span></span></button></div></div>
   </section>
 </section>
@@ -4228,7 +4321,7 @@
         return renderOverviewBlocks(workout, (ex, number) => exerciseEntry(ex, number, session, options));
       }
       function overviewHeading(title, detail = '', symbol = '') {
-        return `<div class="overview-title"><h3>${symbol ? icon(symbol) : ''}${esc(title)}</h3>${detail ? `<span>${esc(detail)}</span>` : ''}</div>`;
+        return `<div class="section-card-heading overview-title"><h3>${symbol ? icon(symbol) : ''}${esc(title)}</h3>${detail ? `<span>${esc(detail)}</span>` : ''}</div>`;
       }
       function overviewTitle(workout, session, count = false, withIcon = false) {
         const strength = workout.kind === 'strength', performed = workout.exercises.filter(ex => exerciseStatus(ex, session).done > 0).length;
@@ -4252,7 +4345,7 @@
             { value:String(workout.exercises.length), label:strength ? 'exercícios' : 'etapas' },
             { value:String(strength ? progress.total : TrainingConfig.blocks(workout).length), label:strength ? 'séries' : 'blocos' }
           ],'summary-stats','Visão geral do treino')}
-          <button type="button" class="button primary summary-start" data-start-session ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}${overviewTitle(workout,session,sessionHasProgress(session))}<div class="overview-list">${overviewRows(workout,session)}</div>`;
+          <button type="button" class="button primary summary-start" data-start-session ${blocked ? 'disabled aria-describedby="start-blocked"' : ''}>${currentDraft() ? 'Retomar treino' : 'Iniciar treino'}</button>${cancelWorkoutButton(currentDraft(), 'summary-cancel')}${blocked ? `<p class="form-hint" id="start-blocked">Conclua ou cancele ${esc(running.workout.title)} para iniciar outro treino.</p>` : ''}<section class="section-card overview-section" aria-label="${strength ? 'Exercícios' : 'Etapas'}">${overviewTitle(workout,session,sessionHasProgress(session))}<div class="overview-list">${overviewRows(workout,session)}</div></section>`;
       }
       function sessionProgress() {
         return `<section class="session-progress" aria-label="Progresso do treino"><div class="progress-label"><span>Progresso do treino</span><span id="progress-label"></span></div><div class="progress-line" role="progressbar" id="workout-progress" aria-label="Progresso do treino"><span id="progress-fill"></span></div></section>`;
@@ -4318,9 +4411,9 @@
           ${renderSummaryMetrics(summary)}
           <div class="post-actions"><button type="button" class="button primary full" data-share-record="${esc(session.key)}">${icon('share')}Compartilhar treino</button><button type="button" class="button danger secondary full" data-delete-record="${esc(session.key)}">${icon('trash')}Excluir registro</button></div>
           ${renderWorkoutPRs(session.key)}
-          ${overviewTitle(session.workout,session,false,true)}
+          <section class="section-card overview-section" aria-label="${strength ? 'Exercícios realizados' : 'Etapas realizadas'}">${overviewTitle(session.workout,session)}
           ${summary.exercises.length ? `<div class="overview-list">${exerciseOverview(session.workout,session,{ progress:true, settled:true, details:true })}</div>` : `<p class="post-empty">${strength ? 'Nenhuma série foi marcada como realizada neste treino.' : 'Nenhuma etapa foi marcada como realizada. Os totais informados estão no resumo acima.'}</p>`}
-          ${session.notes ? `<section class="post-notes"><h3>Suas observações</h3><p>${esc(session.notes)}</p></section>` : ''}`;
+          </section>${session.notes ? `<section class="section-card post-notes"><div class="section-card-heading"><h3>Observações</h3></div><p>${esc(session.notes)}</p></section>` : ''}`;
         fitStatStrips($('post-workout'));
       }
       let statStripWidth = window.innerWidth;
@@ -4600,7 +4693,7 @@
           const root=$('evolution-page'),minHeight=root.style.minHeight;
           root.style.minHeight=root.offsetHeight+'px';
           renderEvolution();
-          enterView($(evolutionState.tab==='records'?'evo-record-results':'evo-panel'));
+          enterView($(evolutionState.tab==='records'?'evo-record-results':'evo-panel'),'content');
           root.style.minHeight=minHeight;
           if(focusId)$(focusId)?.focus({preventScroll:true});
           window.scrollTo({top:scrollTop,behavior:'instant'});
@@ -4634,7 +4727,7 @@
         if(root.dataset.evolutionTab!==evolutionState.tab||!$('evo-panel')) {
           root.dataset.evolutionTab=evolutionState.tab;
           const kinds=`<div class="evo-kinds" role="group" aria-label="Modalidade">${[['all','Todos'],['strength','Força'],['cardio','Corrida']].map(([value,label])=>`<button type="button" id="evo-kind-${value}" data-evo-kind="${value}" aria-pressed="false">${value==='all'?'':icon(value==='strength'?'dumbbell':'run')}${label}</button>`).join('')}</div>`;
-          root.innerHTML=records?`<div id="evo-panel"><section class="evo-record-highlights" id="evo-record-highlights" aria-label="Recordes em destaque"></section><div class="evo-record-browser" id="evo-record-browser"><label class="form-field evo-record-search" for="evo-record-search">Buscar outros recordes<input type="search" id="evo-record-search" placeholder="Exercício, modalidade ou recorde" maxlength="120" autocomplete="off" spellcheck="false" aria-controls="evo-record-results" value="${esc(evolutionState.recordsQuery)}"></label></div><p class="evo-record-count" id="evo-record-count" role="status" aria-live="polite" aria-atomic="true" hidden></p><div id="evo-record-results"></div></div>`:`<div class="evo-filters">${kinds}<div class="form-field evo-period-field"><span id="evo-period-label">Período</span><button type="button" class="selection-field" id="evo-period" aria-labelledby="evo-period-label evo-period" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="evo-range-caption"><span id="evo-range-caption"></span></div></div><div id="evo-panel"></div>`;
+          root.innerHTML=records?`<div id="evo-panel"><section class="evo-record-highlights" id="evo-record-highlights" aria-label="Recordes em destaque"></section><section class="evo-record-browser" id="evo-record-browser" aria-label="Outros recordes"><div class="evo-record-tools" id="evo-record-tools"><h2>Outros recordes</h2><label class="form-field evo-record-search" for="evo-record-search">Buscar exercício ou modalidade<input type="search" id="evo-record-search" placeholder="Ex.: supino ou corrida" maxlength="120" autocomplete="off" spellcheck="false" aria-controls="evo-record-results" value="${esc(evolutionState.recordsQuery)}"></label></div><div id="evo-record-results" role="region" aria-label="Lista de recordes"></div></section></div>`:`<div class="evo-filters">${kinds}<div class="form-field evo-period-field"><span id="evo-period-label">Período</span><button type="button" class="selection-field" id="evo-period" aria-labelledby="evo-period-label evo-period" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="evo-range-caption"><span id="evo-range-caption"></span></div></div><div id="evo-panel"></div>`;
         }
         if(records)return;
         root.querySelector('.evo-kinds').style.setProperty('--evo-kind-position',String(['all','strength','cardio'].indexOf(mode)));
@@ -4686,7 +4779,7 @@
         const duplicates=evolutionModel.exercises.filter(item=>item.name===exercise.name).length>1;
         return exercise.name+(duplicates?` · ${exercise.unit==='s'?'tempo':exercise.loadLabel||'repetições'}`:'');
       }
-      const recordPageSize=4;
+      const recordPageSize=5;
       const normalizeRecordSearch=text=>String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim();
       function evolutionRecordGroups(model,mode,query='') {
         const groups=new Map(),terms=normalizeRecordSearch(query).split(/\s+/).filter(Boolean);
@@ -4697,7 +4790,8 @@
           if(!groups.has(key)) {
             const exercise=model.exercises.find(item=>item.key===key),duplicate=exercise&&model.exercises.filter(item=>item.name===exercise.name).length>1;
             const label=(exercise?.name||record.name)+(duplicate?` · ${exercise.unit==='s'?'tempo':exercise.loadLabel||'repetições'}`:'');
-            groups.set(key,{key,label,kind:record.kind,items:[]});
+            const lastPerformed=exercise?.points.at(-1)?.date||(record.kind==='cardio'?(model.rows||[]).findLast(row=>row.kind==='cardio')?.date:null)||record.date;
+            groups.set(key,{key,label,kind:record.kind,lastPerformed,items:[]});
           }
           groups.get(key).items.push(record);
         }
@@ -4709,7 +4803,7 @@
         }).filter(group=>{
           const text=normalizeRecordSearch([group.label,group.kind==='cardio'?'corrida':'força',...group.items.map(record=>P.recordDefinitions[record.metric].label)].join(' '));
           return terms.every(term=>text.includes(term));
-        }).sort((a,b)=>b.latest.localeCompare(a.latest)||a.label.localeCompare(b.label,'pt-BR')||a.key.localeCompare(b.key));
+        }).sort((a,b)=>b.lastPerformed.localeCompare(a.lastPerformed)||a.label.localeCompare(b.label,'pt-BR')||a.key.localeCompare(b.key));
       }
       function evolutionRecordHighlights(model) {
         // Total workout volume must include every eligible completed set.
@@ -4732,32 +4826,28 @@
       }
       function renderEvolutionRecords() {
         renderEvolutionRecordHighlights();
-        $('evo-record-browser').hidden=!evolutionModel.best.length;
+        $('evo-record-tools').hidden=!evolutionModel.best.length;
         if($('evo-record-search').value!==evolutionState.recordsQuery)$('evo-record-search').value=evolutionState.recordsQuery;
         renderEvolutionRecordResults();
       }
       function renderEvolutionRecordResults(animate=false) {
         const root=$('evo-record-results');if(!root)return;
-        const hasQuery=!!normalizeRecordSearch(evolutionState.recordsQuery),hasRecords=evolutionModel.best.length>0;
-        root.hidden=hasRecords&&!hasQuery;
-        if(root.hidden){root.innerHTML='';$('evo-record-count').hidden=true;$('evo-record-count').textContent='';persistEvolution();return;}
+        root.hidden=false;
         const groups=evolutionRecordGroups(evolutionModel,'all',evolutionState.recordsQuery),pages=Math.max(1,Math.ceil(groups.length/recordPageSize));
         evolutionState.recordsPage=Math.max(0,Math.min(pages-1,Number.isInteger(evolutionState.recordsPage)?evolutionState.recordsPage:0));
-        const start=evolutionState.recordsPage*recordPageSize,visible=groups.slice(start,start+recordPageSize),count=groups.reduce((total,group)=>total+group.items.length,0);
-        $('evo-record-count').hidden=!groups.length;
-        $('evo-record-count').textContent=groups.length?`${count} ${count===1?'recorde':'recordes'} · ${start+1}–${start+visible.length} de ${groups.length} ${groups.length===1?'resultado':'resultados'}`:'';
+        const start=evolutionState.recordsPage*recordPageSize,visible=groups.slice(start,start+recordPageSize);
         if(!groups.length) {
           const filtered=evolutionModel.best.length>0;
-          root.innerHTML=`<div class="empty-state evo-empty">${icon('award')}<h3>${filtered?'Nenhum recorde encontrado':'Nenhum recorde registrado'}</h3><p>${filtered?'Busque pelo exercício, pela modalidade ou pelo tipo de recorde.':evolutionModel.rows.length?'Os recordes dependem de carga, repetições, tempo ou distância nos treinos concluídos.':'Os recordes são calculados a partir dos treinos concluídos.'}</p><div class="empty-actions"><button type="button" class="button primary full" ${filtered?'data-record-clear':'data-page="workouts"'}>${filtered?'Limpar busca':'Ver treinos'}</button></div></div>`;
+          root.innerHTML=`<div class="empty-state evo-empty">${icon('award')}<h3>${filtered?'Nenhum recorde encontrado':'Nenhum recorde registrado'}</h3><p>${filtered?'Tente outro nome de exercício ou modalidade, como supino ou corrida.':evolutionModel.rows.length?'Os recordes dependem de carga, repetições, tempo ou distância nos treinos concluídos.':'Os recordes são calculados a partir dos treinos concluídos.'}</p><div class="empty-actions"><button type="button" class="button primary full" ${filtered?'data-record-clear':'data-page="workouts"'}>${filtered?'Limpar busca':'Ver treinos'}</button></div></div>`;
         } else root.innerHTML=`<div class="evo-records">${visible.map(group=>{
           const primary=group.items[0];
-          return `<details class="evo-pr-card evo-record-card" data-record-group="${esc(group.key)}"${evolutionState.recordOpen===group.key?' open':''}><summary class="evo-record-summary"><span class="evo-record-name"><strong>${esc(group.label)}</strong><span>${group.items.length} ${group.items.length===1?'recorde':'recordes'} · ${esc(displayDate(group.latest,true))}</span></span><span class="evo-record-best"><strong>${esc(evolutionMetricText(primary.value,primary.metric))}</strong><span>${esc(P.recordDefinitions[primary.metric].label)}</span></span>${icon('chevron')}</summary><div class="evo-record-details">${group.items.map(record=>{
+          return `<details class="evo-pr-card evo-record-card" data-record-group="${esc(group.key)}"${evolutionState.recordOpen===group.key?' open':''}><summary class="evo-record-summary"><span class="evo-record-name"><strong>${esc(group.label)}</strong><span>${group.items.length} ${group.items.length===1?'recorde':'recordes'}</span></span><span class="evo-record-best"><strong>${esc(evolutionMetricText(primary.value,primary.metric))}</strong><span>${esc(P.recordDefinitions[primary.metric].label)}</span></span>${icon('chevron')}</summary><div class="evo-record-details">${group.items.map(record=>{
             const definition=P.recordDefinitions[record.metric];
             return `<button type="button" class="evo-pr-row" data-evo-record="${esc(record.recordKey)}" aria-label="${esc(`${definition.label}: ${evolutionMetricText(record.value,record.metric)}. ${displayDate(record.date,true)}. Ver resumo de ${record.workoutTitle}`)}"><span class="evo-pr-copy"><span>${esc(definition.label)}</span><strong>${esc(evolutionMetricText(record.value,record.metric))}</strong><span class="evo-pr-date">${esc(displayDate(record.date,true))}${record.context?` · ${esc(record.context)}`:''}</span></span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
           }).join('')}</div></details>`;
         }).join('')}</div>${pages>1?`<nav class="evo-record-pagination" aria-label="Páginas de recordes"><button type="button" class="button compact" data-record-page="-1"${evolutionState.recordsPage===0?' disabled':''}>Anterior</button><span aria-label="Página ${evolutionState.recordsPage+1} de ${pages}">${evolutionState.recordsPage+1} de ${pages}</span><button type="button" class="button compact" data-record-page="1"${evolutionState.recordsPage===pages-1?' disabled':''}>Próximos</button></nav>`:''}`;
         persistEvolution();
-        if(animate)enterView(root);
+        if(animate)enterView(root,'content');
       }
       // Monotone curves stay within adjacent recorded values and never bridge missing data.
       function evolutionCurve(segment) {
@@ -4788,7 +4878,7 @@
         root.dataset.chartType=type;
         const dataOpen=restore&&root.querySelector('.evo-data')?.open,plotFocused=restore&&document.activeElement===root.querySelector('.evo-plot');
         const width=Math.max(220,root.clientWidth),height=224,left=46,right=width-10,top=18,bottom=190;
-        const maximum=Math.max(...valid.map(point=>point.value),1),step=Math.pow(10,Math.floor(Math.log10(maximum)))/2,max=Math.ceil(maximum/step)*step;
+        const peak=Math.max(...valid.map(point=>point.value)),maximum=Math.max(peak,1),step=Math.pow(10,Math.floor(Math.log10(maximum)))/2,max=Math.ceil(maximum/step)*step;
         const band=(right-left)/Math.max(points.length,1);
         const x=i=>type==='bar'?left+band*(i+.5):points.length===1?(left+right)/2:left+(right-left)*i/(points.length-1);
         const y=value=>bottom-(value/max)*(bottom-top);
@@ -4807,7 +4897,7 @@
         const tick=date=>unit==='year'?date.slice(0,4):unit==='month'?new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{month:'short'}):date.slice(8,10)+'/'+date.slice(5,7);
         const selected=restore?previous.selected:points.findLastIndex(point=>Number.isFinite(point.value)&&(point.value>0||type!=='bar'));
         const state={root,points,metric,type,unit,width,height,left,right,band,x,y,selected:Math.max(0,Math.min(points.length-1,selected))};evolutionCharts.set(id,state);
-        const areaId=id+'-area-fill';
+        const areaId=id+'-area-fill',areaTop=Math.min(bottom-1,y(peak));
         const unitLabel=metric==='pace'?'min/km':['duration','time'].includes(metric)?'minutos':evolutionMetrics[metric].unit;
         const marks=points.map((point,i)=>{
           if(!Number.isFinite(point.value))return '';
@@ -4818,7 +4908,7 @@
         }).join('');
         root.innerHTML=`<div class="evo-chart-readout" aria-live="polite" aria-atomic="true"><strong data-chart-value></strong><span data-chart-date></span></div>
           <div class="evo-plot-wrap"><svg class="evo-plot" viewBox="0 0 ${width} ${height}" role="img" tabindex="0" aria-label="${esc(evolutionMetrics[metric].label)}. Use as setas para consultar os valores." aria-describedby="${id}-hint">
-            ${type==='area'?`<defs><linearGradient id="${areaId}" x1="0" y1="${top}" x2="0" y2="${bottom}" gradientUnits="userSpaceOnUse"><stop class="evo-area-stop is-top" offset="0%"/><stop class="evo-area-stop is-bottom" offset="100%"/></linearGradient></defs>`:''}
+            ${type==='area'?`<defs><linearGradient id="${areaId}" x1="0" y1="${areaTop}" x2="0" y2="${bottom}" gradientUnits="userSpaceOnUse"><stop class="evo-area-stop is-top" offset="0%"/><stop class="evo-area-stop is-middle" offset="55%"/><stop class="evo-area-stop is-bottom" offset="100%"/></linearGradient></defs>`:''}
             ${ticks.map(value=>`<line class="evo-gridline" x1="${left}" x2="${right}" y1="${y(value)}" y2="${y(value)}"/><text class="evo-axis" x="${left-9}" y="${y(value)+4}" text-anchor="end">${esc(axisShort(value))}</text>`).join('')}
             ${type!=='bar'?curves.map(({items,path})=>`${type==='area'&&items.length>1?`<path class="evo-area" fill="url(#${areaId})" d="${path} L${items.at(-1).x.toFixed(2)} ${bottom} L${items[0].x.toFixed(2)} ${bottom} Z"/>`:''}<path class="evo-line" pathLength="1" d="${path}"/>`).join(''):''}
             <line class="evo-guide" x1="0" x2="0" y1="${top}" y2="${bottom}"/>
@@ -4826,7 +4916,7 @@
             ${tickIndexes.map(i=>`<text class="evo-axis" x="${x(i)}" y="217" text-anchor="${i===0&&points.length>1?'start':i===points.length-1&&points.length>1?'end':'middle'}">${esc(tick(points[i].date))}</text>`).join('')}
           </svg><div class="evo-tooltip" aria-hidden="true"><span class="evo-tooltip-date" data-tooltip-date></span><div class="evo-tooltip-row"><span class="evo-chart-swatch"></span><span class="evo-tooltip-label">${esc(evolutionMetrics[metric].label)}</span><strong data-tooltip-value></strong></div></div></div>
           <div class="evo-chart-footer"><span class="evo-chart-legend" id="${id}-hint"><span class="evo-chart-swatch" aria-hidden="true"></span>${esc(evolutionMetrics[metric].label)}${unitLabel&&unitLabel!==evolutionMetrics[metric].unit?' · '+esc(unitLabel):unitLabel&& !['workouts','sets','reps'].includes(metric)?' ('+esc(unitLabel)+')':''}<span class="sr-only">. Toque no gráfico ou use as setas, Home e End para consultar cada valor.</span></span><button type="button" class="evo-text-button" data-chart-record hidden>Ver resumo${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></div>
-          <details class="evo-data"${dataOpen?' open':''}><summary>Ver dados${icon('chevron')}</summary><div class="evo-table-scroll"><table><caption class="sr-only">${esc(evolutionMetrics[metric].label)} no período</caption><thead><tr><th scope="col">${unit==='session'?'Treino':'Período'}</th><th scope="col">${esc(evolutionMetrics[metric].label)}</th></tr></thead><tbody>${points.map(point=>`<tr><td>${point.key?`<button type="button" class="evo-text-button" data-evo-record="${esc(point.key)}" aria-label="${esc('Abrir '+point.title+', '+displayDate(point.date,true))}">${esc(displayDate(point.date,true))}</button>`:esc(evolutionDates(point.date,point.end))}</td><td>${esc(evolutionMetricText(point.value,metric))}${point.partial&&metric==='volume'?' *':''}</td></tr>`).join('')}</tbody></table></div>${metric==='volume'&&points.some(point=>point.partial)?'<p class="evo-note">* Volume parcial.</p>':''}</details>`;
+          <details class="evo-data"${dataOpen?' open':''}><summary>Ver dados${icon('chevron')}</summary><div class="evo-table-scroll"><table><caption class="sr-only">${esc(evolutionMetrics[metric].label)} no período</caption><thead><tr><th scope="col">${unit==='session'?'Treino':'Período'}</th><th scope="col">${esc(evolutionMetrics[metric].label)}</th></tr></thead><tbody>${points.map(point=>`<tr><td>${point.key?`<button type="button" class="evo-data-date evo-data-link" data-evo-record="${esc(point.key)}" aria-label="${esc('Abrir '+point.title+', '+displayDate(point.date,true))}">${esc(displayDate(point.date,true))}</button>`:`<span class="evo-data-date">${esc(evolutionDates(point.date,point.end))}</span>`}</td><td>${esc(evolutionMetricText(point.value,metric))}${point.partial&&metric==='volume'?' *':''}</td></tr>`).join('')}</tbody></table></div>${metric==='volume'&&points.some(point=>point.partial)?'<p class="evo-note">* Volume parcial.</p>':''}</details>`;
         const plot=root.querySelector('.evo-plot'),wrap=root.querySelector('.evo-plot-wrap');
         function choose(event) {
           const rect=plot.getBoundingClientRect(),position=(event.clientX-rect.left)*width/rect.width;
@@ -4895,7 +4985,7 @@
         }
         else if(button.hasAttribute('data-record-clear')) {
           evolutionState.recordsQuery='';evolutionState.recordsPage=0;evolutionState.recordOpen=null;
-          syncEvolutionFilters();renderEvolutionRecords();enterView($('evo-record-results'));$('evo-record-search').focus({preventScroll:true});
+          syncEvolutionFilters();renderEvolutionRecords();enterView($('evo-record-results'),'content');$('evo-record-search').focus({preventScroll:true});
         }
         else if(button.dataset.evoRecord)openPostWorkout(button.dataset.evoRecord,'progress');
         else if(button.hasAttribute('data-evo-reset')){evolutionState.period='all';evolutionState.mode='all';refreshEvolution('evo-period');}
@@ -4935,7 +5025,7 @@
         const records=P.build(store.sessions,localDate()).events.filter(record=>record.recordKey===recordKey);
         if(!records.length)return '';
         const item=record=>`<div class="post-pr-item"><span><strong>${esc(record.name)}</strong><small>${esc(P.recordDefinitions[record.metric].label)}${record.initial?' · Registro inicial':''}</small></span><b>${esc(evolutionMetricText(record.value,record.metric))}</b></div>`;
-        return `<section class="post-prs" aria-label="Recordes pessoais deste treino">${overviewHeading('Recordes pessoais','','award')}<div class="overview-list post-pr-list">${records.slice(0,3).map(item).join('')}${records.length>3?`<details class="evo-data post-pr-more"><summary>Mais ${records.length-3} ${records.length===4?'recorde':'recordes'}${icon('chevron')}</summary><div>${records.slice(3).map(item).join('')}</div></details>`:''}</div></section>`;
+        return `<section class="section-card post-prs" aria-label="Recordes pessoais deste treino">${overviewHeading('Recordes pessoais','','award')}<div class="overview-list post-pr-list">${records.slice(0,3).map(item).join('')}${records.length>3?`<details class="evo-data post-pr-more"><summary>Mais ${records.length-3} ${records.length===4?'recorde':'recordes'}${icon('chevron')}</summary><div>${records.slice(3).map(item).join('')}</div></details>`:''}</div></section>`;
       }
       $('post-workout').addEventListener('click',event=>{
         const summary=event.target.closest('.post-pr-more>summary');
@@ -5147,29 +5237,48 @@
       }
       let motionRoute=null, motionDetail=null;
       const entranceTimers=new WeakMap();
-      function enterView(element) {
+      function enterView(element, kind = 'page') {
         if(!element || element.hidden) return;
         clearTimeout(entranceTimers.get(element));
-        element.classList.remove('view-entering');
+        element.classList.remove('view-entering','content-entering');
         if(reduceMotion()) return;
         void element.offsetWidth;
-        element.classList.add('view-entering');
-        entranceTimers.set(element,setTimeout(()=>element.classList.remove('view-entering'),280));
+        const className=kind==='content'?'content-entering':'view-entering';
+        element.classList.add(className);
+        entranceTimers.set(element,setTimeout(()=>element.classList.remove(className),kind==='content'?200:280));
+      }
+      const contentKeys=new WeakMap();
+      function updateContent(element, markup, key = markup) {
+        const previous=contentKeys.get(element);
+        if(previous===key)return false;
+        element.innerHTML=markup;contentKeys.set(element,key);
+        if(previous!==undefined)enterView(element,'content');
+        return true;
+      }
+      function syncCalendarSelection(element, attribute, date) {
+        const buttons=[...element.querySelectorAll(`[${attribute}]`)];
+        let selected=null;
+        for(const button of buttons) {
+          const active=button.getAttribute(attribute)===date;
+          button.setAttribute('aria-pressed',String(active));button.tabIndex=active?0:-1;
+          if(active)selected=button;
+        }
+        if(!selected&&buttons.length)buttons[0].tabIndex=0;
       }
       function syncViewMotion() {
         const route=['summary','session','postworkout'].includes(appView) ? `${appView}:${selectedDay}:${viewingRecord || ''}` : appView;
         const detail=appView === 'home' ? selectedWeekday : appView === 'session' ? focusExerciseId : null;
         if(route !== motionRoute) {
-          document.querySelectorAll('.view-entering').forEach(element=>{
-            clearTimeout(entranceTimers.get(element));element.classList.remove('view-entering');
+          document.querySelectorAll('.view-entering,.content-entering').forEach(element=>{
+            clearTimeout(entranceTimers.get(element));element.classList.remove('view-entering','content-entering');
           });
           if(!['summary','session','postworkout'].includes(appView)) enterView(document.querySelector('.header'));
           enterView($('app-main'));
         } else if(detail !== motionDetail) {
-          if(appView === 'home') enterView($('home'));
+          if(appView === 'home') enterView($('home'),'content');
           else if(appView === 'session') {
-            enterView($('exercise-list'));
-            enterView($('workout').querySelector('.exercise-navigation'));
+            enterView($('exercise-list'),'content');
+            enterView($('workout').querySelector('.exercise-navigation'),'content');
           }
         }
         motionRoute=route;motionDetail=detail;
@@ -5598,19 +5707,21 @@
         return Object.values(store.sessions).filter(s => s.done).sort((a, b) => b.date.localeCompare(a.date) || b.updatedAt - a.updatedAt);
       }
       function setMonthPickerOpen(open) {
+        const changed=$('history-month-picker').hidden===open;
         $('history-month-picker').hidden = !open;
         $('history-calendar').hidden = open;
         $('history-month-toggle').setAttribute('aria-expanded', String(open));
         if (open) { monthPickerYear = +historyMonth.slice(0, 4); renderMonthPicker(); }
+        if(changed)enterView($(open?'history-month-picker':'history-calendar'),'content');
       }
       function renderMonthPicker() {
         $('history-picker-year').textContent = monthPickerYear;
         $('history-year-prev').disabled = monthPickerYear <= 2000;
         $('history-year-next').disabled = monthPickerYear >= 2100;
-        $('history-month-options').innerHTML = monthNames.map((name, i) => {
+        updateContent($('history-month-options'),monthNames.map((name, i) => {
           const month = `${monthPickerYear}-${String(i + 1).padStart(2, '0')}`;
           return `<button type="button" data-history-month="${month}" aria-pressed="${month === historyMonth}">${esc(name)}</button>`;
-        }).join('');
+        }).join(''));
       }
       function selectHistoryMonth(month) {
         if (month < '2000-01' || month > '2100-12') return;
@@ -5651,14 +5762,15 @@
         });
         const rows = []; for (let i = 0; i < cells.length; i += 7)rows.push(`<tr>${cells.slice(i, i + 7).join('')}</tr>`);
         const weekdays = [['S', 'Segunda-feira'], ['T', 'Terça-feira'], ['Q', 'Quarta-feira'], ['Q', 'Quinta-feira'], ['S', 'Sexta-feira'], ['S', 'Sábado'], ['D', 'Domingo']];
-        $('history-calendar').innerHTML = `<table class="calendar-grid" role="grid" aria-label="${esc($('history-month-label').textContent)}"><thead><tr>${weekdays.map(([short, name]) => `<th scope="col" abbr="${name}">${short}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+        updateContent($('history-calendar'),`<table class="calendar-grid" role="grid" aria-label="${esc($('history-month-label').textContent)}"><thead><tr>${weekdays.map(([short, name]) => `<th scope="col" abbr="${name}">${short}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`,`${historyMonth}|${localDate()}|${monthRecords.map(session=>session.date).join(',')}`);
+        syncCalendarSelection($('history-calendar'),'data-history-date',historyDate);
         const dayLabel = new Date(historyDate + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
         $('history-date-title').textContent = dayLabel.charAt(0).toLocaleUpperCase('pt-BR') + dayLabel.slice(1);
         const dayRecords = byDate.get(historyDate) || [];
-        $('history-list').innerHTML = dayRecords.length ? dayRecords.map(s => {
+        updateContent($('history-list'),dayRecords.length ? dayRecords.map(s => {
           const p = D.progress(s);
           return `<button type="button" class="history-record" data-history-record="${esc(s.key)}"><span class="history-kind">${icon(s.workout.kind === 'strength' ? 'dumbbell' : 'run')}</span><span class="history-session"><strong>${esc(s.workout.title)}</strong><small>${p.done}/${p.total} ${s.workout.kind === 'strength' ? 'séries' : 'etapas'}</small></span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
-        }).join('') : '<p class="calendar-empty">Nenhum treino nesta data.</p>';
+        }).join('') : '<p class="calendar-empty">Nenhum treino nesta data.</p>');
       }
       $('history-prev').addEventListener('click', () => shiftHistoryMonth(-1));
       $('history-next').addEventListener('click', () => shiftHistoryMonth(1));
@@ -5925,18 +6037,21 @@
         $('date-picker-year').textContent = year;
         $('date-prev').disabled = month === '2000-01'; $('date-next').disabled = month === '2100-12';
         $('date-year-prev').disabled = year <= 2000; $('date-year-next').disabled = year >= 2100;
-        $('date-month-options').innerHTML = monthNames.map((name, i) => `<button type="button" data-date-month="${i + 1}" aria-pressed="${y === year && i + 1 === m}">${esc(name)}</button>`).join('');
+        updateContent($('date-month-options'),monthNames.map((name, i) => `<button type="button" data-date-month="${i + 1}" aria-pressed="${y === year && i + 1 === m}">${esc(name)}</button>`).join(''));
         const offset = (new Date(y, m - 1, 1, 12).getDay() + 6) % 7, days = new Date(y, m, 0, 12).getDate();
-        $('date-calendar').innerHTML = `<div class="calendar-weekdays" aria-hidden="true">${D.shortDays.map(d => `<span>${esc(d)}</span>`).join('')}</div><div class="calendar-grid" role="group" aria-label="Dias do mês">${'<span></span>'.repeat(offset)}${Array.from({ length: days }, (_, i) => {
+        updateContent($('date-calendar'),`<div class="calendar-weekdays" aria-hidden="true">${D.shortDays.map(d => `<span>${esc(d)}</span>`).join('')}</div><div class="calendar-grid" role="group" aria-label="Dias do mês">${'<span></span>'.repeat(offset)}${Array.from({ length: days }, (_, i) => {
           const key = `${month}-${String(i + 1).padStart(2, '0')}`;
           return `<button type="button" class="calendar-day" data-date-choice="${key}" aria-pressed="${key === date}" aria-label="${esc(displayDate(key, true))}" ${key === localDate() ? 'aria-current="date"' : ''} tabindex="${key === date || (!date.startsWith(month) && i === 0) ? 0 : -1}"><span>${i + 1}</span></button>`;
-        }).join('')}</div>`;
+        }).join('')}</div>`,`${month}|${localDate()}`);
+        syncCalendarSelection($('date-calendar'),'data-date-choice',date);
         $('date-selected').textContent = displayDate(date, true);
         if (focus) $('date-calendar').querySelector('[tabindex="0"]')?.focus({ preventScroll: true });
       }
       function toggleDateMonths(open) {
+        const changed=$('date-month-picker').hidden===open;
         $('date-month-picker').hidden = !open; $('date-calendar').hidden = open;
         $('date-month-toggle').setAttribute('aria-expanded', String(open));
+        if(changed)enterView($(open?'date-month-picker':'date-calendar'),'content');
       }
       function openDatePicker(date, mode, trigger, apply) {
         datePicker = { date, month: date.slice(0, 7), year: Number(date.slice(0, 4)), mode, trigger, apply };
@@ -6054,8 +6169,8 @@
         $('managed-workouts').innerHTML = D.weekdays.map((day, i) => {
           const workouts = PLAN.filter(w => w.weekday === i + 1);
           if(!workouts.length) return '';
-          return `<section class="managed-day"><div class="managed-day-heading"><h3>${esc(day)}</h3><button class="icon-button" data-create-workout="${i + 1}" aria-label="Criar treino para ${esc(day)}">+</button></div>${workouts.length ? workouts.map(w => `<div class="managed-workout"><div class="managed-workout-main">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}<span><strong>${esc(w.title)}</strong><small>${w.exercises.length} ${w.kind === 'strength' ? 'exercícios' : 'etapas'}${w.kind === 'strength' ? ' · ' + w.exercises.reduce((sum, ex) => sum + ex.sets, 0) + ' séries' : ''}</small></span></div><button type="button" class="icon-button managed-edit" data-manage-workout="${w.id}" aria-label="Editar ${esc(w.title)}">${icon('settings')}</button><button class="icon-button danger secondary managed-delete" data-remove-workout="${w.id}" aria-label="Remover treino ${esc(w.title)}">${icon('trash')}</button></div>`).join('') : '<p class="managed-empty">Sem treino</p>'}</section>`;
-        }).join('') || '<p class="managed-empty">Nenhum treino cadastrado.</p>';
+          return `<section class="section-card managed-day" aria-label="${esc(day)}"><div class="section-card-heading managed-day-heading"><h3>${esc(day)}</h3><button class="icon-button" data-create-workout="${i + 1}" aria-label="Criar treino para ${esc(day)}">+</button></div>${workouts.length ? workouts.map(w => `<div class="managed-workout"><div class="managed-workout-main">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}<span><strong>${esc(w.title)}</strong><small>${w.exercises.length} ${w.kind === 'strength' ? 'exercícios' : 'etapas'}${w.kind === 'strength' ? ' · ' + w.exercises.reduce((sum, ex) => sum + ex.sets, 0) + ' séries' : ''}</small></span></div><button type="button" class="icon-button managed-edit" data-manage-workout="${w.id}" aria-label="Editar ${esc(w.title)}">${icon('settings')}</button><button class="icon-button danger secondary managed-delete" data-remove-workout="${w.id}" aria-label="Remover treino ${esc(w.title)}">${icon('trash')}</button></div>`).join('') : '<p class="managed-empty">Sem treino</p>'}</section>`;
+        }).join('') || `<div class="empty-state manager-empty">${icon('reminder')}<h2>Nenhum treino cadastrado</h2></div>`;
         $('new-workout').disabled = PLAN.length >= 100;
         $('managed-workouts').querySelectorAll('[data-create-workout]').forEach(b => b.disabled = PLAN.length >= 100);
       }
