@@ -3490,6 +3490,16 @@ html:has(body.sorting-exercises){scroll-behavior:auto}
 @keyframes kore-session-in{from{opacity:.15;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes kore-content-in{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.session-entering,.content-entering{animation:none}.calendar-viewport.is-panel-changing,.editor-exercise.is-layout-changing{overflow:visible}}
+/* Search instructions use the UI face; workout metadata keeps its own hierarchy. */
+.evo-record-browser .evo-record-search{font:400 12px/1.6 var(--font-ui);text-transform:none;letter-spacing:normal}
+.local-recovery{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.local-recovery h3{margin:0 0 12px;font:500 16px/1.4 var(--font-ui)}
+.local-recovery-options{display:grid;gap:8px}
+.local-recovery-option{display:flex;align-items:center;justify-content:space-between;gap:12px;white-space:normal;text-align:left}
+.local-recovery-option span{display:grid;gap:3px}
+.local-recovery-option strong{font:500 14px/1.4 var(--font-ui)}
+.local-recovery-option small{font:400 12px/1.5 var(--font-ui);color:var(--muted)}
+
 </style></head><body>
   <a class="skip" href="#app-main">Pular para o conteúdo</a>
   <div class="shell">
@@ -3548,6 +3558,7 @@ html:has(body.sorting-exercises){scroll-behavior:auto}
           backup</button><button class="button full" id="import-backup"><i data-icon="upload"></i>Importar
           backup</button><input id="import-file" type="file" accept=".json,.treino,application/json,application/octet-stream" hidden></div>
       <p class="form-hint" id="backup-status" role="status" hidden></p>
+      <section id="local-recovery" class="local-recovery" aria-labelledby="local-recovery-title" hidden></section>
       <div class="import-preview" id="import-preview" hidden></div>
       <p class="form-error" id="import-error" role="alert" hidden></p>
     </div>
@@ -3970,8 +3981,88 @@ const KoreShare = (() => {
 })();
 
 const KoreShareAssets={"logoWhite": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ijk1LjI3NjEgMTE1LjMzNCAxODgyLjYyIDQ2Ny4yNzQiIHdpZHRoPSIxODgyLjYyIiBoZWlnaHQ9IjQ2Ny4yNzQiPjx0aXRsZT5LT1JFIGxvZ290aXBvPC90aXRsZT48cGF0aCBkPSJNNzg1LjY4MSA1ODIuNjA4Qzc1MS4wMjEgNTgyLjYwOCA3MTkuOTk4IDU3Ni42MTcgNjkyLjYxMiA1NjQuNjM2QzY2NS42NTQgNTUyLjIyNyA2NDIuOTc1IDUzNS4zMjQgNjI0LjU3NSA1MTMuOTI5QzYwNi42MDMgNDkyLjUzNCA1OTQuMTkzIDQ2Ny43MTUgNTg3LjM0NyA0MzkuNDczQzU4MC41IDQxMS4yMzEgNTc5Ljg1OCAzODEuMDY0IDU4NS40MjEgMzQ4Ljk3MUM1OTAuOTg0IDMxNi44NzggNjAyLjMyMyAyODYuNzExIDYxOS40NCAyNTguNDY5QzYzNi41NTYgMjMwLjIyNyA2NTcuNzM3IDIwNS40MDggNjgyLjk4NCAxODQuMDEzQzcwOC42NTggMTYyLjYxOCA3MzcuMzI4IDE0NS45MjkgNzY4Ljk5MyAxMzMuOTQ4QzgwMC42NTggMTIxLjUzOSA4MzMuODIxIDExNS4zMzQgODY4LjQ4MSAxMTUuMzM0QzkwMy4xNDIgMTE1LjMzNCA5MzQuMTY1IDEyMS41MzkgOTYxLjU1MSAxMzMuOTQ4Qzk4OS4zNjUgMTQ1LjkyOSAxMDEyLjI2IDE2Mi44MzIgMTAzMC4yMyAxODQuNjU1QzEwNDguNjMgMjA2LjA1IDEwNjEuMjUgMjMxLjI5NyAxMDY4LjEgMjYwLjM5NEMxMDc0Ljk1IDI4OS4wNjQgMTA3NC45NSAzMjAuMzAxIDEwNjguMSAzNTQuMTA2QzEwNjEuNjggMzg0LjA1OSAxMDUwLjc3IDQxMi45NDMgMTAzNS4zNiA0NDAuNzU3QzEwMjAuMzkgNDY4LjE0MyAxMDAwLjkyIDQ5Mi41MzQgOTc2Ljk1NiA1MTMuOTI5Qzk1Mi45OTMgNTM0Ljg5NiA5MjQuOTY1IDU1MS41ODUgODkyLjg3MiA1NjMuOTk0Qzg2MS4yMDcgNTc2LjQwMyA4MjUuNDc3IDU4Mi42MDggNzg1LjY4MSA1ODIuNjA4Wk04MDUuNTc5IDQ3MC4yODJDODIyLjY5NSA0NzAuMjgyIDgzOC43NDIgNDY3LjA3MyA4NTMuNzE5IDQ2MC42NTVDODY5LjEyMyA0NTMuODA4IDg4Mi44MTYgNDQ0LjgyMiA4OTQuNzk3IDQzMy42OTZDOTA3LjIwNyA0MjIuNTcxIDkxNy40NzcgNDA5LjczNCA5MjUuNjA3IDM5NS4xODVDOTMzLjczNyAzODAuMjA4IDkzOS4wODYgMzY0LjgwNCA5NDEuNjUzIDM0OC45NzFDOTQ0LjIyMSAzMzMuNTY2IDk0NC40MzUgMzE4LjU5IDk0Mi4yOTUgMzA0LjA0MUM5NDAuNTgzIDI4OS40OTIgOTM1Ljg3NyAyNzYuNjU1IDkyOC4xNzQgMjY1LjUyOUM5MjAuOSAyNTMuOTc2IDkxMC42MyAyNDQuNzc2IDg5Ny4zNjUgMjM3LjkyOUM4ODQuMSAyMzEuMDgzIDg2Ny42MjUgMjI3LjY2IDg0Ny45NDIgMjI3LjY2QzgyNS4yNjMgMjI3LjY2IDgwNC4yOTUgMjMzLjIyMiA3ODUuMDM5IDI0NC4zNDhDNzY2LjIxMiAyNTUuMDQ2IDc1MC4zNzkgMjY5LjU5NCA3MzcuNTQyIDI4Ny45OTRDNzI1LjEzMyAzMDUuOTY2IDcxNy4wMDIgMzI1Ljg2NCA3MTMuMTUxIDM0Ny42ODdDNzA5LjMgMzY5LjA4MyA3MTAuNTg0IDM4OS4xOTQgNzE3LjAwMiA0MDguMDIyQzcyMy40MjEgNDI2Ljg1IDczNC4xMTkgNDQyLjA0MSA3NDkuMDk1IDQ1My41OTRDNzY0LjUgNDY0LjcyIDc4My4zMjggNDcwLjI4MiA4MDUuNTc5IDQ3MC4yODJaIiBmaWxsPSJ3aGl0ZSIvPjxwYXRoIGQ9Ik0xMDkxLjI5IDU3My42MjJMMTE3MC4yNCAxMjQuMzJIMTM4Mi42OUMxNDI0LjYzIDEyNC4zMiAxNDU4LjIyIDEzMC43MzkgMTQ4My40NiAxNDMuNTc2QzE1MDguNzEgMTU1Ljk4NSAxNTI2LjA0IDE3My43NDMgMTUzNS40NSAxOTYuODVDMTU0NS4zIDIxOS45NTcgMTU0Ny40MyAyNDYuOTE1IDE1NDEuODcgMjc3LjcyNUMxNTM1Ljg4IDMxMi4zODUgMTUyMi40IDM0MS4yNjkgMTUwMS40MyAzNjQuMzc2QzE0ODAuOSAzODcuNDgzIDE0NTUuNDQgNDA1LjAyNyAxNDI1LjA1IDQxNy4wMDhMMTUwNC42NCA1NzMuNjIySDEzNjAuODdMMTI5NC43NiA0MzcuNTQ4SDEyNDAuMkwxMjE2LjQ1IDU3My42MjJIMTA5MS4yOVpNMTI1Ny41MyAzMzkuOTg1SDEzMzkuMDRDMTM1My4xNyAzMzkuOTg1IDEzNjUuNTcgMzM3Ljg0NSAxMzc2LjI3IDMzMy41NjZDMTM4Ni45NyAzMjguODU5IDEzOTUuNzQgMzIyLjQ0MSAxNDAyLjU5IDMxNC4zMTFDMTQwOS40NCAzMDUuNzUyIDE0MTMuNzEgMjk2LjEyNSAxNDE1LjQzIDI4NS40MjdDMTQxOC44NSAyNjcuNDU1IDE0MTUuMjEgMjU0LjE5IDE0MDQuNTEgMjQ1LjYzMkMxMzk0LjI0IDIzNi42NDYgMTM3OC42MyAyMzIuMTUzIDEzNTcuNjYgMjMyLjE1M0gxMjc2Ljc4TDEyNTcuNTMgMzM5Ljk4NVoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTE1MzcuNTggNTczLjYyMkwxNjE2LjUzIDEyNC4zMkgxOTc3LjlMMTk1OS4yOCAyMzAuMjI3SDE3MjEuMTVMMTcwOS42IDI5OC4yNjRIMTkyNS4yNkwxOTA3LjkzIDM5Ni40NjlIMTY5Mi4yN0wxNjc5LjQzIDQ2Ny43MTVIMTkyMC43N0wxOTAyLjE2IDU3My42MjJIMTUzNy41OFoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTI5OS4wMiAxMzAuMTExSDE3NC4zMzFMMTM0LjgwNCAzNTMuMjU4SDE5OC4yMTNMOTUuMjc2MSA1NzYuNDA0TDI5NC45MDMgNDA4LjI5NUwzNzguNzE4IDU3Ni40MDRINTI4LjQ3M0wzOTcuMzU3IDMyMi4wMTdMNjAxLjc0MyAxMzAuMTExSDQ1My45MTdMMjY2Ljg4NCAzMTEuMTc5TDI5OS4wMiAxMzAuMTExWiIgZmlsbD0id2hpdGUiLz48L3N2Zz4="};
-// Separate preview data. In sandboxed catalogue frames, keep data in memory.
-const KoreStorage=(()=>{if(window.__KORE_DEMO_FRAME){const m=new Map();return {getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)};}try{const s=window.localStorage;s.getItem('kore.ui-preview.v12.records');return s;}catch{const m=new Map();return {getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)};}})();
+/* Persisted identities stay stable across visual revisions. Catalogue data is isolated. */
+const KorePersistence = (() => {
+  const preview = Boolean(window.__KORE_DEMO_FRAME || window.__KORE_DEMO_SCREEN);
+  const keys = Object.freeze(preview ? {
+    records: 'kore.catalogue.records', preferences: 'kore.catalogue.preferences',
+    timer: 'kore.catalogue.timer', media: 'kore.catalogue.media'
+  } : {
+    records: 'treino-hibrido.records.v1', preferences: 'treino-hibrido.preferences.v1',
+    timer: 'treino-hibrido.timer.v1', media: 'treino-hibrido.media.v1'
+  });
+  const memory = new Map();
+  const storage = preview ? {
+    getItem: key => memory.get(key) ?? null,
+    setItem: (key, value) => memory.set(key, String(value)),
+    removeItem: key => memory.delete(key),
+    key: index => [...memory.keys()][index] ?? null,
+    get length() { return memory.size; }
+  } : {
+    getItem: key => window.localStorage.getItem(key),
+    setItem: (key, value) => window.localStorage.setItem(key, value),
+    removeItem: key => window.localStorage.removeItem(key),
+    key: index => window.localStorage.key(index),
+    get length() { return window.localStorage.length; }
+  };
+  const previousKey = /^kore\.ui-preview\.v(\d+)\.records$/;
+
+  function sources() {
+    if (preview) return [];
+    const result = [];
+    try {
+      for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i), match = previousKey.exec(key || '');
+        if (!match) continue;
+        try {
+          const data = TrainingData.validate(JSON.parse(storage.getItem(key)));
+          const count = Object.keys(data.sessions).length;
+          const drafts = Object.values(data.drafts).filter(s => !s.archived).length;
+          if (!count && !drafts && !data.plan?.length && !data.profile) continue;
+          result.push({ key, version: Number(match[1]), count, drafts });
+        } catch { /* Keep malformed values untouched. */ }
+      }
+    } catch { /* The existing storage alert reports unavailable browser storage. */ }
+    return result.sort((a, b) => b.version - a.version);
+  }
+
+  async function readSource(key) {
+    if (preview || !previousKey.test(key)) throw new Error('Escolha um histórico de versão anterior.');
+    const sourceRaw = storage.getItem(key);
+    if (sourceRaw === null) throw new Error('Esse histórico não está mais disponível neste navegador.');
+    const data = TrainingData.validate(JSON.parse(sourceRaw)), files = new Map();
+    const references = TrainingMedia.references(data);
+    if (references.size) {
+      // Never create an empty database while looking for old attachments.
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open(key.replace(/\.records$/, '.media'));
+        request.onupgradeneeded = () => request.transaction.abort();
+        request.onerror = () => reject(new Error('Não foi possível encontrar os anexos dessa versão.'));
+        request.onblocked = () => reject(new Error('Feche outras abas do aplicativo e tente novamente.'));
+        request.onsuccess = () => resolve(request.result);
+      });
+      try {
+        if (!db.objectStoreNames.contains('files')) throw new Error('Os anexos dessa versão não estão disponíveis.');
+        await Promise.all([...references].map(([id, reference]) => new Promise((resolve, reject) => {
+          const tx = db.transaction('files', 'readonly');
+          const request = tx.objectStore('files').get(id);
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => {
+            const blob = request.result;
+            if (!(blob instanceof Blob) || blob.size !== reference.size) {
+              reject(new Error('Um anexo não foi encontrado. Exporte o backup completo pela versão anterior.')); return;
+            }
+            files.set(id, blob); resolve();
+          };
+        })));
+      } finally { db.close(); }
+    }
+    return { data, files, sourceKey: key, sourceRaw };
+  }
+  return { preview, keys, storage, sources, readSource };
+})();
+const KoreStorage = KorePersistence.storage;
+
 /* KORE segmented controls. Reuses the original buttons and their aria-pressed state. */
 const KoreSegments=(()=>{
  const states=new WeakMap(),groups=new Set();let queued=false;
@@ -4016,7 +4107,7 @@ const KoreIcons = {"dumbbell":{"name":"BodyPartMuscleIcon","family":"Hugeicons",
       function openDB() {
         if (!database) database = new Promise((resolve, reject) => {
           if (!globalThis.indexedDB) { reject(new Error('Este navegador não permite salvar anexos.')); return; }
-          const request = indexedDB.open('kore.ui-preview.v12.media', 1);
+          const request = indexedDB.open(KorePersistence.keys.media, 1);
           request.onupgradeneeded = () => request.result.createObjectStore('files');
           request.onerror = () => reject(request.error);
           request.onblocked = () => reject(new Error('Feche outras abas deste treino e tente novamente.'));
@@ -4797,9 +4888,9 @@ const KoreIcons = {"dumbbell":{"name":"BodyPartMuscleIcon","family":"Hugeicons",
       // One place for singular/plural counts shown anywhere in the interface.
       const countNoun = (count, one, many) => count === 1 ? one : many;
       const countText = (count, one, many) => `${count} ${countNoun(count, one, many)}`;
-      const STORAGE_KEY = 'kore.ui-preview.v12.records';
-      const PREF_KEY = 'kore.ui-preview.v12.preferences';
-      const TIMER_KEY = 'kore.ui-preview.v12.timer';
+      const STORAGE_KEY = KorePersistence.keys.records;
+      const PREF_KEY = KorePersistence.keys.preferences;
+      const TIMER_KEY = KorePersistence.keys.timer;
       const $ = id => document.getElementById(id);
       const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
       const icons = KoreIcons;
@@ -4812,7 +4903,7 @@ const KoreIcons = {"dumbbell":{"name":"BodyPartMuscleIcon","family":"Hugeicons",
       const displayDate = (date, year = false) => new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', ...(year ? { year: 'numeric' } : {}) });
       const number = value => value === null || value === undefined ? '—' : value.toLocaleString('pt-BR', { maximumFractionDigits: 3 });
 // Example content for reviewing the visual system, generated only in the isolated preview namespace.
-if(!KoreStorage.getItem(STORAGE_KEY)){
+if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
  const demo=D.empty(),now=Date.now(),today=(new Date().getDay()+6)%7+1;
  const make=(id,title,kind,weekday,exercises)=>({id,title,short:title,kind,weekday,day:D.weekdays[weekday-1],shortDay:D.shortDays?.[weekday-1]||'Sáb',subtitle:'',groups:[],exercises});
  const strength=make('forca-a','Força A','strength',today,[['supino','Supino reto com barra',3,8,12],['remada','Remada curvada com barra',3,8,12],['elevacao','Elevação lateral',3,10,15]].map(([id,name,sets,min,max])=>({id,name,sets,unit:'reps',loadLabel:'kg total',meta:[sets+' séries',min+'–'+max+' reps'],target:{min,max}})));
@@ -7822,12 +7913,30 @@ if(!KoreStorage.getItem(STORAGE_KEY)){
         if (trigger?.isConnected) trigger.focus({ preventScroll: true });
       });
 
-      function showBackup() { openDialog('backup-dialog'); }
+      function renderLocalRecovery() {
+        const root=$('local-recovery'),sources=KorePersistence.sources();
+        root.hidden=!sources.length;
+        root.innerHTML=sources.length?`<h3 id="local-recovery-title">Dados de versões anteriores</h3><div class="local-recovery-options">${sources.map(source=>`<button type="button" class="button full local-recovery-option" data-recover-source="${esc(source.key)}"><span><strong>Revisar versão ${source.version}</strong><small>${countText(source.count,'treino concluído','treinos concluídos')}${source.drafts?` · ${countText(source.drafts,'em andamento','em andamento')}`:''}</small></span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`).join('')}</div>`:'';
+      }
+      function showBackup() { renderLocalRecovery(); openDialog('backup-dialog'); }
+      $('local-recovery').addEventListener('click',async event=>{
+        const button=event.target.closest('[data-recover-source]');
+        if(!button||backupBusy)return;
+        pendingImport=null;$('import-preview').hidden=true;$('import-error').hidden=true;
+        backupBusyUI(true,'Conferindo dados salvos…');
+        try {
+          pendingImport=await KorePersistence.readSource(button.dataset.recoverSource);
+          renderImportPreview(pendingImport.data);$('import-preview').hidden=false;
+          $('import-preview').scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+        } catch(error) { reportError('import-error',M.errorText(error)); }
+        finally { backupBusyUI(false); }
+      });
       $('backup-open').addEventListener('click', showBackup);
       let backupBusy = false;
       function backupBusyUI(busy, message = '') {
         backupBusy = busy;
         $('export-backup').disabled = busy; $('import-backup').disabled = busy;
+        $('local-recovery').querySelectorAll('button').forEach(button=>button.disabled=busy);
         if ($('confirm-import')) $('confirm-import').disabled = busy;
         $('backup-status').textContent = message; $('backup-status').hidden = !message;
       }
@@ -7872,7 +7981,7 @@ if(!KoreStorage.getItem(STORAGE_KEY)){
         if (drafts) row('dumbbell', `${drafts} ${drafts === 1 ? 'treino em andamento' : 'treinos em andamento'}`);
         const attachments = M.references(data);
         if (attachments.size) row('image', `${attachments.size} ${attachments.size === 1 ? 'anexo de execução' : 'anexos de execução'}`, `${([...attachments.values()].reduce((sum, ref) => sum + ref.size, 0) / 1024 / 1024).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} MB`);
-        $('import-preview').innerHTML = `<strong>Conteúdo do backup</strong>${rows.length ? `<ul class="import-summary">${rows.join('')}</ul>` : '<p>Este backup não contém treinos, histórico ou perfil.</p>'}<button type="button" class="button primary" id="confirm-import">Importar backup</button>`;
+        $('import-preview').innerHTML = `<strong>${pendingImport?.sourceKey?'Dados da versão anterior':'Conteúdo do backup'}</strong>${rows.length ? `<ul class="import-summary">${rows.join('')}</ul>` : '<p>Este backup não contém treinos, histórico ou perfil.</p>'}<button type="button" class="button primary" id="confirm-import">${pendingImport?.sourceKey?'Recuperar dados':'Importar backup'}</button>`;
       }
       $('import-file').addEventListener('change', async e => {
         const file = e.target.files?.[0]; if (!file || backupBusy) return; pendingImport = null; $('import-preview').hidden = true; $('import-error').hidden = true;
@@ -7890,6 +7999,7 @@ if(!KoreStorage.getItem(STORAGE_KEY)){
         backupBusyUI(true, 'Salvando ficha e anexos…'); $('import-error').hidden = true;
         try {
           const imported = pendingImport;
+          if(imported.sourceKey&&KoreStorage.getItem(imported.sourceKey)!==imported.sourceRaw)throw new Error('Os dados dessa versão mudaram. Revise o histórico novamente.');
           await M.migrateLegacy(imported.data, imported.files);
           const merged = D.merge(store, imported.data), needed = new Map();
           for (const [id, ref] of M.references(merged.data)) {
@@ -7898,7 +8008,7 @@ if(!KoreStorage.getItem(STORAGE_KEY)){
           }
           await M.putAll(needed);
           store = merged.data; const saved = writeStore(); pendingImport = null; $('import-preview').hidden = true; appView='home'; goToToday(); renderNav(); renderWorkout();
-          toast(saved ? 'Backup importado.' : 'Backup carregado nesta aba. O navegador não permitiu salvá-lo.',saved ? 'success' : 'error');
+          toast(saved ? (imported.sourceKey?'Histórico recuperado.':'Backup importado.') : 'Dados carregados nesta aba. O navegador não permitiu salvá-los.',saved ? 'success' : 'error');
         } catch (error) { reportError('import-error',M.errorText(error)); }
         finally { backupBusyUI(false); }
       });
