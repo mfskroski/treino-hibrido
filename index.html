@@ -3527,27 +3527,27 @@ html:has(body.sorting-exercises){scroll-behavior:auto}
 
 /* Persistent activity has its own semantic tokens, separate from a success toast. */
 :root {
-  --activity-bg: #A8C7B4;
-  --activity-ink: #080808;
-  --activity-hover: #99B8A5;
-  --activity-border: #7FA58F;
-  --activity-soft: rgb(8 8 8 / .07);
-  --activity-line: rgb(8 8 8 / .3);
+  --activity-bg: var(--ink);
+  --activity-ink: var(--inverse);
+  --activity-hover: var(--focus-inverse-surface);
+  --activity-border: var(--ink);
+  --activity-soft: var(--focus-inverse-surface);
+  --activity-line: rgb(255 255 255 / .28);
+  --activity-detail-ink: #D4D4D4;
+  --activity-status-bg: var(--toast-success);
+  --activity-status-ink: #FFFFFF;
   --activity-notice-height: 132px;
 }
 :root[data-theme=dark] {
-  --activity-bg: #A8C7B4;
-  --activity-ink: #080808;
-  --activity-hover: #99B8A5;
-  --activity-border: #7FA58F;
-  --activity-soft: rgb(8 8 8 / .07);
-  --activity-line: rgb(8 8 8 / .3);
-  --activity-notice-height: 132px;
+  --activity-line: rgb(8 8 8 / .24);
+  --activity-detail-ink: #505050;
 }
 .active-workout {
   background: var(--activity-bg);
   color: var(--activity-ink);
   border-color: var(--activity-border);
+  border-inline-start: 1px solid var(--activity-border);
+  box-shadow: none;
   border-radius: var(--radius-control);
 }
 #resume-active-workout { color: var(--activity-ink); gap: 12px; }
@@ -3576,7 +3576,7 @@ html:has(body.sorting-exercises){scroll-behavior:auto}
   flex: 1;
   min-width: 0;
   width: 100%;
-  gap: 6px;
+  gap: 4px;
 }
 .active-workout-header { width: 100%; }
 .active-workout-header .kind-badge { margin-left: auto; }
@@ -3588,8 +3588,12 @@ html:has(body.sorting-exercises){scroll-behavior:auto}
   letter-spacing: .025em;
   text-transform: uppercase;
   white-space: nowrap;
+  padding: 3px 6px;
+  border-radius: 2px;
+  background: var(--activity-status-bg);
+  color: var(--activity-status-ink);
 }
-.active-workout-status::before { content: ''; width: 6px; height: 6px; flex: none; border-radius: 50%; background: currentColor; }
+.active-workout-status::before { content: ''; width: 4px; height: 4px; flex: none; border-radius: 50%; background: currentColor; }
 .active-workout .active-workout-title,
 .active-workout .active-workout-exercise,
 .active-workout .active-workout-detail {
@@ -3608,11 +3612,9 @@ html:has(body.sorting-exercises){scroll-behavior:auto}
   background: var(--activity-soft);
 }
 .active-workout-exercise { color: var(--activity-ink); }
-.active-workout-detail { color: var(--activity-ink); font-size: 10px; }
+.active-workout .active-workout-title { color: var(--activity-ink); }
+.active-workout-detail { color: var(--activity-detail-ink); font-size: 10px; }
 .active-workout-detail .numeric { font-family: var(--font-numeric); font-size: inherit; font-weight: inherit; }
-.active-workout :is(.active-workout-copy,.active-workout-status,.active-workout-title,.active-workout-exercise,.active-workout-detail,.kind-badge,.numeric) {
-  color: var(--activity-ink);
-}
 .profile-edit { pointer-events: none; transition: none; }
 @media(max-width:350px) { .active-workout-status { font-size: 9px; } }
 
@@ -3821,6 +3823,186 @@ a:focus-visible > img { opacity: .8; }
   }
 }
 
+
+/* KORE · Delayed name scrolling, shared by the app and catalogue. */
+:root {
+  --motion-name-delay: 2000ms;
+  --name-scroll-speed: 32;
+  --motion-name-end: 1500ms;
+  --motion-name-return: 900ms;
+  --motion-name-reset: 3000ms;
+}
+
+/* Workout names use the native Geom ExtraBold Italic face. */
+.managed-workout-main strong,
+.workout-row strong {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: none;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+  text-transform: uppercase;
+}
+@media(max-width:350px) {
+  .managed-workout-main strong, .workout-row strong { font-size: 18px; }
+}
+
+/* One name line, bounded by available width, including before enhancement. */
+:is([data-kore-name], .kore-name,
+  .managed-workout-main strong, .workout-row strong, .today-card h2,
+  .summary-heading h2, .post-heading h2, .workout-heading h2,
+  .workout-switcher .button, .session-workout-name, .history-session > strong, .active-workout-title,
+  .active-workout-exercise, .current-exercise-copy h2, .exercise-heading-copy h3,
+  .stage-main h3, .interval-sequence strong, .overview-copy > strong,
+  .sort-item-name, .group-choice > span:last-child, .group-summary p,
+  .evo-exercise-select > span, .selection-option > span, .evo-record-name > strong,
+  .evo-highlight-context, .post-pr-item > span:first-child > strong,
+  .value-dialog .picker-exercise, .rest-mini-title, #finish-summary, #media-title) {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  text-wrap: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-overflow: clip;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: initial;
+  scrollbar-width: none;
+  scroll-behavior: auto;
+}
+.kore-name::-webkit-scrollbar { display: none; }
+.kore-name-track {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  box-sizing: border-box;
+  padding-inline: .08em .18em;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  white-space: nowrap;
+}
+.current-exercise-copy h2 { min-height: 1.3em; }
+.sort-summary-text {
+  display: flex;
+  align-items: center;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: initial;
+}
+.interval-sequence li, .rest-mini-readout, .post-pr-item > span:first-child { min-width: 0; }
+.kore-name:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .2em;
+}
+/* Reduced motion keeps the same line and native horizontal reading. No automatic scrolling. */
+@media(prefers-reduced-motion:reduce) {
+  .kore-name { scroll-behavior: auto; }
+}
+
+/* Period totals keep the same footprint across workout modalities. */
+:root { --overview-stat-height: 112px; }
+.evo-stats { grid-auto-rows: var(--overview-stat-height); }
+.evo-stat { height: var(--overview-stat-height); padding: 14px 16px; }
+.evo-stat dt { white-space: nowrap; line-height: 1.6; }
+.evo-stat dd { display: block; white-space: nowrap; padding-top: 4px; line-height: 1.2; }
+.evo-stat dd > span { display: block; min-height: 17px; font-size: 11px; line-height: 17px; margin-top: 3px; }
+@media(max-width:350px) {
+  .evo-stat { padding: 12px; }
+  .evo-stat dd { font-size: 23px; }
+  .evo-stat dd.is-long { font-size: 18px; }
+}
+
+/* Trial: KORE destination names below their navigation icons. */
+:root { --radius-navigation: 0px; --nav-space: calc(80px + env(safe-area-inset-bottom,0px)); }
+.bottom-nav {
+  left: 0; right: 0; bottom: 0;
+  width: 100vw; max-width: none; margin: 0;
+  height: calc(64px + env(safe-area-inset-bottom,0px)); min-height: 64px;
+  display: grid; grid-template-columns: repeat(4,minmax(0,140px)); justify-content: center;
+  padding: 4px max(12px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));
+  gap: 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none;
+  background: var(--nav-surface);
+}
+:root[data-theme=dark] .bottom-nav { box-shadow: none; }
+.nav-item {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; height: 55px; min-height: 44px; padding: 5px 4px 7px; gap: 3px; border-radius: 0;
+}
+.nav-item > [data-icon] { display: flex; width: 24px; height: 24px; flex: none; line-height: 0; }
+.nav-item .icon { display: block; width: 24px; height: 24px; }
+.nav-label {
+  display: block; max-width: 100%; font: 500 11px/14px var(--font-ui);
+  letter-spacing: 0; text-transform: none; white-space: nowrap; color: inherit;
+}
+.nav-item[aria-current=page] { color: var(--ink); background: transparent; box-shadow: none; }
+.nav-item[aria-current=page] .nav-label { font-weight: 600; }
+.nav-item::after { content: none; }
+.nav-item:focus-visible { background: var(--focus-surface); }
+.nav-item:focus-visible::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); bottom: 1px; width: 20px; height: 2px; background: currentColor; }
+
+/* Inverse solid exercise controls; an opaque, theme-independent profile material. */
+:root {
+  --exercise-control-bg: var(--ink);
+  --exercise-control-ink: var(--inverse);
+  --exercise-control-muted: #D4D4D4;
+  --exercise-control-line: rgb(255 255 255 / .28);
+  --exercise-control-soft: rgb(255 255 255 / .10);
+  --profile-card-bg: #E9E9E9;
+  --profile-card-ink: #080808;
+  --profile-card-muted: #505050;
+}
+:root[data-theme=dark] {
+  --exercise-control-muted: #505050;
+  --exercise-control-line: rgb(8 8 8 / .24);
+  --exercise-control-soft: rgb(8 8 8 / .08);
+}
+.session-controls {
+  --ink: var(--exercise-control-ink);
+  --inverse: var(--exercise-control-bg);
+  --muted: var(--exercise-control-muted);
+  --line: var(--exercise-control-line);
+  --accent: var(--exercise-control-ink);
+  --soft: var(--exercise-control-soft);
+  --focus-surface: var(--exercise-control-soft);
+  background: var(--exercise-control-bg);
+  color: var(--exercise-control-ink);
+  border-color: var(--exercise-control-bg);
+}
+.session-controls::after { content: none; background: none; }
+.session-controls::before,
+.session-controls .target { color: var(--exercise-control-muted); }
+.session-controls .icon-button { background: transparent; color: var(--exercise-control-ink); border-color: var(--exercise-control-line); }
+.session-controls .icon-button:hover:where(:not(:disabled)),
+.session-controls .icon-button:active:not(:disabled),
+.session-controls .icon-button:focus-visible { background: var(--exercise-control-soft); }
+.session-controls .current-exercise-meta .superset-tag { color: var(--exercise-control-ink); border-color: var(--exercise-control-line); background: var(--exercise-control-soft); }
+.profile-card {
+  --bg: #FFFFFF;
+  --ink: var(--profile-card-ink);
+  --muted: var(--profile-card-muted);
+  --line: rgb(8 8 8 / .13);
+  --soft: #F1F1F1;
+  --focus-surface: #FFFFFF;
+  color: var(--profile-card-ink);
+  border-color: rgb(8 8 8 / .13);
+}
+.profile-card,
+.profile-card:hover:where(:not(:disabled)),
+.profile-card:active:not(:disabled),
+.profile-card:focus-visible {
+  background-color: var(--profile-card-bg);
+  background-image: linear-gradient(100deg,rgba(248,248,248,.98),rgba(245,245,245,.8) 55%,rgba(245,245,245,.08)),var(--material-glass);
+  background-position: center 52%;
+  background-size: cover;
+}
+.profile-card .avatar,
+.profile-card .avatar :is(i,.icon) { color: var(--profile-card-ink); }
 </style></head><body>
   <a class="skip" href="#app-main">Pular para o conteúdo</a>
   <div class="shell">
@@ -3865,7 +4047,7 @@ a:focus-visible > img { opacity: .8; }
   </section>
 <section id="timer-dialog" class="app-page" data-page="timer" aria-labelledby="timer-title" hidden><h2 id="timer-title" class="sr-only">Temporizador</h2>    <div class="dialog-body">
       <div class="form-field rest-duration-field"><span id="rest-duration-label">Duração de descanso</span><button type="button" class="number-ticker" id="rest-duration" aria-labelledby="rest-duration-label rest-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
-      <div class="setting-row"><span id="auto-rest-label">Abrir descanso ao completar uma série</span><button type="button" class="settings-switch" id="auto-rest-toggle" role="switch" aria-labelledby="auto-rest-label" aria-checked="true"><span></span></button></div>
+      <div class="setting-row"><span id="auto-rest-label">Iniciar descanso ao concluir uma série</span><button type="button" class="settings-switch" id="auto-rest-toggle" role="switch" aria-labelledby="auto-rest-label" aria-checked="true"><span></span></button></div>
       <div class="setting-row"><span id="sound-toggle-label">Som ao terminar</span><button type="button" class="settings-switch" id="sound-toggle" role="switch" aria-labelledby="sound-toggle-label" aria-checked="false"><span></span></button></div>
       <div class="sound-controls" id="sound-controls" hidden>
         <div class="sound-volume"><label for="sound-volume">Volume</label><input id="sound-volume" type="range" min="0"
@@ -3912,10 +4094,10 @@ a:focus-visible > img { opacity: .8; }
 </main>
   </div>
 <nav id="bottom-nav" class="bottom-nav" aria-label="Navegação principal">
-    <button type="button" id="nav-home" class="nav-item" data-nav="home" aria-label="Início" title="Início" aria-current="page"><i data-icon="home"></i></button>
-    <button type="button" id="editor-open" class="nav-item" data-nav="workouts" aria-label="Treinos" title="Treinos"><i data-icon="reminder"></i></button>
-    <button type="button" id="history-open" class="nav-item" data-nav="history" aria-label="Histórico" title="Histórico"><i data-icon="history"></i></button>
-    <button type="button" id="nav-profile" class="nav-item" data-nav="profile" aria-label="Perfil" title="Perfil"><i data-icon="profile"></i></button>
+    <button type="button" id="nav-home" class="nav-item" data-nav="home" aria-label="Início" title="Início" aria-current="page"><i data-icon="home"></i><span class="nav-label">Início</span></button>
+    <button type="button" id="editor-open" class="nav-item" data-nav="workouts" aria-label="Treinos" title="Treinos"><i data-icon="reminder"></i><span class="nav-label">Treinos</span></button>
+    <button type="button" id="history-open" class="nav-item" data-nav="history" aria-label="Histórico" title="Histórico"><i data-icon="history"></i><span class="nav-label">Histórico</span></button>
+    <button type="button" id="nav-profile" class="nav-item" data-nav="profile" aria-label="Perfil" title="Perfil"><i data-icon="profile"></i><span class="nav-label">Perfil</span></button>
   </nav>
   <dialog id="rest-dialog" class="value-dialog rest-sheet" aria-labelledby="rest-title">
     <div class="dialog-header">
@@ -4054,7 +4236,7 @@ a:focus-visible > img { opacity: .8; }
       </fieldset>
       <details class="disclosure notes" id="finish-notes-details">
         <summary>Observações<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" data-kore-icon="KoreChevronSharpIcon" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="2"><path d="M6 9L12 15L18 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="2" /></svg></summary>
-        <label class="sr-only" for="finish-notes">Observações do treino</label><textarea id="finish-notes" rows="3" maxlength="2000" placeholder="Observações sobre o treino"></textarea>
+        <label class="sr-only" for="finish-notes">Observações do treino</label><textarea id="finish-notes" rows="3" maxlength="2000"></textarea>
       </details>
       <p class="form-error" id="finish-error" role="alert" hidden></p>
       <div class="session-actions button-group" data-size="action"><button type="submit" class="button primary" id="finish-confirm">Confirmar conclusão</button><button type="button" class="button" data-close="finish-dialog">Continuar treino</button></div>
@@ -4415,7 +4597,7 @@ const KoreSegments=(()=>{
  return{capture,refresh};
 })();
 
-const KoreIcons = {"home":{"name":"KoreHomeSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M3 9.5L12 2.5L21 9.5V21.5H3Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 17H16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"reminder":{"name":"KoreReminderSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M9 5L21 5\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-width=\"1.5\" fill=\"none\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 5L5 5\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-width=\"1.5\" fill=\"none\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M9 12L21 12\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-width=\"1.5\" fill=\"none\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 12L5 12\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-width=\"1.5\" fill=\"none\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M9 19L21 19\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-width=\"1.5\" fill=\"none\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 19L5 19\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-width=\"1.5\" fill=\"none\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"history":{"name":"KoreHistorySharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M3.49902 14.9656C4.72475 18.4791 8.06749 21 11.999 21C16.9696 21 20.999 16.9706 20.999 12C20.999 7.02944 16.9696 3 11.999 3C8.29827 3 4.8984 5.6756 3.68943 8.5\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M11.999 7V12L14.999 14\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M3.25 4.5V8.75H7.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"profile":{"name":"KoreProfileSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<circle cx=\"12\" cy=\"7\" r=\"4.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M4 21C4 16.5817 7.58172 13 12 13C16.4183 13 20 16.5817 20 21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"dumbbell":{"name":"KoreDumbbellSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M2 20.3C3.15 21.9 8 23.05 10.4 20.15C13 21.4 17.3 20.8 20.5 18.9C22.25 17.85 22.1 15.8 21.05 13.55L14.6 3L10.5 2C9.5 2 8.6 3.1 7.65 4.25L6.8 5.35C6.35 5.95 6.5 6.45 7.3 6.8C8.5 7.3 10 6.95 11.9 6.55L13.4 8.8L15.2 13.35C12.9 11.95 10.1 12.35 8.2 14.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M2 12.95C4.1 11.15 7.4 10.8 10.4 12.65\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"run":{"name":"KoreRunSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M3 8.5L6 3.5L6.307 5.342C6.428 6.07 6.89 6.695 7.55 7.025C8.644 7.572 9.975 7.169 10.582 6.107L12.5 4.5L17 13.5H18C20.2091 13.5 22 15.2909 22 17.5V20.5H15L2 11Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 8.5L15.5 17.5H22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M12.5 9.5L14.5 8.5M14 12L16 11\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"timer":{"name":"KoreTimerSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<circle cx=\"12\" cy=\"13.5\" r=\"8.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M18.01 7.49L19.5 6M14.5 2H9.5M12 13.5L15.5 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"calendar":{"name":"KoreCalendarSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M16 2V6M8 2V6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 4H21V22H3Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 10H21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"7.5\" cy=\"14\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"12\" cy=\"14\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"16.5\" cy=\"14\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"7.5\" cy=\"18\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"12\" cy=\"18\" r=\"1\" fill=\"currentColor\" stroke=\"none\" />"},"progress":{"name":"KoreProgressSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<rect x=\"3.5\" y=\"15\" width=\"3\" height=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><rect x=\"10.5\" y=\"12.5\" width=\"3\" height=\"8.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><rect x=\"17.5\" y=\"9\" width=\"3\" height=\"12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M16.5 3H19.5V6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M19 3.5C19 3.5 15 8.5 4.5 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"medal":{"name":"KoreMedalSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M2 2H22V8L12 12L2 8Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 2V10.4M16 2V10.4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"12\" cy=\"17.5\" r=\"4.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"award":{"name":"KoreAwardSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M6 2H18C18 8.3 17 16 12 16C7 16 6 8.3 6 2Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M18 4.5L19.4447 4.68748C20.9062 4.87714 22 6.122 22 7.59578C22 8.99373 21.0133 10.1973 19.6425 10.4715L17.5 11\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M6 4.5L4.55527 4.68748C3.09375 4.87714 2 6.122 2 7.59578C2 8.99373 2.98673 10.1973 4.35754 10.4715L6.5 11\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M12 16V19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 22C8 20.343 9.791 19 12 19C14.209 19 16 20.343 16 22Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"play":{"name":"KorePlaySharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M5 4.5L19 12L5 19.5Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"pause":{"name":"KorePauseSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<rect x=\"4\" y=\"4\" width=\"6\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><rect x=\"14\" y=\"4\" width=\"6\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"reset":{"name":"KoreResetSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M3.05493 13C3.01863 12.6717 3 12.338 3 12C3 7.02944 7.02944 3 12 3C14.8273 3 17.35 4.30367 19 6.34267M20.9451 11C20.9814 11.3283 21 11.662 21 12C21 16.9706 16.9706 21 12 21C9.17273 21 6.64996 19.6963 5 17.6573\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M16 7H20V3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 17H4V21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"check":{"name":"KoreCheckSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M5 14L8.5 17.5L19 6.5\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />"},"save":{"name":"KoreSaveSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 12.5L10.5 15L16 9\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />"},"edit":{"name":"KoreEditSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M16.5 4.5L18.5 2.5L21.5 5.5L19.5 7.5L12 15L8 16L9 12Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M16.5 4.5L19.5 7.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M10.5 5H3V21H19V13.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"trash":{"name":"KoreTrashSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M19.5 5.5L18.5 22H5.5L4.5 5.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 5.5H21M8 5.5L9.5 2H14.5L16 5.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M9.5 16.5V10.5M14.5 16.5V10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"copy":{"name":"KoreCopySharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<rect x=\"7.5\" y=\"7.5\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M7.5 16.5H2.5V2.5H16.5V7.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"share":{"name":"KoreShareSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<circle cx=\"18\" cy=\"6.5\" r=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"6\" cy=\"12\" r=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"18\" cy=\"17.5\" r=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8.7272 10.75L15.2728 7.75M8.7272 13.25L15.2728 16.25\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"download":{"name":"KoreDownloadSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M3 17V21H21V17\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M16.5 11.5L12 16L7.5 11.5M12 16V3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"upload":{"name":"KoreUploadSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M3 17V21H21V17\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M16.5 7.5L12 3L7.5 7.5M12 3V16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"image":{"name":"KoreImageSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"7.5\" cy=\"7.5\" r=\"1.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M2.5 20L14.5 11.5L21.5 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"expand":{"name":"KoreExpandSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M15.5 21H21V15.5M21 8.5V3H15.5M8.5 21H3V15.5M3 8.5V3H8.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"chevron":{"name":"KoreChevronSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M6 9L12 15L18 9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"arrow-up-right":{"name":"KoreArrowUpRightSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M9 6.5H17.5V15M17.5 6.5L6.5 17.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"close":{"name":"KoreCloseSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />"},"menu":{"name":"KoreMenuSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<circle cx=\"6\" cy=\"12.5\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"12\" cy=\"12.5\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"18\" cy=\"12.5\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" />"},"grip":{"name":"KoreGripSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<rect x=\"8\" y=\"5\" width=\"2\" height=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><rect x=\"14\" y=\"5\" width=\"2\" height=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><rect x=\"8\" y=\"11\" width=\"2\" height=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><rect x=\"14\" y=\"11\" width=\"2\" height=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><rect x=\"8\" y=\"17\" width=\"2\" height=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><rect x=\"14\" y=\"17\" width=\"2\" height=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"settings":{"name":"KoreSettingsSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M9 2H15V5L17 6.15L19.1 4.65L21.6 9.2L19.4 10.5V13.5L21.6 14.8L19.1 19.35L17 17.85L15 19V22H9V19L7 17.85L4.9 19.35L2.4 14.8L4.6 13.5V10.5L2.4 9.2L4.9 4.65L7 6.15L9 5Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"12\" cy=\"12\" r=\"3.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"volume":{"name":"KoreVolumeSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M2 8.5H6.5L14 4V20L6.5 15.5H2Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M17 9C17.6254 9.81968 18 10.8634 18 12C18 13.1366 17.6254 14.1803 17 15\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M20 7C21.2508 8.36613 22 10.1057 22 12C22 13.8943 21.2508 15.6339 20 17\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />"},"volume-off":{"name":"KoreVolumeOffSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M2 2L22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M14 14V20L6.5 15.5H2V8.5H6.5L7.5 8\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M10 6.4L14 4V10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M17 10C17.6296 10.7667 18 11.7054 18 12.7195C18 13.1635 17.929 13.593 17.7963 14\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M20 8C21.2508 9.22951 22 10.7952 22 12.5C22 13.9164 21.4829 15.2367 20.5906 16.348\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />"},"sun":{"name":"KoreSunSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<circle cx=\"12\" cy=\"12\" r=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M12 2V3.5M12 20.5V22M19.0708 19.0713L18.0101 18.0106M5.98926 5.98926L4.9286 4.9286M22 12H20.5M3.5 12H2M19.0713 4.92871L18.0106 5.98937M5.98975 18.0107L4.92909 19.0714\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-width=\"1.5\" fill=\"none\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />"},"moon":{"name":"KoreMoonSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<path d=\"M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />"},"info":{"name":"KoreInfoSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M12 16V12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"12\" cy=\"8.25\" r=\"1\" fill=\"currentColor\" stroke=\"none\" />"},"alert":{"name":"KoreAlertSharpIcon","family":"Hugeicons / KORE","style":"Stroke Sharp adaptation","body":"<circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M12 8V12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"12\" cy=\"15.75\" r=\"1\" fill=\"currentColor\" stroke=\"none\" />"}};
+const KoreIcons = {"home":{"name":"KoreHomeSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M3 9.5L12 2.5L21 9.5V21.5H3Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 17H16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreHomeSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M3 9.5 12 2.5 21 9.5V21.5H3ZM8 16.25V17.75H16V16.25Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"reminder":{"name":"KoreReminderSharpIcon","family":"KORE","style":"KORE Sharp","body":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M11 7.5H17M11 12H17M11 16.5H17\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"7\" cy=\"7.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"7\" cy=\"12\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"7\" cy=\"16.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\" />","variants":{"filled":{"name":"KoreReminderSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M3 3H21V21H3ZM11 6.75V8.25H17V6.75ZM11 11.25V12.75H17V11.25ZM11 15.75V17.25H17V15.75ZM6 12C6 12.55229 6.44772 13 7 13C7.55228 13 8 12.55229 8 12C8 11.44771 7.55228 11 7 11C6.44772 11 6 11.44771 6 12ZM6 7.5C6 8.05229 6.44772 8.5 7 8.5C7.55228 8.5 8 8.05229 8 7.5C8 6.94772 7.55228 6.5 7 6.5C6.44772 6.5 6 6.94772 6 7.5ZM6 16.5C6 17.05228 6.44772 17.5 7 17.5C7.55228 17.5 8 17.05228 8 16.5C8 15.94771 7.55228 15.5 7 15.5C6.44772 15.5 6 15.94771 6 16.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"history":{"name":"KoreHistorySharpIcon","family":"KORE","style":"KORE Sharp","body":"<rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 2V6M16 2V6M3 10H21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M7 18L10.5 14.5L13.5 17.5L17 14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreHistorySharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M21 10.75V22H3V10.75H21ZM3 4H7.25V2H8.75V4H15.25V2H16.75V4H21V9.25H3ZM6.46967 17.46967 7.53033 18.53033 10.5 15.56066 13.5 18.56066 17.53033 14.53033 16.46967 13.46967 13.5 16.43934 10.5 13.43934Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"profile":{"name":"KoreProfileSharpIcon","family":"KORE","style":"KORE Sharp","body":"<circle cx=\"12\" cy=\"7\" r=\"4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreProfileSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M20 21.0001H4C4.28417 17.3057 7.3 14.2192 11.0008 14.0378C11.3134 14.0225 11.6446 14.0096 12 13.9999L12.995 14.0662C16.7289 14.3151 19.713 17.269 20 21.0001ZM8 7C8 4.79086 9.79086 3 12 3C14.20914 3 16 4.79086 16 7C16 9.20914 14.20914 11 12 11C9.79086 11 8 9.20914 8 7Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"strenght":{"name":"KoreStrenghtSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M2 20.3C3.15 21.9 8 23.05 10.4 20.15C13 21.4 17.3 20.8 20.5 18.9C22.25 17.85 22.1 15.8 21.05 13.55L14.6 3L10.5 2C9.5 2 8.6 3.1 7.65 4.25L6.8 5.35C6.35 5.95 6.5 6.45 7.3 6.8C8.5 7.3 10 6.95 11.9 6.55L13.4 8.8L15.2 13.35C12.9 11.95 10.1 12.35 8.2 14.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M2 12.95C4.1 11.15 7.4 10.8 10.4 12.65\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreStrenghtSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M2 12.95C4.1 11.15 6.55 10.85 9.85 12.05C8.65 12.65 7.8 13.35 7.1 14.1L8.35 15.1C10.3 12.95 12.85 11.95 15.2 13.35L13.9 8.8L11.9 6.55C10 6.95 8.5 7.3 7.3 6.8C6.5 6.45 6.35 5.95 6.8 5.35L7.65 4.25C8.6 3.1 9.5 2 10.5 2L14.6 3L21.05 13.55C22.63 16.13 22.15 17.96 20.5 18.9C17.3 20.8 13 21.4 10.4 20.15C8 23.05 3.15 21.9 2 20.3V12.95Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"run":{"name":"KoreRunSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M12 20H20.5C21.32843 20 22 19.32843 22 18.5C22 16.567 20.433 15 18.5 15H17C15.55 13.25 14.5 11.25 14.5 9.5L10.5 8V5L9.5 4L2.5 11Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M5 8.5L11 14.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreRunSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M12 20 2.5 11 4.46967 9.03033 10.46967 15.03033 11.53033 13.96967 5.53033 7.96967 9.5 4 10.5 5V8L14.5 9.5C14.5 11.25 15.55 13.25 17 15H18.5C20.433 15 22 16.567 22 18.5C22 19.32843 21.32843 20 20.5 20Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"timer":{"name":"KoreTimerSharpIcon","family":"KORE","style":"KORE Sharp","body":"<circle cx=\"12\" cy=\"13.5\" r=\"8.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M18.01 7.49L19.5 6M14.5 2H9.5M12 13.5L15.5 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreTimerSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M3.5 13.5C3.5 8.80558 7.30558 5 12 5C13.98687 5 15.81452 5.6817 17.26181 6.82397L18.79289 5.29289L20.20711 6.70711L18.67603 8.23819C19.8183 9.68548 20.5 11.51313 20.5 13.5C20.5 18.19442 16.69442 22 12 22C7.30558 22 3.5 18.19442 3.5 13.5ZM14.5 3H9.5V1H14.5ZM11.46967 12.96967 12.53033 14.03033 16.03033 10.53033 14.96967 9.46967Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"calendar":{"name":"KoreCalendarSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M16 2V6M8 2V6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 4H21V22H3Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 10H21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"7.5\" cy=\"14\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"12\" cy=\"14\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"16.5\" cy=\"14\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"7.5\" cy=\"18\" r=\"1\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"12\" cy=\"18\" r=\"1\" fill=\"currentColor\" stroke=\"none\" />","variants":{"filled":{"name":"KoreCalendarSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M21 10.75V22H3V10.75H21ZM3 4H7.25V2H8.75V4H15.25V2H16.75V4H21V9.25H3ZM11 14C11 14.55229 11.44771 15 12 15C12.55229 15 13 14.55229 13 14C13 13.44771 12.55229 13 12 13C11.44771 13 11 13.44771 11 14ZM15.5 14C15.5 14.55229 15.94771 15 16.5 15C17.05228 15 17.5 14.55229 17.5 14C17.5 13.44771 17.05228 13 16.5 13C15.94771 13 15.5 13.44771 15.5 14ZM6.5 14C6.5 14.55229 6.94772 15 7.5 15C8.05229 15 8.5 14.55229 8.5 14C8.5 13.44771 8.05229 13 7.5 13C6.94772 13 6.5 13.44771 6.5 14ZM11 18C11 18.55228 11.44771 19 12 19C12.55229 19 13 18.55228 13 18C13 17.44772 12.55229 17 12 17C11.44771 17 11 17.44772 11 18ZM6.5 18C6.5 18.55228 6.94772 19 7.5 19C8.05229 19 8.5 18.55228 8.5 18C8.5 17.44772 8.05229 17 7.5 17C6.94772 17 6.5 17.44772 6.5 18Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"progress":{"name":"KoreProgressSharpIcon","family":"KORE","style":"KORE Sharp","body":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M7 14L10.5 10.5L13.5 13.5L17 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreProgressSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M3 3H21V21H3ZM6.46967 13.46967 7.53033 14.53033 10.5 11.56066 13.5 14.56066 17.53033 10.53033 16.46967 9.46967 13.5 12.43934 10.5 9.43934Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"medal":{"name":"KoreMedalSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M2 2H22V8L12 12L2 8Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 2V10.4M16 2V10.4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"12\" cy=\"17.5\" r=\"4.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreMedalSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M2 2H22V8L12.75 11.7V13.06222C14.87828 13.41928 16.5 15.27025 16.5 17.5C16.5 19.98528 14.48528 22 12 22C9.51472 22 7.5 19.98528 7.5 17.5C7.5 15.27025 9.12172 13.41928 11.25 13.06222V11.7L2 8ZM3.5 3.5V6.98445L7.25 8.48445V3.5ZM16.75 3.5V8.48445L20.5 6.98445V3.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"award":{"name":"KoreAwardSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M6 2H18C18 8.3 17 16 12 16C7 16 6 8.3 6 2Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M18 4.5L19.4447 4.68748C20.9062 4.87714 22 6.122 22 7.59578C22 8.99373 21.0133 10.1973 19.6425 10.4715L17.5 11\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M6 4.5L4.55527 4.68748C3.09375 4.87714 2 6.122 2 7.59578C2 8.99373 2.98673 10.1973 4.35754 10.4715L6.5 11\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M12 16V19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 22C8 20.343 9.791 19 12 19C14.209 19 16 20.343 16 22Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreAwardSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M6 2H18C18 2.51629 17.99328 3.04199 17.9782 3.57208L19.54735 3.69242L19.57339 3.6958Q20.29683 3.78968 20.93579 4.13482Q21.55557 4.46959 22.02164 5.00004Q22.4877 5.53048 22.73995 6.18819Q23 6.86626 23 7.59578Q23 8.28874 22.76435 8.93765Q22.53516 9.56876 22.10865 10.08903Q21.68213 10.6093 21.10822 10.95782Q20.51814 11.31616 19.83864 11.45208L19.82354 11.4551L16.66585 11.98615L16.66319 11.97031C15.90212 13.99312 14.74092 15.48065 13 15.88812V19.09451C14.72515 19.42753 16 20.60201 16 22H8C8 20.60201 9.27485 19.42753 11 19.09451V15.88812C9.25908 15.48065 8.09788 13.99312 7.33681 11.97031L7.33415 11.98615L4.1765 11.4551L4.1614 11.45208Q3.4819 11.31616 2.89181 10.95782Q2.3179 10.60931 1.89138 10.08904Q1.46485 9.56877 1.23566 8.93766Q1 8.28874 1 7.59578Q1 6.86627 1.26004 6.1882Q1.51228 5.53049 1.97833 5.00005Q2.44439 4.4696 3.06417 4.13482Q3.70314 3.78968 4.42658 3.6958L4.45262 3.69242L6.0218 3.57208C6.00672 3.04199 6 2.51629 6 2ZM17.87922 5.57036C17.77231 7.0482 17.58529 8.5117 17.283 9.85427L19.46001 9.48815Q20.12833 9.35 20.56196 8.82106Q21 8.28673 21 7.59578Q21 6.86736 20.51919 6.32013Q20.04625 5.78187 19.33959 5.68236ZM6.717 9.85427C6.41471 8.5117 6.22769 7.0482 6.12078 5.57036L4.66037 5.68236Q3.95372 5.78187 3.4808 6.32013Q3 6.86735 3 7.59578Q3 8.28672 3.43805 8.82105Q3.87169 9.34999 4.54002 9.48815Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"play":{"name":"KorePlaySharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M5 4.5L19 12L5 19.5Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"4\" />","variants":{"filled":{"name":"KorePlaySharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M5 4.5 19 12 5 19.5V4.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"pause":{"name":"KorePauseSharpIcon","family":"KORE","style":"KORE Sharp","body":"<rect x=\"4\" y=\"4\" width=\"6\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><rect x=\"14\" y=\"4\" width=\"6\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KorePauseSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M4 4H10V20H4ZM14 4H20V20H14Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"reset":{"name":"KoreResetSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M3.05493 13C3.01863 12.6717 3 12.338 3 12C3 7.02944 7.02944 3 12 3C14.8273 3 17.35 4.30367 19 6.34267M20.9451 11C20.9814 11.3283 21 11.662 21 12C21 16.9706 16.9706 21 12 21C9.17273 21 6.64996 19.6963 5 17.6573\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M16 7H20V3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 17H4V21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreResetSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M21.93904 10.8901Q22 11.44142 22 12Q22 14.03384 21.21375 15.89277Q20.45463 17.68754 19.07108 19.07108Q17.68754 20.45463 15.89277 21.21375Q14.03384 22 12 22Q9.68589 22 7.62 20.992Q6.14836 20.27395 5 19.14397V21H3V16H8V18H6.70503Q7.5104 18.71315 8.49702 19.19455Q10.14779 20 12 20Q13.62827 20 15.11367 19.37173Q16.54915 18.76458 17.65687 17.65687Q18.76458 16.54915 19.37173 15.11367Q20 13.62827 20 12Q20 11.55164 19.95116 11.1099ZM2.06099 13.1099Q2 12.55832 2 12Q2 9.96617 2.78626 8.10724Q3.54538 6.31249 4.92893 4.92893Q6.31249 3.54538 8.10724 2.78626Q9.96617 2 12 2Q14.31413 2 16.38 3.00798Q17.85162 3.72602 19 4.85601V3H21V8H16V6H17.29499Q16.4896 5.28683 15.50298 4.80544Q13.85223 4 12 4Q10.37174 4 8.88635 4.62827Q7.45087 5.23543 6.34315 6.34315Q5.23543 7.45087 4.62827 8.88635Q4 10.37174 4 12Q4 12.44809 4.04887 12.8901Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"check":{"name":"KoreCheckSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M5 14L8.5 17.5L19 6.5\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreCheckSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M5.70711 13.29289 8.48337 16.06915 18.27664 5.80952 19.72336 7.19048 8.51664 18.93085 4.29289 14.70711Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"save":{"name":"KoreSaveSharpIcon","family":"KORE","style":"KORE Sharp","body":"<circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8 12.5L10.5 15L16 9\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreSaveSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M2 12C2 6.47715 6.47715 2 12 2C17.52285 2 22 6.47715 22 12C22 17.52285 17.52285 22 12 22C6.47715 22 2 17.52285 2 12ZM8.53033 11.96967 7.46967 13.03033 10.52356 16.08422 16.55287 9.50679 15.44713 8.49321 10.47644 13.91578Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"edit":{"name":"KoreEditSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M3.5 16.5V20.5H7.5L20.5 7.5L16.5 3.5Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M13.5 6.5L17.5 10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreEditSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M3.5 16.5 12.96967 7.03033 16.96967 11.03033 7.5 20.5H3.5ZM18.03033 9.96967 14.03033 5.96967 16.5 3.5 20.5 7.5 18.03033 9.96967Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"trash":{"name":"KoreTrashSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M19.5 5.5L18.5 22H5.5L4.5 5.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M3 5.5H21M8 5.5L9.5 2H14.5L16 5.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M9.5 16.5V10.5M14.5 16.5V10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreTrashSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M3 4.5H7.3406L8.8406 1H15.1594L16.6594 4.5H21V6.5H19.43939L18.5 22H5.5L4.56061 6.5H3ZM8.75 16.5H10.25V10.5H8.75ZM13.75 16.5H15.25V10.5H13.75ZM14.48346 4.5 13.8406 3H10.1594L9.51654 4.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"copy":{"name":"KoreCopySharpIcon","family":"KORE","style":"KORE Sharp","body":"<rect x=\"7.5\" y=\"7.5\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M7.5 16.5H2.5V2.5H16.5V7.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreCopySharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M7.5 7.5H21.5V21.5H7.5ZM2.5 2.5H16.5V5.5H5.5V16.5H2.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"share":{"name":"KoreShareSharpIcon","family":"KORE","style":"KORE Sharp","body":"<circle cx=\"18\" cy=\"6.5\" r=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"6\" cy=\"12\" r=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"18\" cy=\"17.5\" r=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M8.7272 10.75L15.2728 7.75M8.7272 13.25L15.2728 16.25\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreShareSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M15 17.5C15 17.40917 15.00404 17.31928 15.01194 17.2305L8.15457 14.08754C7.60926 14.65025 6.84547 15 6 15C4.34315 15 3 13.65685 3 12C3 10.34315 4.34315 9 6 9C6.84547 9 7.60926 9.34975 8.15457 9.91246L15.01194 6.7695C15.00404 6.68072 15 6.59083 15 6.5C15 4.84315 16.34315 3.5 18 3.5C19.65685 3.5 21 4.84315 21 6.5C21 8.15685 19.65685 9.5 18 9.5C17.15453 9.5 16.39074 9.15025 15.84543 8.58754L8.98806 11.7305C8.99596 11.81928 9 11.90917 9 12C9 12.09083 8.99596 12.18072 8.98806 12.2695L15.84543 15.41246C16.39074 14.84975 17.15453 14.5 18 14.5C19.65685 14.5 21 15.84315 21 17.5C21 19.15685 19.65685 20.5 18 20.5C16.34315 20.5 15 19.15685 15 17.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"download":{"name":"KoreDownloadSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M3 17V21H21V17\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M16.5 11.5L12 16L7.5 11.5M12 16V3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreDownloadSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M4 17V20H20V17H22V22H2V17ZM17.20711 12.20711 12 17.41421 6.79289 12.20711 8.20711 10.79289 11 13.58579V3H13V13.58579L15.79289 10.79289Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"upload":{"name":"KoreUploadSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M3 17V21H21V17\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M16.5 7.5L12 3L7.5 7.5M12 3V16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreUploadSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M4 17V20H20V17H22V22H2V17ZM15.79289 8.20711 13 5.41421V16H11V5.41421L8.20711 8.20711L6.79289 6.79289L12 1.58579L17.20711 6.79289Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"image":{"name":"KoreImageSharpIcon","family":"KORE","style":"KORE Sharp","body":"<rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"7.5\" cy=\"7.5\" r=\"1.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M2.5 20L14.5 11.5L21.5 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreImageSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M2.5 2.5H21.5V21.5H2.5ZM4 20H20V15.03571L14.5 11.5L4 18.9375ZM6 7.5C6 8.32843 6.67157 9 7.5 9C8.32843 9 9 8.32843 9 7.5C9 6.67157 8.32843 6 7.5 6C6.67157 6 6 6.67157 6 7.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"expand":{"name":"KoreExpandSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M15.5 21H21V15.5M21 8.5V3H15.5M8.5 21H3V15.5M3 8.5V3H8.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreExpandSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M2 8.5V2H8.5V4H4V8.5ZM20 8.5V4H15.5V2H22V8.5ZM8.5 22H2V15.5H4V20H8.5ZM15.5 20H20V15.5H22V22H15.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"chevron":{"name":"KoreChevronSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M6 9L12 15L18 9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreChevronSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M6.70711 8.29289 12 13.58579 17.29289 8.29289 18.70711 9.70711 12 16.41421 5.29289 9.70711Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"arrow-up-right":{"name":"KoreArrowUpRightSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M9 6.5H17.5V15M17.5 6.5L6.5 17.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreArrowUpRightSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M9 5.5H18.5V15H16.5V8.91421L7.20711 18.20711L5.79289 16.79289L15.08579 7.5H9Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"close":{"name":"KoreCloseSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M18 6L6.00081 17.9992M17.9992 18L6 6.00085\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreCloseSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M18.70711 6.70711 13.41381 12.00041 18.70631 17.29289 17.2921 18.70711 11.99959 13.41463 6.70792 18.70631 5.2937 17.2921 10.58538 12.00042 5.29289 6.70796 6.70711 5.29374 11.99959 10.5862 17.29289 5.29289Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"menu":{"name":"KoreMenuSharpIcon","family":"KORE","style":"KORE Sharp","body":"<circle cx=\"6\" cy=\"12.5\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"12\" cy=\"12.5\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"18\" cy=\"12.5\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" />","variants":{"filled":{"name":"KoreMenuSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M4.25 12.5C4.25 11.5335 5.0335 10.75 6 10.75C6.9665 10.75 7.75 11.5335 7.75 12.5C7.75 13.4665 6.9665 14.25 6 14.25C5.0335 14.25 4.25 13.4665 4.25 12.5ZM10.25 12.5C10.25 11.5335 11.0335 10.75 12 10.75C12.9665 10.75 13.75 11.5335 13.75 12.5C13.75 13.4665 12.9665 14.25 12 14.25C11.0335 14.25 10.25 13.4665 10.25 12.5ZM16.25 12.5C16.25 11.5335 17.0335 10.75 18 10.75C18.9665 10.75 19.75 11.5335 19.75 12.5C19.75 13.4665 18.9665 14.25 18 14.25C17.0335 14.25 16.25 13.4665 16.25 12.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"grip":{"name":"KoreGripSharpIcon","family":"KORE","style":"KORE Sharp","body":"<circle cx=\"8.5\" cy=\"4\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"8.5\" cy=\"12\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"8.5\" cy=\"20\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"15.5\" cy=\"4\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"15.5\" cy=\"12\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" /><circle cx=\"15.5\" cy=\"20\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\" />","variants":{"filled":{"name":"KoreGripSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M6.75 12C6.75 11.0335 7.5335 10.25 8.5 10.25C9.4665 10.25 10.25 11.0335 10.25 12C10.25 12.9665 9.4665 13.75 8.5 13.75C7.5335 13.75 6.75 12.9665 6.75 12ZM6.75 4C6.75 3.0335 7.5335 2.25 8.5 2.25C9.4665 2.25 10.25 3.0335 10.25 4C10.25 4.9665 9.4665 5.75 8.5 5.75C7.5335 5.75 6.75 4.9665 6.75 4ZM13.75 12C13.75 11.0335 14.5335 10.25 15.5 10.25C16.4665 10.25 17.25 11.0335 17.25 12C17.25 12.9665 16.4665 13.75 15.5 13.75C14.5335 13.75 13.75 12.9665 13.75 12ZM13.75 4C13.75 3.0335 14.5335 2.25 15.5 2.25C16.4665 2.25 17.25 3.0335 17.25 4C17.25 4.9665 16.4665 5.75 15.5 5.75C14.5335 5.75 13.75 4.9665 13.75 4ZM6.75 20C6.75 19.0335 7.5335 18.25 8.5 18.25C9.4665 18.25 10.25 19.0335 10.25 20C10.25 20.9665 9.4665 21.75 8.5 21.75C7.5335 21.75 6.75 20.9665 6.75 20ZM13.75 20C13.75 19.0335 14.5335 18.25 15.5 18.25C16.4665 18.25 17.25 19.0335 17.25 20C17.25 20.9665 16.4665 21.75 15.5 21.75C14.5335 21.75 13.75 20.9665 13.75 20Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"settings":{"name":"KoreSettingsSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M9 2H15V5L17 6.15L19.1 4.65L21.6 9.2L19.4 10.5V13.5L21.6 14.8L19.1 19.35L17 17.85L15 19V22H9V19L7 17.85L4.9 19.35L2.4 14.8L4.6 13.5V10.5L2.4 9.2L4.9 4.65L7 6.15L9 5Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"12\" cy=\"12\" r=\"3.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreSettingsSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M9 2H15V5L17 6.15L19.1 4.65L21.6 9.2L19.4 10.5V13.5L21.6 14.8L19.1 19.35L17 17.85L15 19V22H9V19L7 17.85L4.9 19.35L2.4 14.8L4.6 13.5V10.5L2.4 9.2L4.9 4.65L7 6.15L9 5ZM8.5 12C8.5 13.933 10.067 15.5 12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5C10.067 8.5 8.5 10.067 8.5 12Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"volume":{"name":"KoreVolumeSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M2 8.5H6.5L14 4V20L6.5 15.5H2Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M17 9C17.6254 9.81968 18 10.8634 18 12C18 13.1366 17.6254 14.1803 17 15\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M20 7C21.2508 8.36613 22 10.1057 22 12C22 13.8943 21.2508 15.6339 20 17\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreVolumeSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M2 8.5H6.5L14 4V20L6.5 15.5H2ZM20.73755 6.32471Q21.81431 7.50075 22.39498 8.92423Q23 10.40743 23 12Q23 13.59258 22.39498 15.07578Q21.81431 16.49928 20.73755 17.6753L19.26245 16.3247Q20.09759 15.41258 20.54312 14.32037Q21 13.20035 21 12Q21 10.79966 20.54312 9.67964Q20.0976 8.58744 19.26245 7.67529ZM17.79502 8.39342Q18.37216 9.14985 18.68132 10.05931Q19 10.99679 19 12Q19 13.00321 18.68132 13.94069Q18.37216 14.85014 17.79503 15.60658L16.20497 14.39342Q16.5838 13.8969 16.78773 13.29699Q17 12.67256 17 12Q17 11.32744 16.78773 10.703Q16.5838 10.10308 16.20498 9.60658Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"volume-off":{"name":"KoreVolumeOffSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M2 2L22 22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M14 14V20L6.5 15.5H2V8.5H6.5L7.5 8\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M10 6.4L14 4V10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M17 10C17.6296 10.7667 18 11.7054 18 12.7195C18 13.1635 17.929 13.593 17.7963 14\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" /><path d=\"M20 8C21.2508 9.22951 22 10.7952 22 12.5C22 13.9164 21.4829 15.2367 20.5906 16.348\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreVolumeOffSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M2 8.5H6.5L6.86612 8.28033L1.29289 2.70711L2.70711 1.29289L22.70711 21.29289L21.29289 22.70711L14 15.41421V20L6.5 15.5H2ZM20.70101 7.28685Q21.78983 8.35714 22.37986 9.65895Q23 11.02719 23 12.5Q23 13.72588 22.56693 14.88769Q22.15217 16.00038 21.37035 16.97409L19.81085 15.72191Q20.39077 14.99966 20.69289 14.18913Q21 13.36525 21 12.5Q21 11.45927 20.55824 10.48458Q20.12205 9.5222 19.29899 8.71315ZM14 10.5 9.9375 6.4375 14 4ZM17.77282 9.36537Q18.35902 10.07922 18.67255 10.91617Q19 11.79029 19 12.7195Q19 13.53415 18.74704 14.30998L16.84556 13.69002Q17 13.21633 17 12.7195Q17 11.57573 16.22718 10.63463Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"sun":{"name":"KoreSunSharpIcon","family":"KORE","style":"KORE Sharp","body":"<circle cx=\"12\" cy=\"12\" r=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M12 2V3.5M12 20.5V22M19.0708 19.0713L18.0101 18.0106M5.98926 5.98926L4.9286 4.9286M22 12H20.5M3.5 12H2M19.0713 4.92871L18.0106 5.98937M5.98975 18.0107L4.92909 19.0714\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-width=\"1.5\" fill=\"none\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreSunSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M7 12C7 9.23858 9.23858 7 12 7C14.76142 7 17 9.23858 17 12C17 14.76142 14.76142 17 12 17C9.23858 17 7 14.76142 7 12ZM18.36369 19.77841 17.30299 18.71771 18.71721 17.30349 19.77791 18.36419ZM6.69687 18.71779 5.63621 19.77849 4.22197 18.36431 5.28263 17.30361ZM19.77839 5.63583 18.71769 6.69649 17.30351 5.28225 18.36421 4.22159ZM13 2V3.5H11V2ZM5.28215 6.69637 4.22149 5.63571 5.63571 4.22149 6.69637 5.28215ZM3.5 13H2V11H3.5ZM22 13H20.5V11H22ZM13 20.5V22H11V20.5Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"moon":{"name":"KoreMoonSharpIcon","family":"KORE","style":"KORE Sharp","body":"<path d=\"M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z\" stroke=\"currentColor\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-width=\"1.5\" fill=\"none\" stroke-miterlimit=\"2\" />","variants":{"filled":{"name":"KoreMoonSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"info":{"name":"KoreInfoSharpIcon","family":"KORE","style":"KORE Sharp","body":"<circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M12 16V12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"12\" cy=\"8.25\" r=\"1\" fill=\"currentColor\" stroke=\"none\" />","variants":{"filled":{"name":"KoreInfoSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M2 12C2 6.47715 6.47715 2 12 2C17.52285 2 22 6.47715 22 12C22 17.52285 17.52285 22 12 22C6.47715 22 2 17.52285 2 12ZM11.25 16H12.75V12H11.25ZM11 8.25C11 8.80229 11.44771 9.25 12 9.25C12.55229 9.25 13 8.80229 13 8.25C13 7.69772 12.55229 7.25 12 7.25C11.44771 7.25 11 7.69772 11 8.25Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}},"alert":{"name":"KoreAlertSharpIcon","family":"KORE","style":"KORE Sharp","body":"<circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><path d=\"M12 8V12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"2\" /><circle cx=\"12\" cy=\"15.75\" r=\"1\" fill=\"currentColor\" stroke=\"none\" />","variants":{"filled":{"name":"KoreAlertSharpFilledIcon","family":"KORE","style":"KORE Sharp Filled","body":"<path d=\"M2 12C2 6.47715 6.47715 2 12 2C17.52285 2 22 6.47715 22 12C22 17.52285 17.52285 22 12 22C6.47715 22 2 17.52285 2 12ZM12.75 8H11.25V12H12.75ZM11 15.75C11 16.30228 11.44771 16.75 12 16.75C12.55229 16.75 13 16.30228 13 15.75C13 15.19771 12.55229 14.75 12 14.75C11.44771 14.75 11 15.19771 11 15.75Z\" fill=\"currentColor\" stroke=\"none\" fill-rule=\"evenodd\" />"}}}};
     // Large originals stay as Blobs in IndexedDB; only small references/previews
     // belong in KoreStorage. Nothing is uploaded to an external service.
     const TrainingMedia = (() => {
@@ -5214,11 +5396,16 @@ const KoreIcons = {"home":{"name":"KoreHomeSharpIcon","family":"Hugeicons / KORE
       const $ = id => document.getElementById(id);
       const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
       const icons = KoreIcons;
-      function icon(name) {
-        const source = icons[name] || icons.info;
-        return `<svg class="icon" data-kore-icon="${source.name}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${source.body}</svg>`;
+      const filledIconKeys = new Set(['play','pause','check','save']);
+      function icon(name, variant = filledIconKeys.has(name) ? 'filled' : 'outline') {
+        const item = icons[name === 'dumbbell' ? 'strenght' : name] || icons.info;
+        const source = variant === 'filled' ? item.variants.filled : item;
+        return `<svg class="icon" data-kore-icon="${source.name}" data-kore-variant="${variant}" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">${source.body}</svg>`;
       }
-      document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
+      document.querySelectorAll('[data-icon]').forEach(el => {
+        const variant = el.dataset.iconVariant || (filledIconKeys.has(el.dataset.icon) ? 'filled' : 'outline');
+        el.innerHTML = icon(el.dataset.icon, variant); el.dataset.iconVariant = variant;
+      });
       const localDate = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
       const displayDate = (date, year = false) => new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', ...(year ? { year: 'numeric' } : {}) });
       const number = value => value === null || value === undefined ? '—' : value.toLocaleString('pt-BR', { maximumFractionDigits: 3 });
@@ -5581,7 +5768,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           if($('active-workout-detail').innerHTML!==detail)$('active-workout-detail').innerHTML=detail;
           $('resume-active-workout').setAttribute('aria-label', `Retomar treino de ${kind.toLowerCase()}: ${session.workout.title}. ${position.name}. ${position.detail}.`);
         }
-        // The workout's own summary already offers "Retomar treino", so the banner only appears elsewhere.
+        // The execution screen already shows the active workout, so the banner appears elsewhere.
         setDockItemVisible('active-workout', !!session && !(['session','summary'].includes(appView) && currentDraft()?.key === session.key && !isReadOnly()));
       }
       function resumeActiveWorkout() {
@@ -5699,8 +5886,8 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           return exerciseEntry(ex, number, session, { tag, attrs, progress, settled, trailing:!navigation && media ? icon('image') : '' });
         });
       }
-      // Pre-workout only exists before a workout is done: renderWorkout sends a
-      // completed workout to its post-workout page instead.
+      // Pre-workout is available before starting. Active workouts resume execution;
+      // completed workouts open their post-workout page instead.
       function renderSummary(workout) {
         const session = currentSession(), strength = workout.kind === 'strength', progress = D.progress(session);
         const running = activeWorkoutSession(), blocked = running && running.day !== workout.id;
@@ -5917,7 +6104,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if (index < 0) { index = Math.max(0,exercises.findIndex(ex=>!exerciseComplete(ex,session))); focusExerciseId = exercises[index].id; }
         const ex = exercises[index];
         if (!locked) rememberActiveWorkout(session, ex.id);
-        $('workout').innerHTML = `<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-summary aria-label="Voltar ao resumo do treino">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${locked ? 'Registro' : 'Em execução'} · <span class="numeric">${index+1}</span> de <span class="numeric">${exercises.length}</span></span><p class="session-workout-name" id="workout-title" tabindex="-1">${esc(workout.title)}</p></div><button type="button" class="icon-button" data-review-exercises aria-label="Ver todos os exercícios" aria-haspopup="dialog" aria-controls="exercise-picker-dialog">${icon('reminder')}</button></div>
+        $('workout').innerHTML = `<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-back aria-label="Voltar para o início">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${locked ? 'Registro' : 'Em execução'} · <span class="numeric">${index+1}</span> de <span class="numeric">${exercises.length}</span></span><p class="session-workout-name" id="workout-title" tabindex="-1">${esc(workout.title)}</p></div><button type="button" class="icon-button" data-review-exercises aria-label="Ver todos os exercícios" aria-haspopup="dialog" aria-controls="exercise-picker-dialog">${icon('reminder')}</button></div>
           ${sessionProgress()}<div data-exercise-swipe>${focusedSessionControls(workout,session,exercises,index)}<div id="exercise-list">${renderStrength(ex,index,session,true)}</div></div><div class="session-bottom"><div class="session-actions button-group" data-size="action"><button type="button" class="button primary" id="finish-workout"></button>${locked ? '' : cancelWorkoutButton(session)}</div><span class="save-status" id="save-status" role="status" hidden></span></div>`;
         if (locked) $('exercise-list').querySelectorAll('button,input').forEach(el => el.disabled = true);
         bindInlineMedia($('workout'),workout.exercises,exerciseMedia);
@@ -5983,9 +6170,9 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       function evolutionExerciseChoices(exercise) {
         return (exercise.unit==='s'?['time','sets']:['load','reps','volume']).map(value=>({value,label:evolutionMetrics[value].label}));
       }
-      function evolutionCard(value,label,metric) {
+      function evolutionCard(value,label,metric,description=label) {
         const text=value>=100000&&!['duration','time','pace'].includes(metric)?summaryNumber(value):evolutionValue(value,metric),unit=['workouts','sets','exerciseCount'].includes(metric)?'':evolutionMetrics[metric]?.unit||'';
-        return `<div class="evo-stat"><dt>${esc(label)}</dt><dd class="${text.length>8?'is-long':''}" aria-label="${esc(evolutionValue(value,metric)+(unit?' '+unit:''))}">${esc(text)}${unit&&value!==null?`<span>${esc(unit)}</span>`:''}</dd></div>`;
+        return `<div class="evo-stat"><dt title="${esc(description)}">${esc(label)}${description!==label?`<span class="sr-only"> · ${esc(description)}</span>`:''}</dt><dd class="${text.length>=8?'is-long':''}" aria-label="${esc(evolutionValue(value,metric)+(unit?' '+unit:''))}">${esc(text)}<span${unit&&value!==null?'':' aria-hidden="true"'}>${unit&&value!==null?esc(unit):''}</span></dd></div>`;
       }
       function renderEvolutionEmptyState(hasHistory) {
         const title=hasHistory?'Nenhum treino encontrado':'Nenhum treino concluído';
@@ -5998,7 +6185,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if(root.dataset.evolutionTab!==evolutionState.tab||!$('evo-panel')) {
           root.dataset.evolutionTab=evolutionState.tab;
           const kinds=`<div class="evo-kinds" role="group" aria-label="Modalidade">${[['all','Todos'],['strength','Força'],['cardio','Corrida']].map(([value,label])=>`<button type="button" id="evo-kind-${value}" data-evo-kind="${value}" aria-pressed="false">${value==='all'?'':icon(value==='strength'?'dumbbell':'run')}${label}</button>`).join('')}</div>`;
-          root.innerHTML=records?`<div id="evo-panel"><section class="evo-record-highlights" id="evo-record-highlights" aria-label="Recordes em destaque"></section><section class="evo-record-browser" id="evo-record-browser" aria-label="Outros recordes"><div class="evo-record-tools" id="evo-record-tools"><h2>Outros recordes</h2><label class="form-field evo-record-search" for="evo-record-search">Buscar exercício ou modalidade<input type="search" id="evo-record-search" placeholder="Ex.: supino ou corrida" maxlength="120" autocomplete="off" spellcheck="false" aria-controls="evo-record-results" value="${esc(evolutionState.recordsQuery)}"></label></div><div id="evo-record-results" role="region" aria-label="Lista de recordes"></div></section></div>`:`<div class="evo-filters">${kinds}<div class="form-field evo-period-field"><span id="evo-period-label">Período</span><button type="button" class="selection-field" id="evo-period" aria-labelledby="evo-period-label evo-period" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="evo-range-caption"><span id="evo-range-caption"></span></div></div><div id="evo-panel"></div>`;
+          root.innerHTML=records?`<div id="evo-panel"><section class="evo-record-highlights" id="evo-record-highlights" aria-label="Recordes em destaque"></section><section class="evo-record-browser" id="evo-record-browser" aria-label="Outros recordes"><div class="evo-record-tools" id="evo-record-tools"><h2>Outros recordes</h2><label class="form-field evo-record-search" for="evo-record-search">Buscar exercício ou modalidade<input type="search" id="evo-record-search" maxlength="120" autocomplete="off" spellcheck="false" aria-controls="evo-record-results" value="${esc(evolutionState.recordsQuery)}"></label></div><div id="evo-record-results" role="region" aria-label="Lista de recordes"></div></section></div>`:`<div class="evo-filters">${kinds}<div class="form-field evo-period-field"><span id="evo-period-label">Período</span><button type="button" class="selection-field" id="evo-period" aria-labelledby="evo-period-label evo-period" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="evo-range-caption"><span id="evo-range-caption"></span></div></div><div id="evo-panel"></div>`;
         }
         if(records)return;
         root.querySelector('.evo-kinds').style.setProperty('--evo-kind-position',String(['all','strength','cardio'].indexOf(mode)));
@@ -6006,7 +6193,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       }
       function evolutionChartType(metric) {
         if(['workouts','sets','reps'].includes(metric))return 'bar';
-        if(['volume','distance','duration'].includes(metric))return 'area';
+        if(['volume','distance','duration','load'].includes(metric))return 'area';
         return 'line';
       }
       function renderEvolution() {
@@ -6019,16 +6206,16 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         setSelectionField('evo-period',evolutionState.period,evolutionPeriods.find(p=>p.value===evolutionState.period).label);
         $('evo-range-caption').innerHTML = koreMeta(evolutionDates(range.start,range.end));
         const stats=evolutionState.mode==='strength'?
-          [[totals.workouts,'Treinos','workouts'],[totals.sets,'Séries realizadas','sets'],[totals.volume,'Volume','volume'],[totals.exercises,'Exercícios diferentes','exerciseCount']]:evolutionState.mode==='cardio'?
+          [[totals.workouts,'Treinos','workouts'],[totals.sets,'Séries','sets','Séries realizadas'],[totals.volume,'Volume','volume'],[totals.exercises,'Exercícios','exerciseCount','Exercícios diferentes']]:evolutionState.mode==='cardio'?
           [[totals.workouts,'Treinos','workouts'],[totals.distance,'Distância','distance'],[totals.duration,'Tempo','duration'],[totals.pace,'Pace médio','pace']]:
-          [[totals.workouts,'Treinos','workouts'],[totals.sets,'Séries realizadas','sets'],[totals.volume,'Volume de força','volume'],[totals.distance,'Distância de corrida','distance']];
-        let html=`<dl class="evo-stats" aria-label="Totais do período">${stats.map(([value,label,metric])=>evolutionCard(value,label,metric)).join('')}</dl>`;
+          [[totals.workouts,'Treinos','workouts'],[totals.sets,'Séries','sets','Séries realizadas'],[totals.volume,'Volume','volume','Volume de força'],[totals.distance,'Distância','distance','Distância de corrida']];
+        let html=`<dl class="evo-stats" aria-label="Totais do período">${stats.map(([value,label,metric,description])=>evolutionCard(value,label,metric,description)).join('')}</dl>`;
         if(!rows.length) {
           $('evo-panel').innerHTML=html+renderEvolutionEmptyState(evolutionModel.rows.length>0);
           return;
         }
         const series=P.buckets(rows,range),frequency={day:'por dia',week:'por semana',month:'por mês',year:'por ano'}[series.unit];
-        html+=`<section class="evo-card" aria-labelledby="evo-volume-title"><div class="evo-card-heading"><div><h2 id="evo-volume-title">Ritmo de treino</h2><p>Totais ${frequency}</p></div><button type="button" class="selection-field compact evo-metric-select" id="evo-metric" aria-label="Métrica do gráfico" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div id="evo-overview-chart" class="evo-chart"></div>${totals.partial&&evolutionState.metric==='volume'?'<p class="evo-note">Volume parcial: algumas séries estão sem carga ou repetições.</p>':''}</section>`;
+        html+=`<section class="evo-card" aria-labelledby="evo-volume-title"><div class="evo-card-heading"><div><h2 id="evo-volume-title">Ritmo de treino</h2><p>Distribuição ${frequency}</p></div><button type="button" class="selection-field compact evo-metric-select" id="evo-metric" aria-label="Métrica do gráfico" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div id="evo-overview-chart" class="evo-chart"></div>${totals.partial&&evolutionState.metric==='volume'?'<p class="evo-note">Volume parcial: algumas séries estão sem carga ou repetições.</p>':''}</section>`;
         const catalog=evolutionModel.exercises;
         let selected=catalog.find(ex=>ex.key===evolutionState.exercise);
         if(!selected){selected=[...catalog].sort((a,b)=>b.points.filter(p=>p.date>=range.start&&p.date<=range.end).length-a.points.filter(p=>p.date>=range.start&&p.date<=range.end).length||Number(a.unit==='s')-Number(b.unit==='s')||b.points.at(-1).date.localeCompare(a.points.at(-1).date))[0];evolutionState.exercise=selected?.key||null;evolutionState.exerciseMetric=defaultExerciseMetric(selected);}
@@ -6039,7 +6226,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         }
         $('evo-panel').innerHTML=html;
         setSelectionField('evo-metric',evolutionState.metric,evolutionMetrics[evolutionState.metric].label);
-        mountEvolutionChart('evo-overview-chart',series.points.map(point=>({...point,value:point[evolutionState.metric]})),evolutionState.metric,evolutionChartType(evolutionState.metric),series.unit);
+        mountEvolutionChart('evo-overview-chart',series.points.map(point=>({...point,value:point[evolutionState.metric]})),evolutionState.metric,evolutionChartType(evolutionState.metric),series.unit,{value:totals[evolutionState.metric],date:range.start,end:range.end,partial:totals.partial,label:evolutionPeriods.find(p=>p.value===evolutionState.period).label});
         if($('evo-exercise')) {
           setSelectionField('evo-exercise',selected.key,evolutionExerciseLabel(selected));
           setSelectionField('evo-exercise-metric',evolutionState.exerciseMetric,evolutionMetrics[evolutionState.exerciseMetric].label);
@@ -6090,7 +6277,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         root.innerHTML=highlights.map(({record,label,symbol})=>{
           const exercise=evolutionModel.exercises.find(item=>item.key===record.exerciseKey),context=exercise?evolutionExerciseLabel(exercise):record.workoutTitle;
           const unit=evolutionMetrics[record.metric].unit,details=[record.context,displayDate(record.date,true)].filter(Boolean).join(' · ');
-          return `<button type="button" class="evo-highlight" data-evo-record="${esc(record.recordKey)}" aria-label="${esc(`${label}: ${evolutionMetricText(record.value,record.metric)}. ${context}. ${details}. Ver resumo do treino.`)}"><span class="evo-highlight-icon" aria-hidden="true">${icon('medal')}</span><span class="evo-highlight-label">${esc(label)}</span><strong class="evo-highlight-value">${esc(evolutionValue(record.value,record.metric))}${unit?`<small>${esc(unit)}</small>`:''}</strong><span class="evo-highlight-context">${esc(context)}</span><span class="evo-highlight-date">${koreMeta(details)}</span></button>`;
+          return `<button type="button" class="evo-highlight" data-evo-record="${esc(record.recordKey)}" aria-label="${esc(`${label}: ${evolutionMetricText(record.value,record.metric)}. ${context}. ${details}. Ver resumo do treino.`)}"><span class="evo-highlight-icon" aria-hidden="true">${icon('medal','filled')}</span><span class="evo-highlight-label">${esc(label)}</span><strong class="evo-highlight-value">${esc(evolutionValue(record.value,record.metric))}${unit?`<small>${esc(unit)}</small>`:''}</strong><span class="evo-highlight-context">${esc(context)}</span><span class="evo-highlight-date">${koreMeta(details)}</span></button>`;
         }).join('');
       }
       function renderEvolutionRecords() {
@@ -6137,7 +6324,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         }
         return path;
       }
-      function mountEvolutionChart(id,points,metric,type,unit) {
+      function mountEvolutionChart(id,points,metric,type,unit,summary=null) {
         const root=$(id),valid=points.filter(point=>Number.isFinite(point.value));
         if(!valid.length) {
           root.innerHTML=`<div class="evo-chart-empty"><p>${points.length?'Nenhum valor registrado para esta métrica.':'Nenhum registro deste exercício no período.'}</p>${points.length&&['load','volume'].includes(metric)?'<span>Preencha carga e repetições nas séries realizadas.</span>':''}</div>`;return;
@@ -6166,8 +6353,9 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         const ticks=['workouts','sets','reps'].includes(metric)?[...new Set([0,Math.round(max/2),max])]:[0,max/2,max];
         const tickIndexes=[...new Set([0,Math.floor((points.length-1)/2),points.length-1])];
         const tick=date=>unit==='year'?date.slice(0,4):unit==='month'?new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{month:'short'}):date.slice(8,10)+'/'+date.slice(5,7);
-        const selected=restore?previous.selected:points.findLastIndex(point=>Number.isFinite(point.value)&&(point.value>0||type!=='bar'));
-        const state={root,points,metric,type,unit,width,height,left,right,band,x,y,selected:Math.max(0,Math.min(points.length-1,selected))};evolutionCharts.set(id,state);
+        const selected=restore?previous.selected:points.findLastIndex(point=>Number.isFinite(point.value)&&(summary?point.workouts>0:point.value>0||type!=='bar'));
+        const state={root,points,metric,type,unit,summary,width,height,left,right,band,x,y,ready:false,selected:Math.max(0,Math.min(points.length-1,selected))};evolutionCharts.set(id,state);
+        root.dataset.readoutScope=summary?'period':'point';
         const areaId=id+'-area-fill',areaTop=Math.min(bottom-1,y(peak));
         // Bar charts total a whole period; empty periods stay in the chart but not in the table.
         const dataRows=type==='bar'?points.filter(point=>Number.isFinite(point.value)&&point.value!==0):points;
@@ -6179,7 +6367,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           const w=Math.min(28,band*.64),l=x(i)-w/2,r=l+w,t=y(point.value),radius=Math.min(4,w/2,(bottom-t)/2);
           return `<path class="evo-mark evo-bar" data-chart-index="${i}" d="M${l} ${bottom} V${t+radius} Q${l} ${t} ${l+radius} ${t} H${r-radius} Q${r} ${t} ${r} ${t+radius} V${bottom} Z"/>`;
         }).join('');
-        root.innerHTML=`<div class="evo-chart-readout" aria-live="polite" aria-atomic="true"><strong data-chart-value></strong><span data-chart-date></span></div>
+        root.innerHTML=`<div class="evo-chart-readout" aria-live="polite" aria-atomic="true"><strong data-chart-value></strong><span data-chart-date></span></div>${summary?'<span class="sr-only" data-chart-inspection aria-live="polite" aria-atomic="true"></span>':''}
           <div class="evo-plot-wrap"><svg class="evo-plot" viewBox="0 0 ${width} ${height}" role="img" tabindex="0" aria-label="${esc(evolutionMetrics[metric].label)}. Use as setas para consultar os valores." aria-describedby="${id}-hint">
             ${type==='area'?`<defs><linearGradient id="${areaId}" x1="0" y1="${areaTop}" x2="0" y2="${bottom}" gradientUnits="userSpaceOnUse"><stop class="evo-area-stop is-top" offset="0%"/><stop class="evo-area-stop is-middle" offset="55%"/><stop class="evo-area-stop is-bottom" offset="100%"/></linearGradient></defs>`:''}
             ${ticks.map(value=>`<line class="evo-gridline" x1="${left}" x2="${right}" y1="${y(value)}" y2="${y(value)}"/><text class="evo-axis" x="${left-9}" y="${y(value)+4}" text-anchor="end">${esc(axisShort(value))}</text>`).join('')}
@@ -6202,9 +6390,9 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         }
         plot.addEventListener('pointerdown',choose);
         plot.addEventListener('pointermove',event=>{if(event.pointerType==='mouse'||event.buttons)choose(event);});
-        plot.addEventListener('pointerleave',()=>wrap.classList.remove('is-inspecting'));
+        plot.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse')wrap.classList.remove('is-inspecting');});
         plot.addEventListener('pointercancel',()=>wrap.classList.remove('is-inspecting'));
-        plot.addEventListener('focus',()=>wrap.classList.add('is-inspecting'));
+        plot.addEventListener('focus',()=>{selectEvolutionPoint(id,state.selected);wrap.classList.add('is-inspecting');});
         plot.addEventListener('blur',()=>wrap.classList.remove('is-inspecting'));
         plot.addEventListener('keydown',event=>{
           if(event.key==='Escape'){wrap.classList.remove('is-inspecting');return;}
@@ -6213,15 +6401,18 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           wrap.classList.add('is-inspecting');
         });
         selectEvolutionPoint(id,state.selected);
+        state.ready=true;
         if(plotFocused)plot.focus({preventScroll:true});
       }
       function selectEvolutionPoint(id,index) {
         const state=evolutionCharts.get(id);if(!state)return;
         state.selected=index;const point=state.points[index],root=state.root;
         const value=evolutionMetricText(point.value,state.metric),date=evolutionDates(point.date,point.end||point.date)+(point.partial&&state.metric==='volume'?' · volume parcial':'');
-        for(const [selector,text] of [['[data-chart-value]',value],['[data-chart-date]',date],['[data-tooltip-value]',value],['[data-tooltip-date]',date]]) {
+        const period=state.summary,headline=period?evolutionMetricText(period.value,state.metric):value,caption=period?`${period.label} · ${evolutionDates(period.date,period.end)}${period.partial&&state.metric==='volume'?' · volume parcial':''}`:date;
+        for(const [selector,text] of [['[data-chart-value]',headline],['[data-chart-date]',caption],['[data-tooltip-value]',value],['[data-tooltip-date]',date]]) {
           const element=root.querySelector(selector);if(element.textContent!==text){if(selector==='[data-tooltip-date]'||selector==='[data-chart-date]')element.innerHTML=koreMeta(text);else element.textContent=text;}
         }
+        const inspection=root.querySelector('[data-chart-inspection]');if(inspection&&state.ready)inspection.textContent=`${date}: ${value}`;
         root.querySelectorAll('[data-chart-index]').forEach(mark=>mark.classList.toggle('is-active',+mark.dataset.chartIndex===index));
         const guide=root.querySelector('.evo-guide');guide.setAttribute('x1',state.x(index));guide.setAttribute('x2',state.x(index));
         const halo=root.querySelector('.evo-focus-halo');
@@ -6303,7 +6494,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if(!records.length)return '';
         const title=records.length===1?'Recorde pessoal':'Recordes pessoais';
         const item=record=>`<div class="post-pr-item"><span><strong>${esc(record.name)}</strong><small>${esc(P.recordDefinitions[record.metric].label)}</small>${record.context?`<small class="post-pr-context">${koreMeta(record.context)}</small>`:''}</span><span class="post-pr-value"><b>${esc(evolutionMetricText(record.value,record.metric))}</b>${record.previous==null?'':`<small>${koreMeta(`Anterior: ${evolutionMetricText(record.previous,record.metric)}`)}</small>`}</span></div>`;
-        return `<section class="section-card post-prs" data-record-state="record" aria-label="Recordes pessoais deste treino"><div class="section-card-heading post-pr-heading"><span class="post-pr-emblem" aria-hidden="true">${icon('medal')}</span><div><span class="post-pr-eyebrow">Conquistas</span><h3>${title}</h3></div></div><div class="overview-list post-pr-list">${records.slice(0,3).map(item).join('')}${records.length>3?`<details class="evo-data post-pr-more"><summary>Mais ${records.length-3} ${records.length===4?'recorde':'recordes'}${icon('chevron')}</summary><div>${records.slice(3).map(item).join('')}</div></details>`:''}</div></section>`;
+        return `<section class="section-card post-prs" data-record-state="record" aria-label="Recordes pessoais deste treino"><div class="section-card-heading post-pr-heading"><span class="post-pr-emblem" aria-hidden="true">${icon('medal','filled')}</span><div><span class="post-pr-eyebrow">Conquistas</span><h3>${title}</h3></div></div><div class="overview-list post-pr-list">${records.slice(0,3).map(item).join('')}${records.length>3?`<details class="evo-data post-pr-more"><summary>Mais ${records.length-3} ${records.length===4?'recorde':'recordes'}${icon('chevron')}</summary><div>${records.slice(3).map(item).join('')}</div></details>`:''}</div></section>`;
       }
       $('post-workout').addEventListener('click',event=>{
         const summary=event.target.closest('.post-pr-more>summary');
@@ -6315,7 +6506,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         clearTimeout(evolutionResizeTimer);
         evolutionResizeTimer=setTimeout(()=>{
           if(appView!=='progress')return;
-          for(const [id,state] of evolutionCharts)if(state.root.isConnected&&Math.abs(state.root.clientWidth-state.width)>1)mountEvolutionChart(id,state.points,state.metric,state.type,state.unit);
+          for(const [id,state] of evolutionCharts)if(state.root.isConnected&&Math.abs(state.root.clientWidth-state.width)>1)mountEvolutionChart(id,state.points,state.metric,state.type,state.unit,state.summary);
         },120);
       });
 
@@ -6370,7 +6561,8 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       }
       function syncNavigation() {
         if (!navigationReady || navigationRestoring || navigationPopping) return;
-        const route = navigationSnapshot(), key = navigationKey(route), currentKey = navigationKey(navigationCurrent.route), dialog = topNavigationDialog();
+        const route = navigationSnapshot(), key = navigationKey(route), dialog = topNavigationDialog();
+        let currentKey = navigationKey(navigationCurrent.route);
         // Embedded previews own the outer browser history. Keep the app's Back actions local.
         if(embeddedPreview) { writeNavigation({version:1,route,previousKey:null,modal:false},true);return; }
         // One temporary history entry dismisses the top dialog before leaving its page.
@@ -6381,6 +6573,12 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
             requestNavigationBack();
           } else writeNavigation({ ...navigationCurrent, route }, true);
           return;
+        }
+        if (route.view === 'session' && key !== currentKey) {
+          // Replace pre-workout with Home; resuming from another page also returns Home.
+          const home = homeReturnRoute();
+          writeNavigation({version:1,route:home,previousKey:null,modal:false}, ['summary','home'].includes(navigationCurrent.route.view));
+          currentKey = navigationKey(home);
         }
         const state = { version:1, route, previousKey:key === currentKey ? navigationCurrent.previousKey : currentKey, modal:false };
         writeNavigation(state, key === currentKey);
@@ -6411,10 +6609,11 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         // A history entry can outlive its draft, including after the last workout resets the cycle.
         const finishedWorkout = ['summary','session'].includes(appView) && (store.sessions[route.sessionKey]?.done || (!route.record && Object.values(store.sessions).some(session => session.done && session.day === route.day && (route.cycleNumber ? session.cycleNumber === route.cycleNumber : session.date === route.date))));
         const canceledWorkout=['summary','session'].includes(appView)&&store.drafts[route.sessionKey]?.archived;
-        if (finishedWorkout||canceledWorkout) { appView='home';goToToday(); }
+        const startedWorkout = appView === 'summary' && !isReadOnly() && activeWorkoutSession()?.day === selectedDay;
+        if (finishedWorkout||canceledWorkout||startedWorkout) { appView='home';goToToday(); }
         else if(route.resetDay)goToToday();
         setMonthPickerOpen(false);
-        renderNav(); renderWorkout(); focusPage(finishedWorkout||canceledWorkout||route.resetDay?0:route.scrollY||0);
+        renderNav(); renderWorkout(); focusPage(finishedWorkout||canceledWorkout||startedWorkout||route.resetDay?0:route.scrollY||0);
       }
       function initializeNavigation() {
         // App routes restore their own positions; modal history entries must not scroll the page.
@@ -6497,6 +6696,10 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         $('bottom-nav').querySelectorAll('[data-nav]').forEach(button=>{
           if(button.dataset.nav === active) button.setAttribute('aria-current','page');
           else button.removeAttribute('aria-current');
+          const slot = button.querySelector('[data-icon]'), variant = button.dataset.nav === active ? 'filled' : 'outline';
+          if (slot && slot.dataset.iconVariant !== variant) {
+            slot.innerHTML = icon(slot.dataset.icon, variant); slot.dataset.iconVariant = variant;
+          }
         });
         for(const [page,id] of Object.entries(pageIds)) $(id).hidden=appView !== page;
         $('home').hidden=appView !== 'home';
@@ -6580,6 +6783,9 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if(!workout && ['summary','session'].includes(appView)) appView='home';
         if(appView === 'session' && !isReadOnly() && !currentDraft()) appView='summary';
         if(appView === 'session' && !isReadOnly() && activeWorkoutSession() && activeWorkoutSession().day !== selectedDay) appView='summary';
+        if (appView === 'summary' && !isReadOnly() && activeWorkoutSession()?.day === selectedDay) {
+          appView = 'session'; focusExerciseId = preferences.activeWorkout.exerciseId;
+        }
         syncPageChrome(); syncRestContext();
         if(appView === 'home') renderHome();
         else if(appView === 'workouts') renderManager();
@@ -6596,7 +6802,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
             renderLegacySession();
             // Same compact toolbar as the strength session; the spacer keeps the title centred.
             $('workout').querySelector('.workout-heading')?.remove();
-            $('workout').insertAdjacentHTML('afterbegin',`<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-summary aria-label="Voltar ao resumo do treino">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${isReadOnly() ? 'Registro' : 'Em execução'} · Corrida</span><p class="session-workout-name" id="workout-title" tabindex="-1">${esc(workout.title)}</p></div><span class="session-toolbar-spacer" aria-hidden="true"></span></div>`);
+            $('workout').insertAdjacentHTML('afterbegin',`<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-back aria-label="Voltar para o início">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${isReadOnly() ? 'Registro' : 'Em execução'} · Corrida</span><p class="session-workout-name" id="workout-title" tabindex="-1">${esc(workout.title)}</p></div><span class="session-toolbar-spacer" aria-hidden="true"></span></div>`);
           }
         }
         renderRestMini(); syncViewMotion(); queueNavigationSync();
@@ -6668,12 +6874,6 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           // Publish the draft before its activity pointer so other tabs can resolve it.
           writeStore(); rememberActiveWorkout(session, focusExerciseId);
         }
-        if(appView!=='session') {
-          if(appView!=='summary'){appView='summary';renderNav();renderWorkout();focusPage();}
-          preWorkoutScroll=window.scrollY;
-          // Resuming still has a pre-workout screen as its Back destination.
-          syncNavigation();captureNavigationRoute();
-        }
         appView = 'session'; renderWorkout(); focusPage();
       }
       function selectFocus(id) {
@@ -6706,7 +6906,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         else if (target.hasAttribute('data-overview-workout')) showOverview(target.dataset.overviewWorkout);
         else if (target.hasAttribute('data-resume-workout')) { rememberSummaryOrigin(); appView='summary'; chooseDay(target.dataset.resumeWorkout); startSession(); }
         else if (target.hasAttribute('data-start-session')) startSession();
-        else if (target.hasAttribute('data-session-summary')) navigateBack('summary');
+        else if (target.hasAttribute('data-session-back')) { if (validInputs()) returnToRoute(homeReturnRoute()); }
         else if (target.hasAttribute('data-focus-exercise')) selectFocus(target.dataset.focusExercise);
         else if (target.hasAttribute('data-review-exercises')) showExerciseList();
         else if (target.hasAttribute('data-preview-exercise')) showMedia(target.dataset.previewExercise);
@@ -7769,7 +7969,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         const nextId = nextSupersetExercise(session, exId, index);
         if (nextId && nextId !== focusExerciseId) selectFocus(nextId);
         trigger = $('exercise-list').querySelector('[data-set]:not(:checked),[data-exercise-timer][aria-pressed="false"]') || $('workout-title');
-        if (roundComplete(session, exId, index)) startRest(trigger);
+        if (preferences.autoOpenRest && roundComplete(session, exId, index)) startRest(trigger);
         else {
           // Timed sets may still be closing their dialog when the exercise changes.
           if ($('rest-dialog').open) restTrigger = trigger;
@@ -8499,12 +8699,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if (!restAvailable()) return;
         stopSound(); timer.elapsed = 0; timer.startedAt = Date.now(); timer.finished = false; timer.workoutKey = restScope(); timer.adjustment = 0; timer.exercise = null;
         persistTimer(); initAudio();
-        if(preferences.autoOpenRest) openRest(trigger);
-        else {
-          restTrigger=trigger;
-          if($('rest-dialog').open) { $('rest-dialog').dataset.closeMotion='minimize'; $('rest-dialog').close(); }
-          timerUI();
-        }
+        openRest(trigger);
       }
       function openExerciseTimer(trigger) {
         if (!restAvailable()) return;
@@ -8687,8 +8882,232 @@ if(window.__KORE_DEMO_SCREEN==='cardio'){document.querySelector('.day[data-weekd
 if(window.__KORE_DEMO_SCREEN==='manager')document.getElementById('editor-open').click();
 if(window.__KORE_DEMO_SCREEN==='training')document.querySelector('[data-resume-workout]')?.click();
 if(window.__KORE_DEMO_SCREEN==='finish'){document.querySelector('[data-resume-workout]')?.click();document.getElementById('finish-workout')?.click();}
-if(window.__KORE_DEMO_SCREEN==='notification'){document.querySelector('[data-resume-workout]')?.click();document.querySelector('[data-session-summary]').click();document.querySelector('[data-summary-back]').click();document.getElementById('nav-profile').click();}
+if(window.__KORE_DEMO_SCREEN==='notification'){document.querySelector('[data-resume-workout]')?.click();document.querySelector('[data-session-back]')?.click();document.getElementById('nav-profile').click();}
 if(window.__KORE_DEMO_SCREEN==='editor'){document.getElementById('editor-open').click();document.querySelector('[data-manage-workout="forca-a"]').click();}
 if(window.__KORE_DEMO_SCREEN==='progress'){document.getElementById('nav-profile').click();document.getElementById('evolution-overview-open').click();document.getElementById('evo-period').click();document.querySelector('#selection-options [data-choice="2"]').click();document.getElementById('evo-metric').click();document.querySelector('#selection-options [data-choice="1"]').click();window.scrollTo(0,0);}
 if(window.__KORE_DEMO_SCREEN)document.activeElement?.blur();
-</script></body></html>
+</script><script data-kore-names>
+/* KORE · Single-line names. Presentation only: never edits stored text. */
+(() => {
+  'use strict';
+  if (window.KoreNames) return;
+  const selector = [
+    '[data-kore-name]', '.managed-workout-main strong', '.workout-row strong',
+    '.today-card h2', '.summary-heading h2', '.post-heading h2', '.workout-heading h2',
+    '.workout-switcher .button', '.session-workout-name', '.history-session > strong', '.active-workout-title',
+    '.active-workout-exercise', '.current-exercise-copy h2', '.exercise-heading-copy h3',
+    '.stage-main h3', '.interval-sequence strong', '.overview-copy > strong',
+    '.sort-item-name', '.group-choice > span:last-child', '.group-summary p',
+    '.evo-exercise-select > span', '.selection-option > span', '.evo-record-name > strong',
+    '.evo-highlight-context', '.post-pr-item > span:first-child > strong',
+    '.value-dialog .picker-exercise', '.rest-mini-title', '#finish-summary', '#media-title'
+  ].join(',');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const interactive = 'button,a[href],summary,label,[role=button],[role=option]';
+  const states = new Map();
+  const moving = new Set();
+  let frame = 0, refreshFrame = 0;
+  const timing = { delay: 2000, speed: 32, end: 1500, return: 900, reset: 3000 };
+  function readTiming() {
+    const css = getComputedStyle(document.documentElement);
+    const ms = (key, fallback) => {
+      const value = css.getPropertyValue(key).trim();
+      const number = parseFloat(value);
+      return Number.isFinite(number) && number >= 0 ? number * (value.endsWith('ms') ? 1 : 1000) : fallback;
+    };
+    timing.delay = ms('--motion-name-delay', 2000);
+    timing.end = ms('--motion-name-end', 1500);
+    timing.return = ms('--motion-name-return', 900);
+    timing.reset = ms('--motion-name-reset', 3000);
+    timing.speed = Math.max(1, parseFloat(css.getPropertyValue('--name-scroll-speed')) || 32);
+  }
+  const hasKeyboardFocus = element => {
+    const active = document.activeElement;
+    return !!active?.matches(':focus-visible') && (element.contains(active) ||
+      !!element.closest(interactive)?.contains(active));
+  };
+  const reset = state => {
+    state.phase = 'delay'; state.elapsed = 0; state.last = 0;
+    state.returnFrom = 0;
+    state.element.scrollLeft = 0;
+  };
+  const easeInOut = progress => progress < .5 ? 4 * progress ** 3 :
+    1 - (-2 * progress + 2) ** 3 / 2;
+  const canMove = state => state.visible && state.distance > 1 && !state.hover &&
+    !state.focus && !state.manual && !reduced.matches && !document.hidden;
+  function syncSuspension(state) {
+    const suspended = reduced.matches || document.hidden;
+    if (state.suspended !== suspended) {
+      state.suspended = suspended;
+      reset(state);
+    }
+  }
+  function schedule(state) {
+    syncSuspension(state);
+    if (canMove(state)) {
+      if (!moving.has(state)) state.last = 0;
+      moving.add(state);
+    } else {
+      state.last = 0;
+      moving.delete(state);
+    }
+    if (moving.size && !frame) frame = requestAnimationFrame(tick);
+  }
+  function tick(now) {
+    frame = 0;
+    for (const state of moving) {
+      syncSuspension(state);
+      if (!state.element.isConnected || !canMove(state)) { moving.delete(state); continue; }
+      const delta = state.last ? Math.min(now - state.last, 80) : 0;
+      state.last = now; state.elapsed += delta;
+      if (state.phase === 'delay' && state.elapsed >= timing.delay) {
+        state.phase = 'travel'; state.elapsed = 0;
+      } else if (state.phase === 'travel') {
+        state.element.scrollLeft = Math.min(state.distance, state.elapsed * timing.speed / 1000);
+        if (state.elapsed * timing.speed / 1000 >= state.distance) {
+          state.phase = 'end'; state.elapsed = 0;
+        }
+      } else if (state.phase === 'end' && state.elapsed >= timing.end) {
+        state.returnFrom = state.element.scrollLeft;
+        state.phase = 'return'; state.elapsed = 0;
+      } else if (state.phase === 'return') {
+        const progress = timing.return ? Math.min(1, state.elapsed / timing.return) : 1;
+        state.element.scrollLeft = state.returnFrom * (1 - easeInOut(progress));
+        if (progress >= 1) {
+          state.element.scrollLeft = 0; state.phase = 'reset'; state.elapsed = 0;
+        }
+      } else if (state.phase === 'reset' && state.elapsed >= timing.reset) {
+        state.phase = 'travel'; state.elapsed = 0;
+      }
+    }
+    if (moving.size) frame = requestAnimationFrame(tick);
+  }
+  function measure(state) {
+    const distance = Math.max(0, state.element.scrollWidth - state.element.clientWidth);
+    if (state.phase === 'return' && Math.abs(distance - state.distance) > .5) {
+      state.returnFrom = Math.min(state.element.scrollLeft, distance);
+      state.elapsed = 0; state.last = 0;
+    }
+    state.distance = distance;
+    state.element.classList.toggle('kore-name-overflow', state.distance > 1);
+    // Text-only headings remain reachable for manual horizontal reading.
+    // Names inside actions use the existing action's focus, without nested tab stops.
+    if (state.distance > 1 && !state.element.closest(interactive)) {
+      if (state.originalTab == null || state.originalTab === '-1') state.element.tabIndex = 0;
+    } else if (state.originalTab == null) state.element.removeAttribute('tabindex');
+    else state.element.setAttribute('tabindex', state.originalTab);
+    if (state.distance <= 1) reset(state);
+    schedule(state);
+  }
+  const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
+    for (const entry of entries) {
+      const state = states.get(entry.target) || states.get(entry.target.parentElement);
+      if (state) measure(state);
+    }
+  }) : null;
+  const intersection = typeof IntersectionObserver === 'function' ? new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      const state = states.get(entry.target); if (!state) continue;
+      const visible = entry.isIntersecting && entry.intersectionRatio > 0;
+      if (visible !== state.visible) {
+        state.visible = visible; state.manual = false;
+        reset(state); measure(state);
+      }
+    }
+  }) : null;
+  function enhance(element) {
+    if (element.classList.contains('kore-name-track')) return;
+    if (!element.textContent.trim()) {
+      const previous = states.get(element);
+      if (previous) {
+        previous.text = ''; reset(previous); measure(previous);
+        if (previous.ownTitle) element.title = '';
+      }
+      return;
+    }
+    let state = states.get(element);
+    if (!state) {
+      state = { element, track: null, text: '', distance: 0, visible: !intersection,
+        hover: false, focus: false, manual: false, originalTab: element.getAttribute('tabindex'),
+        ownTitle: !element.hasAttribute('title'), suspended: reduced.matches || document.hidden,
+        phase: 'delay', elapsed: 0, last: 0 };
+      states.set(element, state); element.classList.add('kore-name');
+      element.addEventListener('pointerenter', event => {
+        if (event.pointerType === 'mouse') { state.hover = true; schedule(state); }
+      });
+      element.addEventListener('pointerleave', () => { state.hover = false; schedule(state); });
+      element.addEventListener('pointerdown', () => { state.manual = true; schedule(state); });
+      element.addEventListener('wheel', event => {
+        if (event.deltaX || event.shiftKey) { state.manual = true; schedule(state); }
+      }, { passive: true });
+      resize?.observe(element); intersection?.observe(element);
+    }
+    const text = element.textContent;
+    if (text !== state.text) { state.text = text; state.manual = false; reset(state); }
+    if (!state.track || state.track.parentElement !== element || element.childNodes.length !== 1) {
+      if (state.track) resize?.unobserve(state.track);
+      const track = document.createElement('span'); track.className = 'kore-name-track';
+      // Move the existing nodes, including Inter numeric fragments, rather than duplicate text.
+      track.append(...element.childNodes); element.replaceChildren(track); state.track = track;
+      resize?.observe(track);
+    }
+    if (state.ownTitle && element.title !== text) element.title = text;
+    state.focus = hasKeyboardFocus(element);
+    measure(state);
+  }
+  function refresh() {
+    refreshFrame = 0;
+    readTiming();
+    for (const [element, state] of states) if (!element.isConnected) {
+      moving.delete(state); resize?.unobserve(element); resize?.unobserve(state.track);
+      intersection?.unobserve(element); states.delete(element);
+    }
+    document.querySelectorAll(selector).forEach(enhance);
+  }
+  function requestRefresh() {
+    if (!refreshFrame) refreshFrame = requestAnimationFrame(refresh);
+  }
+  const mutations = new MutationObserver(records => {
+    // Ignore changes to our own title/tabindex/style; batch app renders and name changes.
+    if (records.some(record => record.type === 'attributes' ||
+      record.type === 'characterData' || record.addedNodes.length || record.removedNodes.length)) requestRefresh();
+  });
+  function syncFocus() {
+    for (const state of states.values()) {
+      state.focus = hasKeyboardFocus(state.element);
+      schedule(state);
+    }
+  }
+  document.addEventListener('focusin', syncFocus);
+  document.addEventListener('focusout', () => queueMicrotask(syncFocus));
+  document.addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key) ||
+      event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
+    const direct = states.get(event.target), action = event.target.closest(interactive);
+    const targets = direct ? [direct] : action ? [...states.values()].filter(state => action.contains(state.element)) : [];
+    // Home/End keep their selection and sorting meanings on existing controls.
+    if (!direct && ['Home', 'End'].includes(event.key)) return;
+    const overflow = targets.filter(state => state.distance > 1);
+    if (!overflow.length) return;
+    event.preventDefault();
+    for (const state of overflow) {
+      state.manual = true; schedule(state);
+      state.element.scrollLeft = event.key === 'Home' ? 0 : event.key === 'End' ? state.distance :
+        Math.max(0, Math.min(state.distance, state.element.scrollLeft + (event.key === 'ArrowRight' ? 64 : -64)));
+    }
+  });
+  function motionChanged() {
+    for (const state of states.values()) { reset(state); schedule(state); }
+  }
+  reduced.addEventListener?.('change', motionChanged);
+  document.addEventListener('visibilitychange', motionChanged);
+  addEventListener('resize', requestRefresh, { passive: true });
+  window.KoreNames = { refresh: requestRefresh };
+  refresh();
+  mutations.observe(document.body, { subtree: true, childList: true, characterData: true,
+    attributes: true, attributeFilter: ['hidden', 'open'] });
+  document.fonts?.ready.then(requestRefresh);
+  document.fonts?.addEventListener('loadingdone', requestRefresh);
+})();
+</script>
+</body></html>
