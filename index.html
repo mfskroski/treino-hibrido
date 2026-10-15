@@ -2079,7 +2079,7 @@
     .toast-dismiss { display:flex; align-items:center; justify-content:center; align-self:center; flex:0 0 36px; width:36px; height:36px; padding:0; margin:0; border:0; background:transparent; color:inherit; border-radius:9px; line-height:0; }
     .toast-dismiss>.icon { display:block; flex:none; width:18px; height:18px; margin:0; }
     .toast-dismiss .icon { pointer-events:none; }
-    .toast[popover] { inset:auto; left:50%; bottom:calc(18px + env(safe-area-inset-bottom,0px)); margin:0; overflow:visible; }
+    .toast[popover] { inset:auto; top:auto; right:auto; left:50%; bottom:calc(18px + env(safe-area-inset-bottom,0px)); margin:0; overflow:auto; }
     body.rest-minimized .toast[popover] { bottom:calc(var(--rest-mini-height,90px) + 12px); }
     .toast:not([hidden]) { animation:toast-in var(--motion-overlay) var(--ease-out); }
     @keyframes toast-in { from { opacity:0; margin-bottom:-8px; } to { opacity:1; margin-bottom:0; } }
@@ -3380,7 +3380,8 @@ html:has(body.has-activity-dock){scroll-padding-bottom:calc(var(--nav-space) + v
 .rest-mini-title{font:400 10px/1.5 var(--font-label);text-transform:uppercase;letter-spacing:.06em}
 .rest-mini-title .numeric{font:inherit;font-family:var(--font-numeric);font-size:12px;letter-spacing:0}
 .rest-mini-digits{font-family:var(--font-numeric);font-size:24px;font-weight:550}
-.toast,.toast[data-tone=success],.toast[data-tone=error],.toast[data-tone=info]{display:grid;grid-template-columns:24px minmax(0,1fr) 44px;align-items:center;gap:12px;padding:12px 8px 12px 16px;border:1px solid rgb(255 255 255 / .18);border-radius:4px;color:#fff;background:var(--toast-success);box-shadow:0 8px 28px rgb(0 0 0 / .2);font-family:var(--font-ui)}
+/* Explicit intrinsic sizing prevents popovers stretching vertically in Safari/iOS. */
+.toast,.toast[data-tone=success],.toast[data-tone=error],.toast[data-tone=info]{top:auto;right:auto;margin:0;height:auto;height:fit-content;min-height:0;max-height:calc(100vh - var(--nav-space,90px) - env(safe-area-inset-top,0px) - 24px);max-height:calc(100dvh - var(--nav-space,90px) - env(safe-area-inset-top,0px) - 24px);overflow:auto;display:grid;grid-template-columns:24px minmax(0,1fr) 44px;align-items:center;gap:12px;padding:12px 8px 12px 16px;border:1px solid rgb(255 255 255 / .18);border-radius:4px;color:#fff;background:var(--toast-success);box-shadow:0 8px 28px rgb(0 0 0 / .2);font-family:var(--font-ui)}
 .toast[data-tone=error]{background:var(--toast-error)}.toast[data-tone=info]{background:var(--toast-info)}
 .toast>.icon{width:24px;height:24px;color:#fff;align-self:center;margin:0}
 .toast-copy{min-width:0;font:400 14px/1.5 var(--font-ui);overflow-wrap:anywhere}
@@ -3394,14 +3395,14 @@ body:has(dialog[open]) .toast,body:has(dialog[open]) .toast[popover]{bottom:calc
 .kore-hero h2{font-size:34px}.post-pr-heading h3{font-size:26px;font-weight:800;font-style:italic}.post-pr-item .post-pr-context{font:400 11px/1.45 var(--font-ui);color:var(--muted)}
 .current-exercise-meta{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:9px}.session-controls .current-exercise-meta .target{margin:0;line-height:1.6;font-family:var(--font-label);font-size:10px;text-transform:uppercase}.target .numeric{font:500 12px var(--font-numeric)}
 .current-exercise-meta .superset-tag{display:inline-flex;align-items:center;border:1px solid rgb(255 255 255 / .4);background:rgb(255 255 255 / .12);color:#fff;padding:4px 6px;border-radius:4px;font:500 10px/1.4 var(--font-label);text-transform:uppercase;letter-spacing:.035em;white-space:nowrap}
-.wheel-option,.ticker-columns .wheel-option{font:400 20px/1 var(--font-numeric);color:var(--muted);opacity:.65;transition:font-size 150ms ease-out,color 150ms ease-out,opacity 150ms ease-out}
-.wheel-option[aria-selected=true],.ticker-columns .wheel-option[aria-selected=true]{font-size:30px;font-weight:600;line-height:1;opacity:1;color:var(--ink)}
+.wheel-option,.ticker-columns .wheel-option{font:400 16px/1 var(--font-numeric);color:var(--muted);opacity:.65;transition:font-size 150ms ease-out,color 150ms ease-out,opacity 150ms ease-out}
+.wheel-option[aria-selected=true],.ticker-columns .wheel-option[aria-selected=true]{font-size:24px;font-weight:600;line-height:1;opacity:1;color:var(--ink)}
 #finish-summary{color:var(--ink);font:italic 800 26px/1.05 var(--font-display);text-transform:uppercase;letter-spacing:-.025em;margin-bottom:12px}
 #finish-progress,#finish-form .form-field>span,#finish-form legend,#finish-notes-details>summary{color:var(--ink);font:400 10px/1.65 var(--font-label);text-transform:uppercase;letter-spacing:.05em}
 #finish-progress .numeric{font:500 12px var(--font-numeric);letter-spacing:0}
 .evo-chart.is-chart-preparing .evo-line{stroke-dasharray:1;stroke-dashoffset:1}.evo-chart.is-chart-preparing .evo-bar{transform-box:fill-box;transform-origin:center bottom;transform:scaleY(0)}.evo-chart.is-chart-preparing .evo-area{opacity:0}
 .evo-chart.is-chart-entering .evo-line,.evo-chart.is-chart-entering .evo-bar,.evo-chart.is-chart-entering .evo-area{animation-delay:80ms}
-.history-calendar-card{border-top:3px solid var(--ink);padding:18px 16px 12px}
+.history-calendar-card{padding:18px 16px 12px}
 .calendar-month-toggle,#date-dialog .calendar-month-toggle{gap:8px;font:400 13px/1.5 var(--font-label);text-transform:uppercase;letter-spacing:.035em;min-width:0}
 .calendar-month-toggle .calendar-year-label{font:inherit;font-family:var(--font-numeric);letter-spacing:0;margin-left:3px}
 .calendar-toolbar{margin-bottom:12px}.calendar-grid{border-spacing:3px 4px}.calendar-grid th,.calendar-weekdays{font:400 10px/1.6 var(--font-label);text-transform:uppercase;letter-spacing:.035em}
@@ -3818,6 +3819,12 @@ a:focus-visible > img { opacity: .8; }
   }
 }
 
+/* Validation messages retain reading typography inside Mono labels. */
+.form-error { font-family: var(--font-ui); font-weight: 400; text-transform: none; letter-spacing: normal; }
+
+/* Short unit labels keep ticker columns on the same baseline. */
+.picker-unit { white-space: nowrap; }
+
 
 /* KORE · Delayed name scrolling, shared by the app and catalogue. */
 :root {
@@ -3913,39 +3920,62 @@ a:focus-visible > img { opacity: .8; }
   .evo-stat dd.is-long { font-size: 18px; }
 }
 
-/* Trial: KORE destination names and a soft, borderless active indicator. */
-:root { --radius-navigation: 0px; --nav-space: calc(80px + env(safe-area-inset-bottom,0px)); }
+/* KORE navbar: active item, label, and neighbours expand on one shared curve. */
+:root { --radius-navigation: 0px; --nav-space: calc(80px + env(safe-area-inset-bottom,0px)); --nav-selected-bg: var(--brand-black); --nav-selected-ink: var(--brand-white); --nav-content-inset: 8px; --nav-icon-label-gap: 8px; --nav-selection-duration: 280ms; --nav-selection-ease: cubic-bezier(.22,.61,.36,1); --nav-item-width: clamp(44px,15vw,80px); }
+:root[data-theme=dark] { --nav-selected-bg: var(--brand-white); --nav-selected-ink: var(--brand-black); }
 .bottom-nav {
   left: 0; right: 0; bottom: 0;
-  width: 100vw; max-width: none; margin: 0;
+  width: 100%; max-width: none; margin: 0;
   height: calc(64px + env(safe-area-inset-bottom,0px)); min-height: 64px;
-  display: grid; grid-template-columns: repeat(4,minmax(0,140px)); justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   padding: 4px max(12px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));
-  gap: 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none;
+  gap: 8px; border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none;
   background: var(--nav-surface);
 }
 :root[data-theme=dark] .bottom-nav { box-shadow: none; }
 .nav-item {
-  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 100%; height: 55px; min-height: 44px; padding: 4px; gap: 3px; border-radius: 0;
+  position: relative; display: flex; align-items: center; justify-content: center;
+  flex: 0 0 auto; width: var(--nav-item-width); min-width: 44px; max-width: none;
+  height: 55px; min-height: 44px; padding: 0; gap: 0; border-radius: 0;
+  background: transparent; transition: none;
 }
-.nav-item > [data-icon] {
+.bottom-nav .nav-item:hover { background: transparent; }
+.nav-item:active { transform: none; }
+.nav-content {
   display: flex; align-items: center; justify-content: center;
-  width: 48px; height: 30px; flex: none; line-height: 0;
+  width: 100%; height: 40px; padding: 8px var(--nav-content-inset);
   border: 0; border-radius: var(--radius-control); background: transparent;
-  transition: background-color var(--motion-feedback) var(--ease-out);
+  overflow: hidden; pointer-events: none; transition: none;
+}
+.nav-content > [data-icon] {
+  display: flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; flex: 0 0 24px; line-height: 0;
 }
 .nav-item .icon { display: block; width: 24px; height: 24px; }
 .nav-label {
-  display: block; max-width: 100%; font: 500 11px/14px var(--font-ui);
-  letter-spacing: 0; text-transform: none; white-space: nowrap; color: inherit;
+  display: block; flex: 0 0 auto; width: 0; margin-left: 0;
+  font: 500 13px/18px var(--font-ui); letter-spacing: 0; text-transform: none;
+  white-space: nowrap; color: inherit; overflow: hidden;
+  opacity: 0; visibility: hidden; transform: translateX(-4px); transition: none;
 }
-.nav-item[aria-current=page] { color: var(--ink); background: transparent; box-shadow: none; }
-.nav-item[aria-current=page] > [data-icon] { background: var(--soft); }
-.nav-item[aria-current=page] .nav-label { font-weight: 600; }
+.nav-label-text { display: block; width: max-content; }
+.nav-item[aria-current=page] { width: calc(var(--nav-item-width) + var(--nav-label-width,56px) + var(--nav-icon-label-gap)); color: var(--ink); background: transparent; box-shadow: none; }
+.nav-item[aria-current=page] .nav-content { background: var(--nav-selected-bg); color: var(--nav-selected-ink); }
+.nav-item[aria-current=page] .nav-label { width: var(--nav-label-width,56px); margin-left: var(--nav-icon-label-gap); opacity: 1; visibility: visible; transform: translateX(0); transition-delay: 0s; }
+.bottom-nav[data-nav-ready] .nav-item { transition: width var(--nav-selection-duration) var(--nav-selection-ease), color var(--nav-selection-duration) var(--nav-selection-ease); }
+.bottom-nav[data-nav-ready] .nav-content { transition: background-color var(--nav-selection-duration) var(--nav-selection-ease), color var(--nav-selection-duration) var(--nav-selection-ease); }
+.bottom-nav[data-nav-ready] .nav-label { transition: width var(--nav-selection-duration) var(--nav-selection-ease), margin-left var(--nav-selection-duration) var(--nav-selection-ease), opacity var(--nav-selection-duration) var(--nav-selection-ease), transform var(--nav-selection-duration) var(--nav-selection-ease), visibility 0s linear var(--nav-selection-duration); }
+.bottom-nav[data-nav-ready] .nav-item[aria-current=page] .nav-label { transition-delay: 0s; }
 .nav-item::after { content: none; }
 .nav-item:focus-visible { background: var(--focus-surface); }
 .nav-item:focus-visible::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); bottom: 1px; width: 20px; height: 2px; background: currentColor; }
+@media (max-width: 300px) {
+  .bottom-nav { --nav-item-width: 44px; --nav-content-inset: 6px; --nav-icon-label-gap: 6px; gap: 4px; padding-left: max(8px,env(safe-area-inset-left,0px)); padding-right: max(8px,env(safe-area-inset-right,0px)); }
+  .bottom-nav .nav-label { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav .nav-item, .bottom-nav .nav-content, .bottom-nav .nav-label { transition: none !important; }
+}
 
 /* Inverse exercise controls and a static profile card with a local edit action. */
 :root {
@@ -3984,12 +4014,6 @@ a:focus-visible > img { opacity: .8; }
 .session-controls .icon-button:focus-visible { background: var(--exercise-control-soft); }
 .session-controls .current-exercise-meta .superset-tag { color: var(--exercise-control-ink); border-color: var(--exercise-control-line); background: var(--exercise-control-soft); }
 .profile-card {
-  --bg: #FFFFFF;
-  --ink: var(--profile-card-ink);
-  --muted: var(--profile-card-muted);
-  --line: rgb(8 8 8 / .13);
-  --soft: #F1F1F1;
-  --focus-surface: #F1F1F1;
   color: var(--profile-card-ink);
   border-color: rgb(8 8 8 / .13);
 }
@@ -3999,8 +4023,11 @@ a:focus-visible > img { opacity: .8; }
   background-position: center 52%;
   background-size: cover;
 }
+.profile-card .avatar { background: #FFFFFF; border-color: rgb(8 8 8 / .13); }
 .profile-card .avatar,
 .profile-card .avatar :is(i,.icon) { color: var(--profile-card-ink); }
+.profile-card-copy { color: var(--profile-card-ink); }
+.profile-card-copy :is(p,small) { color: var(--profile-card-muted); }
 </style></head><body>
   <a class="skip" href="#app-main">Pular para o conteúdo</a>
   <div class="shell">
@@ -4091,11 +4118,11 @@ a:focus-visible > img { opacity: .8; }
   </section>
 </main>
   </div>
-<nav id="bottom-nav" class="bottom-nav" aria-label="Navegação principal">
-    <button type="button" id="nav-home" class="nav-item" data-nav="home" aria-label="Início" title="Início" aria-current="page"><i data-icon="home"></i><span class="nav-label">Início</span></button>
-    <button type="button" id="editor-open" class="nav-item" data-nav="workouts" aria-label="Treinos" title="Treinos"><i data-icon="reminder"></i><span class="nav-label">Treinos</span></button>
-    <button type="button" id="history-open" class="nav-item" data-nav="history" aria-label="Histórico" title="Histórico"><i data-icon="history"></i><span class="nav-label">Histórico</span></button>
-    <button type="button" id="nav-profile" class="nav-item" data-nav="profile" aria-label="Perfil" title="Perfil"><i data-icon="profile"></i><span class="nav-label">Perfil</span></button>
+<nav id="bottom-nav" class="bottom-nav" data-nav-style="expanded" aria-label="Navegação principal">
+    <button type="button" id="nav-home" class="nav-item" data-nav="home" aria-label="Início" title="Início" aria-current="page"><span class="nav-content"><i data-icon="home"></i><span class="nav-label" aria-hidden="true"><span class="nav-label-text">Início</span></span></span></button>
+    <button type="button" id="editor-open" class="nav-item" data-nav="workouts" aria-label="Treinos" title="Treinos"><span class="nav-content"><i data-icon="reminder"></i><span class="nav-label" aria-hidden="true"><span class="nav-label-text">Treinos</span></span></span></button>
+    <button type="button" id="history-open" class="nav-item" data-nav="history" aria-label="Histórico" title="Histórico"><span class="nav-content"><i data-icon="history"></i><span class="nav-label" aria-hidden="true"><span class="nav-label-text">Histórico</span></span></span></button>
+    <button type="button" id="nav-profile" class="nav-item" data-nav="profile" aria-label="Perfil" title="Perfil"><span class="nav-content"><i data-icon="profile"></i><span class="nav-label" aria-hidden="true"><span class="nav-label-text">Perfil</span></span></span></button>
   </nav>
   <dialog id="rest-dialog" class="value-dialog rest-sheet" aria-labelledby="rest-title">
     <div class="dialog-header">
@@ -4115,7 +4142,7 @@ a:focus-visible > img { opacity: .8; }
       <div class="timer-progress" aria-hidden="true"><span id="timer-progress"></span></div>
       <div class="rest-controls button-group" data-size="default">
         <button type="button" class="button" id="timer-start" aria-label="Pausar descanso"><i data-icon="pause"></i><span>Pausar</span></button>
-        <button type="button" class="button" id="timer-reset" aria-label="Reiniciar descanso"><i data-icon="reset"></i><span>Reiniciar</span></button>
+        <button type="button" class="button" id="timer-reset" aria-label="Reiniciar descanso"><i data-icon="reset" data-icon-variant="filled"></i><span>Reiniciar</span></button>
       </div>
       <div class="timer-actions button-group" data-size="action">
         <button type="button" class="button primary full" id="rest-done">Continuar treino</button>
@@ -4280,7 +4307,8 @@ const KoreMotion=(()=>{
   animate(element,[{opacity:.15,transform:`translateY(${offset}px)`},{opacity:1,transform:'none'}],duration);
  }
  function replaceContent(element,markup){
-  const viewport=element.parentElement,resize=viewport?.classList.contains('calendar-viewport')&&!element.hidden&&element.getClientRects().length;
+  // Initial content uses its natural height; only an existing calendar resizes.
+  const viewport=element.parentElement,resize=viewport?.classList.contains('calendar-viewport')&&!element.hidden&&element.childElementCount>0&&element.getClientRects().length;
   const from=resize?viewport.getBoundingClientRect().height:0;
   if(resize)stop(viewport);element.innerHTML=markup;
   if(!resize||media.matches)return;
@@ -5643,7 +5671,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       <tbody>${log.sets.map((set, i) => `<tr class="set-row ${set.done ? 'completed' : ''}"><td>${i + 1}</td>
         <td><button type="button" class="set-input" data-field="load" data-index="${i}" data-ex="${ex.id}" data-value="${set.load ?? ''}" aria-haspopup="dialog" aria-controls="numeric-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, kg total: ${esc(number(set.load))}">${esc(number(set.load))}</button></td>
         <td><button type="button" class="set-input" data-field="value" data-index="${i}" data-ex="${ex.id}" data-value="${set.value ?? ''}" aria-haspopup="dialog" aria-controls="value-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, ${ex.unit === 's' ? 'segundos' : 'repetições'}: ${esc(number(set.value))}">${esc(number(set.value))}</button></td>
-        <td>${ex.unit === 's' ? `<button type="button" class="icon-button secondary set-timer" data-exercise-timer="${ex.id}" data-index="${i}" aria-label="${set.done ? 'Desmarcar' : 'Iniciar'} ${esc(ex.name)}, série ${i + 1}" aria-pressed="${set.done}" aria-haspopup="${set.done ? 'false' : 'dialog'}" aria-controls="rest-dialog">${icon(set.done ? 'check' : 'play')}</button>` : `<label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="Concluir ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</td></tr>`).join('')}</tbody></table>
+        <td>${ex.unit === 's' ? `<button type="button" class="icon-button secondary set-timer" data-exercise-timer="${ex.id}" data-index="${i}" aria-label="${set.done ? 'Desmarcar' : 'Iniciar'} ${esc(ex.name)}, série ${i + 1}" aria-pressed="${set.done}" aria-haspopup="${set.done ? 'false' : 'dialog'}" aria-controls="rest-dialog">${icon(set.done ? 'check' : 'play', set.done ? 'filled' : 'outline')}</button>` : `<label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="Concluir ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</td></tr>`).join('')}</tbody></table>
     </article>`;
       }
       function renderCardio(ex, index, session) {
@@ -6982,7 +7010,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           button.setAttribute('aria-pressed', String(done));
           button.setAttribute('aria-label', `${done ? 'Desmarcar' : 'Iniciar'} ${exercise.name}, série ${index + 1}`);
           button.setAttribute('aria-haspopup', done ? 'false' : 'dialog');
-          button.innerHTML = icon(done ? 'check' : 'play');
+          button.innerHTML = icon(done ? 'check' : 'play', done ? 'filled' : 'outline');
           button.closest('tr').classList.toggle('completed', done);
         });
         const finish=$('finish-workout');
@@ -7937,34 +7965,16 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         return !group || group.exerciseIds.every(id => !session.logs[id]?.sets[index] || session.logs[id].sets[index].done);
       }
       function nextPendingExercise(session, exId) {
-        const exercises = orderedExercises(session.workout), position = exercises.findIndex(ex => ex.id === exId);
-        // Wrap once so completing exercises out of order never strands pending sets.
-        for (let step = 1; step < exercises.length; step++) {
-          const ex = exercises[(position + step) % exercises.length];
-          if (!exerciseComplete(ex, session)) return ex.id;
-        }
-        return null;
-      }
-      function nextSupersetExercise(session, exId, setIndex) {
-        const group = session.workout.groups?.find(g => g.exerciseIds.includes(exId));
-        if (!group) return session.logs[exId]?.sets.every(set => set.done) ? nextPendingExercise(session, exId) : null;
-        const ids = group.exerciseIds, position = ids.indexOf(exId);
-        // Finish this round first, even after manual navigation or an undo.
-        for (let step = 1; step < ids.length; step++) {
-          const id = ids[(position + step) % ids.length], set = session.logs[id]?.sets[setIndex];
-          if (set && !set.done) return id;
-        }
-        // Unequal set counts and completed exercises must not cause a dead end.
-        const pendingRounds = ids.map(id => session.logs[id]?.sets.findIndex(set => !set.done) ?? -1).filter(index => index >= 0);
-        if (pendingRounds.length) {
-          const round = Math.min(...pendingRounds);
-          return ids.find(id => { const set = session.logs[id]?.sets[round]; return set && !set.done; });
-        }
-        return nextPendingExercise(session, ids.at(-1));
+        const exercises = orderedExercises(session.workout), current = exercises.find(ex => ex.id === exId);
+        if (!current) return null;
+        // Keep the current exercise until every set is complete. Afterwards,
+        // select the first pending exercise from the start of the workout list.
+        if (!exerciseComplete(current, session)) return current.id;
+        return exercises.find(ex => !exerciseComplete(ex, session))?.id || null;
       }
       function afterSetCompleted(session, exId, index, trigger) {
         if (appView !== 'session' || isReadOnly() || currentDraft()?.key !== session.key) return;
-        const nextId = nextSupersetExercise(session, exId, index);
+        const nextId = nextPendingExercise(session, exId);
         if (nextId && nextId !== focusExerciseId) selectFocus(nextId);
         trigger = $('exercise-list').querySelector('[data-set]:not(:checked),[data-exercise-timer][aria-pressed="false"]') || $('workout-title');
         if (preferences.autoOpenRest && roundComplete(session, exId, index)) startRest(trigger);
@@ -8650,7 +8660,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         const title = exercise ? 'Temporizador' : 'Descanso', subject = exercise ? 'temporizador' : 'descanso';
         $('rest-title').textContent = title;
         $('rest-mini').setAttribute('aria-label', title);
-        $('rest-mini').querySelector('.rest-mini-title').innerHTML = koreMeta(owner ? `${owner.exercise.name} · Série ${exercise.setIndex + 1}${timer.finished ? ' · Tempo concluído' : ''}` : title);
+        $('rest-mini').querySelector('.rest-mini-title').innerHTML = koreMeta(owner ? `${owner.exercise.name} · Série ${exercise.setIndex + 1}` : title);
         $('rest-minimize').setAttribute('aria-label', 'Minimizar ' + subject);
         $('rest-expand').setAttribute('aria-label', 'Expandir ' + subject);
         $('exercise-timer-context').hidden = !exercise;
@@ -9106,6 +9116,56 @@ if(window.__KORE_DEMO_SCREEN)document.activeElement?.blur();
     attributes: true, attributeFilter: ['hidden', 'open'] });
   document.fonts?.ready.then(requestRefresh);
   document.fonts?.addEventListener('loadingdone', requestRefresh);
+})();
+</script>
+<script data-kore-navigation>
+/* KORE navbar: measure intrinsic labels; CSS owns the interruptible transition. */
+(() => {
+  'use strict';
+  if (window.KoreNavigation) { window.KoreNavigation.refresh(); return; }
+  const menus = new Set(), observed = new WeakSet();
+  let scheduled = 0;
+  function measure() {
+    scheduled = 0;
+    const changes = [];
+    for (const nav of menus) {
+      if (!nav.isConnected) { menus.delete(nav); continue; }
+      if (!nav.getClientRects().length || !nav.clientWidth) continue;
+      for (const item of nav.querySelectorAll('.nav-item')) {
+        const text = item.querySelector('.nav-label-text');
+        if (!text) continue;
+        const width = Math.ceil(text.getBoundingClientRect().width * 100) / 100;
+        if (width > 0) changes.push([item, width + 'px']);
+      }
+    }
+    for (const [item, width] of changes) {
+      if (item.style.getPropertyValue('--nav-label-width') !== width)
+        item.style.setProperty('--nav-label-width', width);
+    }
+  }
+  function queue() { if (!scheduled) scheduled = requestAnimationFrame(measure); }
+  const sizes = typeof ResizeObserver === 'function' ? new ResizeObserver(queue) : null;
+  const texts = new MutationObserver(queue);
+  for (const nav of document.querySelectorAll('.bottom-nav')) {
+    menus.add(nav); sizes?.observe(nav);
+    for (const text of nav.querySelectorAll('.nav-label-text')) {
+      if (observed.has(text)) continue;
+      observed.add(text); sizes?.observe(text);
+      texts.observe(text, { childList: true, characterData: true, subtree: true });
+    }
+  }
+  measure();
+  const ready = () => {
+    measure();
+    for (const nav of menus) nav.getBoundingClientRect();
+    requestAnimationFrame(() => { for (const nav of menus) nav.dataset.navReady = 'true'; });
+  };
+  if (document.fonts) {
+    document.fonts.ready.then(ready, ready);
+    document.fonts.addEventListener?.('loadingdone', queue);
+  } else ready();
+  addEventListener('resize', queue, { passive: true });
+  window.KoreNavigation = { refresh: queue };
 })();
 </script>
 </body></html>
