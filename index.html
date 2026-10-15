@@ -3825,7 +3825,7 @@ a:focus-visible > img { opacity: .8; }
 /* Short unit labels keep ticker columns on the same baseline. */
 .picker-unit { white-space: nowrap; }
 
-/* Every dialog uses the same paired-action layout and reading order. */
+/* Paired form/dialog actions: secondary left, primary right in DOM and keyboard order. */
 dialog :is(.session-actions,.picker-actions,.timer-actions){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
 dialog :is(.session-actions,.picker-actions,.timer-actions):not(:has(>.button:not([hidden])~.button:not([hidden]))){grid-template-columns:minmax(0,1fr)}
 dialog :is(.session-actions,.picker-actions,.timer-actions)>.button{width:100%;height:100%;min-width:0}
@@ -3834,6 +3834,10 @@ dialog :is(.session-actions,.picker-actions,.timer-actions)>.button{width:100%;h
 .managed-workout>.icon-button.managed-edit:active:not(:disabled){background:var(--soft)}
 .history-day-card .calendar-empty{text-align:left}
 .running-completion{margin-top:24px}.running-completion>.button{width:100%;min-height:var(--control-height-action)}
+
+/* Workout creation/editing follows the same horizontal pair as modal forms. */
+#editor-dialog .editor-footer.button-group{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+#editor-dialog .editor-footer.button-group>.button{height:100%}
 
 
 /* KORE · Delayed name scrolling, shared by the app and catalogue. */
@@ -4489,19 +4493,24 @@ body.has-active-workout .shell { padding-top:0; }
 @keyframes rest-overlay-out { from { opacity:1; transform:translate(-50%,0); } to { opacity:0; transform:translate(-50%,12px); } }
 @media print { .rest-mini { display:none!important; } }
 /* Shared exercise catalogue and local execution media. */
-.library-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:16px;margin-bottom:20px}
-.library-toolbar .button{gap:8px}
+.library-toolbar{display:flex;align-items:flex-end;gap:12px;margin-bottom:20px}
+.library-toolbar>.library-search-field{flex:1;min-width:0;margin:0}
+.library-toolbar>#library-new{flex:none;width:48px;min-width:48px;height:48px;min-height:48px;padding:0}
+#library-new>span{font:400 26px/1 var(--font-ui)}
 .library-search-field{margin-bottom:20px}.library-list{border:1px solid var(--line);border-radius:var(--radius-control);overflow:hidden;background:var(--bg)}
 .library-item{display:flex;align-items:center;gap:12px;width:100%;min-height:88px;padding:14px 16px;background:var(--bg);color:var(--ink);text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0}
 .library-item:last-child{border-bottom:0}.library-item:hover,.library-item:focus-visible{background:var(--focus-surface)}.library-item:focus-visible strong{text-decoration:underline;text-underline-offset:4px}
 .library-thumb{position:relative;display:grid;place-items:center;flex:none;width:56px;height:56px;border-radius:var(--radius-control);overflow:hidden;background:var(--soft);color:var(--muted)}
-.library-thumb>img{width:100%;height:100%;object-fit:contain}.library-video-badge{position:absolute;right:2px;bottom:2px;display:grid;place-items:center;width:20px;height:20px;background:var(--bg);color:var(--ink);border-radius:2px}.library-video-badge>.icon{width:14px;height:14px}
+.library-thumb>:is(img,video){position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.library-thumb>.media-placeholder{display:grid;place-items:center}.library-thumb [data-media-status]{display:none}
+#library-media-preview [data-library-media-remove]{top:8px}.library-video-badge{position:absolute;right:2px;bottom:2px;display:grid;place-items:center;width:20px;height:20px;background:var(--bg);color:var(--ink);border-radius:2px}.library-video-badge>.icon{width:14px;height:14px}
 .library-item-copy{flex:1;min-width:0}.library-item-copy>strong{display:block;font:500 14px/1.5 var(--font-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.library-item-copy>small{display:block;margin-top:4px;color:var(--muted);font:400 12px/1.5 var(--font-ui);overflow-wrap:anywhere}
 .library-item>.icon{width:20px;height:20px;flex:none}.library-empty{padding:40px 20px;border:0}.library-empty h2{font:600 18px/1.4 var(--font-ui)}.library-empty p{margin-top:8px;font:400 14px/1.6 var(--font-ui);color:var(--muted)}
 #library-more,#library-picker-more{margin-top:16px}.library-no-results{padding:20px;font:400 14px/1.6 var(--font-ui);color:var(--muted)}
 .exercise-library-picker,.exercise-details-dialog{width:min(520px,calc(100% - 32px));max-height:calc(100dvh - 32px)}
-#library-picker-new{margin:16px 0}.library-muscle-fields{margin-top:16px}.library-media-field{margin-top:20px}.library-media-field>small{display:block;font:400 12px/1.5 var(--font-ui);text-transform:none;letter-spacing:normal;color:var(--muted);overflow-wrap:anywhere}#library-media-name:empty{display:none}
-#library-media-preview:empty{display:none}#library-media-preview .exercise-media{margin:0 0 12px}#library-media-preview .media-square{aspect-ratio:16/9;max-height:200px;border-radius:var(--radius-control);background:var(--soft)}
+#library-picker-new{margin:16px 0}.library-muscle-fields{margin-top:16px}.library-media-field{margin-top:20px}
+#library-media-preview:empty{display:none}#library-media-preview .exercise-media{--media-preview-height:min(280px,36dvh);width:min(100%,calc(var(--media-preview-height) * var(--media-ratio,1)));margin:0 auto 12px}
+#library-media-preview .media-square{aspect-ratio:var(--media-ratio,1);height:auto;max-height:none;border-radius:var(--radius-control);background:var(--soft)}
 #library-details-delete{margin-top:16px}#library-details-form>.session-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}
 .editor-exercise-choice{display:flex;gap:8px;align-items:flex-end;margin-bottom:16px}.editor-exercise-choice>.form-field{flex:1;min-width:0;margin:0}.editor-exercise-choice>.icon-button{width:44px;min-width:44px;height:44px;min-height:44px;padding:10px;flex:none;margin-bottom:2px}
 .editor-exercise-choice>.icon-button>.icon{width:20px;height:20px}
@@ -4513,7 +4522,7 @@ body.has-active-workout .shell { padding-top:0; }
 .execution-visual-media .media-play-fallback{inset:50% auto auto 50%;transform:translate(-50%,-50%);width:max-content;max-width:calc(100% - 32px);pointer-events:auto}
 body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:transparent;backdrop-filter:none}
 @media(max-width:520px){.library-muscle-fields{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:350px){.library-toolbar{gap:8px}.library-toolbar .button{padding-inline:12px;font-size:13px}.library-item{padding:12px;gap:10px}.library-thumb{width:48px;height:48px}.library-muscle-fields{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:350px){.library-toolbar{gap:8px}.library-item{padding:12px;gap:10px}.library-thumb{width:48px;height:48px}.library-muscle-fields{grid-template-columns:minmax(0,1fr)}}
 
 /* Thumbnails remain distinct from the row's interaction surface. */
 .library-item:is(:hover,:focus-visible,:active)>.library-thumb{background:var(--bg)}
@@ -4599,8 +4608,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
 </section>
       
 <section id="exercise-library-page" class="app-page" data-page="exercises" aria-label="Meus exercícios" hidden>
-  <div class="library-toolbar"><button type="button" class="button primary action" id="library-new">Novo exercício</button></div>
-  <label class="form-field library-search-field">Buscar exercício<input type="search" id="library-search" maxlength="200" autocomplete="off"></label>
+  <div class="library-toolbar"><label class="form-field library-search-field">Buscar exercício<input type="search" id="library-search" maxlength="200" autocomplete="off"></label><button type="button" class="icon-button" id="library-new" aria-label="Criar exercício" title="Criar exercício" aria-haspopup="dialog" aria-controls="exercise-details-dialog"><span aria-hidden="true">+</span></button></div>
   <div class="library-list" id="library-results"></div>
   <button type="button" class="button full" id="library-more" hidden>Carregar mais</button>
   <span class="sr-only" id="library-search-status" role="status"></span>
@@ -4615,7 +4623,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
       <div id="editor-exercises"></div>
       <button class="button full" id="editor-add" type="button">Adicionar exercício</button>
       <p class="form-error" id="editor-error" role="alert" hidden></p>
-      <div class="editor-footer button-group" data-size="action"><button type="submit" class="button primary full">Salvar alterações</button><button type="button" class="button full" data-editor-back>Cancelar</button></div>
+      <div class="editor-footer button-group" data-size="action"><button type="button" class="button full" data-editor-back>Cancelar</button><button type="submit" class="button primary full">Salvar alterações</button></div>
       <span id="sort-announcement" class="sr-only" role="status" aria-live="polite"></span>
     </form>
   </section>
@@ -4637,9 +4645,9 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
   <form id="library-details-form" class="dialog-body" novalidate>
     <label class="form-field">Nome do exercício<input id="library-name" maxlength="200" autocomplete="off" required></label>
     <div class="form-grid library-muscle-fields"><div class="form-field"><span id="library-primary-label">Músculo principal<span class="sr-only"> (obrigatório)</span></span><button type="button" class="selection-field" id="library-primary" aria-labelledby="library-primary-label library-primary" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="form-field"><span id="library-secondary-label">Músculo secundário</span><button type="button" class="selection-field" id="library-secondary" aria-labelledby="library-secondary-label library-secondary" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div></div>
-    <div class="form-field library-media-field"><span>Mídia de execução</span><div id="library-media-preview"></div><label class="media-upload"><i data-icon="upload"></i><span id="library-media-label">Adicionar mídia</span><input type="file" id="library-media-file" accept=".mp4,.webm,.gif,.png,.jpg,.jpeg,.webp,video/mp4,video/webm,image/gif,image/png,image/jpeg,image/webp" aria-label="Escolher vídeo, GIF ou imagem de execução"></label><small id="library-media-name"></small></div>
+    <div class="form-field library-media-field"><span>Mídia de execução</span><div id="library-media-preview"></div><label class="media-upload"><i data-icon="upload"></i><span id="library-media-label">Adicionar mídia</span><input type="file" id="library-media-file" accept=".mp4,.webm,.gif,.png,.jpg,.jpeg,.webp,video/mp4,video/webm,image/gif,image/png,image/jpeg,image/webp" aria-label="Escolher vídeo, GIF ou imagem de execução"></label></div>
     <p class="form-error" id="library-details-error" role="alert" hidden></p>
-    <div class="session-actions button-group" data-size="action"><button type="submit" class="button primary" id="library-details-save">Salvar exercício</button><button type="button" class="button" data-close="exercise-details-dialog" id="library-details-cancel">Cancelar</button></div>
+    <div class="session-actions button-group" data-size="action"><button type="button" class="button" data-close="exercise-details-dialog" id="library-details-cancel">Cancelar</button><button type="submit" class="button primary" id="library-details-save">Salvar</button></div>
     <button type="button" class="button danger secondary full action" id="library-details-delete" hidden>Excluir exercício</button>
   </form>
 </dialog>
@@ -4664,10 +4672,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
         <button type="button" class="button" id="timer-start" aria-label="Pausar descanso"><i data-icon="pause"></i><span>Pausar</span></button>
         <button type="button" class="button" id="timer-reset" aria-label="Reiniciar descanso"><i data-icon="reset" data-icon-variant="filled"></i><span>Reiniciar</span></button>
       </div>
-      <div class="timer-actions button-group" data-size="action">
-        <button type="button" class="button primary full" id="rest-done">Continuar treino</button>
-        <button type="button" class="button full" id="exercise-timer-cancel" hidden>Cancelar</button>
-      </div>
+      <div class="timer-actions button-group" data-size="action"><button type="button" class="button full" id="exercise-timer-cancel" hidden>Cancelar</button><button type="button" class="button primary full" id="rest-done">Continuar treino</button></div>
     </div>
   </dialog>
   <aside class="active-workout" id="active-workout" aria-label="Treino em execução" hidden>
@@ -4698,8 +4703,8 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
           <div class="value-wheel" id="value-wheel" role="listbox" tabindex="0" aria-label="Selecionar valor"></div>
         </div>
       </div>
-      <div class="picker-actions button-group" data-size="default"><button class="button primary"
-          id="picker-apply">Aplicar</button><button type="button" class="button" id="picker-cancel" data-close="value-dialog">Cancelar</button></div>
+      <div class="picker-actions button-group" data-size="default"><button type="button" class="button" id="picker-cancel" data-close="value-dialog">Cancelar</button><button class="button primary"
+          id="picker-apply">Aplicar</button></div>
     </div>
   </dialog>
   <dialog id="numeric-dialog" class="value-dialog" aria-labelledby="numeric-title">
@@ -4710,14 +4715,14 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
       <label class="form-field numeric-field"><span id="numeric-label">Carga (kg total)</span><input id="numeric-input" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" spellcheck="false" maxlength="16" aria-describedby="numeric-error"></label>
       <div class="numeric-adjustments button-group" data-size="default" id="numeric-adjustments"><button type="button" class="button" id="numeric-minus" aria-label="Diminuir carga em 0,5 kg">− 0,5 kg</button><button type="button" class="button" id="numeric-plus" aria-label="Aumentar carga em 0,5 kg">+ 0,5 kg</button></div>
       <p class="form-error" id="numeric-error" role="alert" hidden></p>
-      <div class="picker-actions button-group" data-size="default"><button type="submit" class="button primary" id="numeric-apply">Aplicar</button><button type="button" class="button" id="numeric-cancel" data-close="numeric-dialog">Cancelar</button></div>
+      <div class="picker-actions button-group" data-size="default"><button type="button" class="button" id="numeric-cancel" data-close="numeric-dialog">Cancelar</button><button type="submit" class="button primary" id="numeric-apply">Aplicar</button></div>
     </form>
   </dialog>
 
 
   <dialog id="ticker-dialog" class="value-dialog" aria-labelledby="ticker-title">
     <div class="dialog-header"><h2 id="ticker-title">Selecionar valor</h2><button class="icon-button" data-close="ticker-dialog" aria-label="Cancelar seleção"><i data-icon="close"></i></button></div>
-    <div class="dialog-body"><p class="picker-exercise" id="ticker-exercise"></p><div id="ticker-columns" class="ticker-columns"></div><p id="ticker-error" class="form-error" role="alert" hidden></p><div class="picker-actions button-group" data-size="default"><button type="button" class="button primary" id="ticker-apply">Aplicar</button><button type="button" class="button" data-close="ticker-dialog">Cancelar</button></div></div>
+    <div class="dialog-body"><p class="picker-exercise" id="ticker-exercise"></p><div id="ticker-columns" class="ticker-columns"></div><p id="ticker-error" class="form-error" role="alert" hidden></p><div class="picker-actions button-group" data-size="default"><button type="button" class="button" data-close="ticker-dialog">Cancelar</button><button type="button" class="button primary" id="ticker-apply">Aplicar</button></div></div>
   </dialog>
   <dialog id="selection-dialog" aria-labelledby="selection-title">
     <div class="dialog-header"><h2 id="selection-title">Selecionar</h2><button type="button" class="icon-button" data-close="selection-dialog" aria-label="Cancelar seleção"><i data-icon="close"></i></button></div>
@@ -4729,7 +4734,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
       <div class="calendar-toolbar"><button type="button" class="icon-button calendar-prev" id="date-prev" aria-label="Mês anterior"><i data-icon="chevron"></i></button><button type="button" class="calendar-month-toggle" id="date-month-toggle" aria-expanded="false" aria-controls="date-month-picker"><span id="date-month-label"></span><i data-icon="chevron"></i></button><button type="button" class="icon-button calendar-next" id="date-next" aria-label="Próximo mês"><i data-icon="chevron"></i></button></div>
       <div id="date-month-picker" hidden><div class="calendar-year"><button type="button" class="icon-button calendar-prev" id="date-year-prev" aria-label="Ano anterior"><i data-icon="chevron"></i></button><strong id="date-picker-year" aria-live="polite"></strong><button type="button" class="icon-button calendar-next" id="date-year-next" aria-label="Próximo ano"><i data-icon="chevron"></i></button></div><div id="date-month-options" class="calendar-month-options" role="group" aria-label="Escolher mês"></div></div>
       <div id="date-calendar"></div><div class="calendar-footer"><p id="date-selected" class="history-count" role="status"></p><button type="button" id="date-today" class="calendar-today">Hoje</button></div>
-      <div class="picker-actions button-group" data-size="default"><button type="button" class="button primary" id="date-apply">Aplicar</button><button type="button" class="button" data-close="date-dialog">Cancelar</button></div>
+      <div class="picker-actions button-group" data-size="default"><button type="button" class="button" data-close="date-dialog">Cancelar</button><button type="button" class="button primary" id="date-apply">Aplicar</button></div>
     </div>
   </dialog>
   <dialog id="groups-dialog" aria-labelledby="groups-title">
@@ -4740,7 +4745,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
       <p class="form-hint" id="groups-empty" hidden></p>
       <div id="group-choices" role="group" aria-labelledby="group-choices-title"></div>
     </div>
-    <div class="session-actions group-config-actions button-group" data-size="action"><button type="button" class="button primary" id="group-create" disabled>Criar supersérie</button><button type="button" class="button" data-close="groups-dialog">Cancelar</button></div>
+    <div class="session-actions group-config-actions button-group" data-size="action"><button type="button" class="button" data-close="groups-dialog">Cancelar</button><button type="button" class="button primary" id="group-create" disabled>Criar supersérie</button></div>
   </dialog>
   <dialog id="profile-dialog" aria-labelledby="profile-title">
     <div class="dialog-header"><h2 id="profile-title">Perfil</h2><button type="button" class="icon-button" data-close="profile-dialog" aria-label="Fechar perfil"><i data-icon="close"></i></button></div>
@@ -4750,7 +4755,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
       <p id="profile-upload-status" class="form-hint" role="status" hidden>Preparando foto…</p>
       <label class="form-field">Nome<input id="profile-name-input" type="text" maxlength="100" autocomplete="name" required></label>
       <p id="profile-error" class="form-error" role="alert" hidden></p>
-      <div class="session-actions button-group" data-size="action"><button type="submit" class="button primary" id="profile-save">Salvar</button><button type="button" class="button" data-close="profile-dialog">Cancelar</button></div>
+      <div class="session-actions button-group" data-size="action"><button type="button" class="button" data-close="profile-dialog">Cancelar</button><button type="submit" class="button primary" id="profile-save">Salvar</button></div>
     </form>
   </dialog>
   <dialog id="evolution-range-dialog" aria-labelledby="evo-range-title">
@@ -4782,7 +4787,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
         <label class="sr-only" for="finish-notes">Observações do treino</label><textarea id="finish-notes" rows="3" maxlength="2000"></textarea>
       </details>
       <p class="form-error" id="finish-error" role="alert" hidden></p>
-      <div class="session-actions button-group" data-size="action"><button type="submit" class="button primary" id="finish-confirm">Confirmar conclusão</button><button type="button" class="button" data-close="finish-dialog">Continuar treino</button></div>
+      <div class="session-actions button-group" data-size="action"><button type="button" class="button" data-close="finish-dialog">Continuar treino</button><button type="submit" class="button primary" id="finish-confirm">Concluir treino</button></div>
     </form>
   </dialog>
   <dialog id="confirm-dialog" aria-labelledby="confirm-title">
@@ -4792,8 +4797,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
     </div>
     <div class="dialog-body">
       <p id="confirm-text"></p>
-      <div class="session-actions button-group" data-size="action"><button class="button primary" id="confirm-action">Confirmar</button><button
-          class="button" data-close="confirm-dialog">Cancelar</button></div>
+      <div class="session-actions button-group" data-size="action"><button type="button" class="button" data-close="confirm-dialog">Cancelar</button><button type="button" class="button primary danger" id="confirm-action">Excluir item</button></div>
     </div>
   </dialog>
   <dialog id="exercise-picker-dialog" aria-labelledby="exercise-picker-title">
@@ -5647,7 +5651,7 @@ const KoreExerciseLibrary = (() => {
     ['biceps','Bíceps'],['triceps','Tríceps'],['antebracos','Antebraços'],['abdomen','Abdômen'],['obliquos','Oblíquos'],
     ['lombares','Lombares'],['gluteos','Glúteos'],['quadriceps','Quadríceps'],['posteriores-coxa','Posteriores de coxa'],
     ['adutores','Adutores'],['abdutores','Abdutores'],['panturrilhas','Panturrilhas']
-  ].map(([value,label]) => Object.freeze({value,label})));
+  ].map(([value,label]) => Object.freeze({value,label})).sort((a,b)=>a.label.localeCompare(b.label,'pt-BR',{sensitivity:'base'})));
   const muscleIds = new Set(muscles.map(m=>m.value));
   const normalize = name => String(name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim().replace(/\s+/g,' ');
   const copy = value => JSON.parse(JSON.stringify(value));
@@ -6561,7 +6565,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       function mediaFrame(ex, media = exerciseMedia(ex), editor = false) {
         if (!media) return '';
         const preview = typeof media === 'object' ? media.preview : '', isVideo=media?.type?.startsWith('video/');
-        return `<div class="exercise-media" data-inline-media="${esc(ex.id)}"><div class="media-square"><span class="media-placeholder" aria-hidden="true">${icon('image')}</span><img data-media-image ${preview ? `src="${esc(preview)}"` : 'hidden'} alt="Execução de ${esc(ex.name || 'exercício')}">${isVideo ? `<video data-media-video muted loop playsinline preload="metadata" poster="${esc(preview)}" aria-label="Execução de ${esc(ex.name || 'exercício')}" hidden></video><button type="button" class="button media-play-fallback" data-media-play hidden>Reproduzir vídeo</button>` : ''}<p data-media-status role="status" hidden></p>${editor ? `<button type="button" class="icon-button danger secondary" data-remove-media aria-label="Remover anexo de ${esc(ex.name || 'exercício')}">${icon('trash')}</button>` : ''}</div></div>`;
+        return `<div class="exercise-media" data-inline-media="${esc(ex.id)}"><div class="media-square"><span class="media-placeholder" aria-hidden="true">${icon('image')}</span><img data-media-image ${preview ? `src="${esc(preview)}"` : 'hidden'} alt="Execução de ${esc(ex.name || 'exercício')}">${isVideo ? `<video data-media-video muted loop playsinline preload="metadata" poster="${esc(preview)}" aria-label="Execução de ${esc(ex.name || 'exercício')}" hidden></video><button type="button" class="button media-play-fallback" data-media-play hidden>Reproduzir vídeo</button>` : ''}<p data-media-status role="status" hidden></p>${editor ? `<button type="button" class="icon-button danger secondary" data-remove-media aria-label="Excluir mídia de ${esc(ex.name || 'exercício')}">${icon('trash')}</button>` : ''}</div></div>`;
       }
       function renderStrength(ex, index, session, focused = false) {
         const log = session.logs[ex.id];
@@ -7131,6 +7135,9 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if(['volume','distance','duration','load'].includes(metric))return 'area';
         return 'line';
       }
+      function activeEvolutionExercises() {
+        return evolutionModel.exercises.filter(ex=>{const item=EL.find(store,ex);return item&&!item.deleted;});
+      }
       function renderEvolution() {
         clearTimeout(recordSearchTimer);
         evolutionModel=P.build(store.sessions,localDate(),store.exerciseLibrary);
@@ -7151,7 +7158,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         }
         const series=P.buckets(rows,range),frequency={day:'por dia',week:'por semana',month:'por mês',year:'por ano'}[series.unit];
         html+=`<section class="evo-card" aria-labelledby="evo-volume-title"><div class="evo-card-heading"><div><h2 id="evo-volume-title">Ritmo de treino</h2><p>Distribuição ${frequency}</p></div><button type="button" class="selection-field compact evo-metric-select" id="evo-metric" aria-label="Métrica do gráfico" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div id="evo-overview-chart" class="evo-chart"></div>${totals.partial&&evolutionState.metric==='volume'?'<p class="evo-note">Volume parcial: algumas séries estão sem carga ou repetições.</p>':''}</section>`;
-        const catalog=evolutionModel.exercises;
+        const catalog=activeEvolutionExercises();
         let selected=catalog.find(ex=>ex.key===evolutionState.exercise);
         if(!selected){selected=[...catalog].sort((a,b)=>b.points.filter(p=>p.date>=range.start&&p.date<=range.end).length-a.points.filter(p=>p.date>=range.start&&p.date<=range.end).length||Number(a.unit==='s')-Number(b.unit==='s')||b.points.at(-1).date.localeCompare(a.points.at(-1).date))[0];evolutionState.exercise=selected?.key||null;evolutionState.exerciseMetric=defaultExerciseMetric(selected);}
         if(evolutionState.mode!=='cardio'&&selected) {
@@ -7397,7 +7404,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           evolutionState.period=value;evolutionState.anchor=localDate();refreshEvolution('evo-period');
         },button);
         else if(button.id==='evo-metric')openSelection('Métrica',evolutionChoices(),evolutionState.metric,value=>{evolutionState.metric=value;refreshEvolution('evo-metric');},button);
-        else if(button.id==='evo-exercise')openSelection('Exercício',evolutionModel.exercises.map(ex=>({value:ex.key,label:evolutionExerciseLabel(ex)})),evolutionState.exercise,value=>{evolutionState.exercise=value;evolutionState.exerciseMetric=defaultExerciseMetric(evolutionModel.exercises.find(ex=>ex.key===value));refreshEvolution('evo-exercise');},button);
+        else if(button.id==='evo-exercise')openSelection('Exercício',activeEvolutionExercises().map(ex=>({value:ex.key,label:evolutionExerciseLabel(ex)})),evolutionState.exercise,value=>{evolutionState.exercise=value;evolutionState.exerciseMetric=defaultExerciseMetric(evolutionModel.exercises.find(ex=>ex.key===value));refreshEvolution('evo-exercise');},button);
         else if(button.id==='evo-exercise-metric') {
           const exercise=evolutionModel.exercises.find(ex=>ex.key===evolutionState.exercise);
           if(exercise)openSelection('Métrica do exercício',evolutionExerciseChoices(exercise),evolutionState.exerciseMetric,value=>{evolutionState.exerciseMetric=value;refreshEvolution('evo-exercise-metric');},button);
@@ -7710,6 +7717,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       }
       function renderWorkout() {
         clearInlineMedia($('workout'));
+        if(appView!=='exercises')clearInlineMedia($('library-results'));
         const workout=currentWorkout();
         if(['summary','session'].includes(appView) && isReadOnly()) {
           viewingRecord=currentRecord().key; postWorkoutReturn=summaryReturn||homeReturnRoute();postWorkoutOrigin=postWorkoutReturn.view;appView='postworkout';
@@ -8044,7 +8052,13 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         $(id).showModal();
         return true;
       }
-      function confirm(title, message, label, action, returnTo = null, cancelLabel = 'Cancelar') { $('confirm-title').textContent = title; $('confirm-text').textContent = message; $('confirm-action').textContent = label; $('confirm-action').classList.add('danger'); $('confirm-dialog').querySelector('.session-actions [data-close]').textContent = cancelLabel; confirmAction = action; confirmReturn = returnTo; openDialog('confirm-dialog'); }
+      function confirm(title, message, label, action, returnTo = null, cancelLabel = 'Cancelar') {
+        $('confirm-title').textContent=title;$('confirm-text').textContent=message;
+        $('confirm-action').textContent=label;$('confirm-action').classList.add('danger');
+        const cancel=$('confirm-dialog').querySelector('.session-actions [data-close]');cancel.textContent=cancelLabel;
+        confirmAction=action;confirmReturn=returnTo;
+        if(openDialog('confirm-dialog'))cancel.focus({preventScroll:true});
+      }
       $('confirm-action').addEventListener('click', () => { const action = confirmAction; confirmAction = null; $('confirm-dialog').close(); action?.(); });
       $('confirm-dialog').addEventListener('close', () => {
         if ($('confirm-dialog').open) return;
@@ -8280,14 +8294,14 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           else restore();
         } else {renderNav();renderWorkout();renderHistory();}
         storageNotice();
-        toast(removed ? (recordKey ? 'Registro excluído.' : 'Histórico apagado.') : 'Nenhum registro para apagar.');
+        toast(removed ? (recordKey ? 'Registro excluído.' : 'Histórico excluído.') : 'Nenhum registro para excluir.');
       }
       $('clear-history').addEventListener('click', () => {
         const count = Object.keys(store.sessions).length;
         if (!count) return;
-        confirm('Apagar todo o histórico?',
+        confirm('Excluir histórico?',
           `Isso exclui ${count} ${count === 1 ? 'treino' : 'treinos'} deste navegador, incluindo cargas, repetições, marcações e observações. Não é possível desfazer.`,
-          'Apagar histórico', () => deleteHistory(), 'history-dialog');
+          'Excluir histórico', () => deleteHistory(), 'history-dialog');
       });
       function requestDeleteRecord(recordKey) {
         const session = store.sessions[recordKey];
@@ -8442,8 +8456,11 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         selection = { options, apply, trigger, scrollY:window.scrollY };
         $('selection-title').textContent = title;
         $('selection-options').innerHTML = options.map((o, i) => `<button type="button" class="selection-option" role="option" aria-selected="${String(o.value) === String(value)}" data-choice="${i}"><span>${esc(o.label)}</span></button>`).join('');
-        $('selection-dialog').showModal();
-        ($('selection-options').querySelector('[aria-selected=true]') || $('selection-options').firstElementChild)?.focus({preventScroll:true});
+        const current=selection,dialog=$('selection-dialog'),optionsList=$('selection-options');
+        dialog.showModal();
+        optionsList.firstElementChild?.focus({preventScroll:true});
+        const reset=()=>{if(selection!==current||!dialog.open)return;dialog.scrollTop=0;optionsList.scrollTop=0;dialog.querySelector('.dialog-body').scrollTop=0;};
+        reset();requestAnimationFrame(reset);
         window.scrollTo({top:selection.scrollY,behavior:'instant'});
       }
       $('selection-options').addEventListener('click', e => {
@@ -8529,9 +8546,16 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         for (const entry of entries) {
           const state = inlineMedia.get(entry.target);
           if (!state) continue;
-          if (entry.isIntersecting) loadInlineMedia(state); else stopInlineMedia(state);
+          state.visible=entry.isIntersecting;
+          if (state.visible&&!document.hidden) loadInlineMedia(state); else stopInlineMedia(state);
         }
       }, { rootMargin: '120px' }) : null;
+      function fitInlineMedia(state,width,height) {
+        if(state.root.id==='library-media-preview'&&width>0&&height>0)state.frame.style.setProperty('--media-ratio',String(width/height));
+      }
+      function showMediaPlayFallback(state) {
+        const button=state.frame.querySelector('[data-media-play]');if(button)button.hidden=false;
+      }
       function stopInlineMedia(state) {
         state.token++; state.controller?.abort(); state.controller = null;
         if (state.loaded && state.img.naturalWidth) {
@@ -8551,7 +8575,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         }
       }
       async function loadInlineMedia(state) {
-        if (!state.active || state.loading || state.loaded) return;
+        if (!state.active || document.hidden || state.loading || state.loaded) return;
         const token = ++state.token, controller = new AbortController();
         state.controller = controller; state.loading = true;
         state.frame.setAttribute('aria-busy', 'true'); state.status.hidden = true;
@@ -8563,18 +8587,19 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           if(state.video) {
             const loaded=await KoreVideoMedia.load(blob,state.video,{signal:controller.signal});
             if(!state.active||token!==state.token){loaded.release();return;}
-            state.loaded=loaded;state.video.hidden=false;state.img.hidden=true;state.frame.querySelector('.media-placeholder').hidden=true;
-            if(!document.hidden)try{await state.video.play();}catch{state.frame.querySelector('[data-media-play]').hidden=false;}
+            state.loaded=loaded;fitInlineMedia(state,state.video.videoWidth,state.video.videoHeight);state.video.hidden=false;state.img.hidden=true;state.frame.querySelector('.media-placeholder').hidden=true;
+            if(!document.hidden)try{await state.video.play();}catch{if(state.active&&token===state.token)showMediaPlayFallback(state);}
             return;
           }
           const loaded = await M.loadImage(blob, new Image(), { signal: controller.signal });
           if (!state.active || token !== state.token) { loaded.release(); return; }
-          loaded.img.alt = 'Execução de ' + (state.ex.name || 'exercício'); loaded.img.dataset.mediaImage = '';
+          loaded.img.alt = state.thumbnail?'':'Execução de ' + (state.ex.name || 'exercício'); loaded.img.dataset.mediaImage = '';
+          fitInlineMedia(state,loaded.img.naturalWidth,loaded.img.naturalHeight);
           state.img.replaceWith(loaded.img); state.img = loaded.img; state.loaded = loaded;
           state.frame.querySelector('.media-placeholder').hidden = true;
         } catch (error) {
           if (state.active && token === state.token && error?.name !== 'AbortError') {
-            state.status.textContent = M.errorText(error); state.status.hidden = false;
+            state.status.textContent = M.errorText(error); state.status.hidden = state.thumbnail;
           }
         } finally {
           if (token === state.token) { state.loading = false; state.frame.removeAttribute('aria-busy'); }
@@ -8585,19 +8610,24 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           const ex = exercises.find(item => item.id === frame.dataset.inlineMedia), media = ex && getMedia(ex);
           if (!media) return;
           const animated = typeof media === 'object' ? media.animated : /^data:image\/gif[;,]/.test(media);
-          const state = { root, frame, ex, media, animated, active: true, token: 0, loaded: null, loading: false,
+          const state = { root, frame, ex, media, animated, active: true, visible:!mediaObserver, thumbnail:frame.classList.contains('library-thumb'), token: 0, loaded: null, loading: false,
             preview: typeof media === 'object' ? media.preview : '',
             img: frame.querySelector('[data-media-image]'), video:frame.querySelector('[data-media-video]'), status: frame.querySelector('[data-media-status]') };
           frame.querySelector('[data-media-play]')?.addEventListener('click',async event=>{try{await state.video.play();event.currentTarget.hidden=true;}catch{state.status.textContent='Não foi possível iniciar o vídeo neste navegador.';state.status.hidden=false;}});
+          if(state.img.complete)fitInlineMedia(state,state.img.naturalWidth,state.img.naturalHeight);
+          else state.img.addEventListener('load',()=>fitInlineMedia(state,state.img.naturalWidth,state.img.naturalHeight),{once:true});
           inlineMedia.set(frame, state);
           if (mediaObserver) mediaObserver.observe(frame); else loadInlineMedia(state);
         });
       }
-      document.addEventListener('visibilitychange',()=>{for(const state of inlineMedia.values())if(state.video&&state.loaded){if(document.hidden)state.video.pause();else state.video.play().catch(()=>{state.frame.querySelector('[data-media-play]').hidden=false;});}});
+      document.addEventListener('visibilitychange',()=>{
+        for(const state of inlineMedia.values())if(document.hidden)stopInlineMedia(state);else if(state.visible)loadInlineMedia(state);
+      });
       function editorBusyUI() {
         $('editor-form').inert = editorSaving;
         $('editor-form').querySelector('[type=submit]').disabled = editorMediaBusy || editorSaving;
-        $('editor-form').querySelector('[type=submit]').textContent = editorSaving ? 'Salvando…' : editorIsNew ? 'Criar treino' : 'Salvar alterações';
+        $('editor-form').querySelector('[type=submit]').textContent = editorIsNew ? 'Criar treino' : 'Salvar alterações';
+        $('editor-form').setAttribute('aria-busy',String(editorSaving||editorMediaBusy));
         $('editor-dialog').querySelectorAll('[data-editor-back]').forEach(button=>button.disabled=editorSaving);
         $('editor-exercises').querySelectorAll('[data-media-file],[data-remove-media]').forEach(el => el.disabled = editorMediaBusy || editorSaving);
       }
@@ -8605,7 +8635,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         $('managed-workouts').innerHTML = D.weekdays.map((day, i) => {
           const workouts = PLAN.filter(w => w.weekday === i + 1);
           if(!workouts.length) return '';
-          return `<section class="section-card managed-day" aria-label="${esc(day)}"><div class="section-card-heading managed-day-heading"><h3>${esc(day)}</h3><button class="icon-button" data-create-workout="${i + 1}" aria-label="Criar treino para ${esc(day)}">+</button></div>${workouts.length ? workouts.map(w => `<div class="managed-workout"><div class="managed-workout-main">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}<span><strong>${esc(w.title)}</strong><small>${workoutDetail(w)}</small></span></div><button type="button" class="icon-button managed-edit" data-manage-workout="${w.id}" aria-label="Editar ${esc(w.title)}">${icon('edit')}</button><button class="icon-button danger secondary managed-delete" data-remove-workout="${w.id}" aria-label="Remover treino ${esc(w.title)}">${icon('trash')}</button></div>`).join('') : '<p class="managed-empty">Sem treino</p>'}</section>`;
+          return `<section class="section-card managed-day" aria-label="${esc(day)}"><div class="section-card-heading managed-day-heading"><h3>${esc(day)}</h3><button class="icon-button" data-create-workout="${i + 1}" aria-label="Criar treino para ${esc(day)}">+</button></div>${workouts.length ? workouts.map(w => `<div class="managed-workout"><div class="managed-workout-main">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}<span><strong>${esc(w.title)}</strong><small>${workoutDetail(w)}</small></span></div><button type="button" class="icon-button managed-edit" data-manage-workout="${w.id}" aria-label="Editar ${esc(w.title)}">${icon('edit')}</button><button class="icon-button danger secondary managed-delete" data-remove-workout="${w.id}" aria-label="Excluir treino ${esc(w.title)}">${icon('trash')}</button></div>`).join('') : '<p class="managed-empty">Sem treino</p>'}</section>`;
         }).join('') || `<div class="empty-state manager-empty">${icon('reminder')}<h2>Nenhum treino cadastrado</h2></div>`;
         $('new-workout').disabled = PLAN.length >= 100;
         $('managed-workouts').querySelectorAll('[data-create-workout]').forEach(b => b.disabled = PLAN.length >= 100);
@@ -8679,7 +8709,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
             ${strength ? `<div class="editor-exercise-choice"><div class="form-field"><span>Exercício</span><button type="button" class="selection-field" data-choose-library-exercise aria-label="Escolher exercício: ${esc(ex.name||'nenhum')}" aria-haspopup="dialog" aria-controls="exercise-library-picker"><span data-kore-name>${esc(ex.name||'Escolher exercício')}</span>${icon('chevron')}</button></div>${catalog?`<button type="button" class="icon-button" data-edit-library-exercise aria-label="Editar cadastro de ${esc(ex.name)}" aria-haspopup="dialog" aria-controls="exercise-details-dialog">${icon('edit')}</button>`:''}</div>${catalog?`<p class="editor-exercise-muscles">${esc(libraryMuscles(catalog))}</p>`:''}` : `<label class="form-field">Nome da etapa<input data-edit="name" value="${esc(ex.name)}" maxlength="200" required autocomplete="off"></label>`}
             ${strength ? `<div class="speed-mode" role="group" aria-label="Modo do exercício"><button type="button" data-exercise-unit="reps" aria-pressed="${ex.unit === 'reps'}">Repetições</button><button type="button" data-exercise-unit="s" aria-pressed="${ex.unit === 's'}">Tempo</button></div>${pickerField('Séries', 'sets', ex.sets)}<div class="form-grid">${pickerField(ex.unit === 's' ? 'Tempo mínimo' : 'Reps mínimas', 'min', t.min == null ? '—' : ex.unit === 's' ? C.durationText(t.min) : t.min)}${pickerField(ex.unit === 's' ? 'Tempo máximo' : 'Reps máximas', 'max', t.max == null ? '—' : ex.unit === 's' ? C.durationText(t.max) : t.max)}</div>`
               : `${grouped ? '' : pickerField('Repetições da etapa', 'repeats', t.repeats)}<div class="form-grid">${pickerField('Tempo mínimo', 'duration', C.durationText(t.durationSeconds))}${pickerField('Tempo máximo', 'duration-max', C.durationText(t.durationMaxSeconds))}</div><div class="speed-mode" role="group" aria-label="Tipo de intensidade da etapa"><button type="button" data-speed-mode="speed" aria-pressed="${t.mode === 'speed'}">Velocidade</button><button type="button" data-speed-mode="pace" aria-pressed="${t.mode === 'pace'}">Pace</button><button type="button" data-speed-mode="rest" aria-pressed="${t.mode === 'rest'}">Descanso</button></div>${t.mode === 'rest' ? '' : pickerField(t.mode === 'pace' ? 'Pace (min/km)' : 'Velocidade (km/h)', t.mode === 'pace' ? 'pace' : 'speed', t.mode === 'pace' ? C.paceText(t.speedKmh) : C.valueText(t.speedKmh))}`}
-            <button class="button compact danger secondary editor-remove" type="button" data-remove-ex>${icon('trash')}Remover ${strength ? 'exercício' : 'etapa'}</button></section>`;
+            <button class="button compact danger secondary editor-remove" type="button" data-remove-ex>${icon('trash')}Excluir ${strength ? 'exercício' : 'etapa'}</button></section>`;
         }
         $('editor-exercises').innerHTML = C.blocks(editorDraft).map(block => block.group
           ? `<section class="editor-superset" data-sort-id="${block.id}"><div class="superset-heading"><h3>${esc(block.name)}</h3><button type="button" class="button compact" data-separate-group="${block.id}">Separar</button>${dragHandle(block.name)}</div>${strength ? '' : `<div class="form-field interval-repeat"><span>Voltas do intervalado</span><button type="button" class="number-ticker" data-group-repeats="${block.id}" aria-label="Voltas do intervalado: ${block.group.repeats}" aria-haspopup="dialog" aria-controls="ticker-dialog"><span>${block.group.repeats}</span>${icon('chevron')}</button></div>`}${block.exercises.map(ex => card(ex, true)).join('')}</section>`
@@ -8736,7 +8766,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if (!ex || !file) return;
         const token = ++mediaUploadToken;
         editorMediaBusy = true; editorBusyUI(); $('editor-error').hidden = true;
-        input.closest('label').querySelector('span').textContent = 'Preparando…';
+        input.closest('label').setAttribute('aria-busy','true');
         try {
           const prepared = await M.prepare(file);
           if (token !== mediaUploadToken || !editorDraft?.exercises.includes(ex)) return;
@@ -8776,12 +8806,12 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if (button.hasAttribute('data-speed-mode')) { ex.target.mode = button.dataset.speedMode; C.syncMeta(ex, editorDraft.kind); renderEditor(ex.id, `[data-speed-mode="${ex.target.mode}"]`); }
         if (button.hasAttribute('data-remove-ex')) {
           const draft=editorDraft,strength=draft.kind==='strength';let removed=false;
-          confirm(strength?'Remover exercício?':'Remover etapa?',
+          confirm(strength?'Excluir exercício?':'Excluir etapa?',
             strength?`${ex.name||'Este exercício'} será removido deste treino. O cadastro e o histórico serão mantidos.`:`${ex.name||'Esta etapa'} será removida deste treino. O histórico será mantido.`,
-            strength?'Remover exercício':'Remover etapa',()=>{
+            strength?'Excluir exercício':'Excluir etapa',()=>{
               if(editorDraft!==draft||!draft.exercises.includes(ex))return;
               draft.exercises.splice(draft.exercises.indexOf(ex),1);C.cleanGroups(draft);renderEditor();removed=true;
-              toast(strength?'Exercício removido do treino.':'Etapa removida do treino.');
+              toast(strength?'Exercício excluído do treino.':'Etapa excluída do treino.');
             });
           $('confirm-dialog').addEventListener('close',()=>{if(!removed&&button.isConnected)button.focus({preventScroll:true});else if(editorDraft===draft)$('editor-add').focus({preventScroll:true});},{once:true});
         }
@@ -8849,7 +8879,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if (add) openEditor(null, +add.dataset.createWorkout);
         if (remove) {
           const w = PLAN.find(w => w.id === remove.dataset.removeWorkout); if (!w) return;
-          confirm('Remover este treino?', `${w.title} será removido da ficha. Seus registros concluídos serão mantidos no histórico.`, 'Remover treino', () => { const saved=savePlan(PLAN.filter(item => item.id !== w.id)); renderManager(); toast(saved ? 'Treino removido da ficha.' : 'Alteração mantida apenas nesta aba. Exporte um backup.',saved ? 'success' : 'error'); }, 'manager-dialog');
+          confirm('Excluir treino?', `${w.title} será removido da ficha. Seus registros concluídos serão mantidos no histórico.`, 'Excluir treino', () => { const saved=savePlan(PLAN.filter(item => item.id !== w.id)); renderManager(); toast(saved ? 'Treino excluído da ficha.' : 'Alteração mantida apenas nesta aba. Exporte um backup.',saved ? 'success' : 'error'); }, 'manager-dialog');
         }
       });
 
@@ -9123,14 +9153,19 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       const libraryMuscles=item=>[item.primaryMuscle,item.secondaryMuscle].filter(Boolean).map(EL.muscleLabel).join(' · ');
       function libraryRows(items,attribute) {
         return items.map(item=>{
-          const media=item.media,preview=typeof media==='string'?media:media?.preview;
-          const video=media?.type?.startsWith('video/');
-          return `<button type="button" class="library-item" ${attribute}="${esc(item.id)}" aria-label="${attribute==='data-library-edit'?'Editar':'Escolher'} ${esc(item.name)}"><span class="library-thumb" aria-hidden="true">${preview?`<img src="${esc(preview)}" alt="" loading="lazy">`:icon('dumbbell')}${video?`<span class="library-video-badge">${icon('play','filled')}</span>`:''}</span><span class="library-item-copy"><strong data-kore-name>${esc(item.name)}</strong>${libraryMuscles(item)||video?`<small>${esc(libraryMuscles(item))}${video?(libraryMuscles(item)?' · Vídeo':'Vídeo'):''}</small>`:''}</span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
+          const media=item.media,video=media?.type?.startsWith('video/');
+          const animated=typeof media==='object'?media?.animated||video||media?.type==='image/gif':/^data:image\/gif[;,]/.test(media||'');
+          const preview=typeof media==='string'?(animated?'':media):media?.preview;
+          const thumbnail=media?`<span class="media-placeholder" aria-hidden="true">${icon('dumbbell')}</span><img data-media-image ${preview?`src="${esc(preview)}"`:'hidden'} alt="" loading="lazy">${video?`<video data-media-video muted loop playsinline preload="metadata" poster="${esc(preview||'')}" hidden></video>`:''}<span data-media-status hidden></span>`:icon('dumbbell');
+          return `<button type="button" class="library-item" ${attribute}="${esc(item.id)}" aria-label="${attribute==='data-library-edit'?'Editar':'Escolher'} ${esc(item.name)}"><span class="library-thumb" aria-hidden="true" ${animated?`data-inline-media="${esc(item.id)}"`:''}>${thumbnail}</span><span class="library-item-copy"><strong data-kore-name>${esc(item.name)}</strong>${libraryMuscles(item)||video?`<small>${esc(libraryMuscles(item))}${video?(libraryMuscles(item)?' · Vídeo':'Vídeo'):''}</small>`:''}</span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
         }).join('');
       }
+
       function renderExerciseLibrary() {
+        clearInlineMedia($('library-results'));
         const items=EL.search(store,libraryQuery);
         $('library-results').innerHTML=items.length?libraryRows(items.slice(0,libraryLimit),'data-library-edit'):`<div class="empty-state library-empty">${icon('dumbbell')}<h2>${libraryQuery?'Nenhum exercício encontrado':'Sua biblioteca começa aqui'}</h2>${libraryQuery?'':'<p>Os exercícios dos seus treinos atuais e anteriores ficam reunidos aqui.</p>'}</div>`;
+        bindInlineMedia($('library-results'),items.slice(0,libraryLimit),item=>item.media);
         $('library-more').hidden=items.length<=libraryLimit;
         $('library-search-status').textContent=countText(items.length,'exercício encontrado','exercícios encontrados');
       }
@@ -9153,16 +9188,18 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       }
       function renderLibraryPicker() {
         if(!libraryPicker)return;
+        clearInlineMedia($('library-picker-results'));
         const items=EL.search(store,$('library-picker-search').value);
         $('library-picker-results').innerHTML=items.length?libraryRows(items.slice(0,libraryPicker.limit),'data-library-choose'):'<p class="library-no-results">Nenhum exercício encontrado. Você pode criar um novo exercício.</p>';
+        bindInlineMedia($('library-picker-results'),items.slice(0,libraryPicker.limit),item=>item.media);
         $('library-picker-more').hidden=items.length<=libraryPicker.limit;
       }
       function openLibraryPicker(exerciseId=null,trigger=$('editor-add')) {
         if(!editorDraft||editorDraft.kind!=='strength')return;
         libraryPicker={draft:editorDraft,exerciseId,trigger,limit:50};
-        $('library-picker-title').textContent=exerciseId?'Escolher exercício':'Adicionar exercício';$('library-picker-search').value='';renderLibraryPicker();openDialog('exercise-library-picker');
+        $('library-picker-title').textContent=exerciseId?'Escolher exercício':'Adicionar exercício';$('library-picker-search').value='';renderLibraryPicker();openDialog('exercise-library-picker');$('exercise-library-picker').scrollTop=0;
       }
-      $('library-picker-search').addEventListener('input',()=>{if(libraryPicker){libraryPicker.limit=50;renderLibraryPicker();}});
+      $('library-picker-search').addEventListener('input',()=>{if(libraryPicker){libraryPicker.limit=50;renderLibraryPicker();$('exercise-library-picker').scrollTop=0;}});
       $('library-picker-more').addEventListener('click',()=>{if(libraryPicker){libraryPicker.limit+=50;renderLibraryPicker();}});
       $('library-picker-results').addEventListener('click',event=>{
         const button=event.target.closest('[data-library-choose]'),target=libraryPicker,item=store.exerciseLibrary?.[button?.dataset.libraryChoose];if(!item||!target)return;
@@ -9173,11 +9210,12 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         const name=$('library-picker-search').value.trim();
         afterLibraryDialog($('exercise-library-picker'),()=>openLibraryDetails(null,{trigger:target.trigger,onSave:item=>assignLibraryExercise(item,target)}, {name,primaryMuscle:null,secondaryMuscle:null,media:null}));
       });
-      $('exercise-library-picker').addEventListener('close',()=>{const target=libraryPicker;libraryPicker=null;if(target?.trigger?.isConnected)target.trigger.focus({preventScroll:true});});
+      $('exercise-library-picker').addEventListener('close',()=>{clearInlineMedia($('library-picker-results'));const target=libraryPicker;libraryPicker=null;if(target?.trigger?.isConnected)target.trigger.focus({preventScroll:true});});
       function libraryFormBusy(busy) {
         $('library-details-save').disabled=busy;$('library-details-delete').disabled=busy;
         $('exercise-details-dialog').querySelectorAll('input,button[data-close],#library-details-cancel,#library-details-delete,[data-library-media-remove],#library-primary,#library-secondary,[data-library-media-remove]').forEach(el=>el.disabled=busy);
-        $('library-details-save').textContent=libraryForm?.saving?'Salvando…':libraryForm?.uploading?'Preparando mídia…':'Salvar';
+        $('library-details-save').textContent='Salvar';
+        $('library-details-form').setAttribute('aria-busy',String(busy));
       }
       function paintLibraryMedia() {
         clearInlineMedia(libraryMediaPreview);
@@ -9185,8 +9223,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         const item=libraryForm.item,example={id:'library-preview',name:$('library-name').value||item.name};
         const markup=item.media?mediaFrame(example,item.media,true).replace('data-remove-media','data-library-media-remove'):'';
         libraryMediaPreview.innerHTML=markup;
-        $('library-media-label').textContent=item.media?'Alterar mídia':'Adicionar mídia';
-        $('library-media-name').textContent=item.media?(typeof item.media==='object'?item.media.name:'Imagem de execução'):'';
+        $('library-media-label').textContent='Adicionar mídia';
         if(item.media)bindInlineMedia(libraryMediaPreview,[example],()=>item.media);
       }
       function paintLibraryMuscles() {
@@ -9265,7 +9302,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
             entry.deleted=true;entry.updatedAt=Math.max(Date.now(),entry.updatedAt+1);const saved=writeStore();
             if(saved){const retained=M.references(store);await M.remove([...oldMedia.keys()].filter(id=>!retained.has(id))).catch(()=>{});}
             renderExerciseLibrary();if(editorDraft)renderEditor();toast(saved?'Exercício excluído da biblioteca.':'Alteração mantida nesta aba. Exporte um backup.',saved?'success':'error');
-          },null,'Manter exercício');
+          });
           $('confirm-dialog').addEventListener('close',()=>{if(!removed)openLibraryDetails(item.id,context,item);},{once:true});
         });
       });
