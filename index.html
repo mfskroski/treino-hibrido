@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080808"><title>KORE · Aplicativo</title><style>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#080808"><title>KORE · Aplicativo</title><style>
     :root {
       color-scheme: light;
       --bg: #fff;
@@ -2950,6 +2950,11 @@ body[data-view=home] .header{padding-top:14px;padding-bottom:14px}.kore-hero{pad
 @media(max-width:350px) { .session-workout-name {font-size:20px}.session-toolbar-copy .context-label {font-size:9px}.active-workout-header {gap:6px} }
 
 /* Canonical KORE geometry. Explicit selectors also cover legacy modal and action rules. */
+:root { --radius-pill: 999px; --radius-badge: var(--radius-pill); }
+/* Context capsules are the limited round exception to the 4px control system. */
+:root :is(.kind-badge,.superset-tag,.active-workout-status),
+:root .active-workout-header .kind-badge,
+:root .current-exercise-meta .superset-tag { border-radius: var(--radius-badge); }
 .skip {
     border-radius: var(--radius-control)
 }
@@ -3143,7 +3148,7 @@ dialog.value-dialog {
     border-radius: var(--radius-control)
 }
 .kind-badge {
-    border-radius: var(--radius-control)
+    border-radius: var(--radius-badge)
 }
 .section-heading .button {
     border-radius: var(--control-radius-compact)
@@ -3200,7 +3205,7 @@ dialog.value-dialog {
     border-radius: var(--radius-control)
 }
 .superset-tag {
-    border-radius: var(--radius-control)
+    border-radius: var(--radius-badge)
 }
 #exercise-picker-dialog .overview-item {
     border-radius: var(--radius-control)
@@ -3370,6 +3375,7 @@ dialog.value-dialog {
 .evo-data:not(.post-pr-more)>summary {
     border-radius: var(--radius-control)
 }
+
 /* KORE 11 · measured activity stack, editorial screens and meaningful achievements. */
 :root{--motion-chart:680ms;--toast-success:#24563D;--toast-error:#8C302F;--toast-info:#343434}
 .activity-dock{position:fixed;inset:auto auto var(--nav-space) 50%;width:min(560px,calc(100% - 32px));transform:translateX(-50%);display:grid;padding:0;border:0;background:transparent;box-shadow:none;overflow:visible}
@@ -3391,7 +3397,7 @@ body .toast,body .toast[popover],body.has-activity-dock .toast,body.has-activity
 body.has-activity-dock .toast,body.has-activity-dock .toast[popover]{bottom:calc(var(--nav-space) + var(--activity-height,0px) + 12px)}
 body:has(dialog[open]) .toast,body:has(dialog[open]) .toast[popover]{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 .header h1,body[data-view=progress] .header h1{font-size:32px}.summary-heading h2,.post-heading h2{font-size:34px}
-.session-workout-name{font-size:26px!important;font-weight:800;font-style:italic}.active-workout-title{font-size:22px!important;font-weight:800;font-style:italic}
+.session-workout-name{font-size:26px!important;font-weight:800;font-style:italic}.active-workout-title{font-size:18px;font-weight:800;font-style:italic}
 .kore-hero h2{font-size:34px}.post-pr-heading h3{font-size:26px;font-weight:800;font-style:italic}.post-pr-item .post-pr-context{font:400 11px/1.45 var(--font-ui);color:var(--muted)}
 .current-exercise-meta{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:9px}.session-controls .current-exercise-meta .target{margin:0;line-height:1.6;font-family:var(--font-label);font-size:10px;text-transform:uppercase}.target .numeric{font:500 12px var(--font-numeric)}
 .current-exercise-meta .superset-tag{display:inline-flex;align-items:center;border:1px solid rgb(255 255 255 / .4);background:rgb(255 255 255 / .12);color:#fff;padding:4px 6px;border-radius:4px;font:500 10px/1.4 var(--font-label);text-transform:uppercase;letter-spacing:.035em;white-space:nowrap}
@@ -3433,7 +3439,7 @@ body[data-view=editor] .header{display:none}
 #editor-dialog .editor-section-label{padding-top:16px;border-top:1px solid var(--line);margin-bottom:14px}
 #editor-dialog .editor-footer{position:static;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:24px 0 0;margin-top:28px;border-top:1px solid var(--line);background:transparent;box-shadow:none}
 #editor-dialog .editor-footer .button{width:100%;min-width:0;min-height:48px;white-space:normal}
-@media(max-width:350px){.session-workout-name{font-size:24px!important}.active-workout-title{font-size:20px!important}.header h1,body[data-view=progress] .header h1{font-size:29px}.history-calendar-card{padding:16px 12px 12px}.calendar-grid{border-spacing:2px 4px}.calendar-day{font-size:14px}.toast,.toast[data-tone]{gap:8px;padding-left:12px}.history-day-card .history-session strong{font-size:22px}}
+@media(max-width:350px){.session-workout-name{font-size:24px!important}.active-workout-title{font-size:18px}.header h1,body[data-view=progress] .header h1{font-size:29px}.history-calendar-card{padding:16px 12px 12px}.calendar-grid{border-spacing:2px 4px}.calendar-day{font-size:14px}.toast,.toast[data-tone]{gap:8px;padding-left:12px}.history-day-card .history-session strong{font-size:22px}}
 /* Numeric fragments in Mono captions keep Inter and the surrounding weight. */
 :is(.today-detail,.managed-workout-main small,.workout-row small,.overview-copy,.overview-title,.overview-group-heading,.overview-set,.context-label,.session-progress,.current-exercise-copy .target,.active-workout-detail,.rest-mini-title,#finish-progress,.history-count,#history-date-title,.history-session,.kore-label,.kore-kicker,.meta-demo) .numeric{font-weight:inherit}
 /* Keep the glass material inside the border, including the rounded corners. */
@@ -3524,95 +3530,53 @@ html:has(body.sorting-exercises){scroll-behavior:auto}
 
 /* Persistent activity has its own semantic tokens, separate from a success toast. */
 :root {
-  --activity-bg: var(--ink);
-  --activity-ink: var(--inverse);
-  --activity-hover: var(--focus-inverse-surface);
-  --activity-border: var(--ink);
-  --activity-soft: var(--focus-inverse-surface);
-  --activity-line: rgb(255 255 255 / .28);
-  --activity-detail-ink: #D4D4D4;
+  --activity-bg: var(--bg);
+  --activity-ink: var(--ink);
+  --activity-hover: var(--focus-surface);
+  --activity-border: var(--line);
+  --activity-soft: var(--soft);
+  --activity-line: var(--line);
+  --activity-detail-ink: var(--muted);
   --activity-status-bg: var(--toast-success);
   --activity-status-ink: #FFFFFF;
-  --activity-notice-height: 132px;
+  --activity-notice-height: 80px;
 }
 :root[data-theme=dark] {
-  --activity-line: rgb(8 8 8 / .24);
-  --activity-detail-ink: #505050;
+  --activity-line: var(--line);
+  --activity-detail-ink: var(--muted);
 }
 .active-workout {
   background: var(--activity-bg);
   color: var(--activity-ink);
-  border-color: var(--activity-border);
-  border-inline-start: 1px solid var(--activity-border);
-  box-shadow: none;
+  border:1px solid var(--activity-border);
+  box-shadow: var(--shadow-float);
+  width:min(440px,calc(100% - 32px));
   border-radius: var(--radius-control);
 }
 #resume-active-workout { color: var(--activity-ink); gap: 12px; }
+/* Three short rows retain context while reducing the floating notice to 82px. */
 .active-workout-content,
 #resume-active-workout {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: var(--activity-notice-height);
-  min-height: var(--activity-notice-height);
-  padding: 14px 16px;
-  border: 0;
-  border-radius: inherit;
-  background: transparent;
-  color: var(--activity-ink);
-  text-align: left;
+  box-sizing:border-box; display:flex; align-items:center; width:100%;
+  height:var(--activity-notice-height); min-height:var(--activity-notice-height);
+  padding:8px 12px; border:0; border-radius:inherit; background:transparent;
+  color:var(--activity-ink); text-align:left;
 }
-@media(hover:hover) {
-  #resume-active-workout:hover:where(:not(:disabled)) { background: var(--activity-hover); }
-}
-#resume-active-workout:active:not(:disabled) { background: var(--activity-hover); }
-.active-workout-copy {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-  gap: 4px;
-}
-.active-workout-header { width: 100%; }
-.active-workout-header .kind-badge { margin-left: auto; }
-.active-workout-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font: 400 10px/1.5 var(--font-label);
-  letter-spacing: .025em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  padding: 3px 6px;
-  border-radius: 2px;
-  background: var(--activity-status-bg);
-  color: var(--activity-status-ink);
-}
-.active-workout-status::before { content: ''; width: 4px; height: 4px; flex: none; border-radius: 50%; background: currentColor; }
+@media(hover:hover) { #resume-active-workout:hover:where(:not(:disabled)) { background:var(--activity-hover); } }
+#resume-active-workout:active:not(:disabled) { background:var(--activity-hover); }
+.active-workout-copy { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,42%); flex:1; min-width:0; width:100%; gap:2px 10px; }
+.active-workout-header { grid-column:1 / -1; display:flex; align-items:center; justify-content:space-between; width:100%; height:18px; }
+.active-workout-status { display:inline-flex; align-items:center; gap:5px; font:400 9px/14px var(--font-label); letter-spacing:.025em; text-transform:uppercase; white-space:nowrap; padding:2px 6px; background:var(--activity-status-bg); color:var(--activity-status-ink); }
+.active-workout-status::before { content:''; width:3px; height:3px; flex:none; border-radius:50%; background:currentColor; }
+.active-workout-header .kind-badge { margin-left:auto; padding:0; gap:4px; border:0; background:transparent; color:var(--activity-detail-ink); font:400 9px/14px var(--font-label); }
+.active-workout-header .kind-badge .icon { width:12px; height:12px; }
 .active-workout .active-workout-title,
 .active-workout .active-workout-exercise,
-.active-workout .active-workout-detail {
-  display: block;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow-wrap: normal;
-  -webkit-box-orient: initial;
-  -webkit-line-clamp: unset;
-}
-.active-workout-header .kind-badge {
-  color: var(--activity-ink);
-  border-color: var(--activity-line);
-  background: var(--activity-soft);
-}
-.active-workout-exercise { color: var(--activity-ink); }
-.active-workout .active-workout-title { color: var(--activity-ink); }
-.active-workout-detail { color: var(--activity-detail-ink); font-size: 10px; }
-.active-workout-detail .numeric { font-family: var(--font-numeric); font-size: inherit; font-weight: inherit; }
-@media(max-width:350px) { .active-workout-status { font-size: 9px; } }
+.active-workout .active-workout-detail { display:block; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; overflow-wrap:normal; -webkit-box-orient:initial; -webkit-line-clamp:unset; }
+.active-workout .active-workout-title { grid-column:1 / -1; font:italic 800 18px/22px var(--font-display); color:var(--activity-ink); }
+.active-workout-exercise { grid-column:1; font:400 12px/18px var(--font-ui); color:var(--activity-ink); }
+.active-workout-detail { grid-column:2; text-align:right; font:400 10px/18px var(--font-label); color:var(--activity-detail-ink); }
+.active-workout-detail .numeric { font-family:var(--font-numeric); font-size:inherit; font-weight:inherit; line-height:inherit; }
 
 /* Value sheets use the product's label, numeric and control hierarchy. */
 .value-dialog { background: var(--bg); color: var(--ink); }
@@ -3934,31 +3898,32 @@ dialog :is(.session-actions,.picker-actions,.timer-actions)>.button{width:100%;h
   .evo-stat dd.is-long { font-size: 18px; }
 }
 
-/* KORE navbar: approved inverse surface with synchronized active-item expansion. */
-:root { --radius-navigation: 0px; --nav-space: calc(80px + env(safe-area-inset-bottom,0px)); --nav-surface: var(--brand-black); --nav-ink: var(--brand-white); --nav-line: rgb(255 255 255 / .16); --nav-focus-surface: rgb(255 255 255 / .12); --nav-selected-bg: var(--brand-white); --nav-selected-ink: var(--brand-black); --nav-content-inset: 8px; --nav-icon-label-gap: 8px; --nav-selection-duration: 280ms; --nav-selection-ease: cubic-bezier(.22,.61,.36,1); --nav-item-width: clamp(44px,15vw,80px); }
-:root[data-theme=dark] { --nav-surface: var(--brand-white); --nav-ink: var(--brand-black); --nav-line: rgb(8 8 8 / .13); --nav-focus-surface: rgb(8 8 8 / .08); --nav-selected-bg: var(--brand-black); --nav-selected-ink: var(--brand-white); }
+/* Floating navigation follows the page theme; its selected destination stays inverse. */
+:root { --radius-navigation: 999px; --nav-space: calc(96px + env(safe-area-inset-bottom,0px)); --nav-surface: var(--brand-white); --nav-ink: var(--brand-black); --nav-line: rgb(8 8 8 / .13); --nav-focus-surface: rgb(8 8 8 / .08); --nav-selected-bg: var(--brand-black); --nav-selected-ink: var(--brand-white); --nav-content-inset: 10px; --nav-icon-label-gap: 8px; --nav-selection-duration: 280ms; --nav-selection-ease: cubic-bezier(.22,.61,.36,1); --nav-item-width: clamp(44px,12vw,64px); }
+:root[data-theme=dark] { --nav-surface: var(--brand-black); --nav-ink: var(--brand-white); --nav-line: rgb(255 255 255 / .2); --nav-focus-surface: rgb(255 255 255 / .12); --nav-selected-bg: var(--brand-white); --nav-selected-ink: var(--brand-black); }
 .bottom-nav {
-  left: 0; right: 0; bottom: 0;
-  width: 100%; max-width: none; margin: 0;
-  height: calc(64px + env(safe-area-inset-bottom,0px)); min-height: 64px;
+  left: 50%; right: auto; bottom: calc(12px + env(safe-area-inset-bottom,0px));
+  transform: translateX(-50%);
+  width: max-content; max-width: calc(100% - 32px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)); margin: 0;
+  height: 64px; min-height: 64px;
   display: flex; align-items: center; justify-content: center;
-  padding: 4px max(12px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));
-  gap: 8px; border: 0; border-top: 1px solid var(--nav-line); border-radius: 0; box-shadow: none;
+  padding: 4px;
+  gap: 4px; border: 1px solid var(--nav-line); border-radius: var(--radius-navigation); box-shadow: var(--shadow-float);
   background: var(--nav-surface); color: var(--nav-ink);
 }
-:root[data-theme=dark] .bottom-nav { box-shadow: none; }
+:root[data-theme=dark] .bottom-nav { box-shadow: var(--shadow-float); }
 .nav-item {
   position: relative; display: flex; align-items: center; justify-content: center;
   flex: 0 0 auto; width: var(--nav-item-width); min-width: 44px; max-width: none;
-  height: 55px; min-height: 44px; padding: 0; gap: 0; border-radius: 0;
+  height: 54px; min-height: 44px; padding: 0; gap: 0; border-radius: var(--radius-navigation);
   background: transparent; color: var(--nav-ink); transition: none;
 }
 .bottom-nav .nav-item:hover { background: transparent; color: var(--nav-ink); }
 .nav-item:active { transform: none; }
 .nav-content {
   display: flex; align-items: center; justify-content: center;
-  width: 100%; height: 40px; padding: 8px var(--nav-content-inset);
-  border: 0; border-radius: var(--radius-control); background: transparent;
+  width: 100%; height: 54px; padding: 8px var(--nav-content-inset);
+  border: 0; border-radius: var(--radius-navigation); background: transparent;
   overflow: hidden; pointer-events: none; transition: none;
 }
 .nav-content > [data-icon] {
@@ -3984,7 +3949,7 @@ dialog :is(.session-actions,.picker-actions,.timer-actions)>.button{width:100%;h
 .bottom-nav .nav-item:focus-visible { background: var(--nav-focus-surface); }
 .nav-item:focus-visible::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); bottom: 1px; width: 20px; height: 2px; background: currentColor; }
 @media (max-width: 300px) {
-  .bottom-nav { --nav-item-width: 44px; --nav-content-inset: 6px; --nav-icon-label-gap: 6px; gap: 4px; padding-left: max(8px,env(safe-area-inset-left,0px)); padding-right: max(8px,env(safe-area-inset-right,0px)); }
+  .bottom-nav { --nav-item-width: 44px; --nav-content-inset: 6px; --nav-icon-label-gap: 6px; gap: 0; max-width: calc(100% - 16px); }
   .bottom-nav .nav-label { font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4469,6 +4434,17 @@ body:has(dialog[open]:not(.is-closing)) .execution-control-backdrop { opacity:0;
 .execution-visual-media .media-placeholder{background:transparent}
 .execution-visual-media:empty{background:var(--brand-light)}
 
+/* One type scale and baseline for series and prescription metadata. */
+.execution-control-panel .current-exercise-copy .target { font:400 12px/1.6 var(--font-label); letter-spacing:.025em; }
+.execution-series-summary { display:inline; color:inherit; font:inherit; vertical-align:baseline; }
+.execution-control-panel .current-exercise-copy .target .numeric { font-family:var(--font-numeric); font-size:inherit; font-weight:inherit; line-height:inherit; letter-spacing:0; vertical-align:baseline; }
+.execution-control-panel .focus-dot::after {
+  background:linear-gradient(90deg,var(--ink) var(--exercise-progress,0%),var(--line) 0);
+}
+.execution-control-panel .focus-dot[aria-current=true]::after {
+  background:linear-gradient(90deg,var(--ink) var(--exercise-progress,0%),var(--muted) 0);
+}
+
 /* Rest and active-workout feedback float without reserving content containers. */
 body.has-active-workout .shell { padding-top:0; }
 .active-workout { box-shadow:var(--shadow-float); }
@@ -4493,24 +4469,22 @@ body.has-active-workout .shell { padding-top:0; }
 @keyframes rest-overlay-out { from { opacity:1; transform:translate(-50%,0); } to { opacity:0; transform:translate(-50%,12px); } }
 @media print { .rest-mini { display:none!important; } }
 /* Shared exercise catalogue and local execution media. */
-.library-toolbar{display:flex;align-items:flex-end;gap:12px;margin-bottom:20px}
+.library-toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:0;margin-bottom:0}
 .library-toolbar>.library-search-field{flex:1;min-width:0;margin:0}
-.library-toolbar>#library-new{flex:none;width:48px;min-width:48px;height:48px;min-height:48px;padding:0}
-#library-new>span{font:400 26px/1 var(--font-ui)}
 .library-search-field{margin-bottom:20px}.library-list{border:1px solid var(--line);border-radius:var(--radius-control);overflow:hidden;background:var(--bg)}
 .library-item{display:flex;align-items:center;gap:12px;width:100%;min-height:88px;padding:14px 16px;background:var(--bg);color:var(--ink);text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0}
 .library-item:last-child{border-bottom:0}.library-item:hover,.library-item:focus-visible{background:var(--focus-surface)}.library-item:focus-visible strong{text-decoration:underline;text-underline-offset:4px}
 .library-thumb{position:relative;display:grid;place-items:center;flex:none;width:56px;height:56px;border-radius:var(--radius-control);overflow:hidden;background:var(--soft);color:var(--muted)}
-.library-thumb>:is(img,video){position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.library-thumb>:is(img,video){position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.library-thumb[data-media-crop=true]>:is(img,video){inset:auto;width:var(--thumb-width);height:var(--thumb-height);left:var(--thumb-left);top:var(--thumb-top);object-fit:fill}
 .library-thumb>.media-placeholder{display:grid;place-items:center}.library-thumb [data-media-status]{display:none}
-#library-media-preview [data-library-media-remove]{top:8px}.library-video-badge{position:absolute;right:2px;bottom:2px;display:grid;place-items:center;width:20px;height:20px;background:var(--bg);color:var(--ink);border-radius:2px}.library-video-badge>.icon{width:14px;height:14px}
+.library-video-badge{position:absolute;right:2px;bottom:2px;display:grid;place-items:center;width:20px;height:20px;background:var(--bg);color:var(--ink);border-radius:2px}.library-video-badge>.icon{width:14px;height:14px}
 .library-item-copy{flex:1;min-width:0}.library-item-copy>strong{display:block;font:500 14px/1.5 var(--font-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.library-item-copy>small{display:block;margin-top:4px;color:var(--muted);font:400 12px/1.5 var(--font-ui);overflow-wrap:anywhere}
 .library-item>.icon{width:20px;height:20px;flex:none}.library-empty{padding:40px 20px;border:0}.library-empty h2{font:600 18px/1.4 var(--font-ui)}.library-empty p{margin-top:8px;font:400 14px/1.6 var(--font-ui);color:var(--muted)}
 #library-more,#library-picker-more{margin-top:16px}.library-no-results{padding:20px;font:400 14px/1.6 var(--font-ui);color:var(--muted)}
 .exercise-library-picker,.exercise-details-dialog{width:min(520px,calc(100% - 32px));max-height:calc(100dvh - 32px)}
 #library-picker-new{margin:16px 0}.library-muscle-fields{margin-top:16px}.library-media-field{margin-top:20px}
-#library-media-preview:empty{display:none}#library-media-preview .exercise-media{--media-preview-height:min(280px,36dvh);width:min(100%,calc(var(--media-preview-height) * var(--media-ratio,1)));margin:0 auto 12px}
-#library-media-preview .media-square{aspect-ratio:var(--media-ratio,1);height:auto;max-height:none;border-radius:var(--radius-control);background:var(--soft)}
+#library-media-preview:empty{display:none}
 #library-details-delete{margin-top:16px}#library-details-form>.session-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}
 .editor-exercise-choice{display:flex;gap:8px;align-items:flex-end;margin-bottom:16px}.editor-exercise-choice>.form-field{flex:1;min-width:0;margin:0}.editor-exercise-choice>.icon-button{width:44px;min-width:44px;height:44px;min-height:44px;padding:10px;flex:none;margin-bottom:2px}
 .editor-exercise-choice>.icon-button>.icon{width:20px;height:20px}
@@ -4522,13 +4496,145 @@ body.has-active-workout .shell { padding-top:0; }
 .execution-visual-media .media-play-fallback{inset:50% auto auto 50%;transform:translate(-50%,-50%);width:max-content;max-width:calc(100% - 32px);pointer-events:auto}
 body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:transparent;backdrop-filter:none}
 @media(max-width:520px){.library-muscle-fields{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:350px){.library-toolbar{gap:8px}.library-item{padding:12px;gap:10px}.library-thumb{width:48px;height:48px}.library-muscle-fields{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:350px){.library-item{padding:12px;gap:10px}.library-thumb{width:48px;height:48px}.library-muscle-fields{grid-template-columns:minmax(0,1fr)}}
 
 /* Thumbnails remain distinct from the row's interaction surface. */
 .library-item:is(:hover,:focus-visible,:active)>.library-thumb{background:var(--bg)}
 .library-thumb{transition:background-color var(--motion-feedback) var(--ease-out)}
 .editor-exercise-muscles:empty{display:none}
 .selection-field[aria-invalid=true]{border-color:var(--error);background:var(--error-bg)}
+
+
+/* Browser defaults never own the product's color, geometry or toast surface. */
+button, input, select, textarea { -webkit-text-fill-color: currentColor; }
+button { -webkit-appearance: none; appearance: none; text-decoration: none; }
+.form-field :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea) {
+  -webkit-appearance: none;
+  appearance: none;
+}
+a[x-apple-data-detectors] { color: inherit !important; text-decoration: inherit !important; font: inherit !important; }
+
+/* The native popover is only a transparent portal. Intrinsic message sizing
+   stays independent of the browser's top-layer layout and default insets. */
+.toast-layer, .toast-layer[popover] {
+  position: fixed;
+  inset: 0;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 200;
+}
+.toast-layer::backdrop { background: transparent; pointer-events: none; }
+.toast-layer[hidden], .toast[hidden] { display: none !important; }
+.toast-layer > .toast {
+  position: absolute;
+  top: auto;
+  right: auto;
+  left: 50%;
+  width: min(440px,calc(100% - 32px));
+  height: auto;
+  block-size: auto;
+  min-height: 0;
+  min-block-size: 0;
+  max-height: calc(100vh - var(--nav-space,96px) - env(safe-area-inset-top,0px) - 24px);
+  max-height: calc(100dvh - var(--nav-space,96px) - env(safe-area-inset-top,0px) - 24px);
+  margin: 0;
+  align-content: start;
+  overflow: auto;
+  pointer-events: auto;
+}
+.toast-layer > .toast > .toast-copy { align-self: center; }
+body:has(dialog[open]) .toast-layer > .toast {
+  max-height: calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 32px);
+}
+/* Touch/programmatic focus is distinct from intentional keyboard navigation. */
+:root[data-input-modality=pointer] :is(.button,.settings-link,.selection-field,.selection-option,.library-item,.nav-item,.kore-name):focus-visible {
+  text-decoration: none;
+}
+:root[data-input-modality=pointer] :is(.icon-button,.nav-item,.toast-dismiss,.complete-set):focus-visible::after,
+:root[data-input-modality=pointer] .complete-set:has(input:focus-visible)::after { content: none; }
+:root[data-input-modality=pointer] :is(.library-item,.settings-link,.selection-option):focus-visible :is(strong,span),
+:root[data-input-modality=pointer] .settings-row:has(.settings-switch:focus-visible) > span { text-decoration: none; }
+:root[data-input-modality=pointer] :is(.media-upload:focus-within,.group-choice:has(input:focus-visible),.switch:has(input:focus-visible)) { text-decoration:none; }
+
+@media print { .toast-layer { display: none !important; } }
+
+
+/* Optional search, content/empty state, pagination, then one primary create action. */
+.collection-layout { display:flex; flex-direction:column; gap:20px; min-width:0; }
+.collection-toolbar { margin:0; }
+.collection-toolbar > .form-field { margin:0; }
+.collection-content { min-width:0; }
+.collection-actions { margin:0; }
+.collection-actions > .button { width:100%; min-height:var(--control-height-action); }
+.collection-layout > .button[hidden] { display:none; }
+.collection-layout > :is(#library-more,#library-picker-more) { margin:0; }
+.collection-empty.empty-state { margin:0; padding:28px var(--card-padding); border:1px solid var(--line); border-radius:var(--radius-card); background:var(--bg); }
+.collection-empty.empty-state > .icon { width:32px; height:32px; margin:0 0 16px; color:var(--muted); }
+.collection-empty.empty-state h2 { font:600 18px/1.4 var(--font-ui); letter-spacing:-.025em; text-transform:none; }
+.collection-empty.empty-state p { font:400 14px/1.6 var(--font-ui); margin:8px 0 0; max-width:34ch; color:var(--muted); }
+.library-list:has(> .collection-empty) { border:0; border-radius:0; overflow:visible; background:transparent; }
+.library-list > .collection-empty { width:100%; }
+.library-toolbar { display:block; }
+#library-picker-new { margin:0; }
+.managed-workout { display:flex; gap:8px; align-items:center; padding:14px 16px; margin:0; border:0; border-bottom:1px solid var(--line); border-radius:0; min-height:88px; box-shadow:none; }
+.managed-workout:last-child { border-bottom:0; }
+.managed-workout-main { display:flex; flex:1; gap:12px; align-items:center; min-width:0; padding:0; }
+.managed-workout-main > .library-thumb { width:56px; height:56px; flex:none; }
+.managed-workout-main > .library-thumb > .icon { width:24px; height:24px; }
+.managed-workout-main > .managed-workout-copy { flex:1; min-width:0; }
+.managed-workout-main strong { font-family:var(--font-display); font-size:20px; font-weight:800; font-style:italic; text-transform:uppercase; }
+.managed-workout-main small { font:400 11px/1.5 var(--font-label); text-transform:uppercase; }
+.managed-workout :is(.managed-edit,.managed-delete) { width:44px; min-width:44px; min-height:44px; padding:10px; flex:none; }
+.managed-day { overflow:hidden; }
+.managed-day:last-child { margin-bottom:0; }
+.editor-empty { margin:0 0 16px; }
+.editor-empty.collection-empty { padding-block:24px; }
+.library-media-status { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 12px; padding:12px; border:1px solid var(--line); border-radius:var(--radius-control); }
+.library-media-status > span { min-width:0; font:400 14px/1.5 var(--font-ui); text-transform:none; letter-spacing:0; }
+.library-media-status > .button { flex:none; }
+.library-media-field > .media-upload { min-height:48px; border-style:solid; background:var(--bg); color:var(--ink); font:550 15px/1.4 var(--font-ui); text-transform:none; letter-spacing:0; }
+.library-media-field > .media-upload > span { font:inherit; text-transform:none; letter-spacing:inherit; }
+@media(max-width:350px) {
+  .managed-workout { padding:12px; gap:4px; }
+  .managed-workout-main { gap:8px; }
+  .managed-workout-main > .library-thumb { width:48px; height:48px; }
+  .managed-workout-main strong { font-size:18px; }
+}
+
+/* Workout choices use the native primary and destructive action buttons. */
+#selection-dialog[data-selection-kind=actions] .selection-options { gap:12px; }
+
+
+/* Capsules identify a group of mutually exclusive modes, alongside the navbar. */
+:root { --radius-segmented:999px; }
+.speed-mode,.evo-kinds { border-radius:var(--radius-segmented); overflow:hidden; }
+.speed-mode > button,.speed-mode > .segment-indicator,.speed-mode.kore-segmented > .segment-indicator,:root .evo-kinds > button,:root .evo-kinds::before { border-radius:var(--radius-segmented); }
+.evo-kinds > button:active { transform:none; }
+
+/* Caption, action and attachment have explicit spacing in both form states. */
+.library-media-field { display:grid; gap:12px; }
+.library-media-field > :is(span,label,div) { margin:0; }
+.library-media-field #library-media-preview:empty { display:none; }
+.library-media-attachment { display:flex; align-items:center; gap:12px; min-width:0; padding:8px 8px 8px 16px; border:1px solid var(--line); border-radius:var(--radius-control); background:var(--soft); }
+.library-media-file-name { flex:1; min-width:0; font:400 14px/1.5 var(--font-ui); color:var(--ink); text-transform:none; letter-spacing:0; overflow-wrap:anywhere; }
+.library-media-attachment > .library-media-remove { flex:none; width:44px; height:44px; min-width:44px; min-height:44px; padding:10px; color:var(--danger); border-color:transparent; background:transparent; }
+.library-media-remove > .icon { width:20px; height:20px; }
+.library-media-attachment > .library-media-remove:is(:hover,:active,:focus-visible) { background:var(--danger-soft); }
+
+.library-media-field > .media-upload[hidden] { display:none; }
 
 </style></head><body>
   <a class="skip" href="#app-main">Pular para o conteúdo</a>
@@ -4542,7 +4648,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
       <section id="home" role="tabpanel" tabindex="0" aria-label="Treinos do dia selecionado"></section>
       <div class="storage-alert" id="storage-alert" role="alert" hidden></div>
       <section class="training" id="workout" role="tabpanel" tabindex="0" aria-label="Treino selecionado"></section>
-<section id="manager-dialog" class="app-page" data-page="workouts" aria-labelledby="manager-title" hidden><h2 id="manager-title" class="sr-only">Treinos</h2>    <div class="dialog-body"><div id="managed-workouts"></div><button class="button primary action full" id="new-workout">Novo treino</button></div>
+<section id="manager-dialog" class="app-page" data-page="workouts" aria-labelledby="manager-title" hidden><h2 id="manager-title" class="sr-only">Treinos</h2>    <div class="dialog-body collection-layout"><div id="managed-workouts" class="collection-content"></div><div class="collection-actions"><button class="button primary action full" id="new-workout">Criar treino</button></div></div>
   </section>
 <section id="history-dialog" class="app-page" data-page="history" aria-labelledby="history-title" hidden><h2 id="history-title" class="sr-only">Histórico</h2>    <div class="dialog-body">
       <section class="section-card history-calendar-card" aria-label="Calendário de treinos">
@@ -4569,12 +4675,11 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
       <div class="section-card-heading"><h3 id="history-date-title" aria-live="polite"></h3></div>
       <div id="history-list"></div>
       </section>
-      <div class="history-actions"><button class="button danger secondary full" id="clear-history"><i data-icon="trash"></i>Apagar histórico</button></div>
+      <div class="history-actions"><button class="button danger secondary full" id="clear-history"><i data-icon="trash"></i>Excluir histórico</button></div>
     </div>
   </section>
 <section id="timer-dialog" class="app-page" data-page="timer" aria-labelledby="timer-title" hidden><h2 id="timer-title" class="sr-only">Temporizador</h2>    <div class="dialog-body">
       <div class="form-field rest-duration-field"><span id="rest-duration-label">Duração de descanso</span><button type="button" class="number-ticker" id="rest-duration" aria-labelledby="rest-duration-label rest-duration" aria-haspopup="dialog" aria-controls="ticker-dialog"></button></div>
-      <div class="setting-row"><span id="auto-rest-label">Iniciar descanso ao concluir uma série</span><button type="button" class="settings-switch" id="auto-rest-toggle" role="switch" aria-labelledby="auto-rest-label" aria-checked="true"><span></span></button></div>
       <div class="setting-row"><span id="sound-toggle-label">Som ao terminar</span><button type="button" class="settings-switch" id="sound-toggle" role="switch" aria-labelledby="sound-toggle-label" aria-checked="false"><span></span></button></div>
       <div class="sound-controls" id="sound-controls" hidden>
         <div class="sound-volume"><label for="sound-volume">Volume</label><input id="sound-volume" type="range" min="0"
@@ -4607,10 +4712,11 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
   </section>
 </section>
       
-<section id="exercise-library-page" class="app-page" data-page="exercises" aria-label="Meus exercícios" hidden>
-  <div class="library-toolbar"><label class="form-field library-search-field">Buscar exercício<input type="search" id="library-search" maxlength="200" autocomplete="off"></label><button type="button" class="icon-button" id="library-new" aria-label="Criar exercício" title="Criar exercício" aria-haspopup="dialog" aria-controls="exercise-details-dialog"><span aria-hidden="true">+</span></button></div>
-  <div class="library-list" id="library-results"></div>
+<section id="exercise-library-page" class="app-page collection-layout" data-page="exercises" aria-label="Meus exercícios" hidden>
+  <div class="library-toolbar collection-toolbar"><label class="form-field library-search-field">Buscar exercício<input type="search" id="library-search" maxlength="200" autocomplete="off"></label></div>
+  <div class="library-list collection-content" id="library-results"></div>
   <button type="button" class="button full" id="library-more" hidden>Carregar mais</button>
+  <div class="collection-actions"><button type="button" class="button primary action full" id="library-new" aria-haspopup="dialog" aria-controls="exercise-details-dialog">Criar exercício</button></div>
   <span class="sr-only" id="library-search-status" role="status"></span>
 </section>
 
@@ -4637,15 +4743,15 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
   </nav>
   
 <dialog id="exercise-library-picker" class="exercise-library-picker" aria-labelledby="library-picker-title">
-  <div class="dialog-header"><h2 id="library-picker-title">Adicionar exercício</h2><button type="button" class="icon-button" data-close="exercise-library-picker" aria-label="Cancelar escolha"><i data-icon="close"></i></button></div>
-  <div class="dialog-body"><label class="form-field">Buscar exercício<input id="library-picker-search" type="search" maxlength="200" autocomplete="off"></label><button type="button" class="button full" id="library-picker-new">Criar novo exercício</button><div class="library-list" id="library-picker-results"></div><button type="button" class="button full" id="library-picker-more" hidden>Carregar mais</button></div>
+  <div class="dialog-header"><h2 id="library-picker-title">Selecionar exercício</h2><button type="button" class="icon-button" data-close="exercise-library-picker" aria-label="Cancelar escolha"><i data-icon="close"></i></button></div>
+  <div class="dialog-body collection-layout"><div class="collection-toolbar"><label class="form-field">Buscar exercício<input id="library-picker-search" type="search" maxlength="200" autocomplete="off"></label></div><div class="library-list collection-content" id="library-picker-results"></div><button type="button" class="button full" id="library-picker-more" hidden>Carregar mais</button><div class="collection-actions"><button type="button" class="button primary action full" id="library-picker-new">Criar exercício</button></div></div>
 </dialog>
 <dialog id="exercise-details-dialog" class="exercise-details-dialog" aria-labelledby="library-details-title">
-  <div class="dialog-header"><h2 id="library-details-title">Novo exercício</h2><button type="button" class="icon-button" data-close="exercise-details-dialog" aria-label="Cancelar edição"><i data-icon="close"></i></button></div>
+  <div class="dialog-header"><h2 id="library-details-title">Criar exercício</h2><button type="button" class="icon-button" data-close="exercise-details-dialog" aria-label="Cancelar edição"><i data-icon="close"></i></button></div>
   <form id="library-details-form" class="dialog-body" novalidate>
     <label class="form-field">Nome do exercício<input id="library-name" maxlength="200" autocomplete="off" required></label>
     <div class="form-grid library-muscle-fields"><div class="form-field"><span id="library-primary-label">Músculo principal<span class="sr-only"> (obrigatório)</span></span><button type="button" class="selection-field" id="library-primary" aria-labelledby="library-primary-label library-primary" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div><div class="form-field"><span id="library-secondary-label">Músculo secundário</span><button type="button" class="selection-field" id="library-secondary" aria-labelledby="library-secondary-label library-secondary" aria-haspopup="dialog" aria-controls="selection-dialog"></button></div></div>
-    <div class="form-field library-media-field"><span>Mídia de execução</span><div id="library-media-preview"></div><label class="media-upload"><i data-icon="upload"></i><span id="library-media-label">Adicionar mídia</span><input type="file" id="library-media-file" accept=".mp4,.webm,.gif,.png,.jpg,.jpeg,.webp,video/mp4,video/webm,image/gif,image/png,image/jpeg,image/webp" aria-label="Escolher vídeo, GIF ou imagem de execução"></label></div>
+    <div class="form-field library-media-field"><span>Mídia de execução</span><label class="media-upload"><i data-icon="upload"></i><span id="library-media-label">Adicionar mídia</span><input type="file" id="library-media-file" accept=".mp4,.webm,.gif,.png,.jpg,.jpeg,.webp,video/mp4,video/webm,image/gif,image/png,image/jpeg,image/webp" aria-label="Escolher vídeo, GIF ou imagem de execução"></label><div id="library-media-preview"></div></div>
     <p class="form-error" id="library-details-error" role="alert" hidden></p>
     <div class="session-actions button-group" data-size="action"><button type="button" class="button" data-close="exercise-details-dialog" id="library-details-cancel">Cancelar</button><button type="submit" class="button primary" id="library-details-save">Salvar</button></div>
     <button type="button" class="button danger secondary full action" id="library-details-delete" hidden>Excluir exercício</button>
@@ -4760,7 +4866,7 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
   </dialog>
   <dialog id="evolution-range-dialog" aria-labelledby="evo-range-title">
     <div class="dialog-header"><h2 id="evo-range-title">Período personalizado</h2><button type="button" class="icon-button" data-close="evolution-range-dialog" aria-label="Fechar período"><i data-icon="close"></i></button></div>
-    <form id="evo-range-form" class="dialog-body" novalidate><div class="form-field"><span id="evo-from-label">Data inicial</span><button type="button" class="selection-field" id="evo-range-from" aria-labelledby="evo-from-label evo-range-from" aria-haspopup="dialog" aria-controls="date-dialog"></button></div><div class="form-field"><span id="evo-to-label">Data final</span><button type="button" class="selection-field" id="evo-range-to" aria-labelledby="evo-to-label evo-range-to" aria-haspopup="dialog" aria-controls="date-dialog"></button></div><p class="form-error" id="evo-range-error" role="alert" hidden></p><div class="session-actions button-group" data-size="action"><button type="submit" class="button primary">Aplicar período</button></div></form>
+    <form id="evo-range-form" class="dialog-body" novalidate><div class="form-field"><span id="evo-from-label">Data inicial</span><button type="button" class="selection-field" id="evo-range-from" aria-labelledby="evo-from-label evo-range-from" aria-haspopup="dialog" aria-controls="date-dialog"></button></div><div class="form-field"><span id="evo-to-label">Data final</span><button type="button" class="selection-field" id="evo-range-to" aria-labelledby="evo-to-label evo-range-to" aria-haspopup="dialog" aria-controls="date-dialog"></button></div><p class="form-error" id="evo-range-error" role="alert" hidden></p><div class="session-actions button-group" data-size="action"><button type="button" class="button" data-close="evolution-range-dialog">Cancelar</button><button type="submit" class="button primary">Aplicar</button></div></form>
   </dialog>
 
 
@@ -4808,9 +4914,89 @@ body:has(#selection-dialog[open]) #exercise-details-dialog::backdrop{background:
     <div class="dialog-header"><h2 id="media-title">Demonstração</h2><button type="button" class="icon-button" data-close="media-dialog" aria-label="Fechar demonstração"><i data-icon="close"></i></button></div>
     <div class="dialog-body" id="media-viewer"></div>
   </dialog>
-  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" popover="manual" hidden></div>
+  <div class="toast-layer" id="toast-layer" popover="manual" hidden><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div></div>
   <noscript><section class="shell"><p>Ative o JavaScript no navegador para configurar seus treinos.</p></section></noscript>
-  <script id="workout-plan" type="application/json">[]</script><script>/* Shared panel and form transitions. State changes remain immediate. */
+  <script id="workout-plan" type="application/json">[]</script><script>
+/* The same empty/list hierarchy is shared by pages and exercise selection. */
+const KoreCollection = (() => {
+  const escape = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function empty({icon='',title,description='',titleId=''}) {
+    return `<div class="empty-state collection-empty">${icon}<h2${titleId?` id="${escape(titleId)}" tabindex="-1"`:''}>${escape(title)}</h2>${description?`<p>${escape(description)}</p>`:''}</div>`;
+  }
+  function state({actions='',...content}) {
+    return `<div class="collection-layout">${empty(content)}${actions?`<div class="collection-actions">${actions}</div>`:''}</div>`;
+  }
+  return Object.freeze({empty,state});
+})();
+
+/* Presentation-only framing. Original images, GIFs, videos and backup bytes stay intact. */
+const KoreMediaThumbnail = (() => {
+  const cache=new Map();
+  const median=values=>values.sort((a,b)=>a-b)[Math.floor(values.length/2)];
+  function bounds(source) {
+    const width=source.videoWidth||source.naturalWidth, height=source.videoHeight||source.naturalHeight;
+    if(!width||!height)return null;
+    const scale=Math.min(1,160/Math.max(width,height)),w=Math.max(1,Math.round(width*scale)),h=Math.max(1,Math.round(height*scale));
+    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(source,0,0,w,h);
+    const pixels=ctx.getImageData(0,0,w,h).data,edges=[];
+    for(let x=0;x<w;x+=3){edges.push((x)*4,((h-1)*w+x)*4);}
+    for(let y=0;y<h;y+=3){edges.push((y*w)*4,(y*w+w-1)*4);}
+    const background=[0,1,2].map(channel=>median(edges.map(i=>pixels[i+channel])));
+    const distance=i=>Math.max(...background.map((value,c)=>Math.abs(pixels[i+c]-value)));
+    const quiet=edges.filter(i=>pixels[i+3]<20||distance(i)<35).length/edges.length;
+    // Only infer a subject box on a sufficiently uniform light studio backdrop.
+    if(quiet<.75||Math.min(...background)<165)return null;
+    const columns=new Uint16Array(w),rows=new Uint16Array(h);
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+      const i=(y*w+x)*4;if(pixels[i+3]>40&&distance(i)>42){columns[x]++;rows[y]++;}
+    }
+    const xs=[...columns.keys()].filter(x=>columns[x]>=Math.max(2,h*.015));
+    const ys=[...rows.keys()].filter(y=>rows[y]>=Math.max(2,w*.015));
+    if(!xs.length||!ys.length)return null;
+    let x=xs[0],y=ys[0],bw=xs.at(-1)-x+1,bh=ys.at(-1)-y+1;
+    if(bw*bh<w*h*.015||bw*bh>w*h*.9)return null;
+    // Leave breathing room for moving equipment and limbs in looping thumbnails.
+    const padX=Math.max(w*.04,bw*.12),padY=Math.max(h*.04,bh*.12);
+    const right=Math.min(w,x+bw+padX),bottom=Math.min(h,y+bh+padY);
+    x=Math.max(0,x-padX);y=Math.max(0,y-padY);bw=right-x;bh=bottom-y;
+    const unit=Math.max(bw,bh);
+    return {width:w/unit*100,height:h/unit*100,left:(1-bw/unit)*50-x/unit*100,top:(1-bh/unit)*50-y/unit*100};
+  }
+  function fit(frame,source,key) {
+    if(!source)return;
+    try {
+      if(!cache.has(key)){
+        const box=bounds(source);
+        if(!(source.videoWidth||source.naturalWidth))return;
+        // A video poster can precede its first decoded frame. Do not freeze an
+        // empty estimate; the real frame gets another chance to set the crop.
+        if(!box){delete frame.dataset.mediaCrop;return;}
+        if(cache.size>=256)cache.delete(cache.keys().next().value);
+        cache.set(key,box);
+      }
+      const box=cache.get(key);if(!box){delete frame.dataset.mediaCrop;return;}
+      frame.dataset.mediaCrop='true';
+      for(const [name,value] of Object.entries(box))frame.style.setProperty('--thumb-'+name,value+'%');
+    } catch { delete frame.dataset.mediaCrop; }
+  }
+  return Object.freeze({fit});
+})();
+
+
+/* Keep keyboard cues while preventing touch focus from impersonating a keypress. */
+(() => {
+  const root = document.documentElement;
+  const pointer = () => { root.dataset.inputModality = 'pointer'; };
+  document.addEventListener('pointerdown', pointer, {capture:true,passive:true});
+  document.addEventListener('touchstart', pointer, {capture:true,passive:true});
+  document.addEventListener('keydown', event => {
+    if (!event.altKey && !event.ctrlKey && !event.metaKey)
+      root.dataset.inputModality = 'keyboard';
+  }, true);
+})();
+
+/* Shared panel and form transitions. State changes remain immediate. */
 const KoreMotion=(()=>{
  const media=matchMedia('(prefers-reduced-motion: reduce)'),states=new WeakMap(),active=new Set(),layoutKeys=new WeakMap();
  const ms=(name,fallback)=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name))||fallback;
@@ -5031,87 +5217,17 @@ const KoreShare = (() => {
 })();
 
 const KoreShareAssets={"logoWhite": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ijk1LjI3NjEgMTE1LjMzNCAxODgyLjYyIDQ2Ny4yNzQiIHdpZHRoPSIxODgyLjYyIiBoZWlnaHQ9IjQ2Ny4yNzQiPjx0aXRsZT5LT1JFIGxvZ290aXBvPC90aXRsZT48cGF0aCBkPSJNNzg1LjY4MSA1ODIuNjA4Qzc1MS4wMjEgNTgyLjYwOCA3MTkuOTk4IDU3Ni42MTcgNjkyLjYxMiA1NjQuNjM2QzY2NS42NTQgNTUyLjIyNyA2NDIuOTc1IDUzNS4zMjQgNjI0LjU3NSA1MTMuOTI5QzYwNi42MDMgNDkyLjUzNCA1OTQuMTkzIDQ2Ny43MTUgNTg3LjM0NyA0MzkuNDczQzU4MC41IDQxMS4yMzEgNTc5Ljg1OCAzODEuMDY0IDU4NS40MjEgMzQ4Ljk3MUM1OTAuOTg0IDMxNi44NzggNjAyLjMyMyAyODYuNzExIDYxOS40NCAyNTguNDY5QzYzNi41NTYgMjMwLjIyNyA2NTcuNzM3IDIwNS40MDggNjgyLjk4NCAxODQuMDEzQzcwOC42NTggMTYyLjYxOCA3MzcuMzI4IDE0NS45MjkgNzY4Ljk5MyAxMzMuOTQ4QzgwMC42NTggMTIxLjUzOSA4MzMuODIxIDExNS4zMzQgODY4LjQ4MSAxMTUuMzM0QzkwMy4xNDIgMTE1LjMzNCA5MzQuMTY1IDEyMS41MzkgOTYxLjU1MSAxMzMuOTQ4Qzk4OS4zNjUgMTQ1LjkyOSAxMDEyLjI2IDE2Mi44MzIgMTAzMC4yMyAxODQuNjU1QzEwNDguNjMgMjA2LjA1IDEwNjEuMjUgMjMxLjI5NyAxMDY4LjEgMjYwLjM5NEMxMDc0Ljk1IDI4OS4wNjQgMTA3NC45NSAzMjAuMzAxIDEwNjguMSAzNTQuMTA2QzEwNjEuNjggMzg0LjA1OSAxMDUwLjc3IDQxMi45NDMgMTAzNS4zNiA0NDAuNzU3QzEwMjAuMzkgNDY4LjE0MyAxMDAwLjkyIDQ5Mi41MzQgOTc2Ljk1NiA1MTMuOTI5Qzk1Mi45OTMgNTM0Ljg5NiA5MjQuOTY1IDU1MS41ODUgODkyLjg3MiA1NjMuOTk0Qzg2MS4yMDcgNTc2LjQwMyA4MjUuNDc3IDU4Mi42MDggNzg1LjY4MSA1ODIuNjA4Wk04MDUuNTc5IDQ3MC4yODJDODIyLjY5NSA0NzAuMjgyIDgzOC43NDIgNDY3LjA3MyA4NTMuNzE5IDQ2MC42NTVDODY5LjEyMyA0NTMuODA4IDg4Mi44MTYgNDQ0LjgyMiA4OTQuNzk3IDQzMy42OTZDOTA3LjIwNyA0MjIuNTcxIDkxNy40NzcgNDA5LjczNCA5MjUuNjA3IDM5NS4xODVDOTMzLjczNyAzODAuMjA4IDkzOS4wODYgMzY0LjgwNCA5NDEuNjUzIDM0OC45NzFDOTQ0LjIyMSAzMzMuNTY2IDk0NC40MzUgMzE4LjU5IDk0Mi4yOTUgMzA0LjA0MUM5NDAuNTgzIDI4OS40OTIgOTM1Ljg3NyAyNzYuNjU1IDkyOC4xNzQgMjY1LjUyOUM5MjAuOSAyNTMuOTc2IDkxMC42MyAyNDQuNzc2IDg5Ny4zNjUgMjM3LjkyOUM4ODQuMSAyMzEuMDgzIDg2Ny42MjUgMjI3LjY2IDg0Ny45NDIgMjI3LjY2QzgyNS4yNjMgMjI3LjY2IDgwNC4yOTUgMjMzLjIyMiA3ODUuMDM5IDI0NC4zNDhDNzY2LjIxMiAyNTUuMDQ2IDc1MC4zNzkgMjY5LjU5NCA3MzcuNTQyIDI4Ny45OTRDNzI1LjEzMyAzMDUuOTY2IDcxNy4wMDIgMzI1Ljg2NCA3MTMuMTUxIDM0Ny42ODdDNzA5LjMgMzY5LjA4MyA3MTAuNTg0IDM4OS4xOTQgNzE3LjAwMiA0MDguMDIyQzcyMy40MjEgNDI2Ljg1IDczNC4xMTkgNDQyLjA0MSA3NDkuMDk1IDQ1My41OTRDNzY0LjUgNDY0LjcyIDc4My4zMjggNDcwLjI4MiA4MDUuNTc5IDQ3MC4yODJaIiBmaWxsPSJ3aGl0ZSIvPjxwYXRoIGQ9Ik0xMDkxLjI5IDU3My42MjJMMTE3MC4yNCAxMjQuMzJIMTM4Mi42OUMxNDI0LjYzIDEyNC4zMiAxNDU4LjIyIDEzMC43MzkgMTQ4My40NiAxNDMuNTc2QzE1MDguNzEgMTU1Ljk4NSAxNTI2LjA0IDE3My43NDMgMTUzNS40NSAxOTYuODVDMTU0NS4zIDIxOS45NTcgMTU0Ny40MyAyNDYuOTE1IDE1NDEuODcgMjc3LjcyNUMxNTM1Ljg4IDMxMi4zODUgMTUyMi40IDM0MS4yNjkgMTUwMS40MyAzNjQuMzc2QzE0ODAuOSAzODcuNDgzIDE0NTUuNDQgNDA1LjAyNyAxNDI1LjA1IDQxNy4wMDhMMTUwNC42NCA1NzMuNjIySDEzNjAuODdMMTI5NC43NiA0MzcuNTQ4SDEyNDAuMkwxMjE2LjQ1IDU3My42MjJIMTA5MS4yOVpNMTI1Ny41MyAzMzkuOTg1SDEzMzkuMDRDMTM1My4xNyAzMzkuOTg1IDEzNjUuNTcgMzM3Ljg0NSAxMzc2LjI3IDMzMy41NjZDMTM4Ni45NyAzMjguODU5IDEzOTUuNzQgMzIyLjQ0MSAxNDAyLjU5IDMxNC4zMTFDMTQwOS40NCAzMDUuNzUyIDE0MTMuNzEgMjk2LjEyNSAxNDE1LjQzIDI4NS40MjdDMTQxOC44NSAyNjcuNDU1IDE0MTUuMjEgMjU0LjE5IDE0MDQuNTEgMjQ1LjYzMkMxMzk0LjI0IDIzNi42NDYgMTM3OC42MyAyMzIuMTUzIDEzNTcuNjYgMjMyLjE1M0gxMjc2Ljc4TDEyNTcuNTMgMzM5Ljk4NVoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTE1MzcuNTggNTczLjYyMkwxNjE2LjUzIDEyNC4zMkgxOTc3LjlMMTk1OS4yOCAyMzAuMjI3SDE3MjEuMTVMMTcwOS42IDI5OC4yNjRIMTkyNS4yNkwxOTA3LjkzIDM5Ni40NjlIMTY5Mi4yN0wxNjc5LjQzIDQ2Ny43MTVIMTkyMC43N0wxOTAyLjE2IDU3My42MjJIMTUzNy41OFoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTI5OS4wMiAxMzAuMTExSDE3NC4zMzFMMTM0LjgwNCAzNTMuMjU4SDE5OC4yMTNMOTUuMjc2MSA1NzYuNDA0TDI5NC45MDMgNDA4LjI5NUwzNzguNzE4IDU3Ni40MDRINTI4LjQ3M0wzOTcuMzU3IDMyMi4wMTdMNjAxLjc0MyAxMzAuMTExSDQ1My45MTdMMjY2Ljg4NCAzMTEuMTc5TDI5OS4wMiAxMzAuMTExWiIgZmlsbD0id2hpdGUiLz48L3N2Zz4="};
-/* Shared session actions for strength and running; native dialogs own completion/cancellation. */
+/* Session options reuse the product's native selection dialog. */
 const KoreWorkoutMenu = (() => {
-  let bindings = null;
-  const escapeAttribute = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-  function render({icon, cancelKey = null, exercises = false}) {
-    return `<div class="execution-toolbar-actions"><button type="button" class="icon-button" data-execution-options-toggle aria-label="Opções do treino" aria-haspopup="menu" aria-expanded="false" aria-controls="execution-options-menu">${icon('menu')}</button><div class="execution-options-menu profile-settings" id="execution-options-menu" data-execution-options-menu data-open="false" role="menu" aria-label="Ações do treino" aria-hidden="true" inert hidden>${exercises ? `<button type="button" class="settings-link" role="menuitem" tabindex="-1" data-review-exercises aria-haspopup="dialog" aria-controls="exercise-picker-dialog">${icon('reminder')}<span>Exercícios</span></button>` : ''}<button type="button" class="settings-link" role="menuitem" tabindex="-1" data-execution-finish>${icon('check','filled')}<span>Concluir treino</span></button>${cancelKey === null ? '' : `<button type="button" class="settings-link is-destructive" role="menuitem" tabindex="-1" data-cancel-workout="${escapeAttribute(cancelKey)}">${icon('close')}<span>Cancelar treino</span></button>`}</div></div>`;
+  let bindings=null;
+  const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  function render({icon,cancelKey=null}) {
+    return `<div class="execution-toolbar-actions"><button type="button" class="icon-button" data-execution-options-toggle ${cancelKey===null?'':`data-options-cancel="${escape(cancelKey)}"`} aria-label="Opções do treino" aria-haspopup="dialog" aria-controls="selection-dialog">${icon('menu')}</button></div>`;
   }
-  function bind(root) {
-    bindings?.abort();
-    bindings = new AbortController();
-    const signal = bindings.signal;
-    root.querySelectorAll('.execution-toolbar-actions').forEach(frame => {
-      const trigger = frame.querySelector('[data-execution-options-toggle]');
-      const menu = frame.querySelector('[data-execution-options-menu]');
-      if (!trigger || !menu) return;
-      const items = () => [...menu.querySelectorAll('button:not(:disabled)')];
-      let animation = null;
-      const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
-      function setOpen(opening) {
-        const wasHidden = menu.hidden, style = getComputedStyle(menu);
-        const from = wasHidden ? {opacity:0,transform:'translateY(-6px)',clipPath:'inset(0 0 100% 0)'} : {opacity:style.opacity,transform:style.transform,clipPath:style.clipPath};
-        animation?.cancel();
-        animation = null;
-        trigger.setAttribute('aria-expanded', String(opening));
-        menu.dataset.open = String(opening);
-        menu.inert = !opening;
-        menu.setAttribute('aria-hidden', String(!opening));
-        if (opening) menu.hidden = false;
-        if (matchMedia('(prefers-reduced-motion: reduce)').matches || (!opening && wasHidden)) {
-          menu.hidden = !opening;
-          return;
-        }
-        const tokens = getComputedStyle(frame);
-        const duration = parseFloat(tokens.getPropertyValue(opening ? '--motion-overlay' : '--motion-exit')) || 200;
-        const to = opening ? {opacity:1,transform:'translateY(0)',clipPath:'inset(0 0 0 0)'} : {opacity:0,transform:'translateY(-6px)',clipPath:'inset(0 0 100% 0)'};
-        const current = menu.animate([from,to], {duration,easing:tokens.getPropertyValue(opening ? '--ease-out' : '--ease-in').trim() || 'ease-out',fill:'both'});
-        animation = current;
-        current.onfinish = () => {
-          if (animation !== current) return;
-          menu.hidden = !opening;
-          current.cancel();
-          animation = null;
-        };
-      }
-      function close(focus = false) {
-        if ((focus || menu.contains(document.activeElement)) && trigger.isConnected) trigger.focus({preventScroll:true});
-        setOpen(false);
-      }
-      signal.addEventListener('abort', () => animation?.cancel(), {once:true});
-      trigger.addEventListener('click', () => {
-        const opening = !isOpen();
-        setOpen(opening);
-        if (opening) items()[0]?.focus({preventScroll:true});
-      }, {signal});
-      menu.addEventListener('click', event => {
-        const button = event.target.closest('button');
-        if (!button) return;
-        close(true);
-        if (button.hasAttribute('data-execution-finish')) root.querySelector('#finish-workout')?.click();
-      }, {signal});
-      frame.addEventListener('keydown', event => {
-        if (event.target === trigger && ['ArrowDown','ArrowUp'].includes(event.key)) {
-          event.preventDefault();
-          setOpen(true);
-          const choices = items();
-          choices[event.key === 'ArrowUp' ? choices.length - 1 : 0]?.focus();
-          return;
-        }
-        if (!isOpen()) return;
-        if (event.key === 'Escape') {
-          event.preventDefault();event.stopPropagation();close(true);return;
-        }
-        if (event.key === 'Tab') {close(true);return;}
-        if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
-        event.preventDefault();event.stopPropagation();
-        const choices = items(), index = choices.indexOf(document.activeElement);
-        choices[event.key === 'Home' ? 0 : event.key === 'End' ? choices.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : choices.length - 1)) % choices.length]?.focus();
-      }, {signal});
-      document.addEventListener('pointerdown', event => {
-        if (isOpen() && !frame.contains(event.target)) close(false);
-      }, {signal});
+  function bind(root,{open}={}) {
+    bindings?.abort();bindings=new AbortController();
+    root.querySelectorAll('[data-execution-options-toggle]').forEach(trigger=>{
+      trigger.addEventListener('click',()=>open?.(trigger,{cancelKey:trigger.dataset.optionsCancel??null}),{signal:bindings.signal});
     });
   }
   return Object.freeze({render,bind});
@@ -5134,7 +5250,7 @@ const KoreExecutionVisual = (() => {
   function poster(exercise, hasAttachment = false) {
     return hasAttachment ? null : posters[normalizeName(exercise?.name)] || null;
   }
-  function render({ image, media = '', toolbar = '', progress = '', controller = '', table = '', bottom = '', chevron = '' }) {
+  function render({ image, media = '', toolbar = '', progress = '', controller = '', table = '', bottom = '' }) {
     return `<section class="execution-visual" data-execution-visual data-exercise-swipe data-execution-screen data-series-expanded="${seriesExpanded}" aria-label="Execução do exercício">
       <figure class="execution-visual-media">${image ? `<img data-execution-poster src="${image.src}" alt="${image.alt}" width="${image.width}" height="${image.height}" decoding="async">` : media}</figure>
       <div class="execution-visual-top">${toolbar}${progress}</div>
@@ -5155,7 +5271,17 @@ const KoreExecutionVisual = (() => {
       });
       const done = completed.filter(Boolean).length, next = completed.findIndex(value => !value), current = next < 0 ? Math.max(0,rows.length - 1) : next;
       const toggle = frame.querySelector('[data-execution-series-toggle]'), expanded = toggle.getAttribute('aria-expanded') === 'true';
-      rows.forEach((row,index) => row.dataset.currentSeries = String(index === current));
+      rows.forEach((row,index) => {
+        row.dataset.currentSeries = String(index === current);
+        const checkbox = row.querySelector('[data-set]');
+        if (checkbox) checkbox.setAttribute('aria-label', `${checkbox.checked ? 'Desmarcar' : 'Concluir'} ${row.closest('[data-exercise]').getAttribute('aria-label')}, série ${index+1}`);
+      });
+      const summary = frame.querySelector('[data-execution-series-summary]');
+      if (summary) {
+        summary.dataset.hasProgress = String(done > 0);
+        summary.innerHTML = `<span class="numeric">${done}/${rows.length}</span> séries`;
+        summary.setAttribute('aria-label', `${done} de ${rows.length} séries concluídas`);
+      }
       toggle.setAttribute('aria-label', `${expanded ? 'Recolher' : 'Expandir'} controle do exercício e séries, ${done} de ${rows.length} concluídas${next < 0 ? '' : `, série ${current + 1} de ${rows.length}`}`);
       frame.querySelector('.execution-visual-top').inert = expanded;
       const announcement = frame.querySelector('[data-execution-series-announcement]'), message = next < 0 ? 'Todas as séries deste exercício concluídas.' : `Série ${current + 1} de ${rows.length}.`;
@@ -5166,6 +5292,7 @@ const KoreExecutionVisual = (() => {
       frame.querySelector('[data-execution-completion]').hidden = !complete;
     });
   }
+
   function expand(frame, root) {
     const content = frame.querySelector('.execution-series-content');
     const from = content.getBoundingClientRect().height;
@@ -6347,8 +6474,9 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
  }
  const draftWorkout=executionExample?.kind==='cardio'?run:strength;
  const draft=D.createSession(draftWorkout,localDate(),9);for(const [i,ex]of draftWorkout.exercises.entries()){const log=draft.logs[ex.id];if(log.sets)log.sets.forEach(s=>{s.load=[40,30,12][i];s.value=ex.unit==='s'?30:i===2?12:10;s.done=false;});else log.done=executionExample?.completed===true;}demo.drafts[draft.key]=draft;
+ if(executionExample?.empty){demo.plan=[];demo.sessions={};demo.drafts={};demo.exerciseLibrary={};}
  KoreStorage.setItem(STORAGE_KEY,JSON.stringify(D.validate(demo)));
- KoreStorage.setItem(PREF_KEY,JSON.stringify({theme:'light',autoOpenRest:executionExample?.autoRest!==false,sound:false}));
+ KoreStorage.setItem(PREF_KEY,JSON.stringify({theme:'light',sound:false}));
 }
 
       const initialStorage = TrainingStorage.load(() => KoreStorage, STORAGE_KEY);
@@ -6418,21 +6546,25 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       }
       goToToday();
       function hideToast() {
-        const el=$('toast'); clearTimeout(toastTimeout);
-        try { if (typeof el.hidePopover === 'function' && el.matches(':popover-open')) el.hidePopover(); } catch { }
-        el.hidden=true;toastTimeout=null;
+        const el=$('toast'), layer=$('toast-layer'); clearTimeout(toastTimeout);
+        try { if (typeof layer.hidePopover === 'function' && layer.matches(':popover-open')) layer.hidePopover(); } catch { }
+        layer.hidden=true;el.hidden=true;toastTimeout=null;
       }
       function syncToastLayer() {
-        const el=$('toast'); if (el.hidden) return;
-        // Popovers outside the active modal are still inert, even in the top layer.
+        const el=$('toast'), layer=$('toast-layer'); if (el.hidden) return;
+        // Keep the close action inside the active modal's non-inert subtree.
         const host=[...document.querySelectorAll('dialog[open]')].reduce((top,dialog)=>
           !top || (modalOrder.get(dialog) || 0) >= (modalOrder.get(top) || 0) ? dialog : top,null) || document.body;
-        const hasPopover=typeof el.showPopover === 'function';
-        if(el.parentElement !== host) {
-          if(hasPopover && el.matches(':popover-open')) el.hidePopover();
-          host.appendChild(el);
+        const hasPopover=typeof layer.showPopover === 'function' && layer.hasAttribute('popover');
+        if(layer.parentElement !== host) {
+          if(hasPopover && layer.matches(':popover-open')) layer.hidePopover();
+          host.appendChild(layer);
         }
-        if(hasPopover && !el.matches(':popover-open')) el.showPopover();
+        layer.hidden=false;
+        if(hasPopover) {
+          try { if(!layer.matches(':popover-open')) layer.showPopover(); }
+          catch { layer.removeAttribute('popover'); }
+        } else layer.removeAttribute('popover');
       }
       function toast(message, tone='success') {
         const el=$('toast');
@@ -6576,7 +6708,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       <tbody>${log.sets.map((set, i) => `<tr class="set-row ${set.done ? 'completed' : ''}"><td>${i + 1}</td>
         <td><button type="button" class="set-input" data-field="load" data-index="${i}" data-ex="${ex.id}" data-value="${set.load ?? ''}" aria-haspopup="dialog" aria-controls="numeric-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, kg total: ${esc(number(set.load))}">${esc(number(set.load))}</button></td>
         <td><button type="button" class="set-input" data-field="value" data-index="${i}" data-ex="${ex.id}" data-value="${set.value ?? ''}" aria-haspopup="dialog" aria-controls="value-dialog" aria-label="${esc(ex.name)}, série ${i + 1}, ${ex.unit === 's' ? 'segundos' : 'repetições'}: ${esc(number(set.value))}">${esc(number(set.value))}</button></td>
-        <td>${ex.unit === 's' ? `<button type="button" class="icon-button secondary set-timer" data-exercise-timer="${ex.id}" data-index="${i}" aria-label="${set.done ? 'Desmarcar' : 'Iniciar'} ${esc(ex.name)}, série ${i + 1}" aria-pressed="${set.done}" aria-haspopup="${set.done ? 'false' : 'dialog'}" aria-controls="rest-dialog">${icon(set.done ? 'check' : 'play', set.done ? 'filled' : 'outline')}</button>` : `<label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="Concluir ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</td></tr>`).join('')}</tbody></table>
+        <td>${ex.unit === 's' ? `<button type="button" class="icon-button secondary set-timer" data-exercise-timer="${ex.id}" data-index="${i}" aria-label="${set.done ? 'Desmarcar' : 'Iniciar'} ${esc(ex.name)}, série ${i + 1}" aria-pressed="${set.done}" aria-haspopup="${set.done ? 'false' : 'dialog'}" aria-controls="rest-dialog">${icon(set.done ? 'check' : 'play', set.done ? 'filled' : 'outline')}</button>` : `<label class="complete-set"><input type="checkbox" data-set="${i}" data-ex="${ex.id}" aria-label="${set.done ? 'Desmarcar' : 'Concluir'} ${esc(ex.name)}, série ${i + 1}" ${set.done ? 'checked' : ''}><span class="check-box">${icon('check')}</span></label>`}</td></tr>`).join('')}</tbody></table>
     </article>`;
       }
       function renderCardio(ex, index, session) {
@@ -6622,7 +6754,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         syncRestContext();
         $('workout').setAttribute('aria-labelledby', 'workout-title');
         if (!w) {
-          $('workout').innerHTML = `<div class="empty-workout empty-state">${icon(PLAN.length ? 'calendar' : 'reminder')}<h2 id="workout-title" tabindex="-1">${PLAN.length ? esc(D.weekdays[selectedWeekday - 1]) : 'Nenhum treino cadastrado'}</h2>${PLAN.length ? '<p>Nenhum treino cadastrado para este dia.</p>' : ''}<div class="empty-actions button-group" data-size="action"><button type="button" class="button primary" data-setup-workout>Criar treino</button>${!store.profile ? '<button type="button" class="button" data-setup-profile>Configurar perfil</button>' : ''}</div></div>`;
+          $('workout').innerHTML = KoreCollection.state({icon:icon(PLAN.length?'calendar':'reminder'),title:PLAN.length?D.weekdays[selectedWeekday-1]:'Nenhum treino cadastrado',titleId:'workout-title',description:PLAN.length?'Nenhum treino cadastrado para este dia.':'Crie um treino para organizar sua rotina.',actions:`<div class="button-group" data-size="action">${!store.profile?'<button type="button" class="button" data-setup-profile>Configurar perfil</button>':''}<button type="button" class="button primary full" data-setup-workout>Criar treino</button></div>`});
           return;
         }
         const s = currentSession(), strength = w.kind === 'strength', locked = isReadOnly(), choices = PLAN.filter(item => item.weekday === selectedWeekday);
@@ -7021,7 +7153,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       });
       function focusNavigation(exercises, index) {
         const ex = exercises[index], previous = exercises[index-1], next = exercises[index+1];
-        return `<nav class="exercise-navigation" aria-label="Navegar pelos exercícios"><button type="button" class="icon-button" data-focus-exercise="${previous?.id || ''}" aria-label="Exercício anterior" ${previous ? '' : 'disabled'}>${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="current-exercise-copy"><h2 id="workout-title" tabindex="-1" aria-describedby="exercise-target">${esc(ex.name)}</h2><div class="current-exercise-meta"><p class="target" id="exercise-target">${ex.meta.map(koreMeta).join(' · ')}</p>${supersetNotice(currentWorkout(),ex.id)}</div></div><button type="button" class="icon-button" data-focus-exercise="${next?.id || ''}" aria-label="Próximo exercício" ${next ? '' : 'disabled'}>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></nav>`;
+        return `<nav class="exercise-navigation" aria-label="Navegar pelos exercícios"><button type="button" class="icon-button" data-focus-exercise="${previous?.id || ''}" aria-label="Exercício anterior" ${previous ? '' : 'disabled'}>${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="current-exercise-copy"><h2 id="workout-title" tabindex="-1" aria-describedby="exercise-target">${esc(ex.name)}</h2><div class="current-exercise-meta"><p class="target" id="exercise-target"><span class="execution-series-summary" data-execution-series-summary></span>${ex.meta.length>1?' · '+ex.meta.slice(1).map(koreMeta).join(' · '):''}</p>${supersetNotice(currentWorkout(),ex.id)}</div></div><button type="button" class="icon-button" data-focus-exercise="${next?.id || ''}" aria-label="Próximo exercício" ${next ? '' : 'disabled'}>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></nav>`;
       }
       function focusedSessionControls(workout, session, exercises, index) {
         const ex = exercises[index];
@@ -7038,12 +7170,11 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         $('workout').innerHTML = KoreExecutionVisual.render({
           image: KoreExecutionVisual.poster(ex, Boolean(exerciseMedia(ex))),
           media: mediaFrame(ex),
-          toolbar: `<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-back aria-label="Voltar para o início">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${locked ? 'Registro' : 'Em execução'} · <span class="numeric">${index+1}</span> de <span class="numeric">${exercises.length}</span></span><p class="session-workout-name" id="session-workout-name">${esc(workout.title)}</p></div>${KoreWorkoutMenu.render({icon,exercises:true,cancelKey:locked || !isOngoingDraft(session) ? null : session.key})}</div>`,
+          toolbar: `<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-back aria-label="Voltar para o início">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${locked ? 'Registro' : 'Em execução'} · <span class="numeric">${index+1}</span> de <span class="numeric">${exercises.length}</span></span><p class="session-workout-name" id="session-workout-name">${esc(workout.title)}</p></div>${KoreWorkoutMenu.render({icon,cancelKey:locked || !isOngoingDraft(session) ? null : session.key})}</div>`,
           progress: sessionProgress(),
           controller: focusedSessionControls(workout,session,exercises,index),
           table: renderStrength(ex,index,session,true).replace(mediaFrame(ex),''),
           bottom: `<div class="session-bottom"><div class="session-actions button-group" data-size="action"><button type="button" class="button primary" id="finish-workout"></button></div><span class="save-status" id="save-status" role="status" hidden></span></div>`,
-          chevron: icon('chevron')
         });
         if (locked) $('exercise-list').querySelectorAll('button,input').forEach(el => el.disabled = true);
         bindInlineMedia($('workout'),workout.exercises,exerciseMedia);
@@ -7116,7 +7247,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       function renderEvolutionEmptyState(hasHistory) {
         const title=hasHistory?'Nenhum treino encontrado':'Nenhum treino concluído';
         const description=hasHistory?'Não há treinos concluídos para o período e a modalidade selecionados.':'Os gráficos de evolução são calculados a partir dos treinos concluídos.';
-        return `<div class="empty-state evo-empty">${icon('progress')}<h2>${title}</h2><p>${description}</p><div class="empty-actions button-group" data-size="action"><button type="button" class="button primary full" ${hasHistory?'data-evo-reset':'data-page="workouts"'}>${hasHistory?'Ver todo o histórico':'Ver treinos'}</button></div></div>`;
+        return KoreCollection.state({icon:icon('progress'),title,description,actions:`<button type="button" class="button primary action full" ${hasHistory?'data-evo-reset':'data-page="workouts"'}>${hasHistory?'Ver todo o histórico':'Ver treinos'}</button>`});
       }
       function syncEvolutionFilters() {
         const root=$('evolution-page'),records=evolutionState.tab==='records',mode=evolutionState.mode;
@@ -7236,7 +7367,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         const start=evolutionState.recordsPage*recordPageSize,visible=groups.slice(start,start+recordPageSize);
         if(!groups.length) {
           const filtered=evolutionModel.best.length>0;
-          root.innerHTML=`<div class="empty-state evo-empty">${icon('award')}<h3>${filtered?'Nenhum recorde encontrado':'Nenhum recorde registrado'}</h3><p>${filtered?'Tente outro nome de exercício ou modalidade, como supino ou corrida.':evolutionModel.rows.length?'Os recordes dependem de carga, repetições, tempo ou distância nos treinos concluídos.':'Os recordes são calculados a partir dos treinos concluídos.'}</p><div class="empty-actions button-group" data-size="action"><button type="button" class="button primary full" ${filtered?'data-record-clear':'data-page="workouts"'}>${filtered?'Limpar busca':'Ver treinos'}</button></div></div>`;
+          root.innerHTML=KoreCollection.state({icon:icon('award'),title:filtered?'Nenhum recorde encontrado':'Nenhum recorde registrado',description:filtered?'Tente outro nome de exercício ou modalidade, como supino ou corrida.':evolutionModel.rows.length?'Os recordes dependem de carga, repetições, tempo ou distância nos treinos concluídos.':'Os recordes são calculados a partir dos treinos concluídos.',actions:`<button type="button" class="button primary action full" ${filtered?'data-record-clear':'data-page="workouts"'}>${filtered?'Limpar busca':'Ver treinos'}</button>`});
         } else root.innerHTML=`<div class="evo-records">${visible.map(group=>{
           const primary=group.items[0];
           return `<details class="evo-pr-card evo-record-card" data-record-group="${esc(group.key)}"${evolutionState.recordOpen===group.key?' open':''}><summary class="evo-record-summary"><span class="evo-record-name"><strong>${esc(group.label)}</strong><span>${group.items.length} ${group.items.length===1?'recorde':'recordes'}</span></span><span class="evo-record-best"><strong>${esc(evolutionMetricText(primary.value,primary.metric))}</strong><span>${esc(P.recordDefinitions[primary.metric].label)}</span></span>${icon('chevron')}</summary><div class="evo-record-details">${group.items.map(record=>{
@@ -7459,7 +7590,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       let navigationReady = false, navigationQueued = false, navigationRestoring = false, navigationPopping = false, navigationCurrent = null;
       let navigationBackTimer = null;
       const navigationKey = route => JSON.stringify([route.view, ...(route.view==='editor'?[route.editor?.id||'new']:route.view==='progress'?[route.evolution?.tab||'overview']:['summary','session','postworkout'].includes(route.view)?[route.day,route.record]:[])]);
-      const navigationSnapshot = () => ({ view:appView, day:selectedDay, weekday:selectedWeekday, date:selectedDate, record:viewingRecord, sessionKey:['summary','session','postworkout'].includes(appView) ? key() || null : null, cycleNumber:currentDraft()?.cycleNumber || store.cycle.number, exercise:focusExerciseId, origin:summaryOrigin, postOrigin:postWorkoutOrigin, postReturn:appView==='postworkout'?postWorkoutReturn:null, summaryReturn:['summary','session'].includes(appView)?summaryReturn:null, pageReturn:['progress','timer','backup','exercises'].includes(appView)?pageReturn:null, preWorkoutScroll, evolution:{...evolutionState}, scrollY:window.scrollY, editor:appView==='editor'?{id:editorIsNew?null:editorDraft?.id,weekday:editorDraft?.weekday,origin:editorReturn}:null, historyDate, historyMonth });
+      const navigationSnapshot = () => ({ view:appView, day:selectedDay, weekday:selectedWeekday, date:selectedDate, record:viewingRecord, sessionKey:['summary','session','postworkout'].includes(appView) ? key() || null : null, cycleNumber:currentDraft()?.cycleNumber || store.cycle.number, exercise:appView==='session'&&!isReadOnly()?(preferences.activeWorkout?.exerciseId||focusExerciseId):focusExerciseId, origin:summaryOrigin, postOrigin:postWorkoutOrigin, postReturn:appView==='postworkout'?postWorkoutReturn:null, summaryReturn:['summary','session'].includes(appView)?summaryReturn:null, pageReturn:['progress','timer','backup','exercises'].includes(appView)?pageReturn:null, preWorkoutScroll, evolution:{...evolutionState}, scrollY:window.scrollY, editor:appView==='editor'?{id:editorIsNew?null:editorDraft?.id,weekday:editorDraft?.weekday,origin:editorReturn}:null, historyDate, historyMonth });
       function captureNavigationRoute() {
         const route=navigationSnapshot();
         if(navigationReady&&!navigationRestoring&&navigationCurrent&&!navigationCurrent.modal&&navigationKey(navigationCurrent.route)===navigationKey(route))writeNavigation({...navigationCurrent,route},true);
@@ -7749,7 +7880,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
             $('workout').insertAdjacentHTML('afterbegin',`<div class="view-toolbar session-toolbar"><button type="button" class="icon-button back-button" data-session-back aria-label="Voltar para o início">${icon('chevron').replace('class="icon"','class="icon arrow-left"')}</button><div class="session-toolbar-copy"><span class="context-label">${isReadOnly() ? 'Registro' : 'Em execução'} · Corrida</span><p class="session-workout-name" id="workout-title" tabindex="-1">${esc(workout.title)}</p></div>${KoreWorkoutMenu.render({icon,cancelKey:isReadOnly() || !isOngoingDraft(currentSession()) ? null : currentSession().key})}</div>`);
           }
         }
-        KoreExecutionVisual.bind($('workout')); KoreWorkoutMenu.bind($('workout'));
+        KoreExecutionVisual.bind($('workout')); KoreWorkoutMenu.bind($('workout'),{open:openWorkoutOptions});
         renderRestMini(); syncViewMotion(); queueNavigationSync();
       }
       function focusPage(scrollTop=0) {
@@ -7942,7 +8073,9 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         $('workout').querySelectorAll('.focus-dot').forEach(button=>{
           const ex=exercises.find(item=>item.id === button.dataset.focusExercise), complete=exerciseComplete(ex,s);
           button.classList.toggle('is-complete',complete);
-          button.setAttribute('aria-label',`${exercises.indexOf(ex)+1}. ${ex.name}${complete ? ', concluído' : ''}`);
+          const sets=s.logs[ex.id]?.sets || [], done=sets.filter(set=>set.done).length;
+          button.style.setProperty('--exercise-progress',(sets.length ? done/sets.length*100 : 0)+'%');
+          button.setAttribute('aria-label',`${exercises.indexOf(ex)+1}. ${ex.name}, ${done} de ${sets.length} séries concluídas${complete ? ', concluído' : ''}`);
         });
         $('exercise-list').querySelectorAll('[data-exercise]').forEach(article=>{
           const log=s.logs[article.dataset.exercise], next=log?.sets.findIndex(set=>!set.done);
@@ -8452,10 +8585,13 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       function setSelectionField(id, value, label) {
         const el = $(id); el.value = value; el.innerHTML = `<span>${esc(label)}</span>${icon('chevron')}`;
       }
-      function openSelection(title, options, value, apply, trigger) {
-        selection = { options, apply, trigger, scrollY:window.scrollY };
+      function openSelection(title, options, value, apply, trigger, {actions=false}={}) {
+        selection = { options, apply, trigger, actions, scrollY:window.scrollY };
+        $('selection-dialog').dataset.selectionKind=actions?'actions':'values';
+        $('selection-options').setAttribute('role',actions?'group':'listbox');
+        $('selection-dialog').querySelector('[data-close]').setAttribute('aria-label',actions?'Fechar opções':'Cancelar seleção');
         $('selection-title').textContent = title;
-        $('selection-options').innerHTML = options.map((o, i) => `<button type="button" class="selection-option" role="option" aria-selected="${String(o.value) === String(value)}" data-choice="${i}"><span>${esc(o.label)}</span></button>`).join('');
+        $('selection-options').innerHTML = options.map((o, i) => `<button type="button" class="${actions?`button action full ${o.destructive?'danger secondary':'primary'}`:'selection-option'}" ${actions?'':`role="option" aria-selected="${String(o.value) === String(value)}"`} data-choice="${i}"><span>${esc(o.label)}</span></button>`).join('');
         const current=selection,dialog=$('selection-dialog'),optionsList=$('selection-options');
         dialog.showModal();
         optionsList.firstElementChild?.focus({preventScroll:true});
@@ -8465,14 +8601,29 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       }
       $('selection-options').addEventListener('click', e => {
         const button = e.target.closest('[data-choice]'); if (!button || !selection) return;
-        const s = selection; s.apply(s.options[+button.dataset.choice].value); $('selection-dialog').close();
+        const s=selection,value=s.options[+button.dataset.choice].value;
+        if(s.actions)s.actionValue=value;else s.apply(value);
+        $('selection-dialog').close();
       });
       $('selection-options').addEventListener('keydown', e => {
         if (!['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
         e.preventDefault(); const buttons = [...$('selection-options').children], index = buttons.indexOf(document.activeElement);
         buttons[e.key === 'Home' ? 0 : e.key === 'End' ? buttons.length - 1 : (index + (e.key === 'ArrowDown' ? 1 : buttons.length - 1)) % buttons.length]?.focus();
       });
-      $('selection-dialog').addEventListener('close', () => { const trigger = selection?.trigger; selection = null; if (trigger?.isConnected) trigger.focus({ preventScroll: true }); });
+      $('selection-dialog').addEventListener('close', () => {
+        const current=selection;selection=null;
+        if(current?.trigger?.isConnected)current.trigger.focus({preventScroll:true});
+        if(current?.actions&&current.actionValue!==undefined)current.apply(current.actionValue);
+      });
+      function openWorkoutOptions(trigger,{cancelKey=null}={}) {
+        const options=[{value:'finish',label:'Concluir treino'},...(cancelKey?[{value:'cancel',label:'Cancelar treino',destructive:true}]:[])];
+        openSelection('Opções',options,null,action=>{
+          if(appView!=='session'||!currentDraft())return;
+          if(action==='finish')$('finish-workout')?.click();
+          else if(action==='cancel')requestCancelWorkout(cancelKey);
+        },trigger,{actions:true});
+      }
+
       let datePicker = null;
       function renderDatePicker(focus = false) {
         if (!datePicker) return;
@@ -8550,13 +8701,20 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           if (state.visible&&!document.hidden) loadInlineMedia(state); else stopInlineMedia(state);
         }
       }, { rootMargin: '120px' }) : null;
-      function fitInlineMedia(state,width,height) {
-        if(state.root.id==='library-media-preview'&&width>0&&height>0)state.frame.style.setProperty('--media-ratio',String(width/height));
+      function fitInlineMedia(state,width,height,source=state.img) {
+        if(state.thumbnail&&width>0&&height>0)KoreMediaThumbnail.fit(state.frame,source,typeof state.media==='object'?state.media.id:state.media);
+      }
+      function scheduleInlineVideoCrop(state,token) {
+        if(!state.thumbnail)return;
+        const update=()=>{state.cropFrame=null;if(state.active&&state.token===token)fitInlineMedia(state,state.video.videoWidth,state.video.videoHeight,state.video);};
+        if(typeof state.video.requestVideoFrameCallback==='function')state.cropFrame={video:true,id:state.video.requestVideoFrameCallback(update)};
+        else state.video.addEventListener('playing',()=>{state.cropFrame={video:false,id:requestAnimationFrame(update)};},{once:true,signal:state.controller.signal});
       }
       function showMediaPlayFallback(state) {
         const button=state.frame.querySelector('[data-media-play]');if(button)button.hidden=false;
       }
       function stopInlineMedia(state) {
+        if(state.cropFrame){if(state.cropFrame.video)state.video?.cancelVideoFrameCallback?.(state.cropFrame.id);else cancelAnimationFrame(state.cropFrame.id);state.cropFrame=null;}
         state.token++; state.controller?.abort(); state.controller = null;
         if (state.loaded && state.img.naturalWidth) {
           try { state.preview = M.imagePreview(state.img, 480); } catch { }
@@ -8587,14 +8745,15 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           if(state.video) {
             const loaded=await KoreVideoMedia.load(blob,state.video,{signal:controller.signal});
             if(!state.active||token!==state.token){loaded.release();return;}
-            state.loaded=loaded;fitInlineMedia(state,state.video.videoWidth,state.video.videoHeight);state.video.hidden=false;state.img.hidden=true;state.frame.querySelector('.media-placeholder').hidden=true;
+            state.loaded=loaded;fitInlineMedia(state,state.video.videoWidth,state.video.videoHeight,state.video);state.video.hidden=false;state.img.hidden=true;state.frame.querySelector('.media-placeholder').hidden=true;
+            scheduleInlineVideoCrop(state,token);
             if(!document.hidden)try{await state.video.play();}catch{if(state.active&&token===state.token)showMediaPlayFallback(state);}
             return;
           }
           const loaded = await M.loadImage(blob, new Image(), { signal: controller.signal });
           if (!state.active || token !== state.token) { loaded.release(); return; }
           loaded.img.alt = state.thumbnail?'':'Execução de ' + (state.ex.name || 'exercício'); loaded.img.dataset.mediaImage = '';
-          fitInlineMedia(state,loaded.img.naturalWidth,loaded.img.naturalHeight);
+          fitInlineMedia(state,loaded.img.naturalWidth,loaded.img.naturalHeight,loaded.img);
           state.img.replaceWith(loaded.img); state.img = loaded.img; state.loaded = loaded;
           state.frame.querySelector('.media-placeholder').hidden = true;
         } catch (error) {
@@ -8635,8 +8794,8 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         $('managed-workouts').innerHTML = D.weekdays.map((day, i) => {
           const workouts = PLAN.filter(w => w.weekday === i + 1);
           if(!workouts.length) return '';
-          return `<section class="section-card managed-day" aria-label="${esc(day)}"><div class="section-card-heading managed-day-heading"><h3>${esc(day)}</h3><button class="icon-button" data-create-workout="${i + 1}" aria-label="Criar treino para ${esc(day)}">+</button></div>${workouts.length ? workouts.map(w => `<div class="managed-workout"><div class="managed-workout-main">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}<span><strong>${esc(w.title)}</strong><small>${workoutDetail(w)}</small></span></div><button type="button" class="icon-button managed-edit" data-manage-workout="${w.id}" aria-label="Editar ${esc(w.title)}">${icon('edit')}</button><button class="icon-button danger secondary managed-delete" data-remove-workout="${w.id}" aria-label="Excluir treino ${esc(w.title)}">${icon('trash')}</button></div>`).join('') : '<p class="managed-empty">Sem treino</p>'}</section>`;
-        }).join('') || `<div class="empty-state manager-empty">${icon('reminder')}<h2>Nenhum treino cadastrado</h2></div>`;
+          return `<section class="section-card managed-day" aria-label="${esc(day)}"><div class="section-card-heading managed-day-heading"><h3>${esc(day)}</h3><button class="icon-button" data-create-workout="${i + 1}" aria-label="Criar treino para ${esc(day)}">+</button></div>${workouts.length ? workouts.map(w => `<div class="managed-workout collection-item"><div class="managed-workout-main"><span class="library-thumb" aria-hidden="true">${icon(w.kind === 'strength' ? 'dumbbell' : 'run')}</span><span class="managed-workout-copy"><strong>${esc(w.title)}</strong><small>${workoutDetail(w)}</small></span></div><button type="button" class="icon-button managed-edit" data-manage-workout="${w.id}" aria-label="Editar ${esc(w.title)}">${icon('edit')}</button><button class="icon-button danger secondary managed-delete" data-remove-workout="${w.id}" aria-label="Excluir treino ${esc(w.title)}">${icon('trash')}</button></div>`).join('') : '<p class="managed-empty">Sem treino</p>'}</section>`;
+        }).join('') || KoreCollection.empty({icon:icon('reminder'),title:'Nenhum treino cadastrado',description:'Crie um treino para organizar sua rotina.'});
         $('new-workout').disabled = PLAN.length >= 100;
         $('managed-workouts').querySelectorAll('[data-create-workout]').forEach(b => b.disabled = PLAN.length >= 100);
       }
@@ -8667,7 +8826,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if (editorIsNew && PLAN.length >= 100) return;
         editorDraft = existing ? D.clone(existing) : { id: 'workout-' + D.uid(), weekday, day: D.weekdays[weekday - 1], shortDay: D.shortDays[weekday - 1], title: '', short: '', subtitle: '', kind: 'strength', groups: [], exercises: [] };
         editorDraft.exercises.forEach(ex => ex.target = C.targetFor(ex, editorDraft.kind));
-        $('editor-title').textContent = editorIsNew ? 'Novo treino' : 'Editar treino';
+        $('editor-title').textContent = editorIsNew ? 'Criar treino' : 'Editar treino';
         $('editor-workout-name').value = editorDraft.title;
         setSelectionField('editor-weekday', editorDraft.weekday, D.weekdays[editorDraft.weekday - 1]);
         setSelectionField('editor-kind', editorDraft.kind, editorDraft.kind === 'strength' ? 'Força' : 'Corrida');
@@ -8706,14 +8865,14 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           const t = ex.target, i = editorDraft.exercises.indexOf(ex), catalog = strength ? EL.find(store,ex) : null;
           return `<section class="editor-exercise" data-editor-ex="${ex.id}" ${grouped ? '' : `data-sort-id="${ex.id}"`}>
             <div class="editor-exercise-head"><h3>${strength ? 'Exercício' : 'Etapa'} ${i + 1}</h3>${grouped ? '' : dragHandle(ex.name)}</div>
-            ${strength ? `<div class="editor-exercise-choice"><div class="form-field"><span>Exercício</span><button type="button" class="selection-field" data-choose-library-exercise aria-label="Escolher exercício: ${esc(ex.name||'nenhum')}" aria-haspopup="dialog" aria-controls="exercise-library-picker"><span data-kore-name>${esc(ex.name||'Escolher exercício')}</span>${icon('chevron')}</button></div>${catalog?`<button type="button" class="icon-button" data-edit-library-exercise aria-label="Editar cadastro de ${esc(ex.name)}" aria-haspopup="dialog" aria-controls="exercise-details-dialog">${icon('edit')}</button>`:''}</div>${catalog?`<p class="editor-exercise-muscles">${esc(libraryMuscles(catalog))}</p>`:''}` : `<label class="form-field">Nome da etapa<input data-edit="name" value="${esc(ex.name)}" maxlength="200" required autocomplete="off"></label>`}
+            ${strength ? `<div class="editor-exercise-choice"><div class="form-field"><span>Exercício</span><button type="button" class="selection-field" data-choose-library-exercise aria-label="Selecionar exercício: ${esc(ex.name||'nenhum')}" aria-haspopup="dialog" aria-controls="exercise-library-picker"><span data-kore-name>${esc(ex.name||'Selecionar exercício')}</span>${icon('chevron')}</button></div>${catalog?`<button type="button" class="icon-button" data-edit-library-exercise aria-label="Editar cadastro de ${esc(ex.name)}" aria-haspopup="dialog" aria-controls="exercise-details-dialog">${icon('edit')}</button>`:''}</div>${catalog?`<p class="editor-exercise-muscles">${esc(libraryMuscles(catalog))}</p>`:''}` : `<label class="form-field">Nome da etapa<input data-edit="name" value="${esc(ex.name)}" maxlength="200" required autocomplete="off"></label>`}
             ${strength ? `<div class="speed-mode" role="group" aria-label="Modo do exercício"><button type="button" data-exercise-unit="reps" aria-pressed="${ex.unit === 'reps'}">Repetições</button><button type="button" data-exercise-unit="s" aria-pressed="${ex.unit === 's'}">Tempo</button></div>${pickerField('Séries', 'sets', ex.sets)}<div class="form-grid">${pickerField(ex.unit === 's' ? 'Tempo mínimo' : 'Reps mínimas', 'min', t.min == null ? '—' : ex.unit === 's' ? C.durationText(t.min) : t.min)}${pickerField(ex.unit === 's' ? 'Tempo máximo' : 'Reps máximas', 'max', t.max == null ? '—' : ex.unit === 's' ? C.durationText(t.max) : t.max)}</div>`
               : `${grouped ? '' : pickerField('Repetições da etapa', 'repeats', t.repeats)}<div class="form-grid">${pickerField('Tempo mínimo', 'duration', C.durationText(t.durationSeconds))}${pickerField('Tempo máximo', 'duration-max', C.durationText(t.durationMaxSeconds))}</div><div class="speed-mode" role="group" aria-label="Tipo de intensidade da etapa"><button type="button" data-speed-mode="speed" aria-pressed="${t.mode === 'speed'}">Velocidade</button><button type="button" data-speed-mode="pace" aria-pressed="${t.mode === 'pace'}">Pace</button><button type="button" data-speed-mode="rest" aria-pressed="${t.mode === 'rest'}">Descanso</button></div>${t.mode === 'rest' ? '' : pickerField(t.mode === 'pace' ? 'Pace (min/km)' : 'Velocidade (km/h)', t.mode === 'pace' ? 'pace' : 'speed', t.mode === 'pace' ? C.paceText(t.speedKmh) : C.valueText(t.speedKmh))}`}
             <button class="button compact danger secondary editor-remove" type="button" data-remove-ex>${icon('trash')}Excluir ${strength ? 'exercício' : 'etapa'}</button></section>`;
         }
         $('editor-exercises').innerHTML = C.blocks(editorDraft).map(block => block.group
           ? `<section class="editor-superset" data-sort-id="${block.id}"><div class="superset-heading"><h3>${esc(block.name)}</h3><button type="button" class="button compact" data-separate-group="${block.id}">Separar</button>${dragHandle(block.name)}</div>${strength ? '' : `<div class="form-field interval-repeat"><span>Voltas do intervalado</span><button type="button" class="number-ticker" data-group-repeats="${block.id}" aria-label="Voltas do intervalado: ${block.group.repeats}" aria-haspopup="dialog" aria-controls="ticker-dialog"><span>${block.group.repeats}</span>${icon('chevron')}</button></div>`}${block.exercises.map(ex => card(ex, true)).join('')}</section>`
-          : card(block.exercises[0], false)).join('');
+          : card(block.exercises[0], false)).join('') || KoreCollection.empty({icon:icon(strength?'strenght':'run'),title:strength?'Nenhum exercício adicionado':'Nenhuma etapa adicionada',description:strength?'Adicione exercícios para montar seu treino.':'Adicione etapas para montar seu treino.'}).replace('collection-empty','collection-empty editor-empty');
         $('editor-add').disabled = editorDraft.exercises.length >= 30;
         KoreSegments.refresh($('editor-exercises'),korePreviousSegments);
         decorateSortOverview();
@@ -8929,18 +9088,19 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       });
       function roundComplete(session, exId, index) { return KoreStrengthFlow.roundComplete(session,exId,index); }
       function nextPendingExercise(session, exId) { return KoreStrengthFlow.nextPendingExercise(session,exId,orderedExercises(session.workout)); }
-      function afterSetCompleted(session, exId, index, trigger) {
-        if (appView !== 'session' || isReadOnly() || currentDraft()?.key !== session.key) return;
-        const nextId = nextPendingExercise(session, exId);
-        if (nextId && nextId !== focusExerciseId) selectFocus(nextId);
-        trigger = $('exercise-list').querySelector('[data-set]:not(:checked),[data-exercise-timer][aria-pressed="false"]') || $('workout-title');
-        const progress = D.progress(session);
-        if (progress.total > 0 && progress.done === progress.total) { endRest(); $('finish-workout')?.focus({preventScroll:true}); return; }
-        if (preferences.autoOpenRest && roundComplete(session, exId, index)) startRest(trigger);
+      function afterSetCompleted(session,exId,index,trigger) {
+        if(appView!=='session'||isReadOnly()||currentDraft()?.key!==session.key)return;
+        const nextId=nextPendingExercise(session,exId);
+        if(nextId&&nextId!==focusExerciseId)selectFocus(nextId);
+        else KoreExecutionVisual.refresh($('workout'));
+        trigger=$('exercise-list').querySelector('[data-set]:not(:checked),[data-exercise-timer][aria-pressed="false"]')||$('workout-title');
+        const progress=D.progress(session);
+        if(progress.total>0&&progress.done===progress.total){endRest();$('finish-workout')?.focus({preventScroll:true});return;}
+        // Rest is always automatic; grouped exercises finish the round first.
+        if(roundComplete(session,exId,index))startRest(trigger);
         else {
-          // Timed sets may still be closing their dialog when the exercise changes.
-          if ($('rest-dialog').open) restTrigger = trigger;
-          trigger?.focus({ preventScroll:true });
+          if($('rest-dialog').open)restTrigger=trigger;
+          if(!document.querySelector('dialog[open]'))trigger?.focus({preventScroll:true});
         }
       }
 
@@ -9157,17 +9317,20 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
           const animated=typeof media==='object'?media?.animated||video||media?.type==='image/gif':/^data:image\/gif[;,]/.test(media||'');
           const preview=typeof media==='string'?(animated?'':media):media?.preview;
           const thumbnail=media?`<span class="media-placeholder" aria-hidden="true">${icon('dumbbell')}</span><img data-media-image ${preview?`src="${esc(preview)}"`:'hidden'} alt="" loading="lazy">${video?`<video data-media-video muted loop playsinline preload="metadata" poster="${esc(preview||'')}" hidden></video>`:''}<span data-media-status hidden></span>`:icon('dumbbell');
-          return `<button type="button" class="library-item" ${attribute}="${esc(item.id)}" aria-label="${attribute==='data-library-edit'?'Editar':'Escolher'} ${esc(item.name)}"><span class="library-thumb" aria-hidden="true" ${animated?`data-inline-media="${esc(item.id)}"`:''}>${thumbnail}</span><span class="library-item-copy"><strong data-kore-name>${esc(item.name)}</strong>${libraryMuscles(item)||video?`<small>${esc(libraryMuscles(item))}${video?(libraryMuscles(item)?' · Vídeo':'Vídeo'):''}</small>`:''}</span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
+          return `<button type="button" class="library-item collection-item" ${attribute}="${esc(item.id)}" aria-label="${attribute==='data-library-edit'?'Editar':'Selecionar'} ${esc(item.name)}"><span class="library-thumb" aria-hidden="true" ${media?`data-inline-media="${esc(item.id)}"`:''}>${thumbnail}</span><span class="library-item-copy"><strong data-kore-name>${esc(item.name)}</strong>${libraryMuscles(item)||video?`<small>${esc(libraryMuscles(item))}${video?(libraryMuscles(item)?' · Vídeo':'Vídeo'):''}</small>`:''}</span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`;
         }).join('');
       }
 
       function renderExerciseLibrary() {
         clearInlineMedia($('library-results'));
         const items=EL.search(store,libraryQuery);
-        $('library-results').innerHTML=items.length?libraryRows(items.slice(0,libraryLimit),'data-library-edit'):`<div class="empty-state library-empty">${icon('dumbbell')}<h2>${libraryQuery?'Nenhum exercício encontrado':'Sua biblioteca começa aqui'}</h2>${libraryQuery?'':'<p>Os exercícios dos seus treinos atuais e anteriores ficam reunidos aqui.</p>'}</div>`;
+        $('library-results').innerHTML=items.length?libraryRows(items.slice(0,libraryLimit),'data-library-edit'):exerciseLibraryEmpty(libraryQuery);
         bindInlineMedia($('library-results'),items.slice(0,libraryLimit),item=>item.media);
         $('library-more').hidden=items.length<=libraryLimit;
         $('library-search-status').textContent=countText(items.length,'exercício encontrado','exercícios encontrados');
+      }
+      function exerciseLibraryEmpty(query='') {
+        return KoreCollection.empty({icon:icon('dumbbell'),title:query?'Nenhum exercício encontrado':'Nenhum exercício cadastrado',description:query?'Tente outro nome ou músculo.':'Crie um exercício para usar nos seus treinos.'});
       }
       $('my-exercises-open').addEventListener('click',()=>navigatePage('exercises'));
       $('library-search').addEventListener('input',event=>{libraryQuery=event.target.value;libraryLimit=50;renderExerciseLibrary();});
@@ -9190,14 +9353,14 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if(!libraryPicker)return;
         clearInlineMedia($('library-picker-results'));
         const items=EL.search(store,$('library-picker-search').value);
-        $('library-picker-results').innerHTML=items.length?libraryRows(items.slice(0,libraryPicker.limit),'data-library-choose'):'<p class="library-no-results">Nenhum exercício encontrado. Você pode criar um novo exercício.</p>';
+        $('library-picker-results').innerHTML=items.length?libraryRows(items.slice(0,libraryPicker.limit),'data-library-choose'):exerciseLibraryEmpty($('library-picker-search').value);
         bindInlineMedia($('library-picker-results'),items.slice(0,libraryPicker.limit),item=>item.media);
         $('library-picker-more').hidden=items.length<=libraryPicker.limit;
       }
       function openLibraryPicker(exerciseId=null,trigger=$('editor-add')) {
         if(!editorDraft||editorDraft.kind!=='strength')return;
         libraryPicker={draft:editorDraft,exerciseId,trigger,limit:50};
-        $('library-picker-title').textContent=exerciseId?'Escolher exercício':'Adicionar exercício';$('library-picker-search').value='';renderLibraryPicker();openDialog('exercise-library-picker');$('exercise-library-picker').scrollTop=0;
+        $('library-picker-title').textContent='Selecionar exercício';$('library-picker-search').value='';renderLibraryPicker();openDialog('exercise-library-picker');$('exercise-library-picker').scrollTop=0;
       }
       $('library-picker-search').addEventListener('input',()=>{if(libraryPicker){libraryPicker.limit=50;renderLibraryPicker();$('exercise-library-picker').scrollTop=0;}});
       $('library-picker-more').addEventListener('click',()=>{if(libraryPicker){libraryPicker.limit+=50;renderLibraryPicker();}});
@@ -9220,11 +9383,11 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       function paintLibraryMedia() {
         clearInlineMedia(libraryMediaPreview);
         if(!libraryForm)return;
-        const item=libraryForm.item,example={id:'library-preview',name:$('library-name').value||item.name};
-        const markup=item.media?mediaFrame(example,item.media,true).replace('data-remove-media','data-library-media-remove'):'';
-        libraryMediaPreview.innerHTML=markup;
+        const item=libraryForm.item;
+        const name=typeof item.media==='object'&&item.media?.name?item.media.name:'Mídia de execução';
+        libraryMediaPreview.innerHTML=item.media?`<div class="library-media-attachment"><span class="library-media-file-name" title="${esc(name)}">${esc(name)}</span><button type="button" class="icon-button library-media-remove" data-library-media-remove aria-label="Excluir mídia ${esc(name)}" title="Excluir mídia">${icon('trash')}</button></div>`:'';
         $('library-media-label').textContent='Adicionar mídia';
-        if(item.media)bindInlineMedia(libraryMediaPreview,[example],()=>item.media);
+        $('library-media-file').closest('.media-upload').hidden=Boolean(item.media);
       }
       function paintLibraryMuscles() {
         if(!libraryForm)return;
@@ -9235,7 +9398,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         const saved=id?store.exerciseLibrary?.[id]:null;if(id&&!saved)return;
         const item=restored?D.clone(restored):saved?D.clone(saved):{id:null,name:'',primaryMuscle:null,secondaryMuscle:null,media:null,aliases:[],deleted:false,updatedAt:0};
         libraryForm={item,context,saving:false,uploading:false,files:context.files||new Map()};libraryUploadToken++;
-        $('library-details-title').textContent=id?'Editar exercício':'Novo exercício';$('library-name').value=item.name;$('library-name').removeAttribute('aria-invalid');$('library-details-error').hidden=true;
+        $('library-details-title').textContent=id?'Editar exercício':'Criar exercício';$('library-name').value=item.name;$('library-name').removeAttribute('aria-invalid');$('library-details-error').hidden=true;
         $('library-details-delete').hidden=!id||saved.deleted;$('library-details-form').querySelectorAll('[aria-invalid]').forEach(e=>e.removeAttribute('aria-invalid'));
         paintLibraryMuscles();paintLibraryMedia();libraryFormBusy(false);openDialog('exercise-details-dialog');
       }
@@ -9259,7 +9422,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         }catch(error){if(current===libraryForm)reportError('library-details-error',M.errorText(error));}
         finally{event.target.value='';if(current===libraryForm){current.uploading=false;libraryFormBusy(false);}}
       });
-      libraryMediaPreview.addEventListener('click',event=>{if(event.target.closest('[data-library-media-remove]')&&libraryForm&&!libraryForm.saving&&!libraryForm.uploading){libraryUploadToken++;libraryForm.item.media=null;libraryForm.files.clear();paintLibraryMedia();}});
+      libraryMediaPreview.addEventListener('click',event=>{if(event.target.closest('[data-library-media-remove]')&&libraryForm&&!libraryForm.saving&&!libraryForm.uploading){libraryUploadToken++;libraryForm.item.media=null;libraryForm.files.clear();paintLibraryMedia();$('library-media-file').focus({preventScroll:true});}});
       $('library-details-form').addEventListener('submit',async event=>{
         event.preventDefault();const current=libraryForm;if(!current||current.saving||current.uploading)return;
         const name=$('library-name').value.trim();if(!name){reportError('library-details-error','Informe o nome do exercício.',$('library-name'));return;}
@@ -9334,7 +9497,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if (!profileDraft) return;
         paintAvatar($('profile-preview'), profileDraft);
         $('profile-remove-photo').hidden = !profileDraft.avatar;
-        $('profile-upload-photo').textContent = profileDraft.avatar ? 'Alterar foto' : 'Adicionar foto';
+        $('profile-upload-photo').textContent = profileDraft.avatar ? 'Substituir foto' : 'Adicionar foto';
         $('profile-save').disabled = profileBusy;
         $('profile-upload-photo').disabled = profileBusy;
         $('profile-remove-photo').disabled = profileBusy;
@@ -9344,7 +9507,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         reportError('profile-error',message,field);
       }
       function openProfile(returnTo = null) {
-        profileReturnTo = returnTo; $('profile-title').textContent = 'Perfil';
+        profileReturnTo = returnTo; $('profile-title').textContent = store.profile ? 'Editar perfil' : 'Configurar perfil';
         profileDraft = D.clone(store.profile || DEFAULT_PROFILE); profileBusy = false; profileUpload++;
         $('profile-name-input').value = profileDraft.name; $('profile-name-input').removeAttribute('aria-invalid'); $('profile-error').hidden = true;
         renderProfileDraft(); openDialog('profile-dialog');
@@ -9689,7 +9852,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       let audioContext = null, audioOutput = null, soundGeneration = 0, soundNodes = [];
       function normalizeAudioPreferences() {
         if (typeof preferences.sound !== 'boolean') preferences.sound = true;
-        if (typeof preferences.autoOpenRest !== 'boolean') preferences.autoOpenRest = true;
+        if(Object.hasOwn(preferences,'autoOpenRest')){delete preferences.autoOpenRest;savePreferences();}
         if (!Number.isFinite(preferences.alertVolume) || preferences.alertVolume < 0 || preferences.alertVolume > 1) preferences.alertVolume = .8;
       }
       normalizeAudioPreferences();
@@ -9925,16 +10088,11 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         }, $('rest-duration'));
       });
       function soundUI() {
-        $('auto-rest-toggle').setAttribute('aria-checked',String(preferences.autoOpenRest));
         $('sound-toggle').setAttribute('aria-checked', String(!!preferences.sound));
         $('sound-controls').hidden = !preferences.sound;
         $('sound-volume').value = String(Math.round(preferences.alertVolume * 100));
         $('sound-volume-value').textContent = Math.round(preferences.alertVolume * 100) + '%';
       }
-      $('auto-rest-toggle').addEventListener('click',()=>{
-        preferences.autoOpenRest=!preferences.autoOpenRest;
-        savePreferences();soundUI();
-      });
       $('sound-toggle').addEventListener('click', () => {
         preferences.sound = !preferences.sound;
         applySoundVolume();
@@ -10021,12 +10179,13 @@ if(window.__KORE_DEMO_SCREEN==='profile'){document.getElementById('nav-profile')
 if(window.__KORE_DEMO_SCREEN==='profile-edit'){document.getElementById('nav-profile').click();document.getElementById('profile-open').click();}
 if(window.__KORE_DEMO_SCREEN==='my-exercises'){document.getElementById('nav-profile').click();document.getElementById('my-exercises-open').click();}
 if(window.__KORE_DEMO_SCREEN==='exercise-details'){document.getElementById('nav-profile').click();document.getElementById('my-exercises-open').click();document.querySelector('[data-library-edit]')?.click();}
-if(window.__KORE_DEMO_SCREEN==='exercise-choice'){document.getElementById('editor-open').click();document.querySelector('[data-manage-workout="forca-a"]')?.click();document.getElementById('editor-add').click();}
+if(window.__KORE_DEMO_SCREEN==='exercise-choice'){document.getElementById('editor-open').click();if(window.__KORE_EXECUTION_EXAMPLE?.empty)document.getElementById('new-workout').click();else document.querySelector('[data-manage-workout="forca-a"]')?.click();document.getElementById('editor-add').click();}
 if(window.__KORE_DEMO_SCREEN==='training')document.querySelector('[data-resume-workout]')?.click();
+if(window.__KORE_EXECUTION_EXAMPLE?.menu)document.querySelector('[data-execution-options-toggle]')?.click();
 if(window.__KORE_DEMO_SCREEN==='finish'){document.querySelector('[data-resume-workout]')?.click();document.getElementById('finish-workout')?.click();}
 if(window.__KORE_DEMO_SCREEN==='notification'){document.querySelector('[data-resume-workout]')?.click();document.querySelector('[data-session-back]')?.click();document.getElementById('nav-profile').click();}
 if(window.__KORE_DEMO_SCREEN==='editor'){document.getElementById('editor-open').click();document.querySelector('[data-manage-workout="forca-a"]').click();}
-if(window.__KORE_DEMO_SCREEN==='progress'){document.getElementById('nav-profile').click();document.getElementById('evolution-overview-open').click();document.getElementById('evo-period').click();document.querySelector('#selection-options [data-choice="2"]').click();document.getElementById('evo-metric').click();document.querySelector('#selection-options [data-choice="1"]').click();window.scrollTo(0,0);}
+if(window.__KORE_DEMO_SCREEN==='progress'){document.getElementById('nav-profile').click();document.getElementById('evolution-overview-open').click();if(!window.__KORE_EXECUTION_EXAMPLE?.empty){document.getElementById('evo-period').click();document.querySelector('#selection-options [data-choice="2"]').click();document.getElementById('evo-metric').click();document.querySelector('#selection-options [data-choice="1"]').click();}window.scrollTo(0,0);}
 if(window.__KORE_DEMO_SCREEN)document.activeElement?.blur();
 </script><script data-kore-names>
 /* KORE · Single-line names. Presentation only: never edits stored text. */
