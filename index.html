@@ -3484,7 +3484,6 @@ html:has(body.sorting-exercises){scroll-behavior:auto}
 @keyframes kore-content-in{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.session-entering,.content-entering{animation:none}.calendar-viewport.is-panel-changing,.editor-exercise.is-layout-changing{overflow:visible}}
 /* Search instructions use the UI face; workout metadata keeps its own hierarchy. */
-.evo-record-browser .evo-record-search{font:400 12px/1.6 var(--font-ui);text-transform:none;letter-spacing:normal}
 .local-recovery{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
 .local-recovery h3{margin:0 0 12px;font:500 16px/1.4 var(--font-ui)}
 .local-recovery-options{display:grid;gap:8px}
@@ -4823,8 +4822,8 @@ body[data-view=postworkout] #app-main.view-entering{animation-name:post-page-in}
 #selection-dialog[data-selection-kind=actions] .settings-link{padding-inline:0}
 #selection-dialog[data-selection-kind=actions] .settings-link.danger{color:var(--danger)}
 
-:root,:root[data-theme=dark]{--record-gold:#C7AA70;--record-silver:#BBC3C9;--record-bronze:#B78F78;--record-emblem-ink:#080808}
-.record-medal{display:flex;align-items:center;justify-content:center;flex:none;width:40px;height:40px;padding:0;background:var(--record-gold);color:var(--record-emblem-ink);border:0;border-radius:50%;clip-path:none;box-shadow:none}
+:root,:root[data-theme=dark]{--record-gold:#F5B400;--record-silver:#A5B9CF;--record-bronze:#D9914F;--record-emblem-ink:#080808}
+.record-medal{display:flex;align-items:center;justify-content:center;flex:none;width:40px;height:40px;padding:0;box-sizing:border-box;background:var(--record-gold);color:var(--record-emblem-ink);border:0;border-radius:50%;clip-path:none;box-shadow:none}
 .record-medal[data-rank="2"]{background:var(--record-silver)}.record-medal[data-rank="3"]{background:var(--record-bronze)}
 .record-medal>.icon{width:28px;height:28px;margin:0;color:var(--record-emblem-ink)}
 .record-medal.is-large{width:52px;height:52px;padding:0}.record-medal.is-large>.icon{width:36px;height:36px}.record-medal.is-small{width:32px;height:32px;padding:0}.record-medal.is-small>.icon{width:24px;height:24px}
@@ -4880,7 +4879,7 @@ body[data-view=postworkout] #app-main.view-entering{animation-name:post-page-in}
 @media(hover:hover){#evolution-page .record-best-row:hover,#evolution-page .record-mark:hover,#evolution-page button.evo-record-summary:hover{background:var(--focus-surface)}}
 @media(min-width:700px){#evolution-page .record-best-row{grid-template-columns:40px minmax(0,1fr) auto 16px;min-height:112px}#evolution-page .record-best-row>.record-medal{grid-row:1}#evolution-page .record-best-row>.record-best-value{grid-column:3;grid-row:1;justify-items:end;text-align:right}#evolution-page .record-best-row>.icon{grid-column:4;grid-row:1}}
 @media(min-width:700px){#evolution-page .record-mark{grid-template-columns:32px minmax(0,1fr) auto 14px}#evolution-page .record-mark>.record-medal{grid-row:1}#evolution-page .record-mark-value{grid-column:3;grid-row:1;text-align:right}#evolution-page .record-mark>.icon{grid-column:4;grid-row:1}}
-@media(max-width:350px){#evolution-page .record-best-row{grid-template-columns:32px minmax(0,1fr) 14px;gap:10px 12px;padding:22px 16px}#evolution-page .record-best-row>.record-medal{width:32px;height:32px}#evolution-page .record-best-copy>strong{font-size:14px}#evolution-page .record-best-value>strong{font-size:22px}#evolution-page .record-best-value.is-long>strong{font-size:20px}#evolution-page .evo-record-summary{gap:12px}#evolution-page .evo-record-best>strong{font-size:16px}#evolution-page .record-mark{grid-template-columns:32px minmax(0,1fr) 14px;gap:8px 12px;padding-block:20px}#evolution-page .record-mark>.record-medal{grid-row:1 / span 2}#evolution-page .record-mark-copy{grid-column:2;grid-row:1}#evolution-page .record-mark-value{grid-column:2;grid-row:2;text-align:left;max-width:none}#evolution-page .record-mark>.icon{grid-column:3;grid-row:1 / span 2}}
+@media(max-width:350px){#evolution-page .record-best-row{grid-template-columns:32px minmax(0,1fr) 14px;gap:10px 12px;padding:22px 16px}#evolution-page .record-best-row>.record-medal{width:32px;height:32px;padding:0}#evolution-page .record-best-copy>strong{font-size:14px}#evolution-page .record-best-value>strong{font-size:22px}#evolution-page .record-best-value.is-long>strong{font-size:20px}#evolution-page .evo-record-summary{gap:12px}#evolution-page .evo-record-best>strong{font-size:16px}#evolution-page .record-mark{grid-template-columns:32px minmax(0,1fr) 14px;gap:8px 12px;padding-block:20px}#evolution-page .record-mark>.record-medal{grid-row:1 / span 2}#evolution-page .record-mark-copy{grid-column:2;grid-row:1}#evolution-page .record-mark-value{grid-column:2;grid-row:2;text-align:left;max-width:none}#evolution-page .record-mark>.icon{grid-column:3;grid-row:1 / span 2}}
 /* Session achievements sit above the same two-column grid as all workout data. */
 #post-workout .post-achievements{display:grid;gap:8px;margin:16px 0 0}
 #post-workout .post-achievement{display:grid;grid-template-columns:32px minmax(0,1fr);align-items:center;gap:12px;min-height:68px;padding:14px 16px;background:var(--soft);border:0;border-radius:var(--card-radius)}
@@ -4890,6 +4889,18 @@ body[data-view=postworkout] #app-main.view-entering{animation-name:post-page-in}
 
 /* Page and section record titles always use the neutral theme foreground. */
 body[data-view=progress] #app-title,#evolution-page .record-section-heading>h2,#evolution-page #evo-exercise-records-title{color:var(--ink);-webkit-text-fill-color:currentColor}
+
+/* Five exercises per swipe page; pagination never replaces the search or main records. */
+#evolution-page .evo-record-pages{position:relative;display:flex;align-items:flex-start;gap:12px;width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-behavior:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#evolution-page .evo-record-pages::-webkit-scrollbar{display:none}
+#evolution-page .evo-record-pages:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+#evolution-page .evo-record-page{flex:0 0 100%;min-width:0;max-width:100%;scroll-snap-align:start;scroll-snap-stop:always}
+#evolution-page .evo-record-pagination{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;margin:0;padding:8px 12px;border-top:1px solid var(--line)}
+#evolution-page .evo-record-pagination[hidden]{display:none}
+#evolution-page .record-page-dot{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ink)}
+#evolution-page .record-page-dot::before{content:"";display:block;width:6px;height:6px;border-radius:50%;background:var(--line);transition:background-color var(--motion-feedback) var(--ease-out),transform var(--motion-feedback) var(--ease-out)}
+#evolution-page .record-page-dot[aria-current=true]::before{background:var(--ink);transform:scale(1.333333)}
+@media(prefers-reduced-motion:reduce){#evolution-page .record-page-dot::before{transition:none}}
 
 
 /* Native modal dialogs own focus and inertness; one persistent visual layer owns dim/blur. */
@@ -4998,7 +5009,7 @@ body[data-view=progress] #app-title,#evolution-page .record-section-heading>h2,#
 
 
 /* Monochrome activity visuals. Medal metals retain their semantic rank. */
-:root{--activity-accent:#F1F1F1;--achievement-accent:#C7AA70;--record-gold:#C7AA70;--record-silver:#BBC3C9;--record-bronze:#B78F78}
+:root{--activity-accent:#F1F1F1;--achievement-accent:#F5B400;--record-gold:#F5B400;--record-silver:#A5B9CF;--record-bronze:#D9914F}
 </style></head><body>
 <div id="modal-backdrop" aria-hidden="true" hidden></div>
   <a class="skip" href="#app-main">Pular para o conteúdo</a>
@@ -5691,10 +5702,11 @@ const KoreWheel = (() => {
 
 /* KORE · One scroll position drives slides, export selection and pagination. */
 const KoreShareGallery=(()=>{
-  function mount({viewport,dots,onChange=()=>{}}){
+  function mount({viewport,dots,onChange=()=>{},onBeforeChange=()=>{},initialIndex=0}){
     const slides=[...viewport.children],buttons=[...dots.querySelectorAll('button')],removers=[];
     let offsets=[],measuredWidth=0,active=-1,target=null,frame=null,destroyed=false;
     const clamp=index=>Math.max(0,Math.min(slides.length-1,index));
+    const initial=clamp(Number.isInteger(initialIndex)?initialIndex:0);
     function listen(node,event,handler,options){node.addEventListener(event,handler,options);removers.push(()=>node.removeEventListener(event,handler,options));}
     function update(){
       frame=null;if(destroyed||!offsets.length||!viewport.clientWidth)return;
@@ -5703,7 +5715,7 @@ const KoreShareGallery=(()=>{
       while(lower<offsets.length-1&&offsets[lower+1]<=x)lower++;
       const upper=Math.min(lower+1,offsets.length-1),fraction=upper===lower?0:Math.max(0,Math.min(1,(x-offsets[lower])/(offsets[upper]-offsets[lower]))),position=lower+fraction;
       const index=clamp(Math.round(position));
-      if(index!==active){active=index;buttons.forEach((button,i)=>button.setAttribute('aria-current',String(i===index)));slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',String(i!==index)));onChange(index);}
+      if(index!==active){onBeforeChange(index);active=index;buttons.forEach((button,i)=>button.setAttribute('aria-current',String(i===index)));slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',String(i!==index)));onChange(index);}
       if(target!==null&&Math.abs(x-offsets[target])<1)target=null;
     }
     function schedule(){if(frame===null)frame=requestAnimationFrame(update);}
@@ -5716,6 +5728,7 @@ const KoreShareGallery=(()=>{
       viewport.scrollTo({left:offsets[target],behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});schedule();
     }
     function keydown(event){
+      if(event.defaultPrevented)return;
       if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();
       const index=event.key==='Home'?0:event.key==='End'?slides.length-1:(target??Math.max(0,active))+(event.key==='ArrowRight'?1:-1);
       go(index);if(dots.contains(document.activeElement))buttons[clamp(index)]?.focus({preventScroll:true});
@@ -5724,12 +5737,42 @@ const KoreShareGallery=(()=>{
     listen(viewport,'pointerdown',()=>{target=null;},{passive:true});listen(viewport,'wheel',()=>{target=null;},{passive:true});
     listen(dots,'click',event=>{const index=buttons.indexOf(event.target.closest('button'));if(index>=0)go(index);});
     listen(viewport,'keydown',keydown);listen(dots,'keydown',keydown);
-    const resize=()=>{const index=Math.max(0,active);measure(false);if(offsets.length){viewport.scrollTo({left:offsets[index],behavior:'instant'});schedule();}};
+    const resize=()=>{const index=active<0?initial:active;measure(false);if(offsets.length){viewport.scrollTo({left:offsets[index],behavior:'instant'});schedule();}};
     const observer=typeof ResizeObserver==='function'?new ResizeObserver(resize):null;
     if(observer)observer.observe(viewport);else listen(window,'resize',resize);
     // Reset after the surface is visible; a hidden dialog can retain its old snap position.
-    viewport.scrollTo({left:0,behavior:'instant'});measure();schedule();
+    measure(false);if(offsets.length)viewport.scrollTo({left:offsets[initial],behavior:'instant'});update();schedule();
     return Object.freeze({go,refresh:measure,get index(){return Math.max(0,active);},destroy(){if(destroyed)return;destroyed=true;observer?.disconnect();if(frame!==null)cancelAnimationFrame(frame);removers.forEach(remove=>remove());}});
+  }
+  return Object.freeze({mount});
+})();
+
+/* KORE · The record list and its isolated example share native swipe pagination. */
+const KoreRecordPages=(()=>{
+  function mount({viewport,dots,initialIndex=0,onChange=()=>{}}){
+    const pages=[...viewport.children];let gallery=null,destroyed=false;
+    let active=Math.max(0,Math.min(pages.length-1,initialIndex));
+    function fit(){
+      if(destroyed||!pages[active]||!viewport.clientWidth)return;
+      const height=Math.ceil(pages[active].getBoundingClientRect().height);
+      if(height>0&&viewport.style.height!==height+'px')viewport.style.height=height+'px';
+    }
+    gallery=KoreShareGallery.mount({viewport,dots,initialIndex:active,
+      onBeforeChange(index){
+        const focused=document.activeElement;
+        if(focused&&pages.some((page,i)=>i!==index&&page.contains(focused)))viewport.focus({preventScroll:true});
+      },
+      onChange(index){
+        active=index;pages.forEach((page,i)=>page.toggleAttribute('inert',i!==index));
+        onChange(index);fit();
+      }
+    });
+    const observer=typeof ResizeObserver==='function'?new ResizeObserver(fit):null;
+    pages.forEach(page=>observer?.observe(page));
+    viewport.addEventListener('toggle',fit,true);
+    document.fonts?.ready.then(()=>{if(!destroyed)fit();});
+    fit();
+    return Object.freeze({go(index){gallery.go(index);},get index(){return gallery.index;},destroy(){if(destroyed)return;destroyed=true;observer?.disconnect();viewport.removeEventListener('toggle',fit,true);gallery.destroy();}});
   }
   return Object.freeze({mount});
 })();
@@ -5816,7 +5859,7 @@ const KoreShare = (() => {
     ctx.clearRect(0,0,canvas.width,canvas.height);ctx.textBaseline='alphabetic';ctx.fillStyle=ink;
     const stats=statistics(summary,metrics);
     if(template==='record'){
-      const gold=getComputedStyle(document.documentElement).getPropertyValue('--achievement-accent').trim()||'#C7AA70',center=400;
+      const gold=getComputedStyle(document.documentElement).getPropertyValue('--achievement-accent').trim()||'#F5B400',center=400;
       ctx.beginPath();ctx.arc(540,center,108,0,Math.PI*2);ctx.fillStyle=gold;ctx.fill();
       if(medalIcon){const medal=await loadImage(iconSource(medalIcon,'#080808'));ctx.drawImage(medal,470,center-70,140,140);}
       ctx.textAlign='center';ctx.fillStyle=ink;ctx.font=font(40,true);ctx.fillText(achievement.label,540,640);
@@ -8235,6 +8278,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       // Keep drill-down Back navigation in the current route, not in saved preferences.
       function persistEvolution(){queueNavigationSync();}
       function resetEvolution(tab='overview') {
+        destroyEvolutionRecordPager();
         clearTimeout(recordSearchTimer);recordSearchTimer=null;
         evolutionState=freshEvolutionState(tab);evolutionRangeDraft=null;evolutionModel=null;
         evolutionCharts.clear();
@@ -8343,6 +8387,8 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         return exercise.name+(duplicates?` · ${exercise.unit==='s'?'tempo':exercise.loadLabel||'repetições'}`:'');
       }
       const recordPageSize=5;
+      let evolutionRecordPager=null;
+      function destroyEvolutionRecordPager(){evolutionRecordPager?.destroy();evolutionRecordPager=null;}
       const normalizeRecordSearch=text=>String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim();
       function evolutionRecordGroups(model,mode,query='') {
         const groups=new Map(),terms=normalizeRecordSearch(query).split(/\s+/).filter(Boolean);
@@ -8389,21 +8435,37 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         renderEvolutionRecordResults();
       }
       function renderEvolutionRecordResults(animate=false) {
+        destroyEvolutionRecordPager();
         const root=$('evo-record-results');if(!root)return;
         root.hidden=false;
         const query=normalizeRecordSearch(evolutionState.recordsQuery),groups=evolutionRecordGroups(evolutionModel,'all',query),pages=Math.max(1,Math.ceil(groups.length/recordPageSize));
         $('evo-record-highlights').hidden=!$('evo-record-highlights').querySelector('.record-mark-group');
         $('evo-record-search-status').textContent=`${groups.length} ${groups.length===1?'exercício encontrado':'exercícios encontrados'}`;
         evolutionState.recordsPage=Math.max(0,Math.min(pages-1,Number.isInteger(evolutionState.recordsPage)?evolutionState.recordsPage:0));
-        const start=evolutionState.recordsPage*recordPageSize,visible=groups.slice(start,start+recordPageSize);
-        if(!groups.length){
-          root.innerHTML=KoreCollection.state({icon:icon('award'),title:query?'Nenhum recorde encontrado':'Nenhum recorde por exercício',description:query?'Tente outro nome de exercício.':'Seus melhores resultados aparecem aqui a partir das séries concluídas.',actions:query?'<button type="button" class="button primary action full" data-record-clear>Limpar busca</button>':''});
-        }else root.innerHTML=`<div class="evo-records">${visible.map(group=>{
+        const initialPage=evolutionState.recordsPage;
+        const renderGroup=group=>{
           const primary=group.items[0],definition=P.recordDefinitions[primary.metric],label=`${group.label}. ${definition.label}: ${evolutionMetricText(primary.value,primary.metric)}. ${displayDate(primary.date,true)}. Ver resumo de ${primary.workoutTitle}.`;
           const summary=`<span class="evo-record-name"><strong>${esc(group.label)}</strong><span>${esc(definition.label)} · ${esc(displayDate(primary.date))}</span></span><span class="evo-record-best"><strong>${esc(evolutionMetricText(primary.value,primary.metric))}</strong></span>`;
           if(group.items.length===1)return `<div class="evo-record-card"><button type="button" class="evo-record-summary" data-evo-record="${esc(primary.recordKey)}" aria-label="${esc(label)}">${summary}${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button></div>`;
           return `<details class="evo-record-card" data-record-group="${esc(group.key)}"${evolutionState.recordOpen===group.key?' open':''}><summary class="evo-record-summary">${summary}${icon('chevron')}</summary><div class="evo-record-details">${group.items.map(record=>`<button type="button" class="evo-pr-row" data-evo-record="${esc(record.recordKey)}" aria-label="${esc(`${group.label}. ${P.recordDefinitions[record.metric].label}: ${evolutionMetricText(record.value,record.metric)}. Ver resumo do treino.`)}"><span class="evo-pr-copy"><span>${esc(P.recordDefinitions[record.metric].label)}</span><strong>${esc(evolutionMetricText(record.value,record.metric))}</strong><span class="evo-pr-date">${koreMeta(displayDate(record.date,true))}</span></span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`).join('')}</div></details>`;
-        }).join('')}</div>${pages>1?`<nav class="evo-record-pagination" aria-label="Páginas de recordes"><button type="button" class="button compact" data-record-page="-1"${evolutionState.recordsPage===0?' disabled':''}>Anterior</button><span aria-label="Página ${evolutionState.recordsPage+1} de ${pages}">${evolutionState.recordsPage+1} de ${pages}</span><button type="button" class="button compact" data-record-page="1"${evolutionState.recordsPage===pages-1?' disabled':''}>Próximos</button></nav>`:''}`;
+        
+        };
+        if(!groups.length){
+          root.innerHTML=KoreCollection.state({icon:icon('award'),title:query?'Nenhum recorde encontrado':'Nenhum recorde por exercício',description:query?'Tente outro nome de exercício.':'Seus melhores resultados aparecem aqui a partir das séries concluídas.',actions:query?'<button type="button" class="button primary action full" data-record-clear>Limpar busca</button>':''});
+        }else{
+          const pageMarkup=Array.from({length:pages},(_,index)=>`<section class="evo-record-page" role="group" aria-roledescription="página" aria-label="${index+1} de ${pages}"${index===initialPage?'':' aria-hidden="true" inert'}><div class="evo-records">${groups.slice(index*recordPageSize,(index+1)*recordPageSize).map(renderGroup).join('')}</div></section>`).join('');
+          const dots=Array.from({length:pages},(_,index)=>`<button type="button" class="record-page-dot" aria-label="Página ${index+1} de ${pages}" aria-controls="evo-record-pages" aria-current="${index===initialPage}"></button>`).join('');
+          root.innerHTML=`<div id="evo-record-pages" class="evo-record-pages" role="region" aria-roledescription="carrossel" aria-label="Recordes por exercício" tabindex="0">${pageMarkup}</div><nav class="evo-record-pagination" id="evo-record-dots" aria-label="Páginas de recordes"${pages===1?' hidden':''}>${dots}</nav><span class="sr-only" id="evo-record-page-status" role="status"></span>`;
+          evolutionRecordPager=KoreRecordPages.mount({viewport:$('evo-record-pages'),dots:$('evo-record-dots'),initialIndex:initialPage,onChange(index){
+            if(evolutionState.recordsPage!==index){
+              root.querySelectorAll('details[open]').forEach(entry=>resetExpandable(entry));
+              evolutionState.recordOpen=null;
+            }
+            evolutionState.recordsPage=index;
+            $('evo-record-page-status').textContent=`Página ${index+1} de ${pages}`;
+            persistEvolution();
+          }});
+        }
         persistEvolution();if(animate)enterView(root,'content');
       }
       // Monotone curves stay within adjacent recorded values and never bridge missing data.
@@ -8543,13 +8605,6 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         if(button.dataset.evoKind){
           evolutionState.mode=button.dataset.evoKind;evolutionState.metric=evolutionChoices()[0].value;
           refreshEvolution(button.id);
-        }
-        else if(button.hasAttribute('data-record-page')) {
-          evolutionState.recordsPage+=Number(button.dataset.recordPage);evolutionState.recordOpen=null;
-          renderEvolutionRecordResults(true);
-          const first=$('evo-record-results').querySelector('summary');
-          first?.focus({preventScroll:true});first?.scrollIntoView({block:'nearest',behavior:reduceMotion()?'instant':'smooth'});
-          queueNavigationSync();
         }
         else if(button.hasAttribute('data-record-clear')) {
           evolutionState.recordsQuery='';evolutionState.recordsPage=0;evolutionState.recordOpen=null;
