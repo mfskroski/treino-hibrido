@@ -5010,7 +5010,7 @@ body[data-view=progress] #app-title,#evolution-page .record-section-heading>h2,#
 
 /* Monochrome activity visuals. Medal metals retain their semantic rank. */
 :root{--activity-accent:#F1F1F1;--achievement-accent:#F5B400;--record-gold:#F5B400;--record-silver:#A5B9CF;--record-bronze:#D9914F}
-</style></head><body>
+</style><style data-kore-ai-transfer>.ai-prompt-field{margin-top:24px}.ai-prompt-field>label{display:block;font:400 10px/1.6 "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.035em}.ai-prompt-control{margin-top:8px;border:1px solid var(--line);border-radius:4px;overflow:visible;background:var(--bg)}.ai-prompt-field textarea{display:block;width:100%;height:176px;min-height:0;box-sizing:border-box;padding:16px;border:0;border-radius:4px 4px 0 0;background:var(--bg);color:var(--ink);font:400 16px/1.6 Inter,sans-serif;resize:none;overflow:hidden}.ai-prompt-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:50px;padding:12px;border:0;border-top:1px solid var(--line);border-radius:0 0 4px 4px;background:transparent;color:var(--muted);font:400 14px/1.5 Inter,sans-serif;cursor:pointer}.ai-prompt-toggle>.icon{width:19px;height:19px;transition:transform var(--motion-feedback,180ms)}.ai-prompt-toggle[aria-expanded=true]>.icon{transform:rotate(180deg)}.ai-prompt-toggle:active{background:var(--soft)}.ai-prompt-toggle:focus-visible{outline:2px solid var(--ink);outline-offset:3px}@media (hover:hover){.ai-prompt-toggle:hover{background:var(--soft)}}@media (prefers-reduced-motion:reduce){.ai-prompt-toggle>.icon{transition:none}}.ai-prompt-field textarea:focus-visible{outline:2px solid var(--ink);outline-offset:3px}.ai-recovery-details{margin-top:24px}.ai-recovery-details>summary{min-height:50px}.ai-change{padding:16px 0;border-bottom:1px solid var(--line)}.ai-change summary{font:500 16px/1.5 Inter,sans-serif;cursor:pointer;min-height:44px;display:list-item;overflow-wrap:anywhere}.ai-change h4{font:600 14px/1.5 Inter,sans-serif;margin:16px 0 8px}.ai-prescription-list{padding-left:20px;margin:8px 0}.ai-prescription-list li{margin:12px 0;overflow-wrap:anywhere}.ai-prescription-list p{margin:4px 0}.ai-preview-actions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:20px}#ai-proposal-preview>p{white-space:pre-wrap;overflow-wrap:anywhere}</style></head><body>
 <div id="modal-backdrop" aria-hidden="true" hidden></div>
   <a class="skip" href="#app-main">Pular para o conteúdo</a>
   <div class="shell">
@@ -5063,16 +5063,16 @@ body[data-view=progress] #app-title,#evolution-page .record-section-heading>h2,#
       </div>
     </div>
   </section>
-<section id="backup-dialog" class="app-page" data-page="backup" aria-labelledby="backup-title" hidden><h2 id="backup-title" class="sr-only">Backup</h2>    <div class="dialog-body">
-      <div class="backup-actions"><button class="button full" id="export-backup"><i data-icon="download"></i>Exportar
-          backup</button><button class="button full" id="import-backup"><i data-icon="upload"></i>Importar
-          backup</button><input id="import-file" type="file" accept=".json,.treino,application/json,application/octet-stream" hidden></div>
-      <p class="form-hint" id="backup-status" role="status" hidden></p>
-      <section id="local-recovery" class="local-recovery" aria-labelledby="local-recovery-title" hidden></section>
-      <div class="import-preview" id="import-preview" hidden></div>
-      <p class="form-error" id="import-error" role="alert" hidden></p>
-    </div>
-  </section>
+<section id="backup-dialog" class="app-page" data-page="backup" aria-labelledby="backup-title" hidden>
+  <h2 id="backup-title" class="sr-only">Backup</h2><div class="dialog-body">
+    
+    <div class="backup-actions"><button type="button" class="button full" id="export-backup"><i data-icon="download"></i>Exportar backup</button><button type="button" class="button full" id="import-backup"><i data-icon="upload"></i>Importar backup</button><input id="import-file" type="file" accept=".json,.treino,application/json,application/octet-stream" hidden></div>
+    <div class="ai-prompt-field" id="ai-prompt-field"><label for="ai-update-prompt">Prompt</label><div class="ai-prompt-control"><textarea id="ai-update-prompt" rows="6" readonly spellcheck="false"></textarea><button type="button" class="ai-prompt-toggle" data-prompt-toggle aria-expanded="false" aria-controls="ai-update-prompt" aria-label="Expandir prompt"><span data-prompt-toggle-label>Expandir</span><i data-icon="chevron"></i></button></div></div>
+    <div id="ai-proposal-preview" class="import-preview" hidden></div>
+    <details id="local-recovery-options" class="disclosure ai-recovery-details" hidden><summary><span>Recuperar dados anteriores</span><i data-icon="chevron"></i></summary><section id="local-recovery" class="local-recovery" aria-labelledby="local-recovery-title" hidden></section></details><div class="import-preview" id="import-preview" hidden></div>
+    <p class="form-hint" id="backup-status" role="status" hidden></p><p class="form-error" id="import-error" role="alert" hidden></p>
+  </div>
+</section>
 <section id="post-workout" class="app-page" data-page="postworkout" aria-labelledby="post-workout-title" hidden></section>
 <section id="evolution-page" class="app-page" data-page="progress" aria-label="Evolução" hidden></section>
 <section id="profile-page" class="app-page" data-page="profile" aria-label="Perfil" hidden>
@@ -6691,6 +6691,118 @@ const KoreSessionMetrics = (() => {
 })();
 
     // Drafts, confirmed history and the recurring training cycle are independent.
+/* Native schema 13 exchange. AI proposals never carry user history or profile writes. */
+const KoreAITraining = (() => {
+ const clone=x=>JSON.parse(JSON.stringify(x));
+ const obj=x=>x&&typeof x==='object'&&!Array.isArray(x);
+ const only=(x,keys)=>obj(x)&&Object.keys(x).every(k=>keys.includes(k));
+ const id=x=>typeof x==='string'&&/^[a-z][a-z0-9-]{0,79}$/.test(x)&&!['constructor','prototype'].includes(x);
+ const text=(x,n)=>typeof x==='string'&&x.trim().length>0&&x.length<=n;
+ const number=(x,min,max,int=false)=>typeof x==='number'&&Number.isFinite(x)&&x>=min&&x<=max&&(!int||Number.isInteger(x));
+ const fail=message=>{throw new Error(message);};
+ function canonical(x){if(Array.isArray(x))return '['+x.map(canonical).join(',')+']';if(obj(x))return '{'+Object.keys(x).sort().map(k=>JSON.stringify(k)+':'+canonical(x[k])).join(',')+'}';return JSON.stringify(x);}
+ // A stable revision checksum, not authentication or a signature.
+ async function fingerprint(data){const source=canonical({plan:data.plan,exerciseLibrary:data.exerciseLibrary});let a=2166136261,b=2246822507;for(let i=0;i<source.length;i++){a=Math.imul(a^source.charCodeAt(i),16777619);b=Math.imul(b^source.charCodeAt(i),3266489909);}return 'kore-plan-1-'+(a>>>0).toString(16).padStart(8,'0')+(b>>>0).toString(16).padStart(8,'0');}
+ const empty=()=>({version:1,measurements:{},applied:{}});
+ function recordProfile(data){
+  data.aiTraining ||= empty();if(!data.profile)return;
+  const values={weightKg:data.profile.weightKg??null,birthDate:data.profile.birthDate??null,gender:data.profile.gender??null};
+  const list=Object.values(data.aiTraining.measurements),last=list.sort((a,b)=>b.recordedAt-a.recordedAt)[0];
+  if(last&&canonical(last.values)===canonical(values))return;
+  const recordId='measurement-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+  data.aiTraining.measurements[recordId]={id:recordId,recordedAt:Date.now(),values};
+ }
+ function validateMeta(raw,bad,cleanWorkout){
+  if(raw===undefined)return empty();
+  if(!only(raw,['version','measurements','applied'])||raw.version!==1||!obj(raw.measurements)||!obj(raw.applied)||Object.keys(raw.measurements).length>10000||Object.keys(raw.applied).length>1000)bad();
+  const result=empty(),stamp=v=>number(v,0,Date.now()+86400000);
+  for(const [key,m]of Object.entries(raw.measurements)){
+   if(!id(key)||!only(m,['id','recordedAt','values'])||m.id!==key||!stamp(m.recordedAt)||!only(m.values,['weightKg','birthDate','gender'])||!KoreProfileData.validBirthDate(m.values.birthDate)||!KoreProfileData.validWeight(m.values.weightKg)||![null,'male','female','nonbinary','undisclosed'].includes(m.values.gender))bad();
+   result.measurements[key]=clone(m);
+  }
+  for(const [key,p]of Object.entries(raw.applied)){
+   if(!id(key)||!only(p,['id','importedAt','summary','previousPlan'])||p.id!==key||!stamp(p.importedAt)||!text(p.summary,4000)||!Array.isArray(p.previousPlan)||p.previousPlan.length>100)bad();
+   result.applied[key]={...clone(p),previousPlan:p.previousPlan.map(cleanWorkout)};
+  }
+  return result;
+ }
+ function mergeMeta(a=empty(),b=empty()){
+  const next=clone(a);
+  for(const field of ['measurements','applied'])for(const [key,item]of Object.entries(b[field]||{})){
+   const old=next[field][key],stamp=field==='measurements'?'recordedAt':'importedAt';
+   if(!old||item[stamp]>old[stamp])next[field][key]=clone(item);
+  }
+  return next;
+ }
+ function ageAt(birth,now){if(!birth)return null;const b=new Date(birth+'T12:00:00Z'),d=new Date(now);let age=d.getUTCFullYear()-b.getUTCFullYear();if(d.getUTCMonth()<b.getUTCMonth()||d.getUTCMonth()===b.getUTCMonth()&&d.getUTCDate()<b.getUTCDate())age--;return age;}
+ function instructions(EL){return `Analise o backup KORE de schema 13. No JSON nativo os campos estão na raiz; no arquivo .treino, o manifesto contém o backup em data. Considere data, nas instruções abaixo, como esse objeto de backup. O .treino usa cabeçalho UTF-8 TREINO-HIBRIDO-BACKUP-1 seguido de uma quebra de linha, quatro bytes uint32 big-endian com o tamanho do manifesto JSON UTF-8 e, depois do manifesto, os anexos originais. data.sessions contém TODO o histórico salvo, com snapshots imutáveis, logs por série (load em kg, value em repetições ou segundos conforme unit, done indica realizado), notas, datas, timing, cardio (duração em segundos e distância em km), runMode e energy. data.drafts contém sessões em andamento e canceladas/arquivadas: não as trate como concluídas. data.cycle conserva a organização dos ciclos. data.profile contém weightKg, birthDate e dados opcionais; aiContext.ageYears (ou ageYears do contexto) é a idade na exportação. data.aiTraining.measurements contém somente medições realmente registradas. Dados ausentes são desconhecidos; não invente evolução, músculos, capacidades, mídia nem resultados. Pergunte por objetivo, dias disponíveis, equipamentos e limitações caso necessário para prescrever a próxima rotina. Diferencie valores realizados de prescrição e sugestões de carga. Não transforme sugestão em série realizada.
+Retorne um arquivo JSON, sem Markdown, usando aiContext.responseTemplate (ou responseTemplate do contexto). Copie exatamente aiContext.sourceFingerprint (ou sourceFingerprint do contexto); use proposalId único (letras minúsculas, números e hífen). format=kore-training-proposal-native, version=1, summary obrigatório até 4000 caracteres. Nunca envie profile, sessions, drafts, cycle, mídia ou preferences na resposta. O aplicativo mantém esses dados. O arquivo .treino é o backup completo com mídia; este contexto JSON é a representação de dados para análise, sem os bytes dos anexos.
+newExercises: somente NOVAS identidades de força {id,name,primaryMuscle,secondaryMuscle}; id no padrão exercise-[a-z0-9-] até 74 caracteres; name até 200; principal obrigatório; secundário opcional, nulo ou diferente (se omitido, o app salva null); IDs musculares válidos: ${EL.muscles.map(m=>m.value).join(', ')}. Reutilize libraryId e nome dos existentes, incluindo aliases; não ressuscite tombstones. Novos exercícios ficam sem mídia.
+plan: lista não vazia de fichas a criar/atualizar {id,title,weekday,kind,exercises,groups}. IDs de objetos: começam por letra minúscula, até 80 caracteres, letras minúsculas/números/hífen. id existente atualiza essa ficha; novo cria. Fichas omitidas continuam disponíveis. title até 150; weekday segunda=1 até domingo=7; kind strength ou cardio (corrida), imutável para ficha existente. exercises: de 1 a 30, IDs únicos. groups: array, vazio se não houver; {id,exerciseIds} para biset/triset de 2 ou 3 exercícios contíguos; corrida aceita 2–30 e exige repeats inteiro 1–100. Os IDs do grupo seguem a mesma ordem da ficha; nas etapas agrupadas target.repeats deve ser 1 e as voltas ficam em group.repeats.
+Força: cada exercício {id,libraryId,sets,unit,target,loadLabel?}. Preserve o id dentro da ficha se a identidade já estiver nela. libraryId referencia a biblioteca ou newExercises; sets inteiro 1–20; unit reps ou s; target {min,max,loadKg?}: min/max inteiros 1–10000, max>=min; segundos para unit=s; loadKg opcional de 0 a 10000, sugestão de carga sem preencher logs; loadLabel opcional até 150 (ex.: kg total ou kg por halter). Corrida: cada etapa {id,name,sets:0,unit:s,target,loadLabel?}, name até 200; target {repeats,durationSeconds,durationMaxSeconds,speedKmh,mode}; repeats inteiro 1–100; durações inteiras 1–86400 com max>=min; speedKmh entre 0.1 e 60; mode speed, pace ou rest. Velocidade é sempre km/h, mesmo quando o app mostra pace. Não modifique metas de descanso para simular distância.
+Não copie o backup inteiro como resposta, não exclua fichas, não renomeie exercícios existentes nem reescreva o histórico. Explique a progressão em summary e entregue o .json para importar no KORE.`;}
+ async function context(data,EL,now=new Date().toISOString(),dateReference=now.slice(0,10)){
+  const copy=clone(data);recordProfile(copy);const sourceFingerprint=await fingerprint(copy);
+  return {app:'treino-hibrido',format:'kore-ai-context',version:1,exportedAt:now,ageYears:ageAt(copy.profile?.birthDate,dateReference+'T12:00:00Z'),ageReference:dateReference,sourceFingerprint,units:{load:'kg',weight:'kg',distance:'km',duration:'s',speed:'km/h'},data:copy,muscleGroups:clone(EL.muscles),responseTemplate:{format:'kore-training-proposal-native',version:1,proposalId:'proposta-'+Date.now().toString(36),sourceFingerprint,summary:'Justifique a adaptação com base na evolução registrada.',newExercises:[],plan:[]},instructions:instructions(EL)};
+ }
+ async function prepare(proposal,current,D,C,EL){
+  if(!only(proposal,['format','version','proposalId','sourceFingerprint','summary','newExercises','plan'])||proposal.format!=='kore-training-proposal-native'||proposal.version!==1||!id(proposal.proposalId)||!text(proposal.summary,4000)||!Array.isArray(proposal.newExercises)||proposal.newExercises.length>1000||!Array.isArray(proposal.plan)||!proposal.plan.length||proposal.plan.length>100)fail('O arquivo não segue o formato de proposta do KORE.');
+  if(current.aiTraining?.applied?.[proposal.proposalId])fail('Esta proposta já foi aplicada.');
+  const sourceFingerprint=await fingerprint(current);
+  if(proposal.sourceFingerprint!==sourceFingerprint)fail('A ficha ou a biblioteca mudou desde a exportação. Exporte um contexto atualizado para a IA.');
+  const next=clone(current);next.aiTraining ||= empty();next.plan ||= [];
+  const aliases=new Set(Object.values(next.exerciseLibrary).flatMap(e=>e.aliases)),created=[],changes=[];
+  for(const e of proposal.newExercises){
+   const secondary=e?.secondaryMuscle??null;
+   if(!only(e,['id','name','primaryMuscle','secondaryMuscle'])||typeof e.id!=='string'||!/^exercise-[a-z0-9-]{1,65}$/.test(e.id)||!text(e.name,200)||!EL.muscleIds.has(e.primaryMuscle)||secondary!==null&&!EL.muscleIds.has(secondary)||e.primaryMuscle===secondary)fail('Confira o nome, ID e músculos dos novos exercícios.');
+   if(Object.hasOwn(next.exerciseLibrary,e.id)||aliases.has(EL.normalize(e.name)))fail('Um novo exercício repete uma identidade ou nome existente. Reutilize o libraryId.');
+   const item={...clone(e),secondaryMuscle:secondary,name:e.name.trim(),media:null,aliases:[EL.normalize(e.name)],deleted:false,updatedAt:Date.now()};
+   next.exerciseLibrary[item.id]=item;aliases.add(EL.normalize(item.name));created.push(item);
+  }
+  const seen=new Set();
+  for(const w of proposal.plan){
+   if(!only(w,['id','title','weekday','kind','exercises','groups'])||!id(w.id)||seen.has(w.id)||!text(w.title,150)||!number(w.weekday,1,7,true)||!['strength','cardio'].includes(w.kind)||!Array.isArray(w.exercises)||w.exercises.length<1||w.exercises.length>30||!Array.isArray(w.groups))fail('Confira a estrutura, os dias e os IDs das fichas.');
+   seen.add(w.id);const index=next.plan.findIndex(x=>x.id===w.id),old=next.plan[index];
+   if(old&&old.kind!==w.kind)fail('A modalidade de uma ficha existente não pode mudar. Crie outra ficha.');
+   const item={id:w.id,title:w.title.trim(),weekday:w.weekday,day:D.weekdays[w.weekday-1],shortDay:D.shortDays[w.weekday-1],short:w.title.trim().slice(0,40),subtitle:'',kind:w.kind,exercises:[],groups:clone(w.groups)};
+   const ids=new Set();
+   for(const ex of w.exercises){
+    const strength=w.kind==='strength';
+    if(!only(ex,strength?['id','libraryId','sets','unit','target','loadLabel']:['id','name','sets','unit','target','loadLabel'])||!id(ex.id)||ids.has(ex.id)||ex.loadLabel!==undefined&&!text(ex.loadLabel,150)||!obj(ex.target))fail('Confira os IDs e os campos dos exercícios/etapas.');
+    ids.add(ex.id);let entry;
+    if(strength){
+     const e=Object.hasOwn(next.exerciseLibrary,ex.libraryId)?next.exerciseLibrary[ex.libraryId]:null,t=ex.target;
+     if(!e||e.deleted||!number(ex.sets,1,20,true)||!['reps','s'].includes(ex.unit)||!only(t,['min','max','loadKg'])||!number(t.min,1,10000,true)||!number(t.max,t.min,10000,true)||t.loadKg!==undefined&&!number(t.loadKg,0,10000))fail('Confira libraryId, séries, alvo e sugestão de carga.');
+     const previous=old?.exercises.find(x=>x.id===ex.id),same=old?.exercises.filter(x=>x.libraryId===e.id)||[];
+     const labels=[...new Set((current.plan||[]).flatMap(w=>w.exercises).filter(x=>x.libraryId===e.id).map(x=>x.loadLabel).filter(Boolean))];
+     if(!ex.loadLabel&&!previous?.loadLabel&&labels.length>1)fail('Informe a unidade de carga: este exercício usa unidades diferentes nas fichas existentes.');
+     if(previous&&previous.libraryId!==e.id||same.length===1&&same[0].id!==ex.id)fail('Preserve o ID do exercício existente dentro da ficha para manter sua continuidade.');
+     entry={id:ex.id,name:e.name,libraryId:e.id,primaryMuscle:e.primaryMuscle,secondaryMuscle:e.secondaryMuscle,sets:ex.sets,unit:ex.unit,loadLabel:ex.loadLabel||previous?.loadLabel||labels[0]||'kg total',target:clone(t),meta:[]};
+    }else{
+     const t=ex.target;
+     if(!text(ex.name,200)||ex.sets!==0||ex.unit!=='s'||!only(t,['repeats','durationSeconds','durationMaxSeconds','speedKmh','mode'])||!number(t.repeats,1,100,true)||!number(t.durationSeconds,1,86400,true)||!number(t.durationMaxSeconds,t.durationSeconds,86400,true)||!number(t.speedKmh,.1,60)||!['speed','pace','rest'].includes(t.mode))fail('Confira os valores das etapas de corrida.');
+     entry={id:ex.id,name:ex.name.trim(),sets:0,unit:'s',loadLabel:ex.loadLabel||'km/h',target:clone(t),meta:[]};
+    }
+    C.syncMeta(entry,w.kind);item.exercises.push(entry);
+   }
+   for(const g of w.groups){
+    if(!only(g,w.kind==='strength'?['id','exerciseIds']:['id','exerciseIds','repeats'])||!Array.isArray(g.exerciseIds))fail('Confira a estrutura dos agrupamentos.');
+    const positions=g.exerciseIds.map(key=>item.exercises.findIndex(ex=>ex.id===key));
+    if(positions.some((position,i)=>position<0||i>0&&position!==positions[i-1]+1))fail('Um agrupamento precisa conter exercícios/etapas contíguos, na mesma ordem da ficha.');
+    if(w.kind==='cardio'&&g.exerciseIds.some(key=>item.exercises.find(ex=>ex.id===key)?.target.repeats!==1))fail('Nas etapas agrupadas use uma repetição por etapa; informe as voltas no grupo intervalado.');
+   }
+   if(index<0)next.plan.push(item);else next.plan[index]=item;
+   changes.push({action:old?'Atualizar':'Criar',before:old?clone(old):null,after:clone(item)});
+  }
+  if(next.plan.length>100)fail('A ficha ultrapassa o limite de cem treinos.');
+  next.plan.sort((a,b)=>a.weekday-b.weekday);next.planUpdatedAt=Math.max(Date.now(),(current.planUpdatedAt||0)+1);
+  next.aiTraining.applied[proposal.proposalId]={id:proposal.proposalId,summary:proposal.summary,importedAt:Date.now(),previousPlan:clone(current.plan||[])};
+  D.validate(next); // Validate the native contract without replacing historical snapshots.
+  return {next,changes,created,summary:proposal.summary,sourceFingerprint};
+ }
+ return Object.freeze({empty,recordProfile,validateMeta,mergeMeta,ageAt,fingerprint,context,prepare,instructions});
+})();
+
     const TrainingData = (() => {
       const APP = 'treino-hibrido';
       const SCHEMA = 13;
@@ -6698,7 +6810,7 @@ const KoreSessionMetrics = (() => {
       const weekdays = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
       const shortDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
       const clone = value => JSON.parse(JSON.stringify(value));
-      const empty = () => ({ app: APP, schema: SCHEMA, profile: null, profileUpdatedAt: 0, exerciseLibrary: {}, sessions: {}, drafts: {}, plan: null, planUpdatedAt: 0, cycle: { number: 1, completed: {}, updatedAt: 0 } });
+      const empty = () => ({ app: APP, schema: SCHEMA, profile: null, profileUpdatedAt: 0, exerciseLibrary: {}, aiTraining: KoreAITraining.empty(), sessions: {}, drafts: {}, plan: null, planUpdatedAt: 0, cycle: { number: 1, completed: {}, updatedAt: 0 } });
       const validDate = text => {
         if (typeof text !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(text)) return false;
         const d = new Date(text + 'T12:00:00Z');
@@ -6850,7 +6962,8 @@ const KoreSessionMetrics = (() => {
               if (!obj(t)) bad();
               if (w.kind === 'strength') {
                 if (!(t.min === null && t.max === null) && (!Number.isInteger(t.min) || !Number.isInteger(t.max) || t.min < 1 || t.max < t.min || t.max > 10000)) bad();
-                clean.target = { min: t.min, max: t.max };
+                if(t.loadKg!==undefined&&(!Number.isFinite(t.loadKg)||t.loadKg<0||t.loadKg>10000))bad();
+                clean.target = { min: t.min, max: t.max, ...(t.loadKg!==undefined?{loadKg:t.loadKg}:{}) };
               } else {
                 if (!Number.isInteger(t.repeats) || t.repeats < 1 || t.repeats > 100 || !Number.isInteger(t.durationSeconds) || !Number.isInteger(t.durationMaxSeconds) || t.durationSeconds < 1 || t.durationMaxSeconds < t.durationSeconds || t.durationMaxSeconds > 86400 || !Number.isFinite(t.speedKmh) || t.speedKmh < .1 || t.speedKmh > 60 || !['speed', 'pace', 'rest'].includes(t.mode)) bad();
                 if (t.useRange !== undefined && typeof t.useRange !== 'boolean') bad();
@@ -6923,6 +7036,7 @@ const KoreSessionMetrics = (() => {
         if (!obj(raw) || raw.app !== APP || !Number.isInteger(raw.schema) || raw.schema < 1 || raw.schema > SCHEMA || !obj(raw.sessions) || Object.keys(raw.sessions).length > 10000) bad();
         const result = empty();
         result.exerciseLibrary=KoreExerciseLibrary.validate(raw.exerciseLibrary,bad);
+        result.aiTraining=KoreAITraining.validateMeta(raw.aiTraining,bad,cleanWorkout);
         if (raw.profile != null) {
           if (!obj(raw.profile) || !str(raw.profile.name, 100) || !(raw.profile.avatar === null || (str(raw.profile.avatar, 1500000) && /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(raw.profile.avatar))) || !stamp(raw.profileUpdatedAt)) bad();
           result.profile = { name: raw.profile.name.trim(), avatar: raw.profile.avatar, ...KoreProfileData.optional(raw.profile,bad) };
@@ -6965,6 +7079,7 @@ const KoreSessionMetrics = (() => {
         const result = clone(current); let added = 0, updated = 0, kept = 0;
         result.schema = SCHEMA;
         result.exerciseLibrary=KoreExerciseLibrary.merge(current.exerciseLibrary,incoming.exerciseLibrary);
+        result.aiTraining=KoreAITraining.mergeMeta(current.aiTraining,incoming.aiTraining);
         for (const field of ['sessions', 'drafts']) for (const [id, s] of Object.entries(incoming[field])) {
           if (field === 'sessions' && result.drafts[id]?.archived) continue;
           // Cancelling a draft is terminal, including when an older tab or backup is merged.
@@ -7017,7 +7132,7 @@ const KoreSessionMetrics = (() => {
         const t = ex.target;
         if (kind === 'strength') {
           const range = t.min === t.max ? t.min : `${t.min}–${t.max}`;
-          ex.meta = [`${ex.sets} ${ex.sets === 1 ? 'série' : 'séries'}`, ...(t.min == null ? [] : [ex.unit === 's' ? (t.min === t.max ? durationText(t.min) : `${range} s`) : `${range} reps`])];
+          ex.meta = [`${ex.sets} ${ex.sets === 1 ? 'série' : 'séries'}`, ...(t.min == null ? [] : [ex.unit === 's' ? (t.min === t.max ? durationText(t.min) : `${range} s`) : `${range} reps`]), ...(t.loadKg===undefined?[]:[`Sugestão: ${valueText(t.loadKg)} kg`])];
         } else {
           let duration = durationText(t.durationSeconds);
           if (t.durationSeconds !== t.durationMaxSeconds) duration = t.durationSeconds % 60 === 0 && t.durationMaxSeconds % 60 === 0 ? `${t.durationSeconds / 60}–${t.durationMaxSeconds / 60} min` : `${durationText(t.durationSeconds)} – ${durationText(t.durationMaxSeconds)}`;
@@ -7657,6 +7772,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       }
       function writeStore() {
         if(accountResetting||!KoreAccount.current())return false;
+        KoreAITraining.recordProfile(store);
         const wasOkay = storageOkay;
         if (loadBlocked) { storageOkay = false; updateSaveStatus(); storageNotice(); return false; }
         let phase = 'access', onDisk = null;
@@ -11119,7 +11235,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
 
       function renderLocalRecovery() {
         const root=$('local-recovery'),sources=KorePersistence.sources();
-        root.hidden=!sources.length;
+        root.hidden=!sources.length; $('local-recovery-options').hidden=!sources.length;
         root.innerHTML=sources.length?`<h3 id="local-recovery-title">Dados de versões anteriores</h3><div class="local-recovery-options">${sources.map(source=>`<button type="button" class="button full local-recovery-option" data-recover-source="${esc(source.key)}"><span><strong>Revisar versão ${source.version}</strong><small>${countText(source.count,'treino concluído','treinos concluídos')}${source.drafts?` · ${countText(source.drafts,'em andamento','em andamento')}`:''}</small></span>${icon('chevron').replace('class="icon"','class="icon arrow-right"')}</button>`).join('')}</div>`:'';
       }
       function showBackup() { renderLocalRecovery(); openDialog('backup-dialog'); }
@@ -11140,6 +11256,7 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
       function backupBusyUI(busy, message = '') {
         backupBusy = busy;
         $('export-backup').disabled = busy; $('import-backup').disabled = busy;
+        for(const id of ['apply-ai-proposal','cancel-ai-proposal'])if($(id))$(id).disabled=busy;
         $('local-recovery').querySelectorAll('button').forEach(button=>button.disabled=busy);
         if ($('confirm-import')) $('confirm-import').disabled = busy;
         $('backup-status').textContent = message; $('backup-status').hidden = !message;
@@ -11152,7 +11269,10 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         }
         backupBusyUI(true, 'Preparando backup com os anexos…'); $('import-error').hidden = true;
         try {
+          KoreAITraining.recordProfile(store);
           const data = D.clone({ ...store, plan: PLAN, exportedAt: new Date().toISOString() });
+          const ai=await KoreAITraining.context(data,EL,new Date().toISOString(),localDate());
+          data.aiContext={ageYears:ai.ageYears,ageReference:ai.ageReference,sourceFingerprint:ai.sourceFingerprint,responseTemplate:ai.responseTemplate,instructions:ai.instructions};
           const { blob, extension } = await M.exportBackup(data), url = URL.createObjectURL(blob), a = document.createElement('a');
           a.href = url; a.download = `treino-hibrido-backup-${localDate()}.${extension}`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
           preferences.lastBackup = Date.now(); savePreferences();
@@ -11191,7 +11311,16 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         const file = e.target.files?.[0]; if (!file || backupBusy) return; pendingImport = null; $('import-preview').hidden = true; $('import-error').hidden = true;
         backupBusyUI(true, 'Conferindo backup…');
         try {
-          pendingImport = await M.readBackup(file);
+          pendingAIProposal=null;$('ai-proposal-preview').hidden=true;
+          if(/\.json$/i.test(file.name)||file.type==='application/json'){
+            if(file.size>32*1024*1024)throw new Error('Este JSON é muito grande. Use um backup .treino para anexos grandes.');
+            const raw=JSON.parse(await file.text());
+            if(raw?.format==='kore-training-proposal-native'){
+              if(file.size>5*1024*1024)throw new Error('A proposta de treino deve ter até 5 MB.');
+              await previewNativeAI(raw);return;
+            }
+            pendingImport={data:D.validate(raw),files:new Map()};
+          }else pendingImport=await M.readBackup(file);
           renderImportPreview(pendingImport.data);
           $('import-preview').hidden = false;
         } catch (error) { reportError('import-error',error instanceof SyntaxError ? 'O arquivo não contém um JSON válido. Escolha um backup exportado por este treino.' : error.message); }
@@ -11216,6 +11345,75 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         } catch (error) { reportError('import-error',M.errorText(error)); }
         finally { backupBusyUI(false); }
       });
+/* Presentation-only disclosure, shared with the isolated catalogue example. */
+function bindKorePromptExpansion(root){
+  if(!root||root.dataset.promptBound)return;
+  const field=root.querySelector('textarea'),toggle=root.querySelector('[data-prompt-toggle]');
+  if(!field||!toggle)return;
+  root.dataset.promptBound='true';
+  const label=toggle.querySelector('[data-prompt-toggle-label]');
+  function fit(){
+    if(toggle.getAttribute('aria-expanded')!=='true'||!field.getClientRects().length)return;
+    field.style.height='auto';field.style.height=field.scrollHeight+'px';
+  }
+  toggle.addEventListener('click',()=>{
+    const expanded=toggle.getAttribute('aria-expanded')!=='true';
+    toggle.setAttribute('aria-expanded',String(expanded));
+    toggle.setAttribute('aria-label',(expanded?'Recolher':'Expandir')+' prompt');
+    root.dataset.promptExpanded=String(expanded);
+    if(label)label.textContent=expanded?'Recolher':'Expandir';
+    if(expanded)fit();else{field.style.height='';field.scrollTop=0;}
+  });
+  addEventListener('resize',fit);
+  if(typeof ResizeObserver!=='undefined'){let width=0;new ResizeObserver(()=>{const next=root.clientWidth;if(next&&next!==width){width=next;fit();}}).observe(root);}
+  if(document.fonts)document.fonts.ready.then(fit);
+}
+
+      // Native backup import accepts a full backup or an AI training proposal.
+      let pendingAIProposal=null;
+      const aiSnapshot=(base=store)=>D.clone({...base,plan:(base.plan===null?PLAN:base.plan).map(C.activeWorkout)});
+      const aiUpdatePrompt=`Analise o backup do KORE em anexo e atualize meus treinos com base no histórico, na evolução das cargas e repetições, na frequência e nos dados pessoais registrados.
+
+Meu objetivo: [preencher]
+Dias disponíveis: [preencher]
+Equipamentos disponíveis: [preencher]
+Restrições ou observações: [preencher]
+
+Siga as instruções e o modelo de resposta do campo aiContext do backup. Se o arquivo estiver em formato .treino, leia primeiro o manifesto JSON do backup.
+
+Reutilize os exercícios existentes e crie novos apenas quando necessário. Preserve os IDs, o histórico e meus dados pessoais. Não invente resultados nem informações ausentes. Pergunte se faltar algum dado essencial e explique as mudanças propostas.
+
+Entregue um arquivo JSON compatível com o KORE para eu importar como atualização de treino.`;
+      $('ai-update-prompt').value=aiUpdatePrompt;
+      $('ai-update-prompt').addEventListener('focus',event=>setTimeout(()=>event.target.select(),0));
+      $('ai-update-prompt').addEventListener('click',event=>setTimeout(()=>event.target.select(),0));
+      bindKorePromptExpansion($('ai-prompt-field'));
+      function aiWorkoutDescription(workout){
+        return `<p class="form-hint">${esc(workout.day)} · ${workout.kind==='strength'?'Força':'Corrida'}</p><ul class="ai-prescription-list">${workout.exercises.map(ex=>`<li><strong>${esc(ex.name)}</strong><p>${ex.meta.map(koreMeta).join(' · ')}</p>${workout.groups?.find(g=>g.exerciseIds.includes(ex.id))?`<p>${esc(C.groupName(workout.groups.find(g=>g.exerciseIds.includes(ex.id)),workout.kind))}</p>`:''}</li>`).join('')}</ul>`;
+      }
+      async function previewNativeAI(proposal){
+        const prepared=await KoreAITraining.prepare(proposal,aiSnapshot(),D,C,EL);pendingAIProposal=proposal;
+        $('ai-proposal-preview').innerHTML=`<h3>Revisar treino</h3><p>${esc(prepared.summary)}</p><p class="form-hint">${countText(prepared.changes.length,'treino','treinos')} · ${countText(prepared.created.length,'novo exercício','novos exercícios')}. Seu histórico e seus dados serão mantidos. Treinos não incluídos na proposta continuam disponíveis.</p>${prepared.changes.map(change=>`<details class="ai-change"><summary>${esc(change.action+': '+change.after.title)}</summary>${change.before?`<h4>Atual</h4>${aiWorkoutDescription(change.before)}`:''}<h4>Proposta</h4>${aiWorkoutDescription(change.after)}</details>`).join('')}${prepared.created.length?`<details class="ai-change"><summary>Novos exercícios</summary><ul>${prepared.created.map(e=>`<li>${esc(e.name)} · ${esc(EL.muscleLabel(e.primaryMuscle))}${e.secondaryMuscle?' · '+esc(EL.muscleLabel(e.secondaryMuscle)):''}</li>`).join('')}</ul><p class="form-hint">Você pode adicionar uma demonstração em Meus exercícios.</p></details>`:''}<p class="form-hint">Os treinos em andamento continuam como estão. As mudanças valem para os próximos treinos.</p><div class="ai-preview-actions"><button type="button" class="button secondary" id="cancel-ai-proposal">Cancelar</button><button type="button" class="button primary" id="apply-ai-proposal">Aplicar proposta</button></div>`;
+        $('ai-proposal-preview').hidden=false;$('ai-proposal-preview').scrollIntoView({block:'nearest'});$('ai-proposal-preview').tabIndex=-1;$('ai-proposal-preview').focus({preventScroll:true});
+      }
+      $('ai-proposal-preview').addEventListener('click',async event=>{
+        if(event.target.closest('#cancel-ai-proposal')){pendingAIProposal=null;$('ai-proposal-preview').hidden=true;$('import-backup').focus();return;}
+        if(!event.target.closest('#apply-ai-proposal')||!pendingAIProposal||backupBusy)return;
+        backupBusyUI(true,'Salvando treino…');$('import-error').hidden=true;
+        try{
+          if(loadBlocked||accountResetting||!KoreAccount.current())throw new Error('O armazenamento não está disponível. Exporte o backup antes de continuar.');
+          if(!validInputs())throw new Error('Corrija os valores destacados no treino antes de importar.');
+          const disk=KoreStorage.getItem(STORAGE_KEY),memory=JSON.stringify(store),latest=disk===null?D.clone(store):D.merge(D.validate(JSON.parse(disk)),store).data;
+          const prepared=await KoreAITraining.prepare(pendingAIProposal,aiSnapshot(latest),D,C,EL);
+          if(KoreStorage.getItem(STORAGE_KEY)!==disk||JSON.stringify(store)!==memory)throw new Error('Os dados mudaram durante a conferência. Revise e aplique novamente.');
+          KoreAITraining.recordProfile(prepared.next);
+          // Do not replace in-memory plans unless the local commit succeeds.
+          KoreStorage.setItem(STORAGE_KEY,JSON.stringify(prepared.next));store=prepared.next;
+          storageOkay=true;storageError=null;storageFailure=null;syncPlan();renderNav();renderProfile();updateSaveStatus();storageNotice();renderWorkout();renderActiveWorkout();
+          pendingAIProposal=null;$('ai-proposal-preview').hidden=true;toast('Treino atualizado. Histórico e dados pessoais preservados.','success');
+        }catch(error){reportError('import-error',M.errorText(error));}finally{backupBusyUI(false);}
+      });
+
       // Timer uses wall-clock time, so delayed rendering does not accumulate drift.
       let timer = { mode: 'countdown', duration: 90000, adjustment: 0, elapsed: 0, startedAt: null, finished: false, workoutKey: null, exercise: null, minimized:false,pausedByWorkout:false };
       try {
