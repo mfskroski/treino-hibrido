@@ -5010,7 +5010,7 @@ body[data-view=progress] #app-title,#evolution-page .record-section-heading>h2,#
 
 /* Monochrome activity visuals. Medal metals retain their semantic rank. */
 :root{--activity-accent:#F1F1F1;--achievement-accent:#F5B400;--record-gold:#F5B400;--record-silver:#A5B9CF;--record-bronze:#D9914F}
-</style><style data-kore-ai-transfer>.ai-prompt-field{margin-top:24px}.ai-prompt-field>label{display:block;font:400 10px/1.6 "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.035em}.ai-prompt-control{margin-top:8px;border:1px solid var(--line);border-radius:4px;overflow:visible;background:var(--bg)}.ai-prompt-field textarea{display:block;width:100%;height:176px;min-height:0;box-sizing:border-box;padding:16px;border:0;border-radius:4px 4px 0 0;background:var(--bg);color:var(--ink);font:400 16px/1.6 Inter,sans-serif;resize:none;overflow:hidden}.ai-prompt-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:50px;padding:12px;border:0;border-top:1px solid var(--line);border-radius:0 0 4px 4px;background:transparent;color:var(--muted);font:400 14px/1.5 Inter,sans-serif;cursor:pointer}.ai-prompt-toggle>.icon{width:19px;height:19px;transition:transform var(--motion-feedback,180ms)}.ai-prompt-toggle[aria-expanded=true]>.icon{transform:rotate(180deg)}.ai-prompt-toggle:active{background:var(--soft)}.ai-prompt-toggle:focus-visible{outline:2px solid var(--ink);outline-offset:3px}@media (hover:hover){.ai-prompt-toggle:hover{background:var(--soft)}}@media (prefers-reduced-motion:reduce){.ai-prompt-toggle>.icon{transition:none}}.ai-prompt-field textarea:focus-visible{outline:2px solid var(--ink);outline-offset:3px}.ai-recovery-details{margin-top:24px}.ai-recovery-details>summary{min-height:50px}.ai-change{padding:16px 0;border-bottom:1px solid var(--line)}.ai-change summary{font:500 16px/1.5 Inter,sans-serif;cursor:pointer;min-height:44px;display:list-item;overflow-wrap:anywhere}.ai-change h4{font:600 14px/1.5 Inter,sans-serif;margin:16px 0 8px}.ai-prescription-list{padding-left:20px;margin:8px 0}.ai-prescription-list li{margin:12px 0;overflow-wrap:anywhere}.ai-prescription-list p{margin:4px 0}.ai-preview-actions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:20px}#ai-proposal-preview>p{white-space:pre-wrap;overflow-wrap:anywhere}</style></head><body>
+</style><style data-kore-ai-transfer>.ai-recovery-details{margin-top:24px}.ai-recovery-details>summary{min-height:50px}.ai-change{padding:16px 0;border-bottom:1px solid var(--line)}.ai-change summary{font:500 16px/1.5 Inter,sans-serif;cursor:pointer;min-height:44px;display:list-item;overflow-wrap:anywhere}.ai-change h4{font:600 14px/1.5 Inter,sans-serif;margin:16px 0 8px}.ai-prescription-list{padding-left:20px;margin:8px 0}.ai-prescription-list li{margin:12px 0;overflow-wrap:anywhere}.ai-prescription-list p{margin:4px 0}.ai-preview-actions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:20px}#ai-proposal-preview>p{white-space:pre-wrap;overflow-wrap:anywhere}</style></head><body>
 <div id="modal-backdrop" aria-hidden="true" hidden></div>
   <a class="skip" href="#app-main">Pular para o conteúdo</a>
   <div class="shell">
@@ -5066,8 +5066,7 @@ body[data-view=progress] #app-title,#evolution-page .record-section-heading>h2,#
 <section id="backup-dialog" class="app-page" data-page="backup" aria-labelledby="backup-title" hidden>
   <h2 id="backup-title" class="sr-only">Backup</h2><div class="dialog-body">
     
-    <div class="backup-actions"><button type="button" class="button full" id="export-backup"><i data-icon="download"></i>Exportar backup</button><button type="button" class="button full" id="import-backup"><i data-icon="upload"></i>Importar backup</button><input id="import-file" type="file" accept=".json,.treino,application/json,application/octet-stream" hidden></div>
-    <div class="ai-prompt-field" id="ai-prompt-field"><label for="ai-update-prompt">Prompt</label><div class="ai-prompt-control"><textarea id="ai-update-prompt" rows="6" readonly spellcheck="false"></textarea><button type="button" class="ai-prompt-toggle" data-prompt-toggle aria-expanded="false" aria-controls="ai-update-prompt" aria-label="Expandir prompt"><span data-prompt-toggle-label>Expandir</span><i data-icon="chevron"></i></button></div></div>
+    <div class="backup-actions"><button type="button" class="button full" id="export-backup"><i data-icon="download"></i>Exportar backup</button><button type="button" class="button full" id="import-backup"><i data-icon="upload"></i>Importar backup</button><button type="button" class="button primary full" id="copy-ai-prompt">Copiar prompt</button><input id="import-file" type="file" accept=".json,.treino,application/json,application/octet-stream" hidden></div>
     <div id="ai-proposal-preview" class="import-preview" hidden></div>
     <details id="local-recovery-options" class="disclosure ai-recovery-details" hidden><summary><span>Recuperar dados anteriores</span><i data-icon="chevron"></i></summary><section id="local-recovery" class="local-recovery" aria-labelledby="local-recovery-title" hidden></section></details><div class="import-preview" id="import-preview" hidden></div>
     <p class="form-hint" id="backup-status" role="status" hidden></p><p class="form-error" id="import-error" role="alert" hidden></p>
@@ -11345,29 +11344,6 @@ if(KorePersistence.preview&&!KoreStorage.getItem(STORAGE_KEY)){
         } catch (error) { reportError('import-error',M.errorText(error)); }
         finally { backupBusyUI(false); }
       });
-/* Presentation-only disclosure, shared with the isolated catalogue example. */
-function bindKorePromptExpansion(root){
-  if(!root||root.dataset.promptBound)return;
-  const field=root.querySelector('textarea'),toggle=root.querySelector('[data-prompt-toggle]');
-  if(!field||!toggle)return;
-  root.dataset.promptBound='true';
-  const label=toggle.querySelector('[data-prompt-toggle-label]');
-  function fit(){
-    if(toggle.getAttribute('aria-expanded')!=='true'||!field.getClientRects().length)return;
-    field.style.height='auto';field.style.height=field.scrollHeight+'px';
-  }
-  toggle.addEventListener('click',()=>{
-    const expanded=toggle.getAttribute('aria-expanded')!=='true';
-    toggle.setAttribute('aria-expanded',String(expanded));
-    toggle.setAttribute('aria-label',(expanded?'Recolher':'Expandir')+' prompt');
-    root.dataset.promptExpanded=String(expanded);
-    if(label)label.textContent=expanded?'Recolher':'Expandir';
-    if(expanded)fit();else{field.style.height='';field.scrollTop=0;}
-  });
-  addEventListener('resize',fit);
-  if(typeof ResizeObserver!=='undefined'){let width=0;new ResizeObserver(()=>{const next=root.clientWidth;if(next&&next!==width){width=next;fit();}}).observe(root);}
-  if(document.fonts)document.fonts.ready.then(fit);
-}
 
       // Native backup import accepts a full backup or an AI training proposal.
       let pendingAIProposal=null;
@@ -11384,10 +11360,23 @@ Siga as instruções e o modelo de resposta do campo aiContext do backup. Se o a
 Reutilize os exercícios existentes e crie novos apenas quando necessário. Preserve os IDs, o histórico e meus dados pessoais. Não invente resultados nem informações ausentes. Pergunte se faltar algum dado essencial e explique as mudanças propostas.
 
 Entregue um arquivo JSON compatível com o KORE para eu importar como atualização de treino.`;
-      $('ai-update-prompt').value=aiUpdatePrompt;
-      $('ai-update-prompt').addEventListener('focus',event=>setTimeout(()=>event.target.select(),0));
-      $('ai-update-prompt').addEventListener('click',event=>setTimeout(()=>event.target.select(),0));
-      bindKorePromptExpansion($('ai-prompt-field'));
+      async function copyAIUpdatePrompt(){
+        if(navigator.clipboard?.writeText){
+          try{await navigator.clipboard.writeText(aiUpdatePrompt);return;}catch(error){}
+        }
+        const previous=document.activeElement,field=document.createElement('textarea');
+        field.value=aiUpdatePrompt;field.readOnly=true;
+        field.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:0;font-size:16px;';
+        document.body.appendChild(field);
+        try{
+          field.focus({preventScroll:true});field.select();field.setSelectionRange(0,field.value.length);
+          if(!document.execCommand('copy'))throw new Error('Não foi possível copiar o prompt.');
+        }finally{field.remove();previous?.focus({preventScroll:true});}
+      }
+      $('copy-ai-prompt').addEventListener('click',async()=>{
+        try{await copyAIUpdatePrompt();toast('Prompt copiado.','success');}
+        catch(error){toast('Não foi possível copiar o prompt. Tente novamente.','error');}
+      });
       function aiWorkoutDescription(workout){
         return `<p class="form-hint">${esc(workout.day)} · ${workout.kind==='strength'?'Força':'Corrida'}</p><ul class="ai-prescription-list">${workout.exercises.map(ex=>`<li><strong>${esc(ex.name)}</strong><p>${ex.meta.map(koreMeta).join(' · ')}</p>${workout.groups?.find(g=>g.exerciseIds.includes(ex.id))?`<p>${esc(C.groupName(workout.groups.find(g=>g.exerciseIds.includes(ex.id)),workout.kind))}</p>`:''}</li>`).join('')}</ul>`;
       }
